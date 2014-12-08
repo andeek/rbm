@@ -9,3 +9,22 @@
 
 # RStudio files
 .Rproj.user/
+*.Rprof
+
+# shinyapps
+shinyapps/
+
+# no pdfs
+*.pdf
+
+# compilation files
+*.bbl
+*.tex
+*.gz
+*.log
+*.xml
+*-blx.bib
+
+# stupid files
+*.m~
+*.txt~

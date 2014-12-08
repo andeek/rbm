@@ -1,0 +1,218 @@
+\documentclass{article}
+\usepackage{subcaption, float}
+\usepackage{tikz}
+\usepackage{tikz-3dplot}
+\usetikzlibrary{arrows,%
+                shapes,positioning}
+\usepackage{amsmath}
+\usepackage[bibstyle=numeric,citestyle=authoryear,backend=bibtex,sorting=nyt]{biblatex}
+\addbibresource{references/refs.bib}
+
+
+\title{Degeneracy in a restricted Boltzmann machine}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Toy examples}
+To explore the idea of graph degeneracy in a restricted Boltzmann machine, we will consider three very small toy examples that are increasing in complexity. The first model consists of one visible node $v_1$ and one hidden node $h_1$, both binary. The second model consists of two visible nodes $\{v_1, v_2\}$ and one hidden $h_1$, all binary. The third model has three visible nodes $\{v_1, v_2, v_3\}$ and two hidden nodes $\{h_1, h_2\}$, all binary. A schematic of these three machines can be found in figure~\ref{fig:models}. Within the framework, we will learn the weights on each edge $\{\theta_{ij}| i=1,\dots,H, j=1,\dots, V\}$, where $V$ is the number of visible nodes and $H$ the number of hiddens, as well as the individual weights on the states of the nodes (on/off) $\{\theta_{hi}, \theta_{vj} | i=1,,H, j=1,\dots,V\}$.
+
+\begin{figure}
+   \begin{subfigure}[b]{0.32\textwidth}
+        \centering
+        \resizebox{0.12\linewidth}{0.12\textheight}{\input{figures/model1.tikz}}
+   \end{subfigure}
+   \begin{subfigure}[b]{0.32\textwidth}
+        \centering
+        \resizebox{\linewidth}{!}{\input{figures/model2.tikz}}
+   \end{subfigure}
+   \begin{subfigure}[b]{0.32\textwidth}
+        \centering
+        \resizebox{\linewidth}{!}{\input{figures/model3.tikz}}
+   \end{subfigure}
+   \caption{The three toy examples ranging from least complicated to most complicated. Gray nodes indicate hidden variables and white nodes are visibles.}
+   \label{fig:models}
+\end{figure}
+
+Within each model, we will have $V\times H + V + H$ parameters to fit. In our three toy models, this correponds to table~\ref{tab:paramcount}. To begin exploring the behavior of the Boltzmann machine in relation to different values of parameters, we begin by specifying the joint distribution for the values of the nodes.
+
+\begin{table}[ht!]
+\centering
+\begin{tabular}{ l | r r r }
+  Model & H & V & Number of parameters \\
+  \hline
+  1 & 1 & 1 & 3 \\
+  2 & 1 & 2 & 5 \\
+  3 & 2 & 3 & 11 \\
+\end{tabular}
+\caption{The number of parameters needed to estimate in each toy model.}
+\label{tab:paramcount}
+\end{table}
+
+
+\subsection{Joint distribution}
+Let ${\bf x} = \{h_1, \dots, h_H, v_1,\dots,v_V\}$ represent the states of the five nodes in our example. Then we posit a parametric form for probabilities corresponding to the state of each node being a 1.
+
+\begin{align}
+\label{eqn:pmf}
+f_{\boldsymbol \theta} ({\bf x}) = \frac{\exp\left(\sum\limits_{i = 1}^H \sum\limits_{j=1}^V \theta_{ij} h_i v_j + \sum\limits_{i = 1}^H\theta_{hi} h_i + \sum\limits_{j = 1}^V\theta_{vj} v_j\right)}{\sum\limits_{{\bf x} \in \{0,1\}^{H+V}}\exp\left(\sum\limits_{i = 1}^H \sum\limits_{j=1}^V \theta_{ij} h_i v_j + \sum\limits_{i = 1}^H\theta_{hi} h_i + \sum\limits_{j = 1}^V\theta_{vj} v_j\right)} 
+\end{align}
+
+Let the normalizing constant in equation~\ref{eqn:pmf} be denoted $\gamma(\boldsymbol \theta)$ \parencite[pp. 163--167]{Vardeman602}. We can also refer to $Q({\bf x}) = \sum\limits_{i = 1}^H\sum\limits_{j=1}^V \theta_{ij} h_i v_j + \sum\limits_{i = 1}^H\theta_{hi} h_i + \sum\limits_{j = 1}^V\theta_{vj} v_j$ as the neg-potential function in our model. In our very small examples, this normalizing constant can actually be computed, due to the fact that $\max\limits_{\text{model 1, 2 or 3}}|\{0,1\}^{V+H}| = \Sexpr{2^5}$. We will exploit this design in order to compare varying sets of values for $\boldsymbol \theta$ as they affect the probability of seeing any particular state of our graph.
+
+\subsection{Degeneracy}
+In Random Graph Model theory, degeneracy occurs when the model places a disproportionate probability on only a few elements of the sample space, $\mathcal{X}$. Handcock, et al. define a model to be near degenerate if $\mu(\boldsymbol \theta)$, the mean parametrization on the model parameters, is close to the boundary of the convex hull of $\{t({\bf x}): {\bf x} \in \mathcal{X}\}$, where $t({\bf x})$ is the set of statistics in the neg-potential function $Q({\bf x})$ from equation~\ref{eqn:pmf} \parencite{handcock2003assessing}.
+
+There is a package in \texttt{R} \parencite{r} called \texttt{geometry} \parencite{r-geometry} that calculates a convex hull from a set of points. We will leverage this to create the convex hulls of $t({\bf x})$ in each of our toy models. For a finite set of points, the convex hull is a convex polytope for any number of dimensions, whose vertices are some of the points in the input set \parencite{Swart198517}. In higher dimensions, even if the vertices of a convex polytope are known, construction of its faces is a non-trivial task \parencite{Avis1997265}. Thus we will explore analytically creating our hulls as well.
+
+<<source, echo=FALSE, message=FALSE, warning=FALSE, results='hide'>>=
+source("helpers/volume_relationship.R")
+
+#function for pretty function printing
+insert_fun <- function(name) {
+  read_chunk(lines = capture.output(dump(name, '')), labels = paste(name, 'source', sep = '-'))
+}
+@
+
+<<insert-calc_hull, echo=FALSE>>=
+insert_fun('calc_hull')
+<<calc_hull-source, eval=FALSE>>=
+@
+
+\section{Model 1}
+In our model 1, $t({\bf x}) \in \{0,1\}^{3}$ or $t({\bf x}) \in \{-1,1\}^{3}$ depending on how we encode on and off in the nodes, so the convex hull can be conceptualized geometrically in only 3 dimensions. A rendering of the hull with binary and (1,-1) encoding can be found from multiple perspectives in figure~\ref{fig:hull_1}. 
+
+<<models>>=
+m1_bin <- calc_hull(1,1)
+m1_neg <- calc_hull(1,1, "negative")
+@
+
+We include the bounding hulls of unrestricted space $\{0,1\}^{3}$ or $\{-1,1\}^{3}$ to emphasize how much the restriction in our statistics by including the cross product terms incurs.
+
+\begin{figure}[H]
+\begin{subfigure}[b]{\textwidth}
+\begin{subfigure}[b]{0.5\textwidth}
+        \centering
+        \resizebox{\linewidth}{!}{
+          \tdplotsetmaincoords{60}{-60}
+          \begin{tikzpicture}[tdplot_main_coords]
+          \draw[dotted,->,black] (0,0,0) -- (3,0,0) node[anchor=west]{$x$};
+          \draw[dotted,->] (0,0,0) -- (0,3,0) node[anchor=north east]{$y$};
+          \draw[dotted,->] (0,0,0) -- (0,0,3) node[anchor=east]{$z$};
+          
+          \draw[thin,color=lightgray] (0,0,0) -- (1,0,0) -- (1,1,0) -- (0,1,0) -- (0,0,0);
+          \draw[thin,color=lightgray] (0,0,0) -- (0,0,1) -- (1,0,1) -- (1,0,0) -- (0,0,0);
+          \draw[thin,color=lightgray] (0,0,0) -- (0,0,1) -- (0,1,1) -- (0,1,0) -- (0,0,0);
+          \draw[thin,color=lightgray] (0,0,1) -- (1,0,1) -- (1,1,1) -- (0,1,1) -- (0,0,1);
+          \draw[thin,color=lightgray] (0,1,0) -- (1,1,0) -- (1,1,1) -- (0,1,1) -- (0,1,0);
+          \draw[thin,color=lightgray] (1,1,0) -- (1,1,1) -- (1,0,1) -- (1,0,0) -- (1,1,0);
+          
+          <<, results='asis', echo=FALSE, include=TRUE, message=FALSE>>=
+          cat(sapply(1:nrow(m1_bin$c_hull$hull), function(x) paste0("\\draw", paste(paste0("(", apply(m1_bin$possible_t[cbind(m1_bin$c_hull$hull, m1_bin$c_hull$hull[,1])[x,],], 1, paste, collapse=","), ")"), collapse=" -- "), "; \n")))
+          @
+          \end{tikzpicture}
+        }
+        \end{subfigure}
+   \begin{subfigure}[b]{0.5\textwidth}
+        \centering
+        \resizebox{\linewidth}{!}{
+          \tdplotsetmaincoords{60}{120}
+          \begin{tikzpicture}[tdplot_main_coords]
+          \draw[dotted,->,black] (0,0,0) -- (3,0,0) node[anchor=north east]{$x$};
+          \draw[dotted,->] (0,0,0) -- (0,3,0) node[anchor=north east]{$y$};
+          \draw[dotted,->] (0,0,0) -- (0,0,3) node[anchor=east]{$z$};
+          
+          \draw[thin,color=lightgray] (0,0,0) -- (1,0,0) -- (1,1,0) -- (0,1,0) -- (0,0,0);
+          \draw[thin,color=lightgray] (0,0,0) -- (0,0,1) -- (1,0,1) -- (1,0,0) -- (0,0,0);
+          \draw[thin,color=lightgray] (0,0,0) -- (0,0,1) -- (0,1,1) -- (0,1,0) -- (0,0,0);
+          \draw[thin,color=lightgray] (0,0,1) -- (1,0,1) -- (1,1,1) -- (0,1,1) -- (0,0,1);
+          \draw[thin,color=lightgray] (0,1,0) -- (1,1,0) -- (1,1,1) -- (0,1,1) -- (0,1,0);
+          \draw[thin,color=lightgray] (1,1,0) -- (1,1,1) -- (1,0,1) -- (1,0,0) -- (1,1,0);
+          
+          <<,results='asis', echo=FALSE, include=TRUE, message=FALSE>>=
+          cat(sapply(1:nrow(m1_bin$c_hull$hull), function(x) paste0("\\draw", paste(paste0("(", apply(m1_bin$possible_t[cbind(m1_bin$c_hull$hull, m1_bin$c_hull$hull[,1])[x,],], 1, paste, collapse=","), ")"), collapse=" -- "), "; \n")))
+          @
+          \end{tikzpicture}
+        }
+   \end{subfigure}
+\end{subfigure}
+\begin{subfigure}[b]{\textwidth}
+\begin{subfigure}[b]{0.5\textwidth}
+        \centering
+        \resizebox{\linewidth}{!}{
+          \tdplotsetmaincoords{60}{30}
+          \begin{tikzpicture}[tdplot_main_coords]
+          \draw[dotted,->,black] (0,0,0) -- (3,0,0) node[anchor=west]{$x$};
+          \draw[dotted,->] (0,0,0) -- (0,3,0) node[anchor=north east]{$y$};
+          \draw[dotted,->] (0,0,0) -- (0,0,3) node[anchor=east]{$z$};
+          
+          \draw[thin,color=lightgray] (-1,-1,-1) -- (1,-1,-1) -- (1,1,-1) -- (-1,1,-1) -- (-1,-1,-1);
+          \draw[thin,color=lightgray] (-1,-1,-1) -- (-1,-1,1) -- (1,-1,1) -- (1,-1,-1) -- (-1,-1,-1);
+          \draw[thin,color=lightgray] (-1,-1,-1) -- (-1,-1,1) -- (-1,1,1) -- (-1,1,-1) -- (-1,-1,-1);
+          \draw[thin,color=lightgray] (-1,-1,1) -- (1,-1,1) -- (1,1,1) -- (-1,1,1) -- (-1,-1,1);
+          \draw[thin,color=lightgray] (-1,1,-1) -- (1,1,-1) -- (1,1,1) -- (-1,1,1) -- (-1,1,-1);
+          \draw[thin,color=lightgray] (1,1,-1) -- (1,1,1) -- (1,-1,1) -- (1,-1,-1) -- (1,1,-1);
+          
+          <<, results='asis', echo=FALSE, include=TRUE, message=FALSE>>=
+          cat(sapply(1:nrow(m1_neg$c_hull$hull), function(x) paste0("\\draw", paste(paste0("(", apply(m1_neg$possible_t[cbind(m1_neg$c_hull$hull, m1_neg$c_hull$hull[,1])[x,],], 1, paste, collapse=","), ")"), collapse=" -- "), "; \n")))
+          @
+          \end{tikzpicture}
+        }
+        \end{subfigure}
+   \begin{subfigure}[b]{0.5\textwidth}
+        \centering
+        \resizebox{\linewidth}{!}{
+          \tdplotsetmaincoords{60}{120}
+          \begin{tikzpicture}[tdplot_main_coords]
+          \draw[dotted,->,black] (0,0,0) -- (3,0,0) node[anchor=north east]{$x$};
+          \draw[dotted,->] (0,0,0) -- (0,3,0) node[anchor=north east]{$y$};
+          \draw[dotted,->] (0,0,0) -- (0,0,3) node[anchor=east]{$z$};
+          
+          \draw[thin,color=lightgray] (-1,-1,-1) -- (1,-1,-1) -- (1,1,-1) -- (-1,1,-1) -- (-1,-1,-1);
+          \draw[thin,color=lightgray] (-1,-1,-1) -- (-1,-1,1) -- (1,-1,1) -- (1,-1,-1) -- (-1,-1,-1);
+          \draw[thin,color=lightgray] (-1,-1,-1) -- (-1,-1,1) -- (-1,1,1) -- (-1,1,-1) -- (-1,-1,-1);
+          \draw[thin,color=lightgray] (-1,-1,1) -- (1,-1,1) -- (1,1,1) -- (-1,1,1) -- (-1,-1,1);
+          \draw[thin,color=lightgray] (-1,1,-1) -- (1,1,-1) -- (1,1,1) -- (-1,1,1) -- (-1,1,-1);
+          \draw[thin,color=lightgray] (1,1,-1) -- (1,1,1) -- (1,-1,1) -- (1,-1,-1) -- (1,1,-1);
+          
+          <<,results='asis', echo=FALSE, include=TRUE, message=FALSE>>=
+          cat(sapply(1:nrow(m1_neg$c_hull$hull), function(x) paste0("\\draw", paste(paste0("(", apply(m1_neg$possible_t[cbind(m1_neg$c_hull$hull, m1_neg$c_hull$hull[,1])[x,],], 1, paste, collapse=","), ")"), collapse=" -- "), "; \n")))
+          @
+          \end{tikzpicture}
+        }
+   \end{subfigure}
+\end{subfigure}
+\caption{The convex hull of our statistic space in three dimensions for model 1 from multiple perspectives. The top two figures show the binary encoding (1, 0) for the nodes enclosed by the unrestricted hull of $\{0,1\}^3$ space. The bottom two figures show the (1, -1) encoding for the nodes eclosed by the unrestricted hull of $\{-1,1\}^3$.}
+\label{fig:hull_1}
+\end{figure}
+
+In terms of lost volume, the binary encoding loses \Sexpr{round((1-m1_bin$c_hull$vol)*100,2)}\% of the volume compared to unrestricted space and the negative encoding loses \Sexpr{round((1-m1_neg$c_hull$vol/(2^3))*100,2)}\% of the volume compared to unrestricted space. This notion of lost volume can be helpful to conceptualize how difficult will be for the mean parameterized vector $\mu(\boldsymbol \theta)$ to avoid the boundary, and thus avoid near degeneracy. In fact, if we look at the ratio of volume within a convex hull versus the volume of an unrestricted hull, we can see a relationship emerge as the number of nodes (and thus parameters) increases. In figure~\ref{fig:volume_plot}, it is evident that as the number of parameters increses, this ratio is decreasing at an increasing rate, meaning it gets more and more difficult to avoid the boundary of the convex hull and thus near degeneracy. Additionally, it appears that the $\{-1,1\}$ encoding suffers slightly less from this problem.
+
+<<volume_plot, echo=FALSE, fig.cap="The relationship between volume within the convex hull of our statistics and the convex hull of unrestricted space for different configurations of nodes. We compare the two encodings for on and off in a node.", fig.width=6, fig.height=4, out.width='.8\\textwidth', fig.align='center'>>=
+volume_plot
+@
+
+For model 1, we can compute the $\mu$-parametrization of the model parameters for the $\{-1,1\}$ encoding as 
+\begin{align*}
+\mu(\boldsymbol \theta) &= \text{E}_{\boldsymbol \theta}\left[ t(X) \right] \\
+&= \sum\limits_{x \in \{-1,1\}^3} \left\{ t(x) \frac{\exp\left( \theta_{11} h_1 v_1 + \theta_{h1} h_1 + \theta_{v1} v_1\right)}{\sum\limits_{{\bf x} \in \{-1,1\}^{3}}\exp\left( \theta_{11} h_1 v_1 + \theta_{h1} h_1 + \theta_{v1} v_1\right)} \right\} \\
+&= \left[\begin{matrix}
+\frac{e^{-\theta_{h1} - \theta_{v1} + \theta_{11}} - e^{-\theta_{h1} + \theta_{v1} - \theta_{11}} - e^{\theta_{h1} - \theta_{v1} - \theta_{11}} + e^{\theta_{h1} + \theta_{v1} + \theta_{11}}}{e^{-\theta_{h1} - \theta_{v1} + \theta_{11}} + e^{-\theta_{h1} + \theta_{v1} - \theta_{11}} + e^{\theta_{h1} - \theta_{v1} - \theta_{11}} + e^{\theta_{h1} + \theta_{v1} + \theta_{11}}} \\
+\frac{-e^{-\theta_{h1} - \theta_{v1} + \theta_{11}} - e^{-\theta_{h1} + \theta_{v1} - \theta_{11}} + e^{\theta_{h1} - \theta_{v1} - \theta_{11}} + e^{\theta_{h1} + \theta_{v1} + \theta_{11}}}{e^{-\theta_{h1} - \theta_{v1} + \theta_{11}} + e^{-\theta_{h1} + \theta_{v1} - \theta_{11}} + e^{\theta_{h1} - \theta_{v1} - \theta_{11}} + e^{\theta_{h1} + \theta_{v1} + \theta_{11}}} \\
+\frac{-e^{-\theta_{h1} - \theta_{v1} + \theta_{11}} + e^{ -\theta_{h1} + \theta_{v1} - \theta_{11}} - e^{\theta_{h1} - \theta_{v1} - \theta_{11}} + e^{\theta_{h1} + \theta_{v1} + \theta_{11}}}{e^{-\theta_{h1} - \theta_{v1} + \theta_{11}} + e^{-\theta_{h1} + \theta_{v1} - \theta_{11}} + e^{\theta_{h1} - \theta_{v1} - \theta_{11}} + e^{\theta_{h1} + \theta_{v1} + \theta_{11}}} \\
+\end{matrix} \right]
+\end{align*}
+
+%\section{Model 3}
+%In our toy example, $t({\bf x}) \in \{0,1\}^{11}$ and below we attempt to compute the convex hull of this set in 11-space. 
+
+%Luckily the vertices of all our points lie on a set of zeros and ones only. To attempt to get some understanding of what our hull consists of, we present the 2D and 3D cases in figure~\ref{fig:hull}.
+
+%With our toy example then, $\mathcal{C} = \text{ the convex hull of } \{t({\bf x}): {\bf x} \in \mathcal{X}\}$ is the 11-dimensional unit hypercube.
+
+%We can compute the $\mu$-parametrization of the model parameters as $\mu(\boldsymbol \theta) = \text{E}_{\boldsymbol \theta}\left[ t(X) \right]$.
+
+
+\printbibliography
+\end{document}

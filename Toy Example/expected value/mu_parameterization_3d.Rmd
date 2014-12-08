@@ -1,0 +1,147 @@
+---
+author: "Andee Kaplan"
+date: "11/18/2014"
+output:
+  html_document:
+    theme: readable
+runtime: shiny
+---
+
+# $\mu$ parameterization in 3 dimensions
+
+For one hidden and one visible node, we sample points uniformly on a 3 dimensional sphere of radius `r` centered at `(0,0,0)` and view the resulting expected values in 3 dimensions.
+```{r, echo=FALSE, message=FALSE}
+source("functions.R")
+library(scatterplot3d)
+library(plyr)
+library(dplyr)
+library(reshape2)
+library(ggvis)
+
+
+## Num nodes
+H <- 1
+V <- 1
+
+## Num to sample
+n <- 500
+
+## Radius to sample
+r <- c(seq(0,1, by=0.05), seq(1.5, 10, by=0.5))
+
+```
+
+```{r, echo=FALSE, message=FALSE}
+
+shinyApp(
+  ui=
+    fluidPage(
+      tags$head(
+        includeCSS("www/readable.min.css"),
+        includeCSS("www/css/numeric_inputs.css")
+      ),
+      responsive = FALSE,
+      fluidRow(style = "padding-bottom: 20px;",
+        column(4, radioButtons("encoding", label="Encoding:", 
+                                      choices = list("Negative (-1,1)" = "negative", "Binary (0,1)" = "binary"),
+                                      inline = FALSE)),
+        column(4, sliderInput("rSlider", label = "Radius:", min = 0, max = 10, value=0, step = 0.1, animate = list(interval=1000, loop=FALSE, playButton=icon("play"), pauseButton=icon("pause")), )),
+        column(4, 
+               column(6, span("Translate origin by (x, y, z): ")),
+               column(2, numericInput("x", value=NA, label="")),
+               column(2, numericInput("y", value=NA, label="")), 
+               column(2, numericInput("z", value=NA, label=""))
+               )
+      ),
+      fluidRow(
+        column(6, plotOutput("exp_val_3d")),
+        column(6, ggvisOutput("min_dist_hist"))
+      )
+    ),
+  server=function(input, output, session){
+    
+    data <- reactive({
+      x <- ifelse(is.na(input$x), 0, input$x)
+      y <- ifelse(is.na(input$y), 0, input$y)
+      z <- ifelse(is.na(input$z), 0, input$z)
+      
+      
+      stat <- stats(H, V, input$encoding)
+      theta <- sample_sphere(space = ncol(stat), n, input$rSlider)  + matrix(rep(c(x,y,z), 10), nrow = 3)
+      exp_vals <- expected_value(stats = stat, theta = theta, normalized = TRUE)
+
+      return(list(stat=stat, exp_vals=exp_vals))
+    })
+    
+#     cdf_mu <- reactive({
+#       dat <- data()
+#       stat <- dat$stat
+#       exp_vals <- dat$exp_vals
+#       
+#       cdf_mu <- melt(apply(apply(t(exp_vals), 2, abs), 2, sort)) %>%
+#         group_by(Var2)
+#       cdf_mu$Var1 <- cdf_mu$Var1/ncol(exp_vals)
+#       
+#       return(cdf_mu)
+#     })
+
+    min_dist_data <- reactive({
+      dat <- data()
+      stat <- dat$stat
+      exp_vals <- dat$exp_vals
+      
+      lines <- generate_hull_from_stats(stat)
+      dist <- apply(exp_vals, 2, function(x){ min_distance_to_hull(x, lines) })
+      return(data.frame(dist = dist))      
+    })
+    
+    output$exp_val_3d <- renderPlot({
+      dat <- data()
+      stat <- dat$stat
+      exp_vals <- dat$exp_vals
+      
+      s <- scatterplot3d(stat, pch='.')
+    
+      segs <- NULL
+      for(i in 1:nrow(stat)) {
+        for(j in 1:nrow(stat)) {
+          if(i < j) {
+            start <- s$xyz.convert(stat[i,])
+            end <- s$xyz.convert(stat[j,])
+            segs <- rbind(segs, c(start$x, start$y, end$x, end$y))
+          }
+        }
+      }
+      
+      segments(segs[,1], segs[,2], segs[,3], segs[,4], lty=2)
+      points(s$xyz.convert(t(exp_vals)), col="blue", pch=19) 
+
+    })
+
+#     cdf_mu %>%
+#       ggvis(~value, ~Var1, stroke = ~Var2) %>%
+#       layer_paths() %>%
+#       scale_numeric("x", domain = c(0,1)) %>%
+#       scale_numeric("y", domain = c(0,1)) %>%
+#       add_axis("x", title = "Absolute Expected Value") %>%
+#       add_axis("y", title = "Empirical CDF") %>%
+#       add_legend("stroke", title = "Mu Parameterized") %>%
+#       set_options(width=200, height=200, keep_aspect = TRUE, resizable = FALSE) %>%
+#       bind_shiny(plot_id = "exp_val_ecdf")
+
+
+    min_dist_data %>%
+      ggvis(~dist) %>%
+      layer_histograms() %>%
+      scale_numeric("x", domain = c(0,1)) %>%
+      add_axis("x", title = "Minimum distance to convex hull edge") %>%
+      set_options(width=200, height=200, keep_aspect = TRUE, resizable = FALSE) %>%
+      bind_shiny(plot_id = "min_dist_hist")
+  },
+  options = list(height = 800)
+)
+
+
+
+
+```
