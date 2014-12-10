@@ -28,3 +28,4 @@ shinyapps/
 # stupid files
 *.m~
 *.txt~
+.Rproj.user
