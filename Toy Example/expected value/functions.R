@@ -101,10 +101,9 @@ distance_to_simplex <- function(simplex, P) {
   P_copy <- P
 
   P <- as.numeric(strsplit(P, ",")[[1]])
-  simplex <- simplex %>%
-    as.data.frame(row.names="point") %>%
-    t() %>%
+  simplex <- simplex %>% unlist %>%
     data.frame() %>%
+    rename(point=simplex.....unlist) %>%
     separate(point, paste0("coord", 1:length(P)), sep=",") %>%
     data.matrix()
   
@@ -112,7 +111,7 @@ distance_to_simplex <- function(simplex, P) {
   
   ## translate to that S0 is the origin
   P <- P - simplex[1,]
-  simplex <- matrix(sweep(simplex, 2, simplex[1,], "-")[-1,], nrow=nrow(simplex) - 1)
+  simplex <- sweep(simplex, 2, simplex[1,], "-")[-1,]
   
   ## project onto the linear subspace
   rows <- expand.grid(1:nrow(simplex), 1:nrow(simplex))
@@ -122,10 +121,10 @@ distance_to_simplex <- function(simplex, P) {
   if(sum(alpha) <= 1 & sum(alpha < 0) == 0) {
     return(dist(matrix(c(P, P0), nrow=2, byrow=TRUE)))
   } else if(sum(alpha < 0) > 0) {
-    simplex0 <- simplex_copy[c(1, 1 + which(alpha > 0))]
-    distance_to_simplex(P=P_copy, simplex=simplex0)    
+    simplex0 <- simplex_copy[c(1, 1+ which(alpha > 0))]
+    distance_to_simplex(P_copy, simplex0)    
   } else {
-    distance_to_simplex(P=P_copy, simplex=simplex_copy[-1]) 
+    distance_to_simplex(P_copy, simplex_copy[-1]) 
   }
   
 }
