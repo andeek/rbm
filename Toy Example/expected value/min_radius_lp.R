@@ -7,8 +7,8 @@ library(lpSolveAPI)
 n <- 500 #num points to sample on the sphere
 cutoff <- .05
 step <- .5
-backstep <- .05
-v <- seq(1, 3, by=.01)
+backstep <- .01
+v_step <- .01
 
 test_cases <- expand.grid(data.frame(1:4)[,rep(1,2)]) %>% 
   rename(H = X1.4, V = X1.4.1) %>%
@@ -16,16 +16,17 @@ test_cases <- expand.grid(data.frame(1:4)[,rep(1,2)]) %>%
   mutate(n_param = H*V + H + V) %>%
   #filter(n_param <= 11) %>%
   rowwise() %>%
-  mutate(min_rad = min_radius_lp(H, V, n=n, cutoff=cutoff, backstep=backstep, step=step, v=v))
+  mutate(min_rad = min_radius_lp(H, V, n=n, cutoff=cutoff, backstep=backstep, step=step, v_step=v_step)) %>%
+  mutate(volume = pi^(n_param/2)/gamma(n_param/2 + 1)*min_rad^n_param)
 
 save(test_cases, file="min_radius_lp.Rdata")
 
 
-min_radius_lp <- function(H, V, type = "negative", n, cutoff, backstep, step, v) {
+min_radius_lp <- function(H, V, type = "negative", n, cutoff, backstep, step, v_step) {
   stat <- stats(H, V, type)
   r0 <- 0
-  theta0 <- sample_sphere(stat, n, r0)
-  exp_vals0 <- expected_value(stats = stat, theta = theta0, normalized = TRUE)
+  #theta0 <- sample_sphere(stat, n, r0)
+  #exp_vals0 <- expected_value(stats = stat, theta = theta0, normalized = TRUE)
   d0 <- 1
   
   success <- FALSE
@@ -33,23 +34,20 @@ min_radius_lp <- function(H, V, type = "negative", n, cutoff, backstep, step, v)
     r1 <- r0 + step
     theta1 <- sample_sphere(stat, n, r1)
     exp_vals1 <- expected_value(stats = stat, theta = theta1, normalized = TRUE)
-    
-#     which_v <- v %>%
-#       data.frame() %>%
-#       rowwise() %>%
-#       do(exp_v = t(exp_vals1*.$v)) %>%    
-#       do(num = sum(apply(.$exp_v, 1, function(y) !in_hull(stat, y)))) %>%
-#       summarise(num=as.numeric(num))
-#     
+      
     outside <- FALSE
-    i <- 1
+    v <- max(round(1/max(apply(exp_vals1, 2, function(x) sqrt(sum(x^2)))) - .1, 2), 1)
     while(!outside) {
-      num_outside <- sum(apply(exp_vals1*v[i], 2, function(y) !in_hull(stat, y)))
-      i <- i + 1
-      if(num_outside > 0) outside <- TRUE
+      num_outside <- sum(apply(exp_vals1*v, 2, function(y) !in_hull(stat, y)))
+      if(num_outside > 0) {
+        outside <- TRUE      
+      } else {
+        v <- v + v_step
+      }      
+      cat(v, " ")
     }
     
-    exp_vals1_v <- exp_vals1*v[i]    
+    exp_vals1_v <- exp_vals1*v   
     d1 <- min(sapply(1:nrow(t(exp_vals1)), function(x) dist(matrix(c(exp_vals1[,x], exp_vals1_v[,x]), nrow=2, byrow = TRUE))))
     
     if(d0 < cutoff & d1 >= cutoff) success <- TRUE
@@ -66,8 +64,6 @@ min_radius_lp <- function(H, V, type = "negative", n, cutoff, backstep, step, v)
   }
   return(r0)
 }
-
-
 
 in_hull <- function(hull_points, point) {
   require(lpSolveAPI)
