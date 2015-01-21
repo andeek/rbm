@@ -19,7 +19,7 @@ stats <- function(H, V, type="negative") {
 }
 
 expected_value <- function(theta, stats, normalized = TRUE) {
-  result <- crossprod(t(crossprod(stats, exp(crossprod(t(stats), theta)))), diag(1/apply(exp(crossprod(t(stats), theta)), 2, sum)))
+  result <- crossprod(t(crossprod(stats, exp(crossprod(t(stats), theta)))), diag(1/apply(exp(crossprod(t(stat), theta)), 2, sum), nrow=length(apply(exp(crossprod(t(stat), theta)), 2, sum))))
   rownames(result) <- paste0("exp_", rownames(result))
   return(result)
 }
