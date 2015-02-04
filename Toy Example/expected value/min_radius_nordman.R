@@ -30,10 +30,10 @@ cases <- inner_join(test_cases, test_cases_stat)
 
 cases %>%
   group_by(H, V) %>%
-  do(min_dist = find_min_dist(.$g_theta[[1]], .$stat[[1]], .05, .005)) %>%
+  do(min_dist = find_min_dist(.$g_theta[[1]], .$stat[[1]], .05, .005, .$H + .$V)) %>%
   mutate(min_dist = as.numeric(min_dist))-> dists
 
-find_min_dist <- function(g_theta, stat, step, backstep) {
+find_min_dist <- function(g_theta, stat, step, backstep, n_param) {
   r_exp_0 <- 0
   num_0 <- 0
   
@@ -46,9 +46,11 @@ find_min_dist <- function(g_theta, stat, step, backstep) {
         sample_points_outside(stat, r_exp_1) %>%
         filter(!in_hull) %>%
         dim() -> num_1
+      
       if(num_1[1] > 0) break
     }
     
+
     if(num_1[1] == 0 & num_0 > 0) success <- TRUE
     
     r_exp_0 <- r_exp_1
@@ -59,7 +61,7 @@ find_min_dist <- function(g_theta, stat, step, backstep) {
     }
   } 
   
-  return(r_exp_0)
+  return(data.frame(r = r_exp_0, num_outside = num_0))
 }
 
 sample_points_outside <- function(g_theta, stats, r, n = 100) {
