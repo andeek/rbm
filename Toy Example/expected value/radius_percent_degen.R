@@ -121,3 +121,9 @@ plot.data %>%
   xlab("Number of Parameters") +
   ylab("Ratio of sum of squares of cross terms to main effects") +
   scale_colour_discrete("Within .05 of hull")
+
+plot.data %>% 
+  ggplot() + 
+  geom_bar(aes(as.factor(n_param), y = ..count.., fill = near_hull)) +
+  xlab("Number of Parameters") +
+  scale_fill_discrete("Within .05 of hull")
