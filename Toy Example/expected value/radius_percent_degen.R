@@ -59,9 +59,9 @@ r_center <- 2
 r_exp <- .05
 
 ## perform functions ----------------------------------------------
-test_cases <- expand.grid(data.frame(1:4)[,rep(1,2)]) %>% 
-  rename(H = X1.4, V = X1.4.1) %>%
-  filter(H <= V) %>% #remove those cases with less visibles than hiddens. Is this necessary?
+test_cases <- expand.grid(data.frame(1:6)[,rep(1,2)]) %>% 
+  rename(H = X1.6, V = X1.6.1) %>%
+  #filter(H <= V) %>% #remove those cases with less visibles than hiddens. Is this necessary?
   mutate(n_param = H*V + H + V) %>%
   mutate(max_facets = (2^(H+V))^(floor(n_param/2))) %>%
   mutate(n = n, r = r_center) %>%
@@ -71,9 +71,9 @@ test_cases <- expand.grid(data.frame(1:4)[,rep(1,2)]) %>%
   group_by(H, V, n_param, n, r) %>%
   do(samp = sample_sphere(.$stat[[1]], .$n, .$r))
 
-test_cases_stat <- expand.grid(data.frame(1:4)[,rep(1,2)]) %>% 
-  rename(H = X1.4, V = X1.4.1) %>%
-  filter(H <= V) %>% #remove those cases with less visibles than hiddens. Is this necessary?
+test_cases_stat <- expand.grid(data.frame(1:6)[,rep(1,2)]) %>% 
+  rename(H = X1.6, V = X1.6.1) %>%
+  #filter(H <= V) %>% #remove those cases with less visibles than hiddens. Is this necessary?
   mutate(n_param = H*V + H + V) %>%
   mutate(max_facets = (2^(H+V))^(floor(n_param/2))) %>%
   mutate(n = n, r = r_center) %>%
@@ -93,6 +93,8 @@ cases %>%
   do(outside = find_prop(.$g_theta[[1]] %>% data.frame() %>% select(starts_with("exp")), .$stat[[1]], r_exp)) -> tmp
 
 res <- inner_join(tmp, cases %>% group_by(H, V, r, n_param) %>% do(samp = .$g_theta[[1]]))
+
+save(res, file = "moreEvidence.RData")
 
 ## analyze results -------------------------------------
 plot.data <- data.frame()
