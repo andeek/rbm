@@ -12,7 +12,7 @@ find_prop <- function(g_theta, stat, r_exp) {
     group_by_(.dots = c(colnames(g_theta))) %>%
     do(samp = sample_points_outside(as.numeric(.), stat, r_exp)$in_hull) %>%
     group_by_(.dots = c(colnames(g_theta))) %>%
-    do(as.data.frame(sum(.$samp[[1]]) > 0)) -> is_outside
+    do(as.data.frame(sum(!.$samp[[1]]) > 0)) -> is_outside
   
   is_outside %>% 
     rename_(near_hull = as.name(names(is_outside)[ncol(is_outside)])) %>%
@@ -20,7 +20,6 @@ find_prop <- function(g_theta, stat, r_exp) {
   
   return(inside_outside)
 }
-
 
 ## additional useful functions -------------------------------------
 sample_points_outside <- function(g_theta, stats, r, n = 100) {
@@ -55,75 +54,101 @@ in_hull <- function(point, hull_points) {
 
 ## params ----------------------------------
 n <- 100
-r_center <- 2
+r_center <- seq(0.5, 3, by = 0.25)
 r_exp <- .05
 
-## perform functions ----------------------------------------------
-test_cases <- expand.grid(data.frame(1:6)[,rep(1,2)]) %>% 
-  rename(H = X1.6, V = X1.6.1) %>%
-  #filter(H <= V) %>% #remove those cases with less visibles than hiddens. Is this necessary?
-  mutate(n_param = H*V + H + V) %>%
-  mutate(max_facets = (2^(H+V))^(floor(n_param/2))) %>%
-  mutate(n = n, r = r_center) %>%
-  group_by(H, V, n_param, n, r) %>%
-  do(stat = stats(.$H, .$V, "negative")) %>%
-  ungroup() %>%
-  group_by(H, V, n_param, n, r) %>%
-  do(samp = sample_sphere(.$stat[[1]], .$n, .$r))
-
-test_cases_stat <- expand.grid(data.frame(1:6)[,rep(1,2)]) %>% 
-  rename(H = X1.6, V = X1.6.1) %>%
-  #filter(H <= V) %>% #remove those cases with less visibles than hiddens. Is this necessary?
-  mutate(n_param = H*V + H + V) %>%
-  mutate(max_facets = (2^(H+V))^(floor(n_param/2))) %>%
-  mutate(n = n, r = r_center) %>%
-  group_by(H, V, n_param, n, r) %>%
-  do(stat = stats(.$H, .$V, "negative"))
-
-test_cases <- inner_join(test_cases, test_cases_stat)
+## function for running simulation -------------------------------
+get_res <- function(n, r_center, r_exp) {
+  ## perform functions 
+  test_cases <- expand.grid(data.frame(1:4)[,rep(1,2)]) %>% 
+    rename(H = X1.4, V = X1.4.1) %>%
+    #filter(H <= V) %>% #remove those cases with less visibles than hiddens. Is this necessary?
+    mutate(n_param = H*V + H + V) %>%
+    mutate(max_facets = (2^(H+V))^(floor(n_param/2))) %>%
+    mutate(n = n, r = r_center) %>%
+    group_by(H, V, n_param, n, r) %>%
+    do(stat = stats(.$H, .$V, "negative")) %>%
+    ungroup() %>%
+    group_by(H, V, n_param, n, r) %>%
+    do(samp = sample_sphere(.$stat[[1]], .$n, .$r))
   
-test_cases %>%
-  group_by(H, V, n_param, n, r) %>%
-  do(g_theta = t(rbind(.$samp[[1]], expected_value(theta = .$samp[[1]], stats = data.matrix(.$stat[[1]]))))) -> cases
-
-cases <- inner_join(cases, test_cases)
-
-cases %>%
-  group_by(H, V, r) %>%
-  do(outside = find_prop(.$g_theta[[1]] %>% data.frame() %>% select(starts_with("exp")), .$stat[[1]], r_exp)) -> tmp
-
-res <- inner_join(tmp, cases %>% group_by(H, V, r, n_param) %>% do(samp = .$g_theta[[1]]))
-
-save(res, file = "moreEvidence.RData")
-
-## analyze results -------------------------------------
-plot.data <- data.frame()
-for(i in 1:nrow(res)) {
-  tmp <- res$samp[[i]]
-  H <- res[i,]$H
-  V <- res[i,]$V
+  test_cases_stat <- expand.grid(data.frame(1:4)[,rep(1,2)]) %>% 
+    rename(H = X1.4, V = X1.4.1) %>%
+    #filter(H <= V) %>% #remove those cases with less visibles than hiddens. Is this necessary?
+    mutate(n_param = H*V + H + V) %>%
+    mutate(max_facets = (2^(H+V))^(floor(n_param/2))) %>%
+    mutate(n = n, r = r_center) %>%
+    group_by(H, V, n_param, n, r) %>%
+    do(stat = stats(.$H, .$V, "negative"))
   
-  tmp %>% 
-    data.frame() %>% 
-    rowwise() %>% 
-    mutate_(ss_ratio = paste0("(", paste(paste0(names(.)[(H + V + 1):(H + V + H*V)], "^2"), collapse = " + "), ")/sum(", paste(paste0(names(.)[1:(H+V)],"^2"), collapse = " + "), ")")) %>%    
-    ungroup() -> ratio
+  test_cases <- inner_join(test_cases, test_cases_stat)
   
-  inner_join(ratio, res$outside[[i]] %>% ungroup()) %>%
-    select(ss_ratio, near_hull) %>%
-    mutate(H = H, V = V, n_param = H + V + H*V) %>%
-    rbind(plot.data) -> plot.data
+  test_cases %>%
+    group_by(H, V, n_param, n, r) %>%
+    do(g_theta = t(rbind(.$samp[[1]], expected_value(theta = .$samp[[1]], stats = data.matrix(.$stat[[1]]))))) -> cases
+  
+  cases <- inner_join(cases, test_cases)
+  
+  cases %>%
+    group_by(H, V, r) %>%
+    do(outside = find_prop(.$g_theta[[1]] %>% data.frame() %>% select(starts_with("exp")), .$stat[[1]], r_exp)) -> tmp
+  
+  res <- inner_join(tmp, cases %>% group_by(H, V, r, n_param) %>% do(samp = .$g_theta[[1]])) 
 }
 
-plot.data %>%
-  ggplot() + 
-  geom_boxplot(aes(as.factor(n_param), ss_ratio, colour = near_hull)) +
-  xlab("Number of Parameters") +
-  ylab("Ratio of sum of squares of cross terms to main effects") +
-  scale_colour_discrete("Within .05 of hull")
+## run simulations -------------------------------------
+res <- lapply(r_center, function(r) get_res(n, r, r_exp))
+save(res, file = "results.RData")
 
-plot.data %>% 
-  ggplot() + 
-  geom_bar(aes(as.factor(n_param), y = ..count.., fill = near_hull)) +
-  xlab("Number of Parameters") +
-  scale_fill_discrete("Within .05 of hull")
+
+## analyze results -------------------------------------
+## plot function ----------------------------------
+make_plot <- function(res) {
+  plot.data <- data.frame()
+  for(i in 1:nrow(res)) {
+    tmp <- res$samp[[i]]
+    H <- res[i,]$H
+    V <- res[i,]$V
+    
+    tmp %>% 
+      data.frame() %>% 
+      rowwise() %>% 
+      mutate_(ss_ratio = paste0("(", paste(paste0(names(.)[(H + V + 1):(H + V + H*V)], "^2"), collapse = " + "), ")/sum(", paste(paste0(names(.)[1:(H+V)],"^2"), collapse = " + "), ")")) %>%    
+      ungroup() -> ratio
+    
+    inner_join(ratio, res$outside[[i]] %>% ungroup()) %>%
+      select(ss_ratio, near_hull) %>%
+      mutate(H = H, V = V, n_param = H + V + H*V) %>%
+      rbind(plot.data) -> plot.data
+  }
+  
+  plot.data %>%
+    ggplot() + 
+    geom_boxplot(aes(as.factor(n_param), ss_ratio, colour = near_hull)) +
+    xlab("Number of Parameters") +
+    ylab("Ratio of sum of squares of cross terms to main effects") +
+    scale_colour_discrete("Within .05 of hull") -> plot1
+  
+  plot.data %>% 
+    ggplot() + 
+    geom_bar(aes(as.factor(n_param), y = ..count.., fill = near_hull)) +
+    xlab("Number of Parameters") +
+    scale_fill_discrete("Within .05 of hull") -> plot2
+  
+  return(list(p1 = plot1, p2 = plot2))
+}
+
+plots <- lapply(res, make_plot)
+
+library(animations)
+oopt = ani.options(interval = 1, nmax = length(plots))
+for (i in 1:ani.options("nmax")) {
+  print(plots[[i]][[2]])
+  ani.pause()
+}
+## restore the options
+ani.options(oopt)
+
+for (i in 1:length(plots)) {
+  print(plots[[i]][[1]])
+}
