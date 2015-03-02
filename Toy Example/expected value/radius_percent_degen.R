@@ -12,7 +12,7 @@ find_prop <- function(g_theta, stat, r_exp) {
     group_by_(.dots = c(colnames(g_theta))) %>%
     do(samp = sample_points_outside(as.numeric(.), stat, r_exp)$in_hull) %>%
     group_by_(.dots = c(colnames(g_theta))) %>%
-    do(as.data.frame(sum(!.$samp[[1]]) > 0)) -> is_outside
+    do(as.data.frame(sum(.$samp[[1]]) > 0)) -> is_outside # count of not in hull greater than zero => there exists a point outside hull for this model
   
   is_outside %>% 
     rename_(near_hull = as.name(names(is_outside)[ncol(is_outside)])) %>%
@@ -29,7 +29,7 @@ sample_points_outside <- function(g_theta, stats, r, n = 100) {
     separate(col = vals, sep = ",", into = colnames(stats)) %>%
     select(-samp)
   
-  x0$in_hull <- apply(x0, 1, in_hull, stats)
+  x0$in_hull <- !apply(x0, 1, in_hull, stats)
   
   return(x0)
 }
@@ -54,7 +54,8 @@ in_hull <- function(point, hull_points) {
 
 ## params ----------------------------------
 n <- 100
-r_center <- seq(0.5, 3, by = 0.25)
+r_center <- seq(0.2, 3, by = 0.2)
+#r_center <- 1
 r_exp <- .05
 
 ## function for running simulation -------------------------------
@@ -62,10 +63,10 @@ get_res <- function(n, r_center, r_exp) {
   ## perform functions 
   test_cases <- expand.grid(data.frame(1:4)[,rep(1,2)]) %>% 
     rename(H = X1.4, V = X1.4.1) %>%
-    #filter(H <= V) %>% #remove those cases with less visibles than hiddens. Is this necessary?
+    filter(H <= V) %>% #remove those cases with less visibles than hiddens. Is this necessary?
     mutate(n_param = H*V + H + V) %>%
     mutate(max_facets = (2^(H+V))^(floor(n_param/2))) %>%
-    mutate(n = n, r = r_center) %>%
+    mutate(n = n, r = r_center*(H + V)) %>%
     group_by(H, V, n_param, n, r) %>%
     do(stat = stats(.$H, .$V, "negative")) %>%
     ungroup() %>%
@@ -74,10 +75,10 @@ get_res <- function(n, r_center, r_exp) {
   
   test_cases_stat <- expand.grid(data.frame(1:4)[,rep(1,2)]) %>% 
     rename(H = X1.4, V = X1.4.1) %>%
-    #filter(H <= V) %>% #remove those cases with less visibles than hiddens. Is this necessary?
+    filter(H <= V) %>% #remove those cases with less visibles than hiddens. Is this necessary?
     mutate(n_param = H*V + H + V) %>%
     mutate(max_facets = (2^(H+V))^(floor(n_param/2))) %>%
-    mutate(n = n, r = r_center) %>%
+    mutate(n = n, r = r_center*(H + V)) %>%
     group_by(H, V, n_param, n, r) %>%
     do(stat = stats(.$H, .$V, "negative"))
   
@@ -103,7 +104,8 @@ save(res, file = "results.RData")
 
 ## analyze results -------------------------------------
 ## plot function ----------------------------------
-make_plot <- function(res) {
+plot_data <- function(res) {
+  
   plot.data <- data.frame()
   for(i in 1:nrow(res)) {
     tmp <- res$samp[[i]]
@@ -121,34 +123,50 @@ make_plot <- function(res) {
       mutate(H = H, V = V, n_param = H + V + H*V) %>%
       rbind(plot.data) -> plot.data
   }
-  
+  return(plot.data)
+}
+
+make_plot <- function(plot.data) { 
   plot.data %>%
     ggplot() + 
-    geom_boxplot(aes(as.factor(n_param), ss_ratio, colour = near_hull)) +
-    xlab("Number of Parameters") +
+    geom_boxplot(aes(as.factor(H + V), ss_ratio, colour = near_hull)) +
+    xlab("Number of Nodes") +
     ylab("Ratio of sum of squares of cross terms to main effects") +
     scale_colour_discrete("Within .05 of hull") -> plot1
   
   plot.data %>% 
     ggplot() + 
-    geom_bar(aes(as.factor(n_param), y = ..count.., fill = near_hull)) +
-    xlab("Number of Parameters") +
+    geom_bar(aes(as.factor(H + V), y = ..count.., fill = near_hull), position = "fill") +
+    xlab("Number of Nodes") +
     scale_fill_discrete("Within .05 of hull") -> plot2
   
   return(list(p1 = plot1, p2 = plot2))
 }
 
-plots <- lapply(res, make_plot)
+plot.dat <- lapply(res, plot_data)
+plots <- lapply(plot.dat, make_plot)
 
-library(animations)
-oopt = ani.options(interval = 1, nmax = length(plots))
-for (i in 1:ani.options("nmax")) {
-  print(plots[[i]][[2]])
-  ani.pause()
-}
-## restore the options
-ani.options(oopt)
 
+library(gridExtra)
 for (i in 1:length(plots)) {
-  print(plots[[i]][[1]])
+  grid.arrange(plots[[i]][[1]], plots[[i]][[2]], main = paste0("Radius multiplier: ", r_center[i]))
 }
+
+
+names(plot.dat) <- gsub("[.]", "_", r_center)
+do.call(rbind, plot.dat) %>%
+  mutate(name = rownames(do.call(rbind, plot.dat))) %>%
+  separate(name, into = c("multiplier", "num"), "[.]") %>% 
+  mutate(multiplier = as.numeric(gsub("_", ".", multiplier))) %>%
+  group_by(n_param, multiplier) %>%
+  summarise(frac_degen = sum(near_hull)/n()) %>%
+  ggplot() +
+  geom_point(aes(multiplier, frac_degen, colour = factor(n_param))) +
+  geom_line(aes(multiplier, frac_degen, group = factor(n_param), colour = factor(n_param))) +
+  #geom_smooth(aes(multiplier, frac_degen, group = factor(n_param), colour = factor(n_param), fill = factor(n_param)), alpha = 0) +
+  xlab("Radius Multiplier") + ylab("Fraction degenerate") +
+  scale_colour_discrete("Num. of Parameters") +
+  scale_fill_discrete("Num. of Parameters") +
+  theme_bw()
+
+

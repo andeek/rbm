@@ -67,8 +67,8 @@ local_search <- function(mu0, sigma, sphere, dim = 3, n = 500, cutoff = .01) {
 
 mus <- lapply(1:100, function(i){
   cat("iteration = ", i, "\n")
-  local_search(mu0, sigma, sphere, cutoff=.005))
-} 
+  local_search(mu0, sigma, sphere, cutoff=.005)
+})
 
 
 ###############################################

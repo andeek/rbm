@@ -1,0 +1,276 @@
+---
+title: "Degeneracy and parameter magnitude"
+author: "Andee Kaplan"
+date: "March 1, 2015"
+output:
+  html_document:
+    theme: readable
+runtime: shiny
+---
+
+```{r libraries, message=FALSE, warning=FALSE, echo=FALSE}
+library(ggvis)
+library(ggplot2)
+library(plyr)
+library(dplyr)
+library(tidyr)
+library(shiny)
+```
+
+
+
+```{r data, message=FALSE, warning=FALSE, echo=FALSE}
+load("results.RData")
+
+## params ----------------------------------
+n <- 100
+r_center <- seq(0.2, 3, by = 0.2)
+r_exp <- .05
+
+plot_data <- function(res) {
+  
+  plot.data <- data.frame()
+  for(i in 1:nrow(res)) {
+    tmp <- res$samp[[i]]
+    H <- res[i,]$H
+    V <- res[i,]$V
+    
+    tmp %>% 
+      data.frame() %>% 
+      rowwise() %>% 
+      mutate_(ss_ratio = paste0("(", paste(paste0(names(.)[(H + V + 1):(H + V + H*V)], "^2"), collapse = " + "), ")/sum(", paste(paste0(names(.)[1:(H+V)],"^2"), collapse = " + "), ")")) %>%    
+      ungroup() -> ratio
+    
+    inner_join(ratio, res$outside[[i]] %>% ungroup()) %>%
+      select(ss_ratio, near_hull) %>%
+      mutate(H = H, V = V, n_param = H + V + H*V) %>%
+      rbind(plot.data) -> plot.data
+  }
+  return(plot.data)
+}
+
+plot.dat <- lapply(res, plot_data)
+names(plot.dat) <- gsub("[.]", "_", r_center)
+
+do.call(rbind, plot.dat) %>%
+  mutate(name = rownames(do.call(rbind, plot.dat))) %>%
+  separate(name, into = c("multiplier", "num"), "[.]") %>% 
+  mutate(multiplier = as.numeric(gsub("_", ".", multiplier))) %>%
+  mutate(n_param_f = factor(n_param)) %>%
+  group_by(n_param_f, multiplier) %>%
+  summarise(frac_degen = sum(near_hull)/n()) -> ggvis.dat
+```
+
+
+
+```{r plots, message=FALSE, warning=FALSE, echo=FALSE, out.height=300}
+multiplier <- reactiveValues(current = 0.2)
+
+on_click <- function(data, ...) {
+  if(nrow(data) > 0) multiplier$current <- data$multiplier
+}
+
+ggvis.subset <- reactive({
+  do.call(rbind, plot.dat) %>%
+    mutate(name = rownames(do.call(rbind, plot.dat))) %>%
+    mutate(n_param_f = factor(n_param)) %>%
+    separate(name, into = c("multiplier", "num"), "[.]") %>% 
+    mutate(multiplier = as.numeric(gsub("_", ".", multiplier))) %>%
+    filter(multiplier == multiplier$current) 
+})
+
+
+ggvis.dat %>%
+  ggvis(~multiplier, ~frac_degen) %>%
+  layer_points(fill = ~n_param_f) %>% 
+  layer_lines(stroke = ~n_param_f) %>%
+  add_axis("x", title = "Radius Multiplier") %>%
+  add_axis("y", title = "Fraction Degenerate") %>%
+  add_legend("fill", title = "# Parameters") %>%
+  add_legend("stroke", title = "# Parameters") %>%
+  handle_click(on_click)
+
+```
+
+```{r plots2, message=FALSE, warning=FALSE, echo=FALSE, out.height=300}
+
+ggvis.subset %>%
+  group_by(multiplier, n_param_f, near_hull) %>%
+  summarise(num = n()) %>%
+  ggvis(~n_param_f, ~num) %>%
+  layer_bars(fill = ~as.character(near_hull)) %>%
+  add_axis("x", title = "# Parameters") %>%
+  add_axis("y", title = "Count") %>%
+  add_legend("fill", title = "Within .05 of Hull")
+
+# ggvis.subset %>%
+#   ggvis(~n_param_f, ~ss_ratio) %>%
+#   layer_points(fill = ~as.character(near_hull), opacity := 0.4, size := 200) %>%
+#   add_axis("x", title = "# Parameters") %>%
+#   add_axis("y", title = "Ratio of SS of cross terms to main effects") %>%
+#   add_legend("fill", title = "Within 0.05 of Hull")
+
+renderPlot(
+  ggvis.subset() %>%
+    ggplot() + 
+    geom_boxplot(aes(n_param_f, ss_ratio, colour = near_hull)) +
+    xlab("# Parameters") +
+    ylab("Ratio of sum of squares of cross terms to main effects") +
+    theme_bw() +
+    scale_colour_discrete("Within .05 of hull")
+)
+```
+
+#Code Appendix
+```{r eval = FALSE}
+## load libraries ---------------------------
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+## background functions -------------------------------------
+stats <- function(H, V, type="negative") {
+  if(type == "binary") t <- data.frame(c(0,1))[,rep(1, H + V)]
+  else if(type == "negative") t <- data.frame(c(-1,1))[,rep(1, H + V)]
+  else stop("Type must be 'binary', 'negative'")
+  
+  names(t) <- c(paste0("h", 1:H), paste0("v", 1:V))  
+  
+  #all possibilities of statistics in (H + V)-space
+  t.grid <- expand.grid(t)
+  
+  for(i in 1:H){
+    for(j in (H+1):(H+V)){
+      t.grid <- cbind(t.grid, t.grid[,i]*t.grid[,j])
+      names(t.grid)[ncol(t.grid)] <- paste0("theta", i, j - H)
+    }
+  }
+  
+  return(data.matrix(t.grid))
+}
+
+expected_value <- function(theta, stats, normalized = TRUE) {
+  result <- crossprod(t(crossprod(stats, exp(crossprod(t(stats), theta)))), diag(1/apply(exp(crossprod(t(stats), theta)), 2, sum), nrow=length(apply(exp(crossprod(t(stats), theta)), 2, sum))))
+  rownames(result) <- paste0("exp_", rownames(result))
+  return(result)
+}
+
+sample_sphere <- function(stat, n, r = 1) {
+  require(dplyr)
+  require(tidyr)
+  
+  samp <- function(space, r) {
+    vec <- rnorm(space)
+    paste0(r*vec/sqrt(sum(vec^2)), collapse=",")
+  }
+  
+  res <- data.frame(samp = 1:n) %>%
+    group_by(samp) %>%
+    mutate(vals = samp(ncol(stat), r)) %>%
+    separate(col = vals, sep = ",", into = colnames(stat)) %>%
+    select(-samp) %>%
+    data.matrix() %>%
+    t()
+    
+  
+  return(res)  
+}
+
+## main function --------------------------------------------
+find_prop <- function(g_theta, stat, r_exp) {
+  g_theta %>%
+    data.frame() %>%
+    group_by_(.dots = c(colnames(g_theta))) %>%
+    do(samp = sample_points_outside(as.numeric(.), stat, r_exp)$in_hull) %>%
+    group_by_(.dots = c(colnames(g_theta))) %>%
+    do(as.data.frame(sum(.$samp[[1]]) > 0)) -> is_outside # count of not in hull greater than zero => there exists a point outside hull for this model
+  
+  is_outside %>% 
+    rename_(near_hull = as.name(names(is_outside)[ncol(is_outside)])) %>%
+    mutate(r = r_exp) -> inside_outside
+  
+  return(inside_outside)
+}
+
+## additional useful functions -------------------------------------
+sample_points_outside <- function(g_theta, stats, r, n = 100) {
+  #g_theta is the expected value mapping of a point theta in R^H+V+H*V
+  x0 <- data.frame(samp = 1:n) %>%
+    mutate(vals = samp_exp(length(g_theta), g_theta, r)) %>%
+    separate(col = vals, sep = ",", into = colnames(stats)) %>%
+    select(-samp)
+  
+  x0$in_hull <- !apply(x0, 1, in_hull, stats)
+  
+  return(x0)
+}
+
+samp_exp <- function(space, center, r) {
+  vec <- rnorm(space)
+  paste0(r*vec/sqrt(sum(vec^2)) + center, collapse=",")
+}
+
+in_hull <- function(point, hull_points) {
+  require(lpSolveAPI)
+  P <- data.matrix(point)
+  A <- t(data.matrix(hull_points))
+  
+  lp_obj <- make.lp(nrow = 0, ncol = ncol(A))
+  sapply(1:nrow(A), function(x) add.constraint(lp_obj, A[x,], type = "=", rhs = P[x]))
+  add.constraint(lp_obj, rep(1, ncol(A)), type = "=", rhs = 1)
+  sapply(1:ncol(A), function(x) add.constraint(lp_obj, 1, type = ">=", rhs = 0, indices = x))
+  
+  return(solve(lp_obj) == 0)
+}
+
+## params ----------------------------------
+n <- 100
+r_center <- seq(0.2, 3, by = 0.2)
+#r_center <- 1
+r_exp <- .05
+
+## function for running simulation -------------------------------
+get_res <- function(n, r_center, r_exp) {
+  ## perform functions 
+  test_cases <- expand.grid(data.frame(1:4)[,rep(1,2)]) %>% 
+    rename(H = X1.4, V = X1.4.1) %>%
+    filter(H <= V) %>% #remove those cases with less visibles than hiddens. Is this necessary?
+    mutate(n_param = H*V + H + V) %>%
+    mutate(max_facets = (2^(H+V))^(floor(n_param/2))) %>%
+    mutate(n = n, r = r_center*(H + V)) %>%
+    group_by(H, V, n_param, n, r) %>%
+    do(stat = stats(.$H, .$V, "negative")) %>%
+    ungroup() %>%
+    group_by(H, V, n_param, n, r) %>%
+    do(samp = sample_sphere(.$stat[[1]], .$n, .$r))
+  
+  test_cases_stat <- expand.grid(data.frame(1:4)[,rep(1,2)]) %>% 
+    rename(H = X1.4, V = X1.4.1) %>%
+    filter(H <= V) %>% #remove those cases with less visibles than hiddens. Is this necessary?
+    mutate(n_param = H*V + H + V) %>%
+    mutate(max_facets = (2^(H+V))^(floor(n_param/2))) %>%
+    mutate(n = n, r = r_center*(H + V)) %>%
+    group_by(H, V, n_param, n, r) %>%
+    do(stat = stats(.$H, .$V, "negative"))
+  
+  test_cases <- inner_join(test_cases, test_cases_stat)
+  
+  test_cases %>%
+    group_by(H, V, n_param, n, r) %>%
+    do(g_theta = t(rbind(.$samp[[1]], expected_value(theta = .$samp[[1]], stats = data.matrix(.$stat[[1]]))))) -> cases
+  
+  cases <- inner_join(cases, test_cases)
+  
+  cases %>%
+    group_by(H, V, r) %>%
+    do(outside = find_prop(.$g_theta[[1]] %>% data.frame() %>% select(starts_with("exp")), .$stat[[1]], r_exp)) -> tmp
+  
+  res <- inner_join(tmp, cases %>% group_by(H, V, r, n_param) %>% do(samp = .$g_theta[[1]])) 
+}
+
+## run simulations -------------------------------------
+res <- lapply(r_center, function(r) get_res(n, r, r_exp))
+save(res, file = "results.RData")
+
+```
+
