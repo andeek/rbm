@@ -82,7 +82,7 @@ ggvis.subset <- reactive({
 
 ggvis.dat %>%
   ggvis(~multiplier, ~frac_degen) %>%
-  layer_points(fill = ~n_param_f) %>% 
+  layer_points(fill = ~n_param_f, size.hover := 200) %>% 
   layer_lines(stroke = ~n_param_f) %>%
   add_axis("x", title = "Radius Multiplier") %>%
   add_axis("y", title = "Fraction Degenerate") %>%
