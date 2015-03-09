@@ -20,12 +20,12 @@ library(shiny)
 
 
 ```{r data, message=FALSE, warning=FALSE, echo=FALSE}
-load("results.RData")
 
 ## params ----------------------------------
 n <- 100
 r_center <- seq(0.2, 3, by = 0.2)
 r_exp <- .05
+sliderInput("power", "Power of N:", min = 0, max = 1, value = 0, step = 0.1)
 
 plot_data <- function(res) {
   
@@ -48,17 +48,14 @@ plot_data <- function(res) {
   }
   return(plot.data)
 }
+plot.dat <- list()
+for(i in seq(0, 1, by = 0.1)) {
+  load(paste0("results_", i, ".RData")) 
+  plot_dat <- lapply(res, plot_data)
+  names(plot_dat) <- gsub("[.]", "_", r_center)
+  plot.dat[[i*10 + 1]] <- plot_dat
+}
 
-plot.dat <- lapply(res, plot_data)
-names(plot.dat) <- gsub("[.]", "_", r_center)
-
-do.call(rbind, plot.dat) %>%
-  mutate(name = rownames(do.call(rbind, plot.dat))) %>%
-  separate(name, into = c("multiplier", "num"), "[.]") %>% 
-  mutate(multiplier = as.numeric(gsub("_", ".", multiplier))) %>%
-  mutate(n_param_f = factor(n_param)) %>%
-  group_by(n_param_f, multiplier) %>%
-  summarise(frac_degen = sum(near_hull)/n()) -> ggvis.dat
 ```
 
 
@@ -70,15 +67,20 @@ on_click <- function(data, ...) {
   if(nrow(data) > 0) multiplier$current <- data$multiplier
 }
 
-ggvis.subset <- reactive({
-  do.call(rbind, plot.dat) %>%
-    mutate(name = rownames(do.call(rbind, plot.dat))) %>%
-    mutate(n_param_f = factor(n_param)) %>%
+ggvis.dat <- reactive({
+  if(is.null(input$power)) {
+    dat <- plot.dat[[1]]
+  } else
+    dat <- plot.dat[[input$power*10 + 1]]
+  
+  do.call(rbind, dat) %>%
+    mutate(name = rownames(do.call(rbind, dat))) %>%
     separate(name, into = c("multiplier", "num"), "[.]") %>% 
     mutate(multiplier = as.numeric(gsub("_", ".", multiplier))) %>%
-    filter(multiplier == multiplier$current) 
+    mutate(n_param_f = factor(n_param)) %>%
+    group_by(n_param_f, multiplier) %>%
+    summarise(frac_degen = sum(near_hull)/n()) 
 })
-
 
 ggvis.dat %>%
   ggvis(~multiplier, ~frac_degen) %>%
@@ -93,6 +95,21 @@ ggvis.dat %>%
 ```
 
 ```{r plots2, message=FALSE, warning=FALSE, echo=FALSE, out.height=300}
+ggvis.subset <- reactive({
+  if(is.null(input$power)) {
+    dat <- plot.dat[[1]]
+  } else
+    dat <- plot.dat[[input$power*10 + 1]]
+  
+  do.call(rbind, dat) %>%
+    mutate(name = rownames(do.call(rbind, dat))) %>%
+    mutate(n_param_f = factor(n_param)) %>%
+    separate(name, into = c("multiplier", "num"), "[.]") %>% 
+    mutate(multiplier = as.numeric(gsub("_", ".", multiplier))) %>%
+    filter(multiplier == multiplier$current) %>%
+    return()
+})
+
 
 ggvis.subset %>%
   group_by(multiplier, n_param_f, near_hull) %>%
@@ -226,7 +243,6 @@ in_hull <- function(point, hull_points) {
 ## params ----------------------------------
 n <- 100
 r_center <- seq(0.2, 3, by = 0.2)
-#r_center <- 1
 r_exp <- .05
 
 ## function for running simulation -------------------------------
@@ -273,4 +289,6 @@ res <- lapply(r_center, function(r) get_res(n, r, r_exp))
 save(res, file = "results.RData")
 
 ```
+
+
 

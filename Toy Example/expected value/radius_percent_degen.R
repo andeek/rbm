@@ -57,16 +57,17 @@ n <- 100
 r_center <- seq(0.2, 3, by = 0.2)
 #r_center <- 1
 r_exp <- .05
+power <- seq(0, 1, by = .1)
 
 ## function for running simulation -------------------------------
-get_res <- function(n, r_center, r_exp) {
+get_res <- function(n, r_center, r_exp, power) {
   ## perform functions 
   test_cases <- expand.grid(data.frame(1:4)[,rep(1,2)]) %>% 
     rename(H = X1.4, V = X1.4.1) %>%
     filter(H <= V) %>% #remove those cases with less visibles than hiddens. Is this necessary?
     mutate(n_param = H*V + H + V) %>%
     mutate(max_facets = (2^(H+V))^(floor(n_param/2))) %>%
-    mutate(n = n, r = r_center*(H + V)) %>%
+    mutate(n = n, r = r_center*(H + V)^(power)) %>%
     group_by(H, V, n_param, n, r) %>%
     do(stat = stats(.$H, .$V, "negative")) %>%
     ungroup() %>%
@@ -78,7 +79,7 @@ get_res <- function(n, r_center, r_exp) {
     filter(H <= V) %>% #remove those cases with less visibles than hiddens. Is this necessary?
     mutate(n_param = H*V + H + V) %>%
     mutate(max_facets = (2^(H+V))^(floor(n_param/2))) %>%
-    mutate(n = n, r = r_center*(H + V)) %>%
+    mutate(n = n, r = r_center*(H + V)^(power)) %>%
     group_by(H, V, n_param, n, r) %>%
     do(stat = stats(.$H, .$V, "negative"))
   
@@ -98,9 +99,10 @@ get_res <- function(n, r_center, r_exp) {
 }
 
 ## run simulations -------------------------------------
-res <- lapply(r_center, function(r) get_res(n, r, r_exp))
-save(res, file = "results.RData")
-
+for(i in power) {
+  res <- lapply(r_center, function(r) get_res(n, r, r_exp, i))
+  save(res, file = paste0("results_", i, ".RData"))
+}
 
 ## analyze results -------------------------------------
 ## plot function ----------------------------------
@@ -129,15 +131,15 @@ plot_data <- function(res) {
 make_plot <- function(plot.data) { 
   plot.data %>%
     ggplot() + 
-    geom_boxplot(aes(as.factor(H + V), ss_ratio, colour = near_hull)) +
-    xlab("Number of Nodes") +
+    geom_boxplot(aes(as.factor(n_param), ss_ratio, colour = near_hull)) +
+    xlab("Number of params") +
     ylab("Ratio of sum of squares of cross terms to main effects") +
     scale_colour_discrete("Within .05 of hull") -> plot1
   
   plot.data %>% 
     ggplot() + 
-    geom_bar(aes(as.factor(H + V), y = ..count.., fill = near_hull), position = "fill") +
-    xlab("Number of Nodes") +
+    geom_bar(aes(as.factor(n_param), y = ..count.., fill = near_hull), position = "fill") +
+    xlab("Number of params") +
     scale_fill_discrete("Within .05 of hull") -> plot2
   
   return(list(p1 = plot1, p2 = plot2))
