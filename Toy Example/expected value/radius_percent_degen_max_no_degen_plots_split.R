@@ -60,7 +60,8 @@ do.call(rbind, plot.dat) %>%
 
 
 plot.dat %>%
-  group_by(true_r, n_param) %>%
+  mutate(split_r = multiplier*(H + V)^power) %>%
+  group_by(true_r, split_r, n_param) %>%
   summarise(frac_degen = sum(near_hull)/n()) %>%
   filter(frac_degen < .05) %>% 
   group_by(n_param) %>%
@@ -74,17 +75,18 @@ best_rad_nodegen %>%
   theme(legend.position = "bottom")
 
 plot.dat %>%
-  group_by(true_r, n_param_f) %>%
+  mutate(split_r = multiplier*(H + V)^power) %>%
+  group_by(true_r, split_r, n_param_f, multiplier, power) %>%
   summarise(frac_degen = sum(near_hull)/n()) %>%
   ggplot() +
-  geom_point(aes(true_r, frac_degen, colour = n_param_f)) +
+  geom_jitter(aes(true_r, frac_degen, colour = factor(power)), alpha = .5) +
+  facet_wrap(~n_param_f) +
   theme_bw(base_family = "serif") +
   theme(legend.position = "bottom")
 
-
-
 plot.dat %>%
-  group_by(true_r, n_param) %>%
+  mutate(split_r = multiplier*(H + V)^power) %>%
+  group_by(true_r, split_r, n_param, multiplier, power) %>%
   summarise(frac_degen = sum(near_hull)/n()) %>%
   mutate(happy = frac_degen < .05) %>%
   group_by(n_param, happy) %>%

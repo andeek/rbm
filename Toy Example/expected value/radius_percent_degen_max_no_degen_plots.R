@@ -64,7 +64,8 @@ best_rad_nodegen %>%
   geom_point(aes(n_param, best_radius)) +
   geom_smooth(aes(n_param, best_radius), method = "lm") +
   theme_bw(base_family = "serif") +
-  theme(legend.position = "bottom")
+  theme(legend.position = "bottom") +
+  ylim(c(0, 2.8))
 
 plot.dat %>%
   mutate(radius = multiplier*(H + V)^power) %>%
@@ -75,3 +76,14 @@ plot.dat %>%
   geom_line(aes(radius, frac_degen, colour = n_param_f)) +
   theme_bw(base_family = "serif") +
   theme(legend.position = "bottom")
+
+plot.dat %>%
+  mutate(radius = multiplier*(H + V)^power) %>%
+  group_by(radius, n_param_f, multiplier) %>%
+  summarise(frac_degen = sum(near_hull)/n()) %>%
+  ggplot() +
+  geom_jitter(aes(radius, frac_degen, colour = factor(multiplier))) +
+  facet_wrap(~n_param_f) +
+  theme_bw(base_family = "serif") +
+  theme(legend.position = "bottom")
+
