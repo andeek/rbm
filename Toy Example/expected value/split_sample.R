@@ -86,6 +86,8 @@ save(res, file = "apps/results_split.RData")
 
 
 # plots ------------------------
+load("apps/results_split.RData")
+
 plot_data <- function(res) {
   
   plot.data <- data.frame()
@@ -115,6 +117,14 @@ plot_data <- function(res) {
 }
 
 plot_dat <- res %>% plot_data
+
+plot_dat %>%
+  group_by(H, V, n_param, N, r1, r2, C, epsilon) %>%
+  summarise(percent_degen = sum(near_hull)/n()) %>%
+  ggplot() +
+  geom_point(aes(C, percent_degen, colour = factor(n_param))) +
+  geom_line(aes(C, percent_degen, colour = factor(n_param))) +
+  facet_wrap(~epsilon)
 
 plot_dat %>%
   group_by(H, V, n_param, N, r1, r2, C, epsilon) %>%

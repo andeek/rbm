@@ -29,3 +29,7 @@ shinyapps/
 *.m~
 *.txt~
 .Rproj.user
+.DS_store
+
+# Jing's code
+11/
