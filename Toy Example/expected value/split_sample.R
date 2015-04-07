@@ -59,7 +59,7 @@ epsilon <- seq(0, .5, by = .05)
 
 expand.grid(H = 1:4, V = 1:4, C = C, epsilon = epsilon) %>%
   mutate(N = H + V) %>%
-  mutate(n = n, r1 = C, r2 = C*(N/(H*V))^(1+epsilon)) %>%
+  mutate(n = n, r1 = sqrt(C), r2 = sqrt(C*(N/(H*V))^(1+epsilon))) %>%
   group_by(H, V, C, epsilon, r1, r2, N) %>%
   do(samp = cbind(matrix(rnorm(n*.$N, mean = 0, sd = .$r1/3), nrow = n), matrix(rnorm(n*.$H*.$V, mean = 0, sd = .$r2/3), nrow = n))) -> split_sample
 
@@ -124,14 +124,16 @@ plot_dat %>%
   ggplot() +
   geom_point(aes(C, percent_degen, colour = factor(n_param))) +
   geom_line(aes(C, percent_degen, colour = factor(n_param))) +
-  facet_wrap(~epsilon)
+  facet_wrap(~epsilon) +
+  ylim(c(0, 1))
 
 plot_dat %>%
   group_by(H, V, n_param, N, r1, r2, C, epsilon) %>%
   summarise(percent_degen = sum(near_hull)/n()) %>%
   ggplot() +
   geom_point(aes(n_param, percent_degen)) +
-  facet_grid(epsilon~C)
+  facet_grid(epsilon~C) +
+  ylim(c(0, 1))
   
 plot_dat %>%
   filter(epsilon == 0) %>%
