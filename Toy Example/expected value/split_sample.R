@@ -141,3 +141,46 @@ plot_dat %>%
   geom_boxplot(aes(factor(n_param), ss_ratio, colour = near_hull)) + 
   facet_wrap(~C, scales = "free_y")
 
+# models ---------------------------------------------
+plot_dat %>%
+  mutate(C = r1^2, C_prime = r2^2) %>%
+  select(near_hull, H, V, C, C_prime) %>%
+  group_by(H, V, C, C_prime) %>%
+  summarise(percent_degen = sum(near_hull)/n(),
+            weights = n()) -> degen.dat
+
+degen.m0 <- glm(formula = percent_degen ~ 1, family = "binomial", data = degen.dat, weights = weights)
+degen.m1 <- glm(formula = percent_degen ~ H + V + C + C_prime, family = "binomial", data = degen.dat, weights = weights)
+degen.m2 <- glm(formula = percent_degen ~ (H + V + C + C_prime)^2, family = "binomial", data = degen.dat, weights = weights)
+
+#goodness of fit
+-2*(logLik(degen.m0) - logLik(degen.m1)) >= qchisq(.05, df = degen.m0$df.residual - degen.m1$df.residual)
+-2*(logLik(degen.m1) - logLik(degen.m2)) >= qchisq(.05, df = degen.m1$df.residual - degen.m2$df.residual) #use full model
+
+find_C_C_prime <- function(p, H, V, Cs, C_primes, model) {
+  LHS <- log(p/(1-p))
+  grid <- expand.grid(C = Cs, C_prime = C_primes)
+  new.x <- data.frame(H = rep(H, nrow(grid)), V = rep(V, nrow(grid)), grid)
+  RHS <- data.frame(grid, pred = model.matrix(update(model$formula, NULL ~ .), new.x) %*% coef(model))
+  return(list(LHS = LHS, RHS = RHS))
+}
+
+
+p <- .05
+data.frame(expand.grid(H = seq(1, 11, by = 2), V = seq(1, 11, by = 2))) %>%
+  group_by(H, V) %>%
+  do(finding = find_C_C_prime(p, .$H, .$V, Cs = seq(0, 3, by = .1), C_primes =  seq(0, 3, by = .1), degen.m2)) %>%
+  do(plotting = data.frame(H = .$H,
+                           V = .$V, C = .$finding$RHS$C, 
+                           C_prime = .$finding$RHS$C_prime, 
+                           pred = .$finding$RHS$pred, 
+                           pred_trans = exp(.$finding$RHS$pred)/(1 + exp(.$finding$RHS$pred)),
+                           p = p)) -> explore
+
+do.call(rbind, explore$plotting) %>%
+  ggplot(aes(x = C, y = C_prime, z = pred_trans)) +
+  stat_contour(aes(colour = ..level..), binwidth = .05, size = 0.5) +
+  stat_contour(breaks = c(p), size = 2, colour = "black") +
+  facet_grid(H ~ V) +
+  theme_bw()
+
