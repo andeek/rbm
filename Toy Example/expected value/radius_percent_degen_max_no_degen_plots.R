@@ -7,7 +7,7 @@ plot_data <- function(res) {
   plot.data <- data.frame()
   for(i in 1:nrow(res)) {
     tmp <- res$samp[[i]]
-    H <- res[i,]$H
+    H <- res[i,]$Hß
     V <- res[i,]$V
     
     tmp %>% 
@@ -35,7 +35,7 @@ for(i in seq(0, 1, by = 0.1)) {
   plot_dat <- lapply(res, plot_data)
   names(plot_dat) <- gsub("[.]", "_", r_center)
   
-  do.call(rbind, plot_dat) %>%
+  do.call(rbind, plot_dat) %>% 
     mutate(name = rownames(do.call(rbind, plot_dat))) %>%
     separate(name, into = c("multiplier", "num"), "[.]") %>% 
     mutate(multiplier = as.numeric(gsub("_", ".", multiplier))) %>%
