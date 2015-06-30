@@ -19,10 +19,13 @@ params_good <- list(main_hidden = sample.params %>% ungroup() %>% filter(!near_h
 hidden0 <- matrix(sample(c(-1,1), H*N, replace = TRUE), nrow = N)
 visible0 <- matrix(sample(c(-1,1), V*N, replace = TRUE), nrow = N)
 
-flat_images_degen <- sample_images(params = params_degen, hidden0 = hidden0, visible0 = visible0, mc.iter = 5e4)[-(1:(2e4 + 1)),] #burnin
-flat_images_good <- sample_images(params = params_good, hidden0 = hidden0, visible0 = visible0, mc.iter = 5e4)[-(1:(2e4 + 1)),] #burnin
+flat_images_degen <- sample_images(params = params_degen, hidden0 = hidden0, visible0 = visible0, mc.iter = 5e4)
+flat_images_good <- sample_images(params = params_good, hidden0 = hidden0, visible0 = visible0, mc.iter = 5e4)
 
-#note to self... this is way too many images. each run gets a set of N images... MCMC sampler of 30000 iterations...
-#solution(?): sample one image at a time
+for(i in 1:2) {
+  idx <- 1:2.5e4 %% 5 == 0
+  flat_images_degen[[i]] <- flat_images_degen[[i]][-(1:(2.5e4 + 1)), ][idx, ] #burnin + thinning
+  flat_images_good[[i]] <- flat_images_good[[i]][-(1:(2.5e4 + 1)), ][idx, ] #burnin + thinning
+}
 
 save(flat_images_good, flat_images_degen, file = "written/sample_images.Rdata")

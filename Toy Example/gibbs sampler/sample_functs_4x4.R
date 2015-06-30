@@ -65,17 +65,17 @@ sample_images <- function(params, hidden0, visible0, mc.iter = 1e4) {
   
   # initialize data frame to save chains
   visible_save <- matrix(NA, ncol = length(visible0), nrow = mc.iter + 1) #flatten for storage
-
+  hidden_save <- matrix(NA, ncol = length(hidden0), nrow = mc.iter + 1)
   
   # store initial values
   visible_save[1, ] <- matrix(t(visible0), nrow = 1) #flattened so first row, then second row, etc.
-  hiddens <- hidden0
+  hidden_save[1, ] <- matrix(t(hidden0), nrow = 1) #flattened so first row, then second row, etc.
   
   for(i in 2:(mc.iter + 1)) {
-    hiddens <- sample_hidden(main_hidden = params$main_hidden, interaction = params$interaction, visibles = matrix(visible_save[i - 1, ], ncol = ncol(visible0), byrow = TRUE))
-    visible_save[i, ] <- matrix(t(sample_visible(main_visible = params$main_visible, interaction = params$interaction, hiddens = hiddens)), nrow = 1) #flattened so first row, then second row, etc.
+    hidden_save[i, ] <- matrix(t(sample_hidden(main_hidden = params$main_hidden, interaction = params$interaction, visibles = matrix(visible_save[i - 1, ], ncol = ncol(visible0), byrow = TRUE))), nrow = 1)
+    visible_save[i, ] <- matrix(t(sample_visible(main_visible = params$main_visible, interaction = params$interaction, hiddens = matrix(hidden_save[i, ], ncol = ncol(visible0), byrow = TRUE))), nrow = 1) #flattened so first row, then second row, etc.
   }
-  return(visible_save)
+  return(list(visibles = visible_save, hiddens = hidden_save))
 }
 
 sample_gibbs <- function(visibles, hiddens0, params0, C, C_prime, mc.iter = 1e4) {
@@ -94,17 +94,28 @@ sample_gibbs <- function(visibles, hiddens0, params0, C, C_prime, mc.iter = 1e4)
   
   # initialize data frame to save chains
   visible_save <- matrix(NA, ncol = length(visible0), nrow = mc.iter + 1) #flatten for storage
-  
+  hidden_save <- matrix(NA, ncol = length(hidden0), nrow = mc.iter + 1)
+  main_hidden_save <- matrix(NA, ncol = length(params0$main_hidden), nrow = mc.iter + 1)
+  main_visible_save <- matrix(NA, ncol = length(params0$main_visible), nrow = mc.iter + 1)
+  interaction_save <- matrix(NA, ncol = length(params0$interaction), nrow = mc.iter + 1)
   
   # store initial values
   visible_save[1, ] <- matrix(t(visible0), nrow = 1) #flattened so first row, then second row, etc.
-  hiddens <- hidden0
+  hidden_save[1, ] <- matrix(t(hidden0), nrow = 1)
+  main_hidden_save[1, ] <- matrix(t(params0$main_hidden), nrow = 1)
+  main_visible_save[1, ] <- matrix(t(params0$main_visible), nrow = 1)
+  interaction_save[1, ] <- matrix(t(params0$interaction), nrow = 1)
   
   for(i in 2:(mc.iter + 1)) {
-    hiddens <- sample_hidden(main_hidden = params$main_hidden, interaction = params$interaction, visibles = matrix(visible_save[i - 1, ], ncol = ncol(visible0), byrow = TRUE))
-    visible_save[i, ] <- matrix(t(sample_visible(main_visible = params$main_visible, interaction = params$interaction, hiddens = hiddens)), nrow = 1) #flattened so first row, then second row, etc.
+    ##start working here
+    
   }
-  return(visible_save)
+  
+  return(list(visibles = visible_save, 
+              hiddens = hidden_save, 
+              params = list(main_hidden = main_hidden_save, 
+                            main_visible = main_visible_save, 
+                            interaction = interaction_save)))
 }
 
 
