@@ -2,6 +2,7 @@
 library(dplyr)
 library(tidyr)
 library(ggplot2)
+source("sample_functs.R")
 
 #function -----------------------
 #this function takes the results from the simulation study and rearranges for ease of use
@@ -22,7 +23,7 @@ rearrange_data <- function(res) {
         ungroup() -> ratio
       
       data <- rbind(data, inner_join(ratio, res$outside[[i]] %>% ungroup()) %>%
-        mutate(H = H, V = V, n_param = H + V + H*V))
+                      mutate(H = H, V = V, n_param = H + V + H*V))
     }
   }
   return(data)
@@ -56,14 +57,45 @@ do.call(rbind, plot.dat) %>%
   separate(name2, into = c("power", "num2"), "[.]") %>% 
   mutate(power = as.numeric(gsub("_", ".", power))) -> plot.dat
 
-#sample --------------------------------
-#samples the parameters to get one set from the "degenerate" and one from "non-degenerate"
-
-set.seed(1000) #reproducible
-
+#plot --------------------------------
 plot.dat %>%
-  group_by(near_hull) %>%
-  sample_n(1) -> sample.params
+  group_by(h1, h2, h3, h4, v1, v2, v3, v4, theta11, theta12, theta13, theta14, theta21, theta22, theta23, theta24, theta31, theta32, theta33, theta34, theta41, theta42, theta43, theta44, near_hull) %>%
+  do(params = list(main_hidden = data.frame(.) %>% select(starts_with("h"), -H) %>% data.matrix(),
+                   main_visible = data.frame(.) %>% select(starts_with("v"), -V) %>% data.matrix(),
+                   interaction = data.frame(.) %>% select(starts_with("theta")) %>% data.matrix() %>% matrix(4))) %>%
+  ungroup() %>%
+  group_by(h1, h2, h3, h4, v1, v2, v3, v4, theta11, theta12, theta13, theta14, theta21, theta22, theta23, theta24, theta31, theta32, theta33, theta34, theta41, theta42, theta43, theta44, near_hull) %>%
+  do(prob = visible_distn(params = .$params[[1]])) %>%
+  rowwise() %>%
+  do(probs = data.frame(near_hull = .$near_hull, .$prob)) -> probs
 
-save(sample.params, file = "written/sample.params.Rdata")
+probs$probs %>%
+  bind_rows(.id = "iteration") %>%
+  group_by(iteration) %>%
+  mutate(rank_prob = dense_rank(-prob)) -> all_probs
+
+all_probs %>%
+  filter(rank_prob == 1) %>%
+  ggplot() +
+  geom_histogram(aes(prob)) +
+  facet_wrap(~near_hull)
+
+all_probs %>%
+  ggplot() +
+  geom_histogram(aes(prob)) +
+  facet_grid(near_hull~rank_prob)
+
+all_probs %>%
+  filter(rank_prob < 3) %>%
+  group_by(iteration, near_hull) %>%
+  summarise(prob = sum(prob)) %>%
+  ggplot() +
+  geom_histogram(aes(prob)) +
+  facet_wrap(~near_hull)
+
+all_probs %>%
+  ggplot() +
+  geom_line(aes(x = rank_prob, y = prob, group = iteration), alpha = .05) +
+  facet_wrap(~near_hull)
+
 

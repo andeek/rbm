@@ -178,6 +178,13 @@ data.frame(expand.grid(H = seq(1, 11, by = 2), V = seq(1, 11, by = 2))) %>%
                            p = p)) -> explore
 
 
+do.call(rbind, explore$plotting) %>% 
+  ggplot(aes(x = C, y = C_prime, z = pred_trans)) +
+  stat_contour(aes(colour = ..level..), size = 0.5) +
+  stat_contour(breaks = c(p), size = 2, colour = "black") +
+  facet_grid(H ~ V) +
+  theme_bw()
+
 data.frame(expand.grid(H = 4, V = 4)) %>%
   group_by(H, V) %>%
   do(finding = find_C_C_prime(p, .$H, .$V, Cs = seq(0, 3, by = .1), C_primes =  seq(0, 3, by = .1), degen.m2)) %>%
