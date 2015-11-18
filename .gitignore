@@ -36,4 +36,4 @@ shinyapps/
 11/
 
 #too much rdata
-Toy Example/4x4 Model/written/*.Rdata
+4x4 model/written/*.Rdata
