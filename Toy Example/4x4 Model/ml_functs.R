@@ -2,52 +2,89 @@
 library(dplyr)
 library(tidyr)
 
+loglik_num <- function(theta, parms) {
+  #theta is a H + V + H*V length vector containing main_visible, then main_hidden, then interactions
+  
+  #parms is a named list containing data and H and V
+  visibles <- parms$visibles
+  hiddens <- parms$hiddens
+  H <- parms$H
+  V <- parms$V
+  
+  #things for derivative, build data and possible values
+  N <- visibles %>% nrow()
+  data <- cbind(visibles, hiddens)
+  for(i in 1:V) {
+    for(j in 1:H) {
+      data <- cbind(data, visibles[i,]*hiddens[j,])
+    }
+  }
+  
+  sum(theta*colSums(data)/N)
+}
+
+
 loglik <- function(theta, parms) {
   #theta is a H + V + H*V length vector containing main_visible, then main_hidden, then interactions
   
   #parms is a named list containing data and H and V
-  visibles <- parms$visibles
-  hiddens <- parms$hiddens
+  visibles <- parms$visibles %>% data.frame()
   H <- parms$H
   V <- parms$V
+  names(visibles) <- paste0("v", 1:V)
   
   #things for derivative, build data and possible values
   N <- visibles %>% nrow()
-  data <- cbind(visibles, hiddens)
-  for(i in 1:V) {
-    for(j in 1:H) {
-      data <- cbind(data, visibles[i,]*hiddens[j,])
-    }
-  }
-  possibles <- stats(H, V)
-  
+  possibles <- stats(H, V) 
   W <- exp(possibles %*% theta)
-  sum(theta*colSums(data)/N) - log(sum(W)) 
+  
+  # marginalize out the hiddens
+  data <- visibles %>%
+    left_join(possibles %>% data.frame(), by = paste0("v", 1:V))
+
+  data %>%
+    group_by_(.dots = paste0("h", 1:H)) %>%
+    do(parms = list(visibles = data.frame(.) %>% select(starts_with("v")) %>% data.matrix(),
+                    hiddens = data.frame(.) %>% select(starts_with("h")) %>% data.matrix(),
+                    H = H,
+                    V = V)) %>%
+    mutate(A = loglik_num(theta = theta, parms)) %>%
+    mutate(num = exp(A)) %>%
+    ungroup() %>%
+    summarise(numerator = sum(num)) %>%
+    as.numeric() -> numerator
+  
+    log(numerator) - N*log(sum(W))
 }
 
+#not working
 loglik_derivs <- function(theta, parms) {
   #theta is a H + V + H*V length vector containing main_visible, then main_hidden, then interactions
   
   #parms is a named list containing data and H and V
-  visibles <- parms$visibles
-  hiddens <- parms$hiddens
+  visibles <- parms$visibles %>% data.frame()
   H <- parms$H
   V <- parms$V
+  names(visibles) <- paste0("v", 1:V)
   
   #things for derivative, build data and possible values
   N <- visibles %>% nrow()
-  data <- cbind(visibles, hiddens)
-  for(i in 1:V) {
-    for(j in 1:H) {
-      data <- cbind(data, visibles[i,]*hiddens[j,])
-    }
-  }
-  possibles <- stats(H, V)
+  possibles <- stats(H, V) 
   
-  
+  # marginalize out the hiddens
+  data <- visibles %>%
+    left_join(possibles %>% data.frame(), by = paste0("v", 1:V))
+
   #vector of derivatives set to zero
   W <- exp(possibles %*% theta)
-  colSums(data)/N - colSums(apply(possibles, 2, function(x) { W*x }))/sum(W)
+
+  data %>%
+    group_by_(.dots = paste0("h", 1:H)) %>%
+    summarise_each(funs(sum), everything()) - 
+    colSums(apply(possibles, 2, function(x) { W*x }))/sum(W)*N -> tmp
+  
+  colSums(tmp)
+
 }
 
 loglik_hessian <- function(theta, parms) {

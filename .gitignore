@@ -24,6 +24,7 @@ shinyapps/
 *.log
 *.xml
 *-blx.bib
+*.blg
 
 # stupid files
 *.m~

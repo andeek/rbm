@@ -9,7 +9,7 @@ source("ml_functs.R")
 #data and params ------------------------
 H <- 4
 V <- 4
-load("written/fitted_ml.Rdata")
+load("written/fitted_ml_margin.Rdata")
 load("written/sample_images.Rdata")
 load("written/sample.params.Rdata")
 
@@ -62,7 +62,7 @@ for(i in 1:(H + V + H*V)) {
   }
 }
 
-save(plots, file = "written/ml_plots.RData")
+save(plots, file = "written/ml_plots_margin.RData")
 
 view_grid <- function(idx1, idx2) {
   expand.grid(names(theta_ml)[idx1], names(theta_ml)[idx2]) %>%

@@ -29,21 +29,21 @@ calc_hull <- function(H, V, type="binary") {
 }
 
 test_cases <- expand.grid(data.frame(1:4)[,rep(1,2)]) %>% 
-  rename(H = X1.4, V = X1.4.1) %>%
-  filter(H <= V) %>% #remove those cases with less visibles than hiddens. Is this necessary?
-  mutate(n_param = H*V + H + V) %>%
-  mutate(max_facets = (2^(H+V))^(floor(n_param/2))) %>%
-  filter(n_param <= 11) #calc_hull can't handle any higher dimensions currently
+  dplyr::rename(H = X1.4, V = X1.4.1) %>%
+  dplyr::filter(H <= V) %>% #remove those cases with less visibles than hiddens. Is this necessary?
+  dplyr::mutate(n_param = H*V + H + V) %>%
+  dplyr::mutate(max_facets = (2^(H+V))^(floor(n_param/2))) %>%
+  dplyr::filter(n_param <= 11) #calc_hull can't handle any higher dimensions currently
 
 bin_res <- dlply(test_cases, .(n_param), function(x) calc_hull(x$V, x$H, "binary"), .progress="text")
 neg_res <- dlply(test_cases, .(n_param), function(x) calc_hull(x$V, x$H, "negative"), .progress="text")
 
 volume_plot <- ldply(bin_res, function(x) x$c_hull$vol) %>% 
-  mutate(frac_vol = V1/(1^n_param)) %>%
-  inner_join(ldply(neg_res, function(x) x$c_hull$vol) %>% 
+  dplyr::mutate(frac_vol = V1/(1^n_param)) %>%
+  dplyr::inner_join(ldply(neg_res, function(x) x$c_hull$vol) %>% 
                mutate(frac_vol = V1/(2^n_param)),
              by="n_param") %>%
-  rename(vol.bin = V1.x, vol.neg = V1.y, frac_vol.bin = frac_vol.x, frac_vol.neg = frac_vol.y) %>%
+  dplyr::rename(vol.bin = V1.x, vol.neg = V1.y, frac_vol.bin = frac_vol.x, frac_vol.neg = frac_vol.y) %>%
   gather(vars, value, -n_param) %>%
   separate(vars, c("type", "encoding"), "\\.") %>%
   spread(type, value) %>%

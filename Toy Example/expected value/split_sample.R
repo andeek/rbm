@@ -78,7 +78,7 @@ split_sample %>%
 split <- inner_join(split, split_sample)
 
 split %>%
-  group_by(H, V, N,C, epsilon, r1, r2) %>%
+  group_by(H, V, N, C, epsilon, r1, r2) %>%
   do(outside = find_prop(.$g_theta[[1]] %>% data.frame() %>% select(starts_with("exp")), .$stat[[1]], r_exp)) -> tmp
 
 res <- inner_join(tmp, split) 
