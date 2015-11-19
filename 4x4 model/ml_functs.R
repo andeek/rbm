@@ -20,7 +20,7 @@ loglik_num <- function(theta, parms) {
     }
   }
   
-  sum(theta*colSums(data)/N)
+  sum(theta*colSums(data))
 }
 
 
