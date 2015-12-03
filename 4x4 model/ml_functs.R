@@ -20,7 +20,7 @@ loglik_num <- function(theta, parms) {
     }
   }
   
-  sum(theta*colSums(data))
+  sum(theta*colSums(data)/N)
 }
 
 
@@ -33,7 +33,7 @@ loglik <- function(theta, parms) {
   V <- parms$V
   names(visibles) <- paste0("v", 1:V)
   
-  #things for derivative, build data and possible values
+  #build data and possible values
   N <- visibles %>% nrow()
   possibles <- stats(H, V) 
   W <- exp(possibles %*% theta)
@@ -54,7 +54,7 @@ loglik <- function(theta, parms) {
     summarise(numerator = sum(num)) %>%
     as.numeric() -> numerator
   
-    log(numerator) - N*log(sum(W))
+    log(numerator) - log(sum(W))
 }
 
 #not working
@@ -87,6 +87,7 @@ loglik_derivs <- function(theta, parms) {
 
 }
 
+#not updated, do not use
 loglik_hessian <- function(theta, parms) {
   #theta is a H + V + H*V length vector containing main_visible, then main_hidden, then interactions
   

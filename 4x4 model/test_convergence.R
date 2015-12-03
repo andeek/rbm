@@ -2,7 +2,7 @@ library(dplyr)
 library(ggplot2)
 library(tidyr)
 
-load("written/fitted_models_adaptive_mh_full_trunc_distn.Rdata")
+load("written/fitted_models_adaptive_mh_full_trunc_distn_shrunk_jing_match.Rdata")
 load("written/sample.params.Rdata")
 theta_good <- sample.params %>% 
   ungroup() %>% 

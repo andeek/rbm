@@ -166,7 +166,7 @@ find_C_C_prime <- function(p, H, V, Cs, C_primes, model) {
 }
 
 
-p <- .05
+p <- .01
 data.frame(expand.grid(H = seq(1, 11, by = 2), V = seq(1, 11, by = 2))) %>%
   group_by(H, V) %>%
   do(finding = find_C_C_prime(p, .$H, .$V, Cs = seq(0, 3, by = .1), C_primes =  seq(0, 3, by = .1), degen.m2)) %>%

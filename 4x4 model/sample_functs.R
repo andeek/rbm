@@ -104,7 +104,7 @@ sample_interaction_mh <- function(theta, hiddens, visibles, tau, C_prime) {
   
 }
 
-sample_single_theta_adaptive_mh <- function(theta, hiddens, visibles, C, trunc_const, shrink, h, s1, s2, index) {
+sample_single_theta_adaptive_mh <- function(theta, hiddens, visibles, C, trunc_const, shrink, h, s1, s2, index, conditional_function) {
   #theta is an H + V + H*V vector of parameter values
   #hiddens is an NxH matrix of hidden node values
   #visibles is an NxV matrix of visible node values
@@ -127,9 +127,9 @@ sample_single_theta_adaptive_mh <- function(theta, hiddens, visibles, C, trunc_c
     }
   }
   possibles <- stats(H, V)
-  W <- log_conditional(possibles, theta, data, index, C)
+  W <- conditional_function(possibles, theta, data, index, C)
 
-  H_h <- (W - 2*log_conditional(possibles, theta - h_vec, data, index, C) + log_conditional(possibles, theta - 2*h_vec, data, index, C))/h^2
+  H_h <- (W - 2*conditional_function(possibles, theta - h_vec, data, index, C) + conditional_function(possibles, theta - 2*h_vec, data, index, C))/h^2
   sigma2_tilde <- -1/H_h
   
   c_opt <- 2.4
@@ -143,7 +143,7 @@ sample_single_theta_adaptive_mh <- function(theta, hiddens, visibles, C, trunc_c
   
   u <- runif(1)
   
-  val <- exp(log_conditional(possibles, theta_star, data, index, C) - W)
+  val <- exp(conditional_function(possibles, theta_star, data, index, C) - W)
   val <- ifelse(!is.finite(val), sign(val) * .Machine$double.xmax, val)
   
   if(u <= min(val, 1)) { #accept/reject ratio
@@ -280,7 +280,7 @@ sample_mh_within_gibbs <- function(visibles, params0, C, C_prime, tau_main, tau_
   return(list(theta = theta, hiddens = hiddens, distn = distn))
 }
 
-sample_single_adaptive_mh_within_gibbs <- function(visibles, params0, C, C_prime, trunc_const, h, s1, s2, mc.iter = 1e4) {
+sample_single_adaptive_mh_within_gibbs <- function(visibles, params0, C, C_prime, trunc_const, h, s1, s2, mc.iter = 1e4, conditional_function = log_conditional) {
   #visibles is an NxV matrix of images
   #params0 is a list containing three named elements of initial parameter values: main_hidden, main_visible, and interaction
   #C is the variance constant for the main effect
@@ -302,12 +302,12 @@ sample_single_adaptive_mh_within_gibbs <- function(visibles, params0, C, C_prime
     #sample each type of variable in turn
     hiddens[i, , ] <- sample_hidden(main_hidden = theta[i, (V+1):(V+H)], interaction = matrix(theta[i, (V+H+1):(V+H+H*V)], nrow = H, byrow = TRUE), visibles = visibles)
     for(j in 1:(H + V)) {
-      samp <- sample_single_theta_adaptive_mh(theta = theta[i, ], hiddens = hiddens[i, ,], visibles = visibles, C = C, trunc_const = trunc_const, shrink = FALSE, h = h, s1 = s1, s2 = s2, index = j)
+      samp <- sample_single_theta_adaptive_mh(theta = theta[i, ], hiddens = hiddens[i, ,], visibles = visibles, C = C, trunc_const = trunc_const, shrink = FALSE, h = h, s1 = s1, s2 = s2, index = j, conditional_function)
       theta[i + 1, j] <- samp$theta
       var[i, j] <- samp$var
     }
     for(j in (H + V + 1):(H + V + H*V)) {
-      samp <- sample_single_theta_adaptive_mh(theta = theta[i, ], hiddens = hiddens[i, ,], visibles = visibles, C = C_prime, trunc_const = trunc_const, shrink = TRUE, h = h, s1 = s1, s2 = s2, index = j)
+      samp <- sample_single_theta_adaptive_mh(theta = theta[i, ], hiddens = hiddens[i, ,], visibles = visibles, C = C_prime, trunc_const = trunc_const, shrink = TRUE, h = h, s1 = s1, s2 = s2, index = j, conditional_function)
       theta[i + 1, j] <- samp$theta
       var[i, j] <- samp$var
     }
@@ -367,3 +367,27 @@ log_conditional <- function(possibles, theta, data, index, C) {
   -N*log(sum(exp(possibles %*% theta))) + theta[index] * sum(data[, index]) - theta[index]^2 * (1/(2*C/9))
 }
 
+log_conditional_marginal <- function(possibles, theta, data, index, C) {
+  require(dplyr)
+  N <- nrow(data)
+  data <- data %>% data.frame() 
+  names(data) <- colnames(possibles)
+  H <- data %>% select(starts_with("h")) %>% ncol
+  V <- data %>% select(starts_with("V")) %>% ncol
+  
+  data %>%
+    select(starts_with("v")) %>%
+    left_join(possibles %>% data.frame, by = paste0("v", 1:V)) -> data
+  
+  data %>%
+    group_by_(.dots = names(data)) %>%
+    summarise(count = n()) %>%
+    group_by(count, add = TRUE) %>%
+    do(data.frame(A = exp(as.numeric(data.frame(.) %>% select(-count)) %*% theta))) %>% 
+    mutate(A_count = A*count) %>%
+    group_by_(.dots = paste0("v", 1:V)) %>%
+    summarise(g_theta = sum(A_count), count = sum(count)/2^(H)) -> inner
+  
+  
+  -N*log(sum(exp(possibles %*% theta))) - theta[index]^2 * (1/(2*C/9)) + sum(inner$count*log(inner$g_theta))
+}

@@ -7,7 +7,7 @@ source("sample_functs.R")
 #data and params ------------------------
 H <- 4
 V <- 4
-mc.iter <- 10000
+mc.iter <- 5000
 set.seed(102285) #reproducible seed
 
 load("written/sample_images.Rdata")
@@ -34,12 +34,15 @@ h <- .01
 s1 <- 1e-4
 s2 <- 1e4
 trunc_const <- 1
+## variance params to match Jing's prior results
+C <- 1/8 
+C_prime <- (.4)^2/16
 
-models_good <- sample_single_adaptive_mh_within_gibbs(visibles = flat_images_good$visibles, params0 = params, C = variance_params$C, C_prime = 1/2, trunc_const = trunc_const, h = h, s1 = s1, s2 = s2, mc.iter = mc.iter)
-models_bad <- sample_single_adaptive_mh_within_gibbs(visibles = flat_images_good$visibles, params0 = params, C = variance_params$C, C_prime = variance_params$C, trunc_const = trunc_const, h = h, s1 = s1, s2 = s2, mc.iter = mc.iter)
-models_degen <- sample_single_adaptive_mh_within_gibbs(visibles = flat_images_degen$visibles, params0 = params, C = variance_params$C, C_prime = 1/2, trunc_const = trunc_const, h = h, s1 = s1, s2 = s2, mc.iter = mc.iter)
+models_good <- sample_single_adaptive_mh_within_gibbs(visibles = flat_images_good$visibles, params0 = params, C = C, C_prime = C_prime, trunc_const = trunc_const, h = h, s1 = s1, s2 = s2, mc.iter = mc.iter)
+models_bad <- sample_single_adaptive_mh_within_gibbs(visibles = flat_images_good$visibles, params0 = params, C = C, C_prime = C, trunc_const = trunc_const, h = h, s1 = s1, s2 = s2, mc.iter = mc.iter)
+models_degen <- sample_single_adaptive_mh_within_gibbs(visibles = flat_images_degen$visibles, params0 = params, C = C, C_prime = C_prime, trunc_const = trunc_const, h = h, s1 = s1, s2 = s2, mc.iter = mc.iter)
 
-save(models_good, models_bad, models_degen, file = "written/fitted_models_adaptive_mh_full_trunc_distn_shrunk_0.5.Rdata")
+save(models_good, models_bad, models_degen, file = "written/fitted_models_adaptive_mh_full_trunc_distn_shrunk_jing_match_2.Rdata")
 
 #burnin + thinning
 burnin_thinning <- function(models) {
@@ -57,4 +60,4 @@ models_good <- burnin_thinning(models_good)
 models_bad <- burnin_thinning(models_bad)
 models_degen <- burnin_thinning(models_degen)
 
-save(models_good, models_bad, models_degen, file = "written/fitted_models_adaptive_mh_trunc_distn_shrunk_0.5.Rdata")
+save(models_good, models_bad, models_degen, file = "written/fitted_models_adaptive_mh_trunc_distn_shrunk_jing_match_2.Rdata")

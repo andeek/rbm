@@ -13,6 +13,7 @@ params_good <- list(main_hidden = sample.params %>% ungroup() %>% filter(!near_h
 distn_good <- visible_distn(params = params_good)
 possibles <- stats(4, 4)
 
+load("written/fitted_ml_margin_zeros.Rdata")
 theta.df <- theta %>% data.frame()
 colnames(theta.df) <- colnames(possibles)
 
