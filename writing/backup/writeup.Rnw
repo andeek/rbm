@@ -3,10 +3,10 @@
 \usepackage{tikz}
 \usepackage{tikz-3dplot}
 \usetikzlibrary{arrows,%
-                shapes,positioning}
+                shapes, positioning}
 \usepackage{amsmath}
 \usepackage[bibstyle=numeric,citestyle=authoryear,backend=bibtex,sorting=nyt]{biblatex}
-\addbibresource{references/refs.bib}
+\addbibresource{../references/refs.bib}
 
 
 \title{Degeneracy in a restricted Boltzmann machine}
@@ -67,7 +67,7 @@ In Random Graph Model theory, degeneracy occurs when the model places a dispropo
 There is a package in \texttt{R} \parencite{r} called \texttt{geometry} \parencite{r-geometry} that calculates a convex hull from a set of points. We will leverage this to create the convex hulls of $t({\bf x})$ in each of our toy models. For a finite set of points, the convex hull is a convex polytope for any number of dimensions, whose vertices are some of the points in the input set \parencite{Swart198517}. In higher dimensions, even if the vertices of a convex polytope are known, construction of its faces is a non-trivial task \parencite{Avis1997265}. Thus we will explore analytically creating our hulls as well.
 
 <<source, echo=FALSE, message=FALSE, warning=FALSE, results='hide'>>=
-source("helpers/volume_relationship.R")
+source("../helpers/volume_relationship.R")
 
 #function for pretty function printing
 insert_fun <- function(name) {

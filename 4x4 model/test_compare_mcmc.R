@@ -11,18 +11,28 @@ V <- 4
 #load truncatednormal prior
 load("written/fitted_models_adaptive_mh_trunc_distn_shrunk_0.6667.Rdata")
 shrunk_bad <- models_bad
-shrunk_degen <- models_degen
 shrunk_good <- models_good
+
+load("written/fitted_models_adaptive_mh_trunc_distn_marginal_1.Rdata")
+marginal_bad_1 <- models_bad
+marginal_good_1 <- models_good
+
+
+load("written/fitted_models_adaptive_mh_trunc_distn_marginal_2.Rdata")
+marginal_bad_2 <- models_bad
+marginal_good_2 <- models_good
+
+load("written/fitted_models_adaptive_mh_trunc_distn_marginal_3.Rdata")
+marginal_bad_3 <- models_bad
+marginal_good_3 <- models_good
 
 #load Jing's prior
 load("written/fitted_models_distn_0.26.Rdata")
 jing_bad <- models_bad
-jing_degen <- models_degen
 jing_good <- models_good
 
 load("written/fitted_models_adaptive_mh_trunc_distn_shrunk_jing_match.Rdata")
 shrunk_jing_bad <- models_bad
-shrunk_jing_degen <- models_degen
 shrunk_jing_good <- models_good
 
 #rm unneccesary data
@@ -61,15 +71,21 @@ reshape_sample_distn <- function(model) {
 #burn in more on the truncated, there are more iterations than the Jing, which gets complicated with plotting
 shrunk_sample_good <- reshape_sample_distn(shrunk_good) %>% filter(iter > 500) %>% mutate(iter = 1:n()) 
 shrunk_sample_bad <- reshape_sample_distn(shrunk_bad) %>% filter(iter > 500) %>% mutate(iter = 1:n()) 
-shrunk_sample_degen <- reshape_sample_distn(shrunk_degen) %>% filter(iter > 500) %>% mutate(iter = 1:n()) 
+
+marginal_sample_good_1 <- reshape_sample_distn(marginal_good_1)
+marginal_sample_bad_1 <- reshape_sample_distn(marginal_bad_1)
+
+marginal_sample_good_2 <- reshape_sample_distn(marginal_good_2)
+marginal_sample_bad_2 <- reshape_sample_distn(marginal_bad_2)
+
+marginal_sample_good_3 <- reshape_sample_distn(marginal_good_3)
+marginal_sample_bad_3 <- reshape_sample_distn(marginal_bad_3)
 
 jing_sample_good <- reshape_sample_distn(jing_good)
 jing_sample_bad <- reshape_sample_distn(jing_bad)
-jing_sample_degen <- reshape_sample_distn(jing_degen)
 
 shrunk_jing_sample_good <- reshape_sample_distn(shrunk_jing_good) %>% filter(iter > 500) %>% mutate(iter = 1:n()) 
 shrunk_jing_sample_bad <- reshape_sample_distn(shrunk_jing_bad) %>% filter(iter > 500) %>% mutate(iter = 1:n()) 
-shrunk_jing_sample_degen <- reshape_sample_distn(shrunk_jing_degen) %>% filter(iter > 500) %>% mutate(iter = 1:n()) 
 
 
 #computing loglikelihoods, ratios ---------------------
@@ -94,63 +110,52 @@ reshape_loglik <- function(model, visibles) {
     data <- data %>%
       left_join(possibles %>% data.frame()) %>% data.frame
     
+    N <- nrow(data)
+    require(dplyr)
+    N <- nrow(data)
+    data <- data %>% data.frame() 
+    names(data) <- colnames(possibles)
+    H <- data %>% select(starts_with("h")) %>% ncol
+    V <- data %>% select(starts_with("V")) %>% ncol
+    
     data %>%
-      mutate(row_num = 1:n()) %>%
-      group_by(row_num) %>%
-      do(data.frame(A = exp(as.numeric(data.frame(.) %>% select(-row_num)) %*% theta[m, ]))) %>% 
-      group_by_(.dots = paste0("v", 1:V)) %>% 
-      summarise(g_theta = sum(A))
+      select(starts_with("v")) %>%
+      left_join(possibles %>% data.frame, by = paste0("v", 1:V)) -> data
     
-#     data %>%
-#       group_by_(.dots = paste0("h", 1:H)) %>%
-#       summarise_each(funs(sum), everything()) %>%
-#       rowwise() %>%
-#       data.matrix() -> data_group
-    
-    W <- exp(possibles %*% theta[m, ])
-    
-#     possibles %>% 
-#       data.frame %>% 
-#       group_by_(.dots = colnames(possibles)) %>% 
-#       do(data.frame(W = exp(as.numeric(.) %*% theta[m, ]))) %>% 
-#       group_by_(.dots = paste0("v", 1:V)) %>% 
-#       summarise(g_theta = sum(W)) %>% 
-#       ungroup() %>% 
-#       mutate(relative = g_theta/sum(g_theta)) %>%
-#       left_join(visibles %>% 
-#                   data.frame %>%
-#                   rename(v1 = X1, v2 = X2, v3 = X3, v4 = X4) %>%
-#                   group_by_(.dots = paste0("v", 1:V)) %>%
-#                   summarise(counts = n())) %>%
-#       mutate(log_item = counts * log(relative)) %>%
-#       ungroup() %>%
-#       summarise(log_lik = sum(log_item)) %>%
-#       as.numeric() -> log_lik2
-    
+    data %>%
+      group_by_(.dots = names(data)) %>%
+      summarise(count = n()) %>%
+      group_by(count, add = TRUE) %>%
+      do(data.frame(A = exp(as.numeric(data.frame(.) %>% select(-count)) %*% theta[m, ]))) %>% 
+      mutate(A_count = A*count) %>%
+      group_by_(.dots = paste0("v", 1:V)) %>%
+      summarise(g_theta = sum(A_count), count = sum(count)/2^(H)) -> inner
+ 
     data.frame(iter = m, 
-               log_numerator = sum(data_group %*% theta[m, ]), 
-               log_normalizer = N*log(sum(W)),
-               #loglik2 = log_lik2,
-               reference_loglik = sum(rep(0,length(theta[m, ]))*colSums(data)) - N*log(sum(exp(possibles %*% rep(0,length(theta[m, ]))))))
+               log_normalizer = N*log(sum(exp(possibles %*% theta[m, ]))),
+               loglik = -N*log(sum(exp(possibles %*% theta[m, ]))) + sum(inner$count*log(inner$g_theta)))
   }))
   
-  loglik %>%
-    mutate(loglik = log_numerator - log_normalizer) %>%
-    select(-log_numerator) 
-    #mutate(log_ratio = loglik - reference_loglik)
+  loglik
 }
 
 shrunk_loglik_good <- reshape_loglik(shrunk_good, flat_images_good$visibles) %>% filter(iter > 500) %>% mutate(iter = 1:n()) 
 shrunk_loglik_bad <- reshape_loglik(shrunk_bad, flat_images_good$visibles) %>% filter(iter > 500) %>% mutate(iter = 1:n()) 
-shrunk_loglik_degen <- reshape_loglik(shrunk_degen, flat_images_degen$visibles) %>% filter(iter > 500) %>% mutate(iter = 1:n()) 
+
+marginal_loglik_good_1 <- reshape_loglik(marginal_good_1, flat_images_good$visibles)
+marginal_loglik_bad_1 <- reshape_loglik(marginal_bad_1, flat_images_good$visibles)
+
+marginal_loglik_good_2 <- reshape_loglik(marginal_good_2, flat_images_good$visibles)
+marginal_loglik_bad_2 <- reshape_loglik(marginal_bad_2, flat_images_good$visibles)
+
+marginal_loglik_good_3 <- reshape_loglik(marginal_good_3, flat_images_good$visibles)
+marginal_loglik_bad_3 <- reshape_loglik(marginal_bad_3, flat_images_good$visibles)
 
 jing_loglik_good <- reshape_loglik(jing_good, flat_images_good$visibles)
 jing_loglik_bad <- reshape_loglik(jing_bad, flat_images_good$visibles)
-jing_loglik_degen <- reshape_loglik(jing_degen, flat_images_degen$visibles)
 
 shrunk_jing_loglik_good <- reshape_loglik(shrunk_jing_good, flat_images_good$visibles) %>% filter(iter > 500) %>% mutate(iter = 1:n()) 
 shrunk_jing_loglik_bad <- reshape_loglik(shrunk_jing_bad, flat_images_good$visibles) %>% filter(iter > 500) %>% mutate(iter = 1:n()) 
-shrunk_jing_loglik_degen <- reshape_loglik(shrunk_jing_degen, flat_images_degen$visibles) %>% filter(iter > 500) %>% mutate(iter = 1:n()) 
 
 
 reshape_distance <- function(model) {
@@ -173,33 +178,54 @@ reshape_distance <- function(model) {
 
 shrunk_distance_good <- reshape_distance(shrunk_good) %>% filter(iter > 500) %>% mutate(iter = 1:n()) 
 shrunk_distance_bad <- reshape_distance(shrunk_bad) %>% filter(iter > 500) %>% mutate(iter = 1:n()) 
-shrunk_distance_degen <- reshape_distance(shrunk_degen) %>% filter(iter > 500) %>% mutate(iter = 1:n()) 
+
+marginal_distance_good_1 <- reshape_distance(marginal_good_1)
+marginal_distance_bad_1 <- reshape_distance(marginal_bad_1)
+
+marginal_distance_good_2 <- reshape_distance(marginal_good_2)
+marginal_distance_bad_2 <- reshape_distance(marginal_bad_2)
+
+marginal_distance_good_3 <- reshape_distance(marginal_good_3)
+marginal_distance_bad_3 <- reshape_distance(marginal_bad_3)
 
 jing_distance_good <- reshape_distance(jing_good)
 jing_distance_bad <- reshape_distance(jing_bad)
-jing_distance_degen <- reshape_distance(jing_degen)
 
 shrunk_jing_distance_good <- reshape_distance(shrunk_jing_good) %>% filter(iter > 500) %>% mutate(iter = 1:n()) 
 shrunk_jing_distance_bad <- reshape_distance(shrunk_jing_bad) %>% filter(iter > 500) %>% mutate(iter = 1:n()) 
-shrunk_jing_distance_degen <- reshape_distance(shrunk_jing_degen) %>% filter(iter > 500) %>% mutate(iter = 1:n()) 
 
 #plots -------------------
 jing_sample_good %>% rename(jing = prob) %>%
+  left_join(marginal_sample_good_1 %>% ungroup() %>% select(-image_id) %>% rename(marginal_1 = prob)) %>%
+  left_join(marginal_sample_good_2 %>% ungroup() %>% select(-image_id) %>% rename(marginal_2 = prob)) %>%
+  left_join(marginal_sample_good_3 %>% ungroup() %>% select(-image_id) %>% rename(marginal_3 = prob)) %>%
   left_join(shrunk_sample_good %>% ungroup() %>% select(-image_id) %>% rename(shrunk = prob)) %>%
   left_join(shrunk_jing_sample_good %>% ungroup() %>% select(-image_id) %>% rename(shrunk_jing = prob)) %>%
   ungroup() %>%
   mutate(method = "good", image_id = paste0("image_", image_id)) %>% 
   rbind_list(jing_sample_bad %>% rename(jing = prob) %>%
+              left_join(marginal_sample_bad_1 %>% ungroup() %>% select(-image_id) %>% rename(marginal_1 = prob)) %>%
+              left_join(marginal_sample_bad_2 %>% ungroup() %>% select(-image_id) %>% rename(marginal_2 = prob)) %>%
+               left_join(marginal_sample_bad_3 %>% ungroup() %>% select(-image_id) %>% rename(marginal_3 = prob)) %>%
               left_join(shrunk_sample_bad %>% ungroup() %>% select(-image_id) %>% rename(shrunk = prob)) %>%
               left_join(shrunk_jing_sample_bad %>% ungroup() %>% select(-image_id) %>% rename(shrunk_jing = prob)) %>%
               ungroup() %>% 
               mutate(method = "bad", image_id = paste0("image_", image_id))) %>%
   select_(.dots = paste0("-v", 1:V)) %>%
-  gather(prior, prob, jing, shrunk, shrunk_jing) %>%
+  gather(prior, prob, jing, marginal_1, marginal_2, marginal_3, shrunk, shrunk_jing) %>%
   spread(image_id, prob) %>%
   left_join(jing_loglik_good %>% mutate(method = "good") %>%
               rbind_list(jing_loglik_bad %>% mutate(method = "bad")) %>%
               mutate(prior = "jing") %>%
+              rbind_list(marginal_loglik_good_1 %>% mutate(method = "good") %>%
+                           rbind_list(marginal_loglik_bad_1 %>% mutate(method = "bad")) %>%
+                           mutate(prior = "marginal_1")) %>%
+              rbind_list(marginal_loglik_good_2 %>% mutate(method = "good") %>%
+                           rbind_list(marginal_loglik_bad_2 %>% mutate(method = "bad")) %>%
+                           mutate(prior = "marginal_2")) %>%
+              rbind_list(marginal_loglik_good_3 %>% mutate(method = "good") %>%
+                           rbind_list(marginal_loglik_bad_3 %>% mutate(method = "bad")) %>%
+                           mutate(prior = "marginal_3")) %>%
               rbind_list(shrunk_loglik_good %>% mutate(method = "good") %>%
                            rbind_list(shrunk_loglik_bad %>% mutate(method = "bad")) %>%
                            mutate(prior = "shrunk")) %>%
@@ -209,18 +235,26 @@ jing_sample_good %>% rename(jing = prob) %>%
   left_join(jing_distance_good %>% mutate(method = "good") %>%
               rbind_list(jing_distance_bad %>% mutate(method = "bad")) %>%
               mutate(prior = "jing") %>%
+              rbind_list(marginal_distance_good_1 %>% mutate(method = "good") %>%
+                           rbind_list(marginal_distance_bad_1 %>% mutate(method = "bad")) %>%
+                           mutate(prior = "marginal_1")) %>%
+              rbind_list(marginal_distance_good_2 %>% mutate(method = "good") %>%
+                           rbind_list(marginal_distance_bad_2 %>% mutate(method = "bad")) %>%
+                           mutate(prior = "marginal_2")) %>%
+              rbind_list(marginal_distance_good_3 %>% mutate(method = "good") %>%
+                           rbind_list(marginal_distance_bad_3 %>% mutate(method = "bad")) %>%
+                           mutate(prior = "marginal_3")) %>%
               rbind_list(shrunk_distance_good %>% mutate(method = "good") %>%
                            rbind_list(shrunk_distance_bad %>% mutate(method = "bad")) %>%
                            mutate(prior = "shrunk")) %>%
               rbind_list(shrunk_jing_distance_good %>% mutate(method = "good") %>%
                            rbind_list(shrunk_jing_distance_bad %>% mutate(method = "bad")) %>%
                            mutate(prior = "shrunk_jing"))
-  ) %>%
-  select(-reference_loglik) -> all_statistics
+  ) -> all_statistics
 
 all_statistics %>%
   gather(statistic, value, -iter, -method, -prior) %>%
-  #filter(prior != "shrunk_jing") %>%
+  filter(prior != "shrunk_jing") %>%
   filter(grepl("image", statistic)) %>%
   separate(statistic, into = c("junk", "statistic")) %>%
   mutate(statistic = as.numeric(statistic)) %>%
@@ -258,7 +292,7 @@ correlations %>%
   do(data.frame(data.frame(.$cor, method = .$method, prior = .$prior, var1 = rownames(.$cor)))) %>%
   gather(var2, cor, -var1, -method, -prior) %>%
   mutate(var2 = as.character(var2)) %>% 
-  #filter(prior != "shrunk_jing") %>%
+  filter(prior != "shrunk_jing") %>%
   ggplot() +
   geom_point(aes(var1, var2, colour = cor, size = abs(cor))) +
   scale_colour_gradient2(limits=c(-1,1)) +
@@ -270,7 +304,7 @@ correlations %>%
 all_statistics %>% 
   gather(statistic, value, -method, -prior, -iter) %>%
   filter(grepl("distance", statistic)) %>%
-  #filter(prior != "shrunk_jing") %>%
+  filter(prior != "shrunk_jing") %>%
   ggplot() +
   geom_boxplot(aes(statistic, value, colour = prior)) +
   facet_wrap(~method)
@@ -278,7 +312,7 @@ all_statistics %>%
 all_statistics %>% 
   gather(statistic, value, -method, -prior, -iter) %>%
   filter(grepl("log", statistic)) %>%
-  #filter(prior != "shrunk_jing") %>%
+  filter(prior != "shrunk_jing") %>%
   ggplot() +
   geom_boxplot(aes(statistic, value, colour = prior)) +
   facet_wrap(~method)

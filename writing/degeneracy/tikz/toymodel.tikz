@@ -1,0 +1,12 @@
+\begin{tikzpicture}[auto, node distance=3cm, thick, 
+                    main node/.style= {circle,
+                      fill=gray!30,
+                      draw,
+                      font=\sffamily\Large\bfseries}]
+
+  \node[main node] (1) {$h_1$};
+  \node[main node] (2) [below of=1, fill=white] {$v_1$};
+  
+  \path
+    (1) edge node [left=.5cm] {$\theta_{11}$} (2);
+\end{tikzpicture}

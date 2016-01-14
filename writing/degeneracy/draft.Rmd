@@ -1,0 +1,189 @@
+---
+title: "Degeneracy in a restricted Boltzmann machine"
+author: "Andee Kaplan, Stephen Vardeman, Daniel Nordman"
+date: "January 8, 2016"
+output: 
+  pdf_document:
+    fig_caption: yes
+    includes:
+      in_header: header.tex
+    number_sections: yes
+bibliography: ../references/refs.bib
+---
+
+```{r libraries_options, echo=FALSE, message=FALSE, warnings=FALSE}
+library(knitr)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+
+opts_chunk$set(echo=FALSE, message=FALSE, warnings=FALSE)
+theme_set(theme_bw(base_family="serif"))
+
+source("../helpers/functions.R")
+```
+
+#Restricted Boltzmann Machines
+
+A restricted Boltzmann machine (RBM) is a specific undirected graphical model specified for discrete random variables, binary being the most common. The architecture of an RBM is specified as having two layers, a hidden ($\mathcal{H}$) and a visible layer ($\mathcal{V}$), with no connections within a layer. An example of this structure is visualized in figure \ref{fig:rbm} with the hidden nodes indicated by gray circles and the visible nodes indicated by white circles. 
+
+\begin{figure}[ht]
+  \centering
+  \resizebox{\linewidth}{!}{\input{tikz/rbm.tikz}}
+  \caption{An example restricted Boltzmann machine (RBM), which consists of two layers, a hidden ($\mathcal{H}$) and a visible layer ($\mathcal{V}$), with no connections within a layer. Hidden nodes indicated by gray circles and the visible nodes indicated by white circles.}
+  \label{fig:rbm}
+\end{figure}
+
+A common use for the RBM is to create features for use in classification. For example, a binary image could be classified where the pixel values would be considered the visible variables $v_i$.
+
+##Joint Distribution
+Let ${\bf x} = \{h_1, \dots, h_H, v_1,\dots,v_V\}$ represent the states of the visible and hidden nodes in an RBM. Then we posit a parametric form for probabilities corresponding to the state of each node taking the value of $1$.
+
+\begin{align}
+\label{eqn:pmf}
+f_{\boldsymbol \theta} ({\bf x}) = \frac{\exp\left(\sum\limits_{i = 1}^V \sum\limits_{j=1}^H \theta_{ij} v_i h_j + \sum\limits_{i = 1}^V\theta_{v_i} v_i + \sum\limits_{j = 1}^H\theta_{h_j} h_j\right)}{\sum\limits_{{\bf x} \in \{0,1\}^{H+V}}\exp\left(\sum\limits_{i = 1}^V \sum\limits_{j=1}^H \theta_{ij} v_i h_j + \sum\limits_{i = 1}^V\theta_{v_i} v_i + \sum\limits_{j = 1}^H\theta_{h_j} h_j\right)} 
+\end{align}
+
+Let the normalizing constant in equation \ref{eqn:pmf} be denoted $\gamma(\boldsymbol \theta)$ [@Vardeman602, pp.163-167]. Additionally, we can refer to $Q({\bf x}) = \sum\limits_{i = 1}^H\sum\limits_{j=1}^V \theta_{ij} h_i v_j + \sum\limits_{i = 1}^H\theta_{hi} h_i + \sum\limits_{j = 1}^V\theta_{vj} v_j$ as the neg-potential function in our model. The RBM model is parameterized by $\boldsymbol \theta$, which contains two types of parameters, main effects and interaction effects. The main effects parameters ($\theta_{v_i}, \theta_{h_j}$) weight to the values of the visible and hidden nodes and the interaction effects parameters ($\theta_{ij}$) weight the values of the connections, or dependencies, between hidden and visible layers.
+
+Due to the potential size of the model the normalizing constant $\gamma(\boldsymbol \theta)$ can be infeasible to calculate, making it impossible to estimate the model exactly. An approximation can be achieved using Gibbs sampling, which is a natural fit due to the restricted architecture of the RBM. Specifically, the conditional independence of each layer given the other allows for simulation of the main and hidden layers.
+
+##Connection to Deep Learning
+
+
+#Degeneracy in Random Graph Models
+In Random Graph Model theory, \emph{degeneracy} occurs when there is a disproportionate amount of probability placed on only a few elements of the sample space, $\mathcal{X}$, by the model. @handcock2003assessing define a model to be near degenerate if $\mu(\boldsymbol \theta)$, the mean parametrization on the model parameters, is close to the boundary of the convex hull of $\{t({\bf x}): {\bf x} \in \mathcal{X}\}$, where $t({\bf x})$ is the set of statistics in the neg-potential function $Q({\bf x})$ from equation \ref{eqn:pmf}.
+
+The mean parameterization on the model parameters, $\mu(\boldsymbol \theta)$, is defined as
+\begin{align*}
+\mu(\boldsymbol \theta) &= \text{E}_{\boldsymbol \theta}\left[ t(\boldsymbol X) \right] \\
+&= \sum\limits_{x \in \{-1,1\}^{H + V}} \left\{ t(\boldsymbol x) f_{\boldsymbol \theta} ({\bf x}) \right\} \\
+&= \sum\limits_{x \in \{-1,1\}^{H + V}} \left\{ t(\boldsymbol x)\dfrac{\exp\left(\sum\limits_{i = 1}^V \sum\limits_{j=1}^H \theta_{ij} v_i h_j + \sum\limits_{i = 1}^V\theta_{v_i} v_i + \sum\limits_{j = 1}^H\theta_{h_j} h_j\right)}{\sum\limits_{{\bf x} \in \{0,1\}^{H+V}}\exp\left(\sum\limits_{i = 1}^V \sum\limits_{j=1}^H \theta_{ij} v_i h_j + \sum\limits_{i = 1}^V\theta_{v_i} v_i + \sum\limits_{j = 1}^H\theta_{h_j} h_j\right)}\right\} \\
+\end{align*}
+
+##Small example
+To illustrate the idea of graph degeneracy in a RBM, we will consider a the smallest possible toy example that consists of one visible node $v_1$ and one hidden node $h_1$, both binary. A schematic of this model can be found in figure \ref{fig:toymodel}. 
+
+\begin{figure}[ht]
+  \centering
+  \resizebox{1cm}{!}{\input{tikz/toymodel.tikz}}
+  \caption{A small example restricted Boltzmann machine (RBM), which consists of two nodes, one hidden and one visible.}
+  \label{fig:toymodel}
+\end{figure}
+
+For this small model, we are able to illustrate the boundary of the convex hull of $\{t({\bf x}): {\bf x} \in \mathcal{X}\}$ because we are in three dimensions. In figure \ref{fig:toyhull}, the convex hull of our statistic space in three dimensions for the toy RBM with one visible and one hidden node from multiple perspectives enclosed by an unrestricted hull of $\{0,1\}^3$ space is shown. In this small model, $\{t({\bf x})\}$ is defined as $\{t({\bf x})\} = \{v_1, h_1, v_1 h_1\}$ by definition and form of the neg-potential function $Q({\bf x})$. Note that the convex hull of $\{t({\bf x})\}$ does not fill the unrestricted hull because of the relationship between the elements of $\{t({\bf x})\}$.
+
+```{r models}
+m1_bin <- calc_hull(1, 1)
+m1_neg <- calc_hull(1, 1, type = "negative")
+```
+
+\begin{figure}[ht]
+  \begin{minipage}{0.45\textwidth}
+  \resizebox{\linewidth}{!}{
+    \tdplotsetmaincoords{60}{-60}
+    \input{tikz/toyhull_top.tikz}
+    
+    ```{r, results='asis', echo=FALSE, include=TRUE, message=FALSE}
+    cat(sapply(1:nrow(m1_bin$c_hull$hull), function(x) paste0("\\draw", paste(paste0("(", apply(m1_bin$possible_t[cbind(m1_bin$c_hull$hull, m1_bin$c_hull$hull[,1])[x,],], 1, paste, collapse=","), ")"), collapse=" -- "), "; \n")))
+   ```
+    \end{tikzpicture}
+  }
+  \end{minipage}
+  \begin{minipage}{0.45\textwidth}
+  \resizebox{\linewidth}{!}{
+    \tdplotsetmaincoords{60}{120}
+    \input{tikz/toyhull_top.tikz}
+    
+    ```{r, results='asis', echo=FALSE, include=TRUE, message=FALSE}
+    cat(sapply(1:nrow(m1_bin$c_hull$hull), function(x) paste0("\\draw", paste(paste0("(", apply(m1_bin$possible_t[cbind(m1_bin$c_hull$hull, m1_bin$c_hull$hull[,1])[x,],], 1, paste, collapse=","), ")"), collapse=" -- "), "; \n")))
+    ```
+    \end{tikzpicture}
+  }
+  \end{minipage}
+  \caption{The convex hull of our statistic space in three dimensions for the toy RBM with one visible and one hidden node from multiple perspectives enclosed by an unrestricted hull of $\{0,1\}^3$ space. Note that the convex hull of $\{t({\bf x})\}$ does not fill the unrestricted hull because of the relationship between the elements of $\{t({\bf x})\}$.}
+\label{fig:toyhull}
+\end{figure}
+
+Additionally, we can compute the mean parametrization of the model parameters as 
+\begin{align*}
+\mu(\boldsymbol \theta) &= \text{E}_{\boldsymbol \theta}\left[ t(X) \right] \\
+&= \sum\limits_{x \in \{0,1\}^2} \left\{ t(x) \frac{\exp\left( \theta_{11} h_1 v_1 + \theta_{h1} h_1 + \theta_{v1} v_1\right)}{\sum\limits_{{\bf x} \in \{0,1\}^{2}}\exp\left( \theta_{11} h_1 v_1 + \theta_{h1} h_1 + \theta_{v1} v_1\right)} \right\} \\
+&= \sum\limits_{x \in \{0,1\}^2} \left\{ t(x) \frac{\exp\left( \theta_{11} h_1 v_1 + \theta_{h1} h_1 + \theta_{v1} v_1\right)}{\gamma(\boldsymbol \theta)} \right\} \\
+&= \left[
+\begin{matrix}
+\frac{\exp\left(\theta_{v_1}\right) + \exp\left(\theta_{11} + \theta_{v_1} + \theta_{h_1}\right)}{\gamma(\boldsymbol \theta)} \\
+\frac{\exp\left(\theta_{h_1}\right) + \exp\left(\theta_{11} + \theta_{v_1} + \theta_{h_1}\right)}{\gamma(\boldsymbol \theta)} \\
+\frac{\exp\left(\theta_{11} + \theta_{v_1} + \theta_{h_1}\right)}{\gamma(\boldsymbol \theta)} \\
+\end{matrix} \right]
+\end{align*}
+These three functions can be visualized over multiple values of $\boldsymbol \theta$, as seen in figure \ref{fig:toymodel}. By examining these functions, we can see that as values of $\boldsymbol \theta$ grow larger in magnitude, at least one mean-parameterization functions is approaching the values 0 or 1, indicating a potential to be near to the boundary of the convex hull of $\{t({\bf x}): {\bf x} \in \mathcal{X}\}$. Thus, for a very small example we can see the relationship between values of $\boldsymbol \theta$ and model degeneracy.
+
+```{r toymodel, fig.cap="\\label{fig:toymodel}The three mean-parameterization functions of the model parameters for a RBM with one visible and one hidden node.", out.height = "4in", fig.align='center'}
+possibles <- stats(1, 1, type = "binary")
+
+expand.grid(theta_h1 = seq(-2, 2, length.out = 5),
+            theta_v1 = seq(-2, 2, length.out = 5),
+            theta_11 = seq(-2, 2, length.out = 11)) %>%
+  data.frame() %>%
+  group_by(theta_v1, theta_h1, theta_11) %>%
+  do(data.frame(gamma = sum(exp(possibles %*% t(data.matrix(.)))),
+                mu_v1 = possibles[,"v1"] %*% exp(possibles %*% t(data.matrix(.))),
+                mu_h1 = possibles[,"h1"] %*% exp(possibles %*% t(data.matrix(.))),
+                mu_11 = possibles[,"theta11"] %*% exp(possibles %*% t(data.matrix(.))))) %>%
+  mutate_each(funs(./gamma), starts_with("mu")) %>%
+  select(-gamma) %>%
+  gather(mu_parameter, value, mu_v1, mu_h1, mu_11) %>%
+  mutate(theta_h1 = factor(theta_h1, labels = paste0("theta[h1]==", unique(theta_h1))), 
+         theta_v1 = factor(theta_v1, labels = paste0("theta[v1]==", unique(theta_v1)))) %>%
+  ggplot() +
+  geom_line(aes(theta_11, value, colour = mu_parameter)) +
+  facet_grid(theta_h1 ~ theta_v1, labeller = label_parsed) +
+  xlab(expression(theta[11])) +
+  scale_colour_discrete(expression(mu(theta)), labels = c(expression(theta[v1]), 
+                                                          expression(theta[h1]), 
+                                                          expression(theta[11])))
+  
+  
+```
+
+##Variable Encoding
+Multiple encodings of the binary variables are possible. For example, we could allow $\mathcal{H} \subset \{0,1\}^H, \mathcal{V} \subset \{0,1\}^V$, as in the previous sections or we could encode the state of the variables as $\mathcal{H} \subset \{-1,1\}^H, \mathcal{V} \subset \{-1,1\}^V$. This will result in $t({\bf x}) \in \{0,1\}^{H + V + HV}$ or $t({\bf x}) \in \{-1,1\}^{H + V + HV}$ depending on how we encode on and off states in the nodes. To explore the effect of this encoding on the potential near degeneracy of an RBM, we can explore the behavior of the ratio of the volume of the unrestricted convex hull to the restructed convex hull of $\{t({\bf x})\}$ to determine how much the restriction in our statistics by including the cross product terms incurs.
+
+For the small two node example, the binary encoding loses `r round((1-m1_bin$c_hull$vol)*100,2)`% of the volume compared to unrestricted space and the negative encoding loses `r round((1-m1_neg$c_hull$vol/(2^3))*100,2)`% of the volume compared to unrestricted space. This notion of lost volume can be helpful to conceptualize how difficult it will be for the mean parameterized vector $\mu(\boldsymbol \theta)$ to avoid the boundary, and thus avoid near degeneracy. In fact, if we look at the ratio of volume within a convex hull versus the volume of an unrestricted hull, we can see a relationship emerge as the number of nodes (and thus parameters) increases. In figure \ref{fig:volume_plot}, it is evident that as the number of parameters increses, this ratio is decreasing at an increasing rate, meaning it gets more and more difficult to avoid the boundary of the convex hull and thus near degeneracy. Additionally, it appears that the $\{-1,1\}$ encoding suffers slightly less from this problem.
+
+```{r volume_plot, echo=FALSE, fig.cap="\\label{fig:volume_plot}The relationship between volume within the convex hull of our statistics and the convex hull of unrestricted space for different configurations of nodes. We compare the two encodings for on and off in a node.", out.height = "3in", fig.align='center'}
+test_cases <- expand.grid(data.frame(1:4)[,rep(1,2)]) %>% 
+  rename(H = X1.4, V = X1.4.1) %>%
+  filter(H <= V) %>% #remove those cases with less visibles than hiddens. Is this necessary?
+  mutate(n_param = H*V + H + V) %>%
+  mutate(max_facets = (2^(H+V))^(floor(n_param/2))) %>%
+  filter(n_param <= 11) #calc_hull can't handle any higher dimensions currently
+
+bin_res <- plyr::dlply(test_cases, plyr::.(n_param), function(x) calc_hull(x$V, x$H, "binary"))
+neg_res <- plyr::dlply(test_cases, plyr::.(n_param), function(x) calc_hull(x$V, x$H, "negative"))
+
+plyr::ldply(bin_res, function(x) x$c_hull$vol) %>% 
+  mutate(frac_vol = V1/(1^n_param)) %>%
+  inner_join(plyr::ldply(neg_res, function(x) x$c_hull$vol) %>% 
+               mutate(frac_vol = V1/(2^n_param)),
+             by="n_param") %>%
+   rename(vol.bin = V1.x, vol.neg = V1.y, frac_vol.bin = frac_vol.x, frac_vol.neg = frac_vol.y) %>%
+  gather(vars, value, -n_param) %>%
+  separate(vars, c("type", "encoding"), "\\.") %>%
+  spread(type, value) %>%
+  ggplot() +
+  geom_point(aes(x=n_param, y=frac_vol, colour=encoding)) +
+  geom_line(aes(x=n_param, y=frac_vol, colour=encoding, group=encoding)) +
+  ylab("Fraction of unrestricted volume") +
+  xlab("Number of parameters") +
+  scale_colour_discrete("Encoding", labels=c("Binary (1,0)", "Negative (1,-1)"))
+```
+
+Thus, moving forward we will restrict our examinations to the $\{-1, 1\}$-encoding of the binary variables in the RBM.
+
+#Exploring Manageable Examples
+
+#Discussion
+
+

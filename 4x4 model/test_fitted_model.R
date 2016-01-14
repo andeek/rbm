@@ -10,7 +10,7 @@ V <- 4
 
 load("written/sample_images.Rdata")
 # load("written/fitted_models_adaptive_mh_trunc_distn.Rdata")
-load("written/fitted_models_distn_0.24.Rdata")
+load("written/fitted_models_adaptive_mh_full_trunc_distn_marginal_2.Rdata")
 load("written/sample.params.Rdata")
 params_degen <- list(main_hidden = sample.params %>% ungroup() %>% filter(near_hull) %>% select(starts_with("h"), -H) %>% data.matrix(),
                      main_visible = sample.params %>% ungroup() %>% filter(near_hull) %>% select(starts_with("v"), -V) %>% data.matrix(),
