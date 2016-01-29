@@ -7,7 +7,7 @@ plot_data <- function(res) {
   plot.data <- data.frame()
   for(i in 1:nrow(res)) {
     tmp <- res$samp[[i]]
-    H <- res[i,]$Hß
+    H <- res[i,]$H
     V <- res[i,]$V
     
     tmp %>% 

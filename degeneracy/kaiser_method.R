@@ -47,8 +47,8 @@ expand.grid(power = as.numeric(names(model.dat)), multiplier = as.numeric(names(
 
 frame %>%
   group_by(power, multiplier, n_param) %>%
-  mutate(frac_degen = sum(models[[1]][, "near_hull"])/nrow(models[[1]]), 
-         radius = (models[[1]][1, "H"] + models[[1]][1, "V"])^power,
+  mutate(frac_degen = sum(models[[1]]$near_hull)/nrow(models[[1]]), 
+         radius = (models[[1]]$H[1] + models[[1]]$V[1])^power,
          happy = frac_degen < .05) %>%
   group_by(n_param, happy) %>% 
   sample_n(20) -> models.samp
@@ -75,7 +75,7 @@ no_int %>%
        t()) %>%
   left_join(no_int %>%
               group_by(n_param) %>%
-              do(stats = stats(.$models[[1]][1, c("H")], .$models[[1]][1, c("V")]))) %>%
+              do(stats = stats(.$models[[1]]$H[1], .$models[[1]]$V[1]))) %>%
   group_by(n_param) %>%
   do(no_int = expected_value(theta = .$compare[[1]], stats = .$stats[[1]]) %>% t()) %>%
   left_join(no_int %>% 

@@ -37,3 +37,6 @@ shinyapps/
 
 #too much rdata
 4x4 model/written/*.Rdata
+
+writing/degeneracy/draft_cache
+writing/data/*.Rdata

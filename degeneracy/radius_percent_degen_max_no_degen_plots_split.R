@@ -65,12 +65,14 @@ plot.dat %>%
   summarise(frac_degen = sum(near_hull)/n()) %>%
   filter(frac_degen < .05) %>% 
   group_by(n_param) %>%
-  summarise(best_radius = max(true_r)) -> best_rad_nodegen
+  summarise(best_radius = max(true_r),
+            split_radius = max(split_r)) -> best_rad_nodegen
 
 best_rad_nodegen %>%
+  gather(radii, value, best_radius, split_radius) %>%
   ggplot() +
-  geom_point(aes(n_param, best_radius)) +
-  geom_smooth(aes(n_param, best_radius), method = "lm") +
+  geom_point(aes(n_param, value, colour = radii)) +
+  geom_smooth(aes(n_param, value, colour = radii), method = "lm") +
   theme_bw(base_family = "serif") +
   theme(legend.position = "bottom")
 
@@ -80,7 +82,7 @@ plot.dat %>%
   summarise(frac_degen = sum(near_hull)/n()) %>%
   ggplot() +
   geom_jitter(aes(true_r, frac_degen, colour = factor(power)), alpha = .5) +
-  facet_wrap(~n_param_f) +
+  facet_grid(power~n_param_f) +
   theme_bw(base_family = "serif") +
   theme(legend.position = "bottom")
 

@@ -52,6 +52,7 @@ for (i in 1:length(plots)) {
 
 names(plot.dat) <- gsub("[.]", "_", r_center)
 do.call(rbind, plot.dat) %>%
+  ungroup() %>%
   mutate(name = rownames(do.call(rbind, plot.dat))) %>%
   separate(name, into = c("multiplier", "num"), "[.]") %>% 
   mutate(multiplier = as.numeric(gsub("_", ".", multiplier))) %>%

@@ -37,29 +37,47 @@ A restricted Boltzmann machine (RBM) is a specific undirected graphical model sp
 A common use for the RBM is to create features for use in classification. For example, a binary image could be classified where the pixel values would be considered the visible variables $v_i$.
 
 ##Joint Distribution
-Let ${\bf x} = \{h_1, \dots, h_H, v_1,\dots,v_V\}$ represent the states of the visible and hidden nodes in an RBM. Then we posit a parametric form for probabilities corresponding to the state of each node taking the value of $1$.
+Let $\boldsymbol x = \{h_1, \dots, h_H, v_1,\dots,v_V\}$ represent the states of the visible and hidden nodes in an RBM. Then we posit a parametric form for probabilities corresponding to the state of each node taking the value of $1$.
 
 \begin{align}
 \label{eqn:pmf}
-f_{\boldsymbol \theta} ({\bf x}) = \frac{\exp\left(\sum\limits_{i = 1}^V \sum\limits_{j=1}^H \theta_{ij} v_i h_j + \sum\limits_{i = 1}^V\theta_{v_i} v_i + \sum\limits_{j = 1}^H\theta_{h_j} h_j\right)}{\sum\limits_{{\bf x} \in \{0,1\}^{H+V}}\exp\left(\sum\limits_{i = 1}^V \sum\limits_{j=1}^H \theta_{ij} v_i h_j + \sum\limits_{i = 1}^V\theta_{v_i} v_i + \sum\limits_{j = 1}^H\theta_{h_j} h_j\right)} 
+f_{\boldsymbol \theta} (\boldsymbol x) = \frac{\exp\left(\sum\limits_{i = 1}^V \sum\limits_{j=1}^H \theta_{ij} v_i h_j + \sum\limits_{i = 1}^V\theta_{v_i} v_i + \sum\limits_{j = 1}^H\theta_{h_j} h_j\right)}{\sum\limits_{\boldsymbol x \in \mathcal{X}}\exp\left(\sum\limits_{i = 1}^V \sum\limits_{j=1}^H \theta_{ij} v_i h_j + \sum\limits_{i = 1}^V\theta_{v_i} v_i + \sum\limits_{j = 1}^H\theta_{h_j} h_j\right)} 
 \end{align}
 
-Let the normalizing constant in equation \ref{eqn:pmf} be denoted $\gamma(\boldsymbol \theta)$ [@Vardeman602, pp.163-167]. Additionally, we can refer to $Q({\bf x}) = \sum\limits_{i = 1}^H\sum\limits_{j=1}^V \theta_{ij} h_i v_j + \sum\limits_{i = 1}^H\theta_{hi} h_i + \sum\limits_{j = 1}^V\theta_{vj} v_j$ as the neg-potential function in our model. The RBM model is parameterized by $\boldsymbol \theta$, which contains two types of parameters, main effects and interaction effects. The main effects parameters ($\theta_{v_i}, \theta_{h_j}$) weight to the values of the visible and hidden nodes and the interaction effects parameters ($\theta_{ij}$) weight the values of the connections, or dependencies, between hidden and visible layers.
+Let the normalizing constant in equation \ref{eqn:pmf} be denoted $\gamma(\boldsymbol \theta)$ [@Vardeman602, pp.163-167]. Additionally, we can refer to $Q(\boldsymbol x) = \sum\limits_{i = 1}^H\sum\limits_{j=1}^V \theta_{ij} h_i v_j + \sum\limits_{i = 1}^H\theta_{hi} h_i + \sum\limits_{j = 1}^V\theta_{vj} v_j$ as the neg-potential function in our model. The RBM model is parameterized by $\boldsymbol \theta$, which contains two types of parameters, main effects and interaction effects. The main effects parameters ($\theta_{v_i}, \theta_{h_j}$) weight to the values of the visible and hidden nodes and the interaction effects parameters ($\theta_{ij}$) weight the values of the connections, or dependencies, between hidden and visible layers.
 
 Due to the potential size of the model the normalizing constant $\gamma(\boldsymbol \theta)$ can be infeasible to calculate, making it impossible to estimate the model exactly. An approximation can be achieved using Gibbs sampling, which is a natural fit due to the restricted architecture of the RBM. Specifically, the conditional independence of each layer given the other allows for simulation of the main and hidden layers.
 
 ##Connection to Deep Learning
-
+RBMs have risen to prominence in recent years due to their connection to deep learning [see @hinton2006fast, @salakhutdinov2012efficient, or @srivastava2013modeling for examples]. By stacking multiple layers of RBMs in a deep architecture, the method's proponents claim the ability to learn "internal representations that become increasingly complex, which is considered to be a promising way of solving object and speech recognition problems" [@salakhutdinov2009deep, pp. 450]. The stacking is achieved by treating a hidden layer of one RBM as the visible layer in a second RBM, and so on until the desired architecture is created.
 
 #Degeneracy in Random Graph Models
-In Random Graph Model theory, \emph{degeneracy} occurs when there is a disproportionate amount of probability placed on only a few elements of the sample space, $\mathcal{X}$, by the model. @handcock2003assessing define a model to be near degenerate if $\mu(\boldsymbol \theta)$, the mean parametrization on the model parameters, is close to the boundary of the convex hull of $\{t({\bf x}): {\bf x} \in \mathcal{X}\}$, where $t({\bf x})$ is the set of statistics in the neg-potential function $Q({\bf x})$ from equation \ref{eqn:pmf}.
+In Random Graph Model theory, \emph{degeneracy} occurs when there is a disproportionate amount of probability placed on only a few elements of the sample space, $\mathcal{X}$, by the model. @handcock2003assessing define a model to be near degenerate if $\mu(\boldsymbol \theta)$, the mean parametrization on the model parameters, is close to the boundary of the convex hull of $\{t_k(\boldsymbol x): \boldsymbol x \in \mathcal{X}, k = 1, \dots, K\}$, where $t_k(\boldsymbol x), k = 1, \dots, K\}$ is the set of statistics in the neg-potential function $Q(\boldsymbol x)$ from equation \ref{eqn:pmf}.
 
 The mean parameterization on the model parameters, $\mu(\boldsymbol \theta)$, is defined as
 \begin{align*}
 \mu(\boldsymbol \theta) &= \text{E}_{\boldsymbol \theta}\left[ t(\boldsymbol X) \right] \\
-&= \sum\limits_{x \in \{-1,1\}^{H + V}} \left\{ t(\boldsymbol x) f_{\boldsymbol \theta} ({\bf x}) \right\} \\
-&= \sum\limits_{x \in \{-1,1\}^{H + V}} \left\{ t(\boldsymbol x)\dfrac{\exp\left(\sum\limits_{i = 1}^V \sum\limits_{j=1}^H \theta_{ij} v_i h_j + \sum\limits_{i = 1}^V\theta_{v_i} v_i + \sum\limits_{j = 1}^H\theta_{h_j} h_j\right)}{\sum\limits_{{\bf x} \in \{0,1\}^{H+V}}\exp\left(\sum\limits_{i = 1}^V \sum\limits_{j=1}^H \theta_{ij} v_i h_j + \sum\limits_{i = 1}^V\theta_{v_i} v_i + \sum\limits_{j = 1}^H\theta_{h_j} h_j\right)}\right\} \\
+&= \sum\limits_{x \in \mathcal{X}} \left\{ t(\boldsymbol x) f_{\boldsymbol \theta} (\boldsymbol x) \right\} \\
+&= \sum\limits_{x \in \mathcal{X}} \left\{ t(\boldsymbol x)\dfrac{\exp\left(\sum\limits_{i = 1}^V \sum\limits_{j=1}^H \theta_{ij} v_i h_j + \sum\limits_{i = 1}^V\theta_{v_i} v_i + \sum\limits_{j = 1}^H\theta_{h_j} h_j\right)}{\sum\limits_{\boldsymbol x \in \mathcal{X}}\exp\left(\sum\limits_{i = 1}^V \sum\limits_{j=1}^H \theta_{ij} v_i h_j + \sum\limits_{i = 1}^V\theta_{v_i} v_i + \sum\limits_{j = 1}^H\theta_{h_j} h_j\right)}\right\} \\
 \end{align*}
+
+@schweinberger2011instability introduces a related concept, instability, which  is characterized
+by excessive sensitivity and near-degeneracy. He provides the following tool for detecting instability in the parameters of a discrete exponential family model, and thus near-degeneracy.
+
+\begin{defn}
+A sufficient statistic $t_k(\boldsymbol x_N)$ is \emph{stable} if there exist constants $C > 0$ and $N_C > 0$ such that
+\begin{align}
+\max\limits_{\boldsymbol x_N \in \mathcal{X}_N} [t_k(\boldsymbol x_N)] \le CN \text{ for all } N > N_C
+\end{align}
+and \emph{unstable} if for any $C > 0$, however large, there exists $N_C > 0$ such that
+\begin{align}
+\max\limits_{\boldsymbol x_N \in \mathcal{X}_N} [t_k(\boldsymbol x_N)] > CN \text{ for all } N > N_C
+\end{align}
+\end{defn}
+
+\begin{lemma}
+A $K$-parameter exponential family $\{P_{\theta} , \theta \in \Theta \}$ with natural parameters $\theta_1,\dots, \theta_K$ and $K - 1$ stable sufficient statistics, $t_1(\boldsymbol x_N),\dots, t_{K-1}(\boldsymbol x_N)$, as well as one unstable sufficient statistic, $t_K(\boldsymbol x_N)$, is degenerate with respect to $t_K(\boldsymbol x_N)$.
+\end{lemma}
 
 ##Small example
 To illustrate the idea of graph degeneracy in a RBM, we will consider a the smallest possible toy example that consists of one visible node $v_1$ and one hidden node $h_1$, both binary. A schematic of this model can be found in figure \ref{fig:toymodel}. 
@@ -71,7 +89,7 @@ To illustrate the idea of graph degeneracy in a RBM, we will consider a the smal
   \label{fig:toymodel}
 \end{figure}
 
-For this small model, we are able to illustrate the boundary of the convex hull of $\{t({\bf x}): {\bf x} \in \mathcal{X}\}$ because we are in three dimensions. In figure \ref{fig:toyhull}, the convex hull of our statistic space in three dimensions for the toy RBM with one visible and one hidden node from multiple perspectives enclosed by an unrestricted hull of $\{0,1\}^3$ space is shown. In this small model, $\{t({\bf x})\}$ is defined as $\{t({\bf x})\} = \{v_1, h_1, v_1 h_1\}$ by definition and form of the neg-potential function $Q({\bf x})$. Note that the convex hull of $\{t({\bf x})\}$ does not fill the unrestricted hull because of the relationship between the elements of $\{t({\bf x})\}$.
+For this small model, we are able to illustrate the boundary of the convex hull of $\{t_k(\boldsymbol x): \boldsymbol x \in \mathcal{X}, k = 1, \dots, K\}$ because we are in three dimensions. In figure \ref{fig:toyhull}, the convex hull of our statistic space in three dimensions for the toy RBM with one visible and one hidden node from multiple perspectives enclosed by an unrestricted hull of $\{0,1\}^3$ space is shown. In this small model, $\{t(\boldsymbol x)\}$ is defined as $\{t(\boldsymbol x)\} = \{v_1, h_1, v_1 h_1\}$ by definition and form of the neg-potential function $Q(\boldsymbol x)$. Note that the convex hull of $\{t(\boldsymbol x)\}$ does not fill the unrestricted hull because of the relationship between the elements of $\{t(\boldsymbol x)\}$.
 
 ```{r models}
 m1_bin <- calc_hull(1, 1)
@@ -101,15 +119,15 @@ m1_neg <- calc_hull(1, 1, type = "negative")
     \end{tikzpicture}
   }
   \end{minipage}
-  \caption{The convex hull of our statistic space in three dimensions for the toy RBM with one visible and one hidden node from multiple perspectives enclosed by an unrestricted hull of $\{0,1\}^3$ space. Note that the convex hull of $\{t({\bf x})\}$ does not fill the unrestricted hull because of the relationship between the elements of $\{t({\bf x})\}$.}
+  \caption{The convex hull of our statistic space in three dimensions for the toy RBM with one visible and one hidden node from multiple perspectives enclosed by an unrestricted hull of $\{0,1\}^3$ space. Note that the convex hull of $\{t(\boldsymbol x)\}$ does not fill the unrestricted hull because of the relationship between the elements of $\{t(\boldsymbol x)\}$.}
 \label{fig:toyhull}
 \end{figure}
 
 Additionally, we can compute the mean parametrization of the model parameters as 
 \begin{align*}
 \mu(\boldsymbol \theta) &= \text{E}_{\boldsymbol \theta}\left[ t(X) \right] \\
-&= \sum\limits_{x \in \{0,1\}^2} \left\{ t(x) \frac{\exp\left( \theta_{11} h_1 v_1 + \theta_{h1} h_1 + \theta_{v1} v_1\right)}{\sum\limits_{{\bf x} \in \{0,1\}^{2}}\exp\left( \theta_{11} h_1 v_1 + \theta_{h1} h_1 + \theta_{v1} v_1\right)} \right\} \\
-&= \sum\limits_{x \in \{0,1\}^2} \left\{ t(x) \frac{\exp\left( \theta_{11} h_1 v_1 + \theta_{h1} h_1 + \theta_{v1} v_1\right)}{\gamma(\boldsymbol \theta)} \right\} \\
+&= \sum\limits_{x \in \mathcal{X}} \left\{ t(x) \frac{\exp\left( \theta_{11} h_1 v_1 + \theta_{h1} h_1 + \theta_{v1} v_1\right)}{\sum\limits_{\boldsymbol x \in \mathcal{X}}\exp\left( \theta_{11} h_1 v_1 + \theta_{h1} h_1 + \theta_{v1} v_1\right)} \right\} \\
+&= \sum\limits_{x \in \mathcal{X}} \left\{ t(x) \frac{\exp\left( \theta_{11} h_1 v_1 + \theta_{h1} h_1 + \theta_{v1} v_1\right)}{\gamma(\boldsymbol \theta)} \right\} \\
 &= \left[
 \begin{matrix}
 \frac{\exp\left(\theta_{v_1}\right) + \exp\left(\theta_{11} + \theta_{v_1} + \theta_{h_1}\right)}{\gamma(\boldsymbol \theta)} \\
@@ -117,7 +135,7 @@ Additionally, we can compute the mean parametrization of the model parameters as
 \frac{\exp\left(\theta_{11} + \theta_{v_1} + \theta_{h_1}\right)}{\gamma(\boldsymbol \theta)} \\
 \end{matrix} \right]
 \end{align*}
-These three functions can be visualized over multiple values of $\boldsymbol \theta$, as seen in figure \ref{fig:toymodel}. By examining these functions, we can see that as values of $\boldsymbol \theta$ grow larger in magnitude, at least one mean-parameterization functions is approaching the values 0 or 1, indicating a potential to be near to the boundary of the convex hull of $\{t({\bf x}): {\bf x} \in \mathcal{X}\}$. Thus, for a very small example we can see the relationship between values of $\boldsymbol \theta$ and model degeneracy.
+These three functions can be visualized over multiple values of $\boldsymbol \theta$, as seen in figure \ref{fig:toymodel}. By examining these functions, we can see that as values of $\boldsymbol \theta$ grow larger in magnitude, at least one mean-parameterization functions is approaching the values 0 or 1, indicating a potential to be near to the boundary of the convex hull of $\{t_k(\boldsymbol x): \boldsymbol x \in \mathcal{X}, k = 1, \dots, K\}$. Thus, for a very small example we can see the relationship between values of $\boldsymbol \theta$ and model degeneracy.
 
 ```{r toymodel, fig.cap="\\label{fig:toymodel}The three mean-parameterization functions of the model parameters for a RBM with one visible and one hidden node.", out.height = "4in", fig.align='center'}
 possibles <- stats(1, 1, type = "binary")
@@ -148,7 +166,7 @@ expand.grid(theta_h1 = seq(-2, 2, length.out = 5),
 ```
 
 ##Variable Encoding
-Multiple encodings of the binary variables are possible. For example, we could allow $\mathcal{H} \subset \{0,1\}^H, \mathcal{V} \subset \{0,1\}^V$, as in the previous sections or we could encode the state of the variables as $\mathcal{H} \subset \{-1,1\}^H, \mathcal{V} \subset \{-1,1\}^V$. This will result in $t({\bf x}) \in \{0,1\}^{H + V + HV}$ or $t({\bf x}) \in \{-1,1\}^{H + V + HV}$ depending on how we encode on and off states in the nodes. To explore the effect of this encoding on the potential near degeneracy of an RBM, we can explore the behavior of the ratio of the volume of the unrestricted convex hull to the restructed convex hull of $\{t({\bf x})\}$ to determine how much the restriction in our statistics by including the cross product terms incurs.
+Multiple encodings of the binary variables are possible. For example, we could allow $\mathcal{H} \subset \{0,1\}^H, \mathcal{V} \subset \{0,1\}^V$, as in the previous sections or we could encode the state of the variables as $\mathcal{H} \subset \{-1,1\}^H, \mathcal{V} \subset \{-1,1\}^V$. This will result in $t(\boldsymbol x) \in \{0,1\}^{H + V + HV}$ or $t(\boldsymbol x) \in \{-1,1\}^{H + V + HV}$ depending on how we encode on and off states in the nodes. To explore the effect of this encoding on the potential near degeneracy of an RBM, we can explore the behavior of the ratio of the volume of the unrestricted convex hull to the restructed convex hull of $\{t(\boldsymbol x)\}$ to determine how much the restriction in our statistics by including the cross product terms incurs.
 
 For the small two node example, the binary encoding loses `r round((1-m1_bin$c_hull$vol)*100,2)`% of the volume compared to unrestricted space and the negative encoding loses `r round((1-m1_neg$c_hull$vol/(2^3))*100,2)`% of the volume compared to unrestricted space. This notion of lost volume can be helpful to conceptualize how difficult it will be for the mean parameterized vector $\mu(\boldsymbol \theta)$ to avoid the boundary, and thus avoid near degeneracy. In fact, if we look at the ratio of volume within a convex hull versus the volume of an unrestricted hull, we can see a relationship emerge as the number of nodes (and thus parameters) increases. In figure \ref{fig:volume_plot}, it is evident that as the number of parameters increses, this ratio is decreasing at an increasing rate, meaning it gets more and more difficult to avoid the boundary of the convex hull and thus near degeneracy. Additionally, it appears that the $\{-1,1\}$ encoding suffers slightly less from this problem.
 
@@ -183,7 +201,104 @@ plyr::ldply(bin_res, function(x) x$c_hull$vol) %>%
 Thus, moving forward we will restrict our examinations to the $\{-1, 1\}$-encoding of the binary variables in the RBM.
 
 #Exploring Manageable Examples
+```{r split_sample, cache=TRUE}
+#reshape data function
+plot_data <- function(res, grid = FALSE) {
+  
+  plot.data <- data.frame()
+  
+  if(!grid) {
+    for(i in 1:nrow(res)) {
+      tmp <- res$g_theta[[i]] %>% data.frame()
+      H <- res[i,]$H
+      V <- res[i,]$V
+      N <- res[i,]$N
+      r1 <- res[i,]$r1
+      r2 <- res[i,]$r2
+      C <- res[i,]$C
+      epsilon <- res[i,]$epsilon
+      
+      
+      tmp %>% 
+        rowwise() %>% 
+        mutate_(ss_interaction = paste0("(", paste(paste0(names(.)[(H + V + 1):(H + V + H*V)], "^2"), collapse = " + "), ")"),
+                ss_main = paste0("sum(", paste(paste0(names(.)[1:(H+V)],"^2"), collapse = " + "), ")")) %>%    
+        ungroup() -> ratio
+      
+      
+      inner_join(ratio, res$outside[[i]] %>% ungroup()) %>%
+        select(ss_interaction, ss_main, near_hull) %>%
+        mutate(H = H, V = V, n_param = H + V + H*V, N = H + V, N = N, r1 = r1, r2 = r2, C = C, epsilon = epsilon) %>%
+        rbind(plot.data) -> plot.data
+      }
+    } else {
+      for(i in 1:nrow(res)) {
+        tmp <- res$g_theta[[i]] %>% data.frame()
+        H <- res[i,]$H
+        V <- res[i,]$V
+        N <- res[i,]$N
+        r1 <- res[i,]$r1
+        r2 <- res[i,]$r2
+        
+        tmp %>% 
+          rowwise() %>% 
+          mutate_(ss_interaction = paste0("(", paste(paste0(names(.)[(H + V + 1):(H + V + H*V)], "^2"), collapse = " + "), ")"),
+                ss_main = paste0("sum(", paste(paste0(names(.)[1:(H+V)],"^2"), collapse = " + "), ")")) %>%  
+          ungroup() -> ratio
+        
+        
+        inner_join(ratio, res$outside[[i]] %>% ungroup()) %>%
+          select(ss_interaction, ss_main, near_hull) %>%
+          mutate(H = H, V = V, n_param = H + V + H*V, N = H + V, N = N, r1 = r1, r2 = r2) %>%
+          rbind(plot.data) -> plot.data
+      }
+    }
+  
+  return(plot.data)
+}
+
+load("../data/results_split.RData")
+plot_dat_split <- res %>% plot_data
+
+load("../data/results_grid.RData")
+plot_dat_grid <- res %>% plot_data(grid = TRUE)
+```
+
+```{r split_plots}
+plot_dat_grid %>%
+  group_by(r1, r2, n_param) %>%
+  summarise(frac_degen = sum(near_hull)/n(), count = n()) %>% 
+  ungroup() %>% 
+  ggplot() +
+  geom_tile(aes(x = r1, y = r2, fill = frac_degen)) +
+  geom_contour(aes(x = r1, y = r2, z = frac_degen), colour = "black", bins = 8) +
+  geom_contour(aes(x = r1, y = r2, z = frac_degen), colour = "black", breaks = .05, size = 1.5) +
+  geom_abline(aes(intercept = 0, slope = 1), alpha = .5, lty = 2) +
+  scale_fill_gradient(low = "yellow", high = "red") +
+#   geom_point(aes(r1, r2, alpha = frac_degen), 
+#              data = plot_dat_split %>%
+#                group_by(r1, r2, n_param) %>%
+#                summarise(frac_degen = sum(near_hull)/n(), count = n())) +
+  facet_grid(~n_param) +
+  theme(aspect.ratio = 1) +
+  theme(legend.position = "bottom")
+
+plot_dat_grid %>% 
+  mutate(ss_interaction = sqrt(ss_interaction)/(H*V), ss_main = sqrt(ss_main)/(H + V)) %>%
+  #filter(near_hull) %>%
+  ggplot() +
+  geom_density_2d(aes(ss_main, ss_interaction, colour = ..level..)) +
+  scale_colour_gradient(low = "yellow", high = "red") +
+  facet_grid(~n_param) +
+  theme(aspect.ratio = 1) +
+  theme(legend.position = "none")
+  
+
+```
+
 
 #Discussion
+
+#References
 
 

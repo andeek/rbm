@@ -12,28 +12,34 @@ V <- 4
 load("written/fitted_models_adaptive_mh_trunc_distn_shrunk_0.6667.Rdata")
 shrunk_bad <- models_bad
 shrunk_good <- models_good
+shrunk_degen <- models_degen
 
 load("written/fitted_models_adaptive_mh_trunc_distn_marginal_1.Rdata")
 marginal_bad_1 <- models_bad
 marginal_good_1 <- models_good
+marginal_degen_1 <- models_degen
 
 
 load("written/fitted_models_adaptive_mh_trunc_distn_marginal_2.Rdata")
 marginal_bad_2 <- models_bad
 marginal_good_2 <- models_good
+marginal_degen_2 <- models_degen
 
 load("written/fitted_models_adaptive_mh_trunc_distn_marginal_3.Rdata")
 marginal_bad_3 <- models_bad
 marginal_good_3 <- models_good
+marginal_degen_3 <- models_degen
 
 #load Jing's prior
 load("written/fitted_models_distn_0.26.Rdata")
 jing_bad <- models_bad
 jing_good <- models_good
+jing_degen <- models_degen
 
 load("written/fitted_models_adaptive_mh_trunc_distn_shrunk_jing_match.Rdata")
 shrunk_jing_bad <- models_bad
 shrunk_jing_good <- models_good
+shrunk_jing_degen <- models_degen
 
 #rm unneccesary data
 rm(models_bad)
@@ -70,23 +76,28 @@ reshape_sample_distn <- function(model) {
 
 #burn in more on the truncated, there are more iterations than the Jing, which gets complicated with plotting
 shrunk_sample_good <- reshape_sample_distn(shrunk_good) %>% filter(iter > 500) %>% mutate(iter = 1:n()) 
-shrunk_sample_bad <- reshape_sample_distn(shrunk_bad) %>% filter(iter > 500) %>% mutate(iter = 1:n()) 
+shrunk_sample_bad <- reshape_sample_distn(shrunk_bad) %>% filter(iter > 500) %>% mutate(iter = 1:n())
+shrunk_sample_degen <- reshape_sample_distn(shrunk_degen) %>% filter(iter > 500) %>% mutate(iter = 1:n()) 
 
 marginal_sample_good_1 <- reshape_sample_distn(marginal_good_1)
 marginal_sample_bad_1 <- reshape_sample_distn(marginal_bad_1)
+marginal_sample_degen_1 <- reshape_sample_distn(marginal_degen_1)
 
 marginal_sample_good_2 <- reshape_sample_distn(marginal_good_2)
 marginal_sample_bad_2 <- reshape_sample_distn(marginal_bad_2)
+marginal_sample_degen_2 <- reshape_sample_distn(marginal_degen_2)
 
 marginal_sample_good_3 <- reshape_sample_distn(marginal_good_3)
 marginal_sample_bad_3 <- reshape_sample_distn(marginal_bad_3)
+marginal_sample_degen_3 <- reshape_sample_distn(marginal_degen_3)
 
 jing_sample_good <- reshape_sample_distn(jing_good)
 jing_sample_bad <- reshape_sample_distn(jing_bad)
+jing_sample_degen <- reshape_sample_distn(jing_degen)
 
 shrunk_jing_sample_good <- reshape_sample_distn(shrunk_jing_good) %>% filter(iter > 500) %>% mutate(iter = 1:n()) 
 shrunk_jing_sample_bad <- reshape_sample_distn(shrunk_jing_bad) %>% filter(iter > 500) %>% mutate(iter = 1:n()) 
-
+shrunk_jing_sample_degen <- reshape_sample_distn(shrunk_jing_degen) %>% filter(iter > 500) %>% mutate(iter = 1:n()) 
 
 #computing loglikelihoods, ratios ---------------------
 reshape_loglik <- function(model, visibles) {
@@ -141,22 +152,27 @@ reshape_loglik <- function(model, visibles) {
 
 shrunk_loglik_good <- reshape_loglik(shrunk_good, flat_images_good$visibles) %>% filter(iter > 500) %>% mutate(iter = 1:n()) 
 shrunk_loglik_bad <- reshape_loglik(shrunk_bad, flat_images_good$visibles) %>% filter(iter > 500) %>% mutate(iter = 1:n()) 
+shrunk_loglik_degen <- reshape_loglik(shrunk_degen, flat_images_good$visibles) %>% filter(iter > 500) %>% mutate(iter = 1:n()) 
 
 marginal_loglik_good_1 <- reshape_loglik(marginal_good_1, flat_images_good$visibles)
 marginal_loglik_bad_1 <- reshape_loglik(marginal_bad_1, flat_images_good$visibles)
+marginal_loglik_degen_1 <- reshape_loglik(marginal_degen_1, flat_images_good$visibles)
 
 marginal_loglik_good_2 <- reshape_loglik(marginal_good_2, flat_images_good$visibles)
 marginal_loglik_bad_2 <- reshape_loglik(marginal_bad_2, flat_images_good$visibles)
+marginal_loglik_degen_2 <- reshape_loglik(marginal_degen_2, flat_images_good$visibles)
 
 marginal_loglik_good_3 <- reshape_loglik(marginal_good_3, flat_images_good$visibles)
 marginal_loglik_bad_3 <- reshape_loglik(marginal_bad_3, flat_images_good$visibles)
+marginal_loglik_degen_3 <- reshape_loglik(marginal_degen_3, flat_images_good$visibles)
 
 jing_loglik_good <- reshape_loglik(jing_good, flat_images_good$visibles)
 jing_loglik_bad <- reshape_loglik(jing_bad, flat_images_good$visibles)
+jing_loglik_degen <- reshape_loglik(jing_degen, flat_images_good$visibles)
 
 shrunk_jing_loglik_good <- reshape_loglik(shrunk_jing_good, flat_images_good$visibles) %>% filter(iter > 500) %>% mutate(iter = 1:n()) 
 shrunk_jing_loglik_bad <- reshape_loglik(shrunk_jing_bad, flat_images_good$visibles) %>% filter(iter > 500) %>% mutate(iter = 1:n()) 
-
+shrunk_jing_loglik_degen <- reshape_loglik(shrunk_jing_degen, flat_images_good$visibles) %>% filter(iter > 500) %>% mutate(iter = 1:n()) 
 
 reshape_distance <- function(model) {
   if("theta" %in% names(model)) {
@@ -178,21 +194,27 @@ reshape_distance <- function(model) {
 
 shrunk_distance_good <- reshape_distance(shrunk_good) %>% filter(iter > 500) %>% mutate(iter = 1:n()) 
 shrunk_distance_bad <- reshape_distance(shrunk_bad) %>% filter(iter > 500) %>% mutate(iter = 1:n()) 
+shrunk_distance_degen <- reshape_distance(shrunk_degen) %>% filter(iter > 500) %>% mutate(iter = 1:n()) 
 
 marginal_distance_good_1 <- reshape_distance(marginal_good_1)
 marginal_distance_bad_1 <- reshape_distance(marginal_bad_1)
+marginal_distance_degen_1 <- reshape_distance(marginal_degen_1)
 
 marginal_distance_good_2 <- reshape_distance(marginal_good_2)
 marginal_distance_bad_2 <- reshape_distance(marginal_bad_2)
+marginal_distance_degen_2 <- reshape_distance(marginal_degen_2)
 
 marginal_distance_good_3 <- reshape_distance(marginal_good_3)
 marginal_distance_bad_3 <- reshape_distance(marginal_bad_3)
+marginal_distance_degen_3 <- reshape_distance(marginal_degen_3)
 
 jing_distance_good <- reshape_distance(jing_good)
 jing_distance_bad <- reshape_distance(jing_bad)
+jing_distance_degen <- reshape_distance(jing_degen)
 
 shrunk_jing_distance_good <- reshape_distance(shrunk_jing_good) %>% filter(iter > 500) %>% mutate(iter = 1:n()) 
 shrunk_jing_distance_bad <- reshape_distance(shrunk_jing_bad) %>% filter(iter > 500) %>% mutate(iter = 1:n()) 
+shrunk_jing_distance_degen <- reshape_distance(shrunk_jing_degen) %>% filter(iter > 500) %>% mutate(iter = 1:n()) 
 
 #plots -------------------
 jing_sample_good %>% rename(jing = prob) %>%
@@ -252,6 +274,44 @@ jing_sample_good %>% rename(jing = prob) %>%
                            mutate(prior = "shrunk_jing"))
   ) -> all_statistics
 
+jing_sample_degen %>% rename(jing = prob) %>%
+  left_join(marginal_sample_degen_1 %>% ungroup() %>% select(-image_id) %>% rename(marginal_1 = prob)) %>%
+  left_join(marginal_sample_degen_2 %>% ungroup() %>% select(-image_id) %>% rename(marginal_2 = prob)) %>%
+  left_join(marginal_sample_degen_3 %>% ungroup() %>% select(-image_id) %>% rename(marginal_3 = prob)) %>%
+  left_join(shrunk_sample_degen %>% ungroup() %>% select(-image_id) %>% rename(shrunk = prob)) %>%
+  left_join(shrunk_jing_sample_degen %>% ungroup() %>% select(-image_id) %>% rename(shrunk_jing = prob)) %>%
+  ungroup() %>%
+  mutate(image_id = paste0("image_", image_id)) %>% 
+  select_(.dots = paste0("-v", 1:V)) %>%
+  gather(prior, prob, jing, marginal_1, marginal_2, marginal_3, shrunk, shrunk_jing) %>%
+  spread(image_id, prob) %>%
+  left_join(jing_loglik_degen %>% 
+              mutate(prior = "jing") %>%
+              rbind_list(marginal_loglik_degen_1 %>%
+                           mutate(prior = "marginal_1")) %>%
+              rbind_list(marginal_loglik_degen_2 %>%
+                           mutate(prior = "marginal_2")) %>%
+              rbind_list(marginal_loglik_degen_3 %>%
+                           mutate(prior = "marginal_3")) %>%
+              rbind_list(shrunk_loglik_degen %>%
+                           mutate(prior = "shrunk")) %>%
+              rbind_list(shrunk_jing_loglik_degen %>%
+                           mutate(prior = "shrunk_jing"))) %>%
+  left_join(jing_distance_degen %>% 
+              mutate(prior = "jing") %>%
+              rbind_list(marginal_distance_degen_1 %>%
+                           mutate(prior = "marginal_1")) %>%
+              rbind_list(marginal_distance_degen_2 %>%
+                           mutate(prior = "marginal_2")) %>%
+              rbind_list(marginal_distance_degen_3 %>%
+                           mutate(prior = "marginal_3")) %>%
+              rbind_list(shrunk_distance_degen %>%
+                           mutate(prior = "shrunk")) %>%
+              rbind_list(shrunk_jing_distance_degen %>%
+                           mutate(prior = "shrunk_jing"))
+  ) -> all_statistics_degen
+
+
 all_statistics %>%
   gather(statistic, value, -iter, -method, -prior) %>%
   filter(prior != "shrunk_jing") %>%
@@ -265,6 +325,20 @@ all_statistics %>%
   theme_bw(base_family = "serif") +
   ylim(c(0,1))
 
+all_statistics_degen %>%
+  gather(statistic, value, -iter, -prior) %>%
+  filter(prior != "shrunk_jing") %>%
+  mutate(marginal = factor(grepl("marginal", prior), labels = c("Latents", "Marginalized"))) %>%
+  filter(grepl("image", statistic)) %>%
+  separate(statistic, into = c("junk", "statistic")) %>%
+  mutate(statistic = as.numeric(statistic)) %>%
+  ggplot() +
+  geom_line(aes(iter, value, colour = prior)) +
+  geom_abline(aes(slope = 0, intercept = prob), data = distn_degen %>% rename(statistic = image_id)) +
+  facet_grid(marginal~statistic) +
+  theme_bw(base_family = "serif") +
+  ylim(c(0,1))
+
 all_statistics %>%
   gather(statistic, value, -iter, -method, -prior) %>%
   #filter(prior != "shrunk_jing") %>%
@@ -274,6 +348,15 @@ all_statistics %>%
   theme_bw(base_family = "serif") +
   facet_grid(method~statistic)
 
+all_statistics_degen %>%
+  gather(statistic, value, -iter, -prior) %>%
+  filter(prior != "marginal_3") %>%
+  filter(grepl("log", statistic)) %>%
+  ggplot() +
+  geom_line(aes(iter, value, colour = prior)) +
+  theme_bw(base_family = "serif") +
+  facet_grid(.~statistic)
+
 all_statistics %>%
   gather(statistic, value, -iter, -method, -prior) %>%
   #filter(prior != "shrunk_jing") %>%
@@ -282,6 +365,15 @@ all_statistics %>%
   geom_line(aes(iter, value, colour = prior)) +
   theme_bw(base_family = "serif") +
   facet_grid(method~statistic)
+
+all_statistics_degen %>%
+  gather(statistic, value, -iter, -prior) %>%
+  filter(prior != "marginal_3") %>%
+  filter(grepl("distance", statistic)) %>%
+  ggplot() +
+  geom_line(aes(iter, value, colour = prior)) +
+  theme_bw(base_family = "serif") +
+  facet_grid(.~statistic)
 
 all_statistics %>%
   group_by(method, prior) %>%

@@ -38,6 +38,11 @@ samp_exp <- function(space, center, r) {
   paste0(r*vec/sqrt(sum(vec^2)) + center, collapse=",")
 }
 
+sample_sphere_unif <- function(space, rep, center, r) {
+  vec <- matrix(rnorm(space*rep), nrow = rep)
+  r*vec/t(matrix(rep(sqrt(rowSums(vec^2)), each = space), nrow = space))
+}
+
 in_hull <- function(point, hull_points) {
   require(lpSolveAPI)
   P <- data.matrix(point)
@@ -53,35 +58,32 @@ in_hull <- function(point, hull_points) {
 
 #sample split radii ---------------------------------------------
 n <- 100
-C <- seq(0.2, 3, by = 0.2)
 r_exp <- .05
-epsilon <- seq(-1, 1, length.out = 11)
 
-expand.grid(H = 1:4, V = 1:4, C = C, epsilon = epsilon) %>%
+expand.grid(H = 1:4, V = 1:4, r1 = seq(0.001, 3, length.out = 20), r2 = seq(0.001, 3, length.out = 20)) %>%
   mutate(N = H + V) %>%
-  mutate(n = n, r1 = sqrt(C), r2 = sqrt(C*(N/(H*V))^(epsilon))) %>%
-  group_by(H, V, C, epsilon, r1, r2, N) %>% 
-  do(samp = cbind(matrix(rnorm(n*.$N, mean = 0, sd = .$r1/3), nrow = n), matrix(rnorm(n*.$H*.$V, mean = 0, sd = .$r2/3), nrow = n))) -> split_sample
+  group_by(H, V, r1, r2, N) %>% 
+  do(samp = cbind(sample_sphere_unif(.$N, n, 0, .$r1), sample_sphere_unif(.$H*.$V, n, 0, .$r2))) -> grid_sample
 
-expand.grid(H = 1:4, V = 1:4, C = C, epsilon = epsilon) %>%
+expand.grid(H = 1:4, V = 1:4, r1 = seq(0.001, 3, length.out = 20), r2 = seq(0.001, 3, length.out = 20)) %>%
   mutate(N = H + V) %>%
-  mutate(n = n, r1 = sqrt(C), r2 = sqrt(C*(N/(H*V))^(epsilon))) %>%
-  group_by(H, V, C, epsilon, r1, r2, N) %>% 
-  do(stat = stats(.$H, .$V, "negative")) -> split_sample_stat
+  group_by(H, V, r1, r2, N) %>% 
+  do(stat = stats(.$H, .$V, "negative")) -> grid_sample_stat
 
-split_sample <- inner_join(split_sample, split_sample_stat)
+grid_sample <- inner_join(grid_sample, grid_sample_stat)
 
-split_sample %>%
-  group_by(H, V, N, C, epsilon, r1, r2) %>%
-  do(g_theta = t(rbind(t(.$samp[[1]]), expected_value(theta = t(.$samp[[1]]), stats = data.matrix(.$stat[[1]]))))) -> split
+grid_sample %>%
+  group_by(H, V, N, r1, r2) %>%
+  do(g_theta = t(rbind(t(.$samp[[1]]), expected_value(theta = t(.$samp[[1]]), stats = data.matrix(.$stat[[1]]))))) -> grid
 
-split <- inner_join(split, split_sample)
+grid <- inner_join(grid, grid_sample)
 
-split %>%
-  group_by(H, V, N, C, epsilon, r1, r2) %>%
+grid %>%
+  ungroup() %>%
+  group_by(H, V, N, r1, r2) %>%
   do(outside = find_prop(.$g_theta[[1]] %>% data.frame() %>% select(starts_with("exp")), .$stat[[1]], r_exp)) -> tmp
 
-res <- inner_join(tmp, split) 
-save(res, file = "apps/results_split.RData")
+res <- inner_join(tmp, grid) 
+save(res, file = "apps/results_grid.RData")
 
 
