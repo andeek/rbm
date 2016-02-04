@@ -283,11 +283,11 @@ load("../data/results_grid.RData")
 plot_dat_grid <- res %>% plot_data(grid = TRUE)
 ```
 
-To explore the behavior of the RBM parameters $\boldsymbol \theta$ as it related to model degeneracy and near degeneracy, we example various models of small size. For $H, V \in \{1, \dots, 4\}$, we simulate `r dim(res$samp[[1]])[1]` values of $\boldsymbol \theta$ with magnitude, $||\boldsymbol \theta || = \sqrt{\sum_{i = 1, \dots, H + V + H*V} \theta_i^2}$, between `r min(plot_dat_grid$r1)` and `r max(plot_dat_grid$r1)`. For each set of parameters we then calculate the mean parameterization, as detailed in section \ref{degeneracy-in-random-graph-models} and can classify each model as near-degenerate or viable and look at the fraction of models that were near-degenerate for each combination of magnitude of $\boldsymbol \theta$ and model size. 
+To explore the behavior of the RBM parameters $\boldsymbol \theta$ as it related to model degeneracy and near degeneracy, we example various models of small size. For $H, V \in \{1, \dots, 4\}$, we sample uniformly `r dim(res$samp[[1]])[1]` values of $\boldsymbol \theta$ with magnitude, $||\boldsymbol \theta || = \sqrt{\sum_{i = 1, \dots, H + V + H*V} \theta_i^2}$, between `r min(plot_dat_grid$r1)` and `r max(plot_dat_grid$r1)`. For each set of parameters we then calculate the mean parameterization, as detailed in section \ref{degeneracy-in-random-graph-models} and can classify each model as near-degenerate or viable and look at the fraction of models that were near-degenerate for each combination of magnitude of $\boldsymbol \theta$ and model size. 
 
-In this numerical experiment, we split $\boldsymbol \theta$ into $\boldsymbol \theta_{interaction}$ and $\boldsymbol \theta_{main}$, in reference to which sufficient statistics the parameters correspond to, and allow the two types of terms to have varying magnitudes. The results of this numerical study can be seen in figure \ref{fig:split_plots}.
+In this numerical experiment, we split $\boldsymbol \theta$ into $\boldsymbol \theta_{interaction}$ and $\boldsymbol \theta_{main}$, in reference to which sufficient statistics the parameters correspond to, and allow the two types of terms to have varying magnitudes. The results of this numerical study can be seen in figure \ref{fig:split_plots}. From this figure, it is evident that the fraction of near-degenerate models simulated at specified magnitudes of $\boldsymbol theta_{main}$ and $\boldsymbol theta_{interaction}$ is more closely related to the combined distance from the origin of these two vectors, than any individual group of parameter values.
 
-```{r split_plots, fig.cap="\\label{fig:split_plots}A numerical experiment looking at the fraction of models that were near-degenerate for each combination of magnitude of $\\boldsymbol \\theta$ and model size."}
+```{r split_plots, fig.cap="\\label{fig:split_plots}A numerical experiment looking at the fraction of models that were near-degenerate for each combination of magnitude of $\\boldsymbol \\theta$ and model size. The thick black line shows the level where the fraction of -near degenerate models is .05."}
 plot_dat_grid %>%
   group_by(r1, r2, H, V) %>%
   summarise(frac_degen = sum(near_hull)/n(), count = n()) %>% 
@@ -298,7 +298,7 @@ plot_dat_grid %>%
   geom_contour(aes(x = r1, y = r2, z = frac_degen), colour = "black", bins = 8) +
   geom_contour(aes(x = r1, y = r2, z = frac_degen), colour = "black", breaks = .05, size = 1.5) +
   geom_abline(aes(intercept = 0, slope = 1), alpha = .5, lty = 2) +
-  scale_fill_gradient("Fraction Degenerate", low = "yellow", high = "red") +
+  scale_fill_gradient("Fraction Near-degenerate", low = "yellow", high = "red") +
 #   geom_point(aes(r1, r2), alpha = .1, 
 #              data = plot_dat_split %>%
 #                mutate(ss_interaction = sqrt(ss_interaction), ss_main = sqrt(ss_main)) %>%
@@ -314,7 +314,9 @@ plot_dat_grid %>%
   #theme(legend.position = "bottom")
 ```
 
-```{r split_plots2, warning=FALSE}
+Figure \ref{fig:split_plots_dist} shows the fraction near-degenerate for each magnitude of $\boldsymbol \theta$ for each model. For each number of visibles in the model, the fraction near-degenerate becomes greater than zero at larger values of $||\boldsymbol \theta||$ as $H$ increases and the slope becomes steeper as $H$ increases also. This shows that as model size gets larger, the risk of degeneracy starts at a slightly larger magnitude of parameters, but very quickly increases until reaching close to 1. 
+
+```{r split_plots2, warning=FALSE, fig.cap="\\label{fig:split_plots_dist}The fraction near-degenerate for each magnitude of $\\boldsymbol \\theta$ for each model. For each number of visibles in the model, the fraction near-degenerate becomes greater than zero at larger values of $||\\boldsymbol \\theta||$ as $H$ increases and the slope becomes steeper as $H$ increases also."}
 plot_dat_grid %>% 
   mutate(dist = sqrt(r1^2 + r2^2)) %>%
   group_by(dist, H, V) %>%
@@ -326,8 +328,38 @@ plot_dat_grid %>%
   facet_grid(~Visibles) +
   ylim(c(0,1)) +
   xlab(expression(paste(group("||", theta, "||"), ", Distance from the origin"))) +
-  ylab("Fraction Degenerate")
+  ylab("Fraction Near-degenerate")
 ```
+
+```{r, frac-degen, include=FALSE}
+plot_dat_grid %>%
+  mutate(dist = sqrt(r1^2 + r2^2)) %>%
+  group_by(dist, H, V) %>%
+  summarise(frac_degen = sum(near_hull)/n()) %>%
+  ungroup() %>%
+  group_by(H, V) -> tmp
+
+tmp %>%
+  filter(frac_degen > 0) %>%
+  mutate(min_degen_pos = min(dist)) %>%
+  select(H, V, min_degen_pos) %>% unique() %>%
+left_join(tmp %>%
+  filter(frac_degen > .6) %>%
+  mutate(min_degen_50 = min(dist)) %>%
+  select(H, V, min_degen_50) %>% unique()) %>%
+  mutate(min_degen_pos = min_degen_pos/(H + V + H*V),
+         min_degen_50 = min_degen_50/(H + V + H*V)) %>%
+  mutate(degen_ratio = min_degen_50/min_degen_pos) %>%
+  ggplot() +
+  geom_point(aes(V, degen_ratio, colour = factor(H))) +
+  geom_line(aes(V, degen_ratio, colour = factor(H), group = factor(H))) +
+  ylab("Ratio of Min Distance above 0% near-degenerate to 50% near-degenerate") +
+  xlab("Visibles") +
+  scale_colour_discrete("Hiddens")
+
+  
+```
+
 
 #Discussion
 
