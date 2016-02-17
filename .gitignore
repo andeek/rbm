@@ -25,6 +25,7 @@ shinyapps/
 *.xml
 *-blx.bib
 *.blg
+*.aux
 
 # stupid files
 *.m~
@@ -38,5 +39,10 @@ shinyapps/
 #too much rdata
 4x4 model/written/*.Rdata
 
+
 writing/degeneracy/draft_cache
 writing/data/*.Rdata
+
+#presentation
+!presentations/coda2016/*.pdf
+!presentations/coda2016/images/*

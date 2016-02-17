@@ -1,0 +1,14 @@
+\begin{tikzpicture}[node distance=3cm, thick, 
+                    main node/.style= {circle,
+                      fill=white,
+                      draw,
+                      font=\tiny,
+                      inner sep=0pt,
+                      minimum size=1cm}]
+    \node[anchor=north east,inner sep=0] (image) at (0,0) {\includegraphics[height=2in]{images/visibles.pdf}};
+    \begin{scope}[x={(image.south east)},y={(image.north west)}]
+        \draw[isured, ultra thick] (0.05,0.05) rectangle (0.11,0.11);
+    \end{scope}
+    
+    \node[main node] (1) [xshift = 2cm] {$v_1$};
+\end{tikzpicture}
