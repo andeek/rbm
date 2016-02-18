@@ -46,3 +46,7 @@ writing/data/*.Rdata
 #presentation
 !presentations/coda2016/*.pdf
 !presentations/coda2016/images/*
+!presentations/coda2016/*.tex
+
+#big files
+degeneracy/apps/results_grid*

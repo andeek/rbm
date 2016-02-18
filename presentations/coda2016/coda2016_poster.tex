@@ -1,0 +1,123 @@
+%%big poster size with big fonts
+\documentclass[extrafontsizes, 30pt]{memoir}
+\usepackage[paperheight=31in,paperwidth=47in,margin=1in,heightrounded,showframe]{geometry}
+
+%%background from pptx
+\usepackage{background}
+\backgroundsetup{
+scale=1,
+angle=0,
+opacity=1,  %% adjust
+contents={\includegraphics[width=\paperwidth,height=\paperheight]{images/coda2016_poster_background.pdf}}
+}
+
+%%put words where I want
+\usepackage[absolute, overlay]{textpos}
+\setlength{\TPHorizModule}{1in}
+\setlength{\TPVertModule}{\TPHorizModule}
+
+%%tikz setup
+\usepackage{tikz, subfig, amsthm}
+\usepackage{tikz-3dplot}
+\usetikzlibrary{arrows, shapes, positioning}
+
+%%other options
+\definecolor{isublue}{RGB}{58,117,196}
+\definecolor{isured}{RGB}{206,17,38}
+\counterwithout{figure}{chapter}
+\usepackage{amsmath}
+\setlength{\parindent}{0cm}
+
+\begin{document}
+
+%%-----------------------------------------------
+%%
+%%Middle big box
+%%
+\begin{textblock}{18.01}(14.53, 6.71)
+{\large \bfseries Restricted Boltzmann machine (RBM)}
+
+\begin{figure}[ht]
+  \centering
+  \resizebox{\linewidth}{!}{\input{images/rbm.tikz}}
+  \caption{An example restricted Boltzmann machine (RBM), which consists of two layers, a hidden ($\mathcal{H}$) and a visible layer ($\mathcal{V}$), with no connections within a layer. Hidden nodes indicated by gray circles and the visible nodes indicated by white circles.}
+  \label{fig:rbm}
+\end{figure}
+
+\begin{figure}[ht]
+  \centering
+  \input{images/visibles.tikz}
+  \caption{Visibles diagram.}
+  \label{fig:visibles}
+\end{figure}
+
+~\\[-1cm]
+{\bfseries Joint distribution} \\[.25cm]
+Let $\boldsymbol x = \{h_1, \dots, h_H, v_1,\dots,v_V\}$ represent the states of the visible and hidden nodes in an RBM. Then  the probability corresponding to the state of each node taking the value of $1$:
+\begin{align}
+\label{eqn:pmf}
+f_{\boldsymbol \theta} (\boldsymbol x) = \dfrac{\exp\left(\sum\limits_{i = 1}^V \sum\limits_{j=1}^H \theta_{ij} v_i h_j + \sum\limits_{i = 1}^V\theta_{v_i} v_i + \sum\limits_{j = 1}^H\theta_{h_j} h_j\right)}{\sum\limits_{\boldsymbol x \in \mathcal{X}}\exp\left(\sum\limits_{i = 1}^V \sum\limits_{j=1}^H \theta_{ij} v_i h_j + \sum\limits_{i = 1}^V\theta_{v_i} v_i + \sum\limits_{j = 1}^H\theta_{h_j} h_j\right)} 
+\end{align}
+\end{textblock}
+
+%%-----------------------------------------------
+%%
+%%Top left box
+%%
+\begin{textblock}{14.08}(.8, 5.71)
+{\large \bfseries Deep learning}
+
+\end{textblock}
+
+%%-----------------------------------------------
+%%
+%%Middle left box
+%%
+\begin{textblock}{14.08}(.8, 11.83)
+{\large \bfseries Degeneracy in random graph models}
+
+\end{textblock}
+
+%%-----------------------------------------------
+%%
+%%Bottom left box
+%%
+\begin{textblock}{14.08}(.8, 20.64)
+{\large \bfseries Tiny example}
+
+\end{textblock}
+
+%%-----------------------------------------------
+%%
+%%Top right box
+%%
+\begin{textblock}{14.08}(33.5, 5.71)
+{\large \bfseries Managable examples}
+\end{textblock}
+
+%%-----------------------------------------------
+%%
+%%Middle right box
+%%
+\begin{textblock}{14.08}(33.5, 12.91)
+{\large \bfseries Fitting}
+
+\end{textblock}
+
+%%-----------------------------------------------
+%%
+%%Bottom right box
+%%
+\begin{textblock}{14.08}(33.5, 23.85)
+{\large \bfseries Discussion}
+\end{textblock}
+
+%%-----------------------------------------------
+%%
+%%Bottom middle box
+%%
+\begin{textblock}{15.08}(16.17, 24.84)
+{\large \bfseries References}
+\end{textblock}
+
+\end{document}

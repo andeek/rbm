@@ -52,7 +52,7 @@ Due to the potential size of the model the normalizing constant $\gamma(\boldsym
 RBMs have risen to prominence in recent years due to their connection to deep learning [see @hinton2006fast, @salakhutdinov2012efficient, or @srivastava2013modeling for examples]. By stacking multiple layers of RBMs in a deep architecture, the method's proponents claim the ability to learn "internal representations that become increasingly complex, which is considered to be a promising way of solving object and speech recognition problems" [@salakhutdinov2009deep, pp. 450]. The stacking is achieved by treating a hidden layer of one RBM as the visible layer in a second RBM, and so on until the desired architecture is created.
 
 #Degeneracy in Random Graph Models
-In Random Graph Model theory, \emph{degeneracy} occurs when there is a disproportionate amount of probability placed on only a few elements of the sample space, $\mathcal{X}$, by the model. We consider three related definitions of degeneracy as they relate to a graphical model. Section \ref{mean-parameterization} presents a definition from @handcock2003assessing based on the mean parameterization of the model parameters, section \ref{neg-potential} presents a definition from @schweinberger2011instability based on the neg-potential function, and section \ref{conditional-expectation} presents a definition from @kaiser2006markov that involves the difference between marginal and conditional expectations of the model.
+In Random Graph Model theory, \emph{degeneracy} occurs when there is a disproportionate amount of probability placed on only a few elements of the sample space, $\mathcal{X}$, by the model. We consider three related definitions of degeneracy as they relate to a graphical model. Section \ref{mean-parameterization} presents a definition from @handcock2003assessing based on the mean parameterization of the model parameters, section \ref{neg-potential} presents a definition from @schweinberger2011instability based on the neg-potential function, and section \ref{conditional-expectation} presents a definition from @kaiser2006markov that involves the difference between expectations of the model and expectations under independence.
 
 ##Mean Parameterization
 @handcock2003assessing define a model to be near degenerate if $\mu(\boldsymbol \theta)$, the mean parametrization on the model parameters, is close to the boundary of the convex hull of $\{t_k(\boldsymbol x): \boldsymbol x \in \mathcal{X}, k = 1, \dots, K\}$, where $t_k(\boldsymbol x), k = 1, \dots, K\}$ is the set of statistics in the neg-potential function $Q(\boldsymbol x)$ from equation \ref{eqn:pmf}.
@@ -89,8 +89,6 @@ In the context of the RBM, $N$ is the number of nodes in the model, $H + V$. So,
 
 There are $H + V + H*V$ terms in the sum that comprises $Q(\boldsymbol x)$, which leads to a natural split of the quantity into main effects, those terms based solely on $h_i$ and $v_j$ and interaction effects, those terms based on the product of $h_i v_j$. There are $H+V$ main effects terms and $H*V$ interaction effects terms. For $H$ and $V$ large enough, the number of interaction terms is growing much faster than $H + V$, meaning no matter the $C$, we are able to find values of $\boldsymbol theta$ that can make the left side of equation \ref{eq:unstable} large compared to $C(H+V)$. This points to the interaction terms as potentially the more dangerous parameters for causing near-degeneracy in the RBM.
 
-##Conditional Expectation
-
 ```{r interaction size, include=FALSE}
 expand.grid(H = 1:10, V = 1:10) %>%
   mutate(interaction_terms = H*V) %>%
@@ -100,6 +98,17 @@ expand.grid(H = 1:10, V = 1:10) %>%
   scale_colour_gradient("H*V/(H + V)", low = "yellow", high = "red")
 
 ```
+
+##Expectation Differences
+The characterization put forth by @kaiser2006markov of degeneracy in a model concerns the difference between model expectations and expectations given independence. Using this concept of dependence in a model, it is possible to understand what conditions lead to near-degeneracy in a model versus those that guarantee non-degenerate models. In this method, a model is considered without near-degeneracy if its expected value is not very different from the same model with assumed independence. The quantities to compare in the RBM case are
+
+\begin{align*}
+\text{E}\left[\boldsymbol X\right] &= \sum\limits_{\boldsymbol x \in \mathcal{X}} \boldsymbol x f_{\boldsymbol \theta}(\boldsymbol x) \\
+&= \sum\limits_{\boldsymbol x \in \mathcal{X}} \boldsymbol x \frac{\exp\left(\sum\limits_{i = 1}^V \sum\limits_{j=1}^H \theta_{ij} v_i h_j + \sum\limits_{i = 1}^V\theta_{v_i} v_i + \sum\limits_{j = 1}^H\theta_{h_j} h_j\right)}{\sum\limits_{\boldsymbol x \in \mathcal{X}}\exp\left(\sum\limits_{i = 1}^V \sum\limits_{j=1}^H \theta_{ij} v_i h_j + \sum\limits_{i = 1}^V\theta_{v_i} v_i + \sum\limits_{j = 1}^H\theta_{h_j} h_j\right)} \\
+&= \frac{\sum\limits_{\boldsymbol x \in \mathcal{X}} x_k \exp\left(\sum\limits_{i = 1}^V \sum\limits_{j=1}^H \theta_{ij} v_i h_j + \sum\limits_{i = 1}^V\theta_{v_i} v_i + \sum\limits_{j = 1}^H\theta_{h_j} h_j\right)}{\sum\limits_{\boldsymbol x \in \mathcal{X}}\exp\left(\sum\limits_{i = 1}^V \sum\limits_{j=1}^H \theta_{ij} v_i h_j + \sum\limits_{i = 1}^V\theta_{v_i} v_i + \sum\limits_{j = 1}^H\theta_{h_j} h_j\right)}  \qquad k = 1, \dots, H + V
+\end{align*}
+
+
 
 
 #Tiny example
@@ -292,7 +301,7 @@ plot_dat_grid <- res %>% plot_data(grid = TRUE)
 
 To explore the behavior of the RBM parameters $\boldsymbol \theta$ as it related to model degeneracy and near degeneracy, we example various models of small size. For $H, V \in \{1, \dots, 4\}$, we sample uniformly `r dim(res$samp[[1]])[1]` values of $\boldsymbol \theta$ with magnitude, $||\boldsymbol \theta || = \sqrt{\sum_{i = 1, \dots, H + V + H*V} \theta_i^2}$, between `r min(plot_dat_grid$r1)` and `r max(plot_dat_grid$r1)`. For each set of parameters we then calculate the mean parameterization, as detailed in section \ref{degeneracy-in-random-graph-models} and can classify each model as near-degenerate or viable and look at the fraction of models that were near-degenerate for each combination of magnitude of $\boldsymbol \theta$ and model size. 
 
-In this numerical experiment, we split $\boldsymbol \theta$ into $\boldsymbol \theta_{interaction}$ and $\boldsymbol \theta_{main}$, in reference to which sufficient statistics the parameters correspond to, and allow the two types of terms to have varying magnitudes. The results of this numerical study can be seen in figure \ref{fig:split_plots}. From this figure, it is evident that the fraction of near-degenerate models simulated at specified magnitudes of $\boldsymbol theta_{main}$ and $\boldsymbol theta_{interaction}$ is more closely related to the combined distance from the origin of these two vectors, than any individual group of parameter values.
+In this numerical experiment, we split $\boldsymbol \theta$ into $\boldsymbol \theta_{interaction}$ and $\boldsymbol \theta_{main}$, in reference to which sufficient statistics the parameters correspond to, and allow the two types of terms to have varying magnitudes. The results of this numerical study can be seen in figure \ref{fig:split_plots}. From this figure, it is evident that the fraction of near-degenerate models simulated at specified magnitudes of $\boldsymbol \theta_{main}$ and $\boldsymbol \theta_{interaction}$ is more closely related to the combined distance from the origin of these two vectors, than any individual group of parameter values.
 
 ```{r split_plots, fig.cap="\\label{fig:split_plots}A numerical experiment looking at the fraction of models that were near-degenerate for each combination of magnitude of $\\boldsymbol \\theta$ and model size. The thick black line shows the level where the fraction of -near degenerate models is .05."}
 plot_dat_grid %>%
@@ -323,7 +332,7 @@ plot_dat_grid %>%
 
 Figure \ref{fig:split_plots_dist} shows the fraction near-degenerate for each magnitude of $\boldsymbol \theta$ for each model. For each number of visibles in the model, the fraction near-degenerate becomes greater than zero at larger values of $||\boldsymbol \theta||$ as $H$ increases and the slope becomes steeper as $H$ increases also. This shows that as model size gets larger, the risk of degeneracy starts at a slightly larger magnitude of parameters, but very quickly increases until reaching close to 1. 
 
-```{r split_plots2, warning=FALSE, fig.cap="\\label{fig:split_plots_dist}The fraction near-degenerate for each magnitude of $\\boldsymbol \\theta$ for each model. For each number of visibles in the model, the fraction near-degenerate becomes greater than zero at larger values of $||\\boldsymbol \\theta||$ as $H$ increases and the slope becomes steeper as $H$ increases also.", fig.height=3}
+```{r split_plots2, warning=FALSE, fig.cap="\\label{fig:split_plots_dist}The fraction near-degenerate for each magnitude of $\\boldsymbol \\theta$ for each model. For each number of visibles in the model, the fraction near-degenerate becomes greater than zero at larger values of $||\\boldsymbol \\theta||$ as $H$ increases and the slope becomes steeper as $H$ increases also.", fig.height=2}
 plot_dat_grid %>% 
   mutate(dist = sqrt(r1^2 + r2^2)) %>%
   group_by(dist, H, V) %>%
