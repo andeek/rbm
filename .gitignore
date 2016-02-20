@@ -33,6 +33,7 @@ shinyapps/
 *.txt~
 .Rproj.user
 .DS_store
+*.DS_Store
 
 # Jing's code
 11/

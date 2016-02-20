@@ -19,12 +19,13 @@ contents={\includegraphics[width=\paperwidth,height=\paperheight]{images/coda201
 %%tikz setup
 \usepackage{tikz, subfig, amsthm}
 \usepackage{tikz-3dplot}
-\usetikzlibrary{arrows, shapes, positioning, backgrounds}
+\usetikzlibrary{arrows, shapes, positioning, backgrounds, decorations.pathreplacing}
 
 
 %%other options
 \definecolor{isublue}{RGB}{58,117,196}
 \definecolor{isured}{RGB}{206,17,38}
+\definecolor{isugreen}{RGB}{7,109,84}
 \counterwithout{figure}{chapter}
 \counterwithout{table}{chapter}
 \usepackage{amsmath}
@@ -82,20 +83,21 @@ contents={\includegraphics[width=\paperwidth,height=\paperheight]{images/coda201
 \begin{figure}[ht]
   \centering
   \resizebox{\linewidth}{!}{\input{images/rbm.tikz}}
-  \caption{An example restricted Boltzmann machine (RBM), which consists of two layers, a hidden ($\mathcal{H}$) and a visible layer ($\mathcal{V}$), with no connections within a layer. Hidden nodes indicated by gray circles and the visible nodes indicated by white circles \cite{friedman2001elements}.}
+  \caption{An example restricted Boltzmann machine (RBM), which consists of two layers, a hidden ($\mathcal{H}$) and a visible layer ($\mathcal{V}$), with no connections within a layer. Hidden nodes indicated by white circles and the visible nodes indicated by blue circles \cite{friedman2001elements}.}
   \label{fig:rbm}
 \end{figure}
 
+\vspace{1cm}
 \begin{figure}[ht]
   \centering
   \input{images/visibles.tikz}
-  \caption{Visibles diagram.}
+  \caption{Image classification using a RBM. On the left, each image pixel comprises a node in the visible layer, $\mathcal{V}$. On the right, the output of the RBM is used to create features which are then passed to a supervised learning algorithm.} 
   \label{fig:visibles}
 \end{figure}
 
 ~\\[-1cm]
 {\bfseries Joint distribution} \\[.25cm]
-Let $\boldsymbol x = \{h_1, \dots, h_H, v_1,\dots,v_V\}$ represent the states of the visible and hidden nodes in an RBM. Then  the probability corresponding to the state of each node taking the value of $1$:
+Let $\boldsymbol x = \{h_1, \dots, h_H, v_1,\dots,v_V\}$ represent the states of the visible and hidden nodes in an RBM. Then the probability each node taking the the value corresponding to $\boldsymbol x$ is:
 \begin{align}
 \label{eqn:pmf}
 f_{\boldsymbol \theta} (\boldsymbol x) = \frac{\exp\left(\nsum\limits_{i = 1}^V \nsum\limits_{j=1}^H \theta_{ij} v_i h_j + \nsum\limits_{i = 1}^V\theta_{v_i} v_i + \nsum\limits_{j = 1}^H\theta_{h_j} h_j\right)}{\Nsum\limits_{\boldsymbol x \in \mathcal{X}}\exp\left(\nsum\limits_{i = 1}^V \nsum\limits_{j=1}^H \theta_{ij} v_i h_j + \nsum\limits_{i = 1}^V\theta_{v_i} v_i + \nsum\limits_{j = 1}^H\theta_{h_j} h_j\right)} 
@@ -129,8 +131,10 @@ Three layer deep Boltzmann machine, with visible-to-hidden and hidden-to-hidden 
 %%Middle left box
 %%
 \begin{textblock}{14}(.65, 11.33)
-{\large \bfseries Degeneracy, instability, and uninterpretability... Oh my!}
-~\\[.25cm]
+{\large \bfseries Degeneracy, instability, and uninterpretability... Oh my!}\\[-1cm]
+
+The highly flexible nature of the RBM ($H + V + HV$ parameters) makes the following characteristics of model impropriety of particular concern. \\[-.5cm]
+
 \begin{table}
 \centering
 \begin{tabular}{| p{.48\linewidth} | p{.5\linewidth} |}
@@ -147,7 +151,7 @@ $\max\limits_{\boldsymbol x_N \in \mathcal{X}_N}[Q(\boldsymbol x_N)] > CN$ for a
 \hline
 \end{tabular}
 \label{tab:degen}
-\caption{Table of ``bad" model characteristics.}
+\caption{Table of ``improper model'' characteristics.}
 \end{table}
 \end{textblock}
 
@@ -155,8 +159,53 @@ $\max\limits_{\boldsymbol x_N \in \mathcal{X}_N}[Q(\boldsymbol x_N)] > CN$ for a
 %%
 %%Bottom left box
 %%
-\begin{textblock}{14}(.65, 22.94)
-{\large \bfseries Variable encoding}
+\begin{textblock}{14}(.65, 21.5)
+{\large \bfseries Avoiding degeneracy} \\[-.75cm]
+
+For the $\{-1, 1 \}$ encoding of $\mathcal{V}$ and $\mathcal{H}$, the origin is the center of the parameter space. In particular, at $\boldsymbol \theta = \boldsymbol 0$, the RBM is equivalent to elements of $\boldsymbol X$ being distributed as iid Bernoulli$\left(\frac{1}{2}\right)$ r.v.s. $\Rightarrow$ No \emph{near-degeneracy}, \emph{instability}, or \emph{uninterpretability}!
+\end{textblock}
+\begin{textblock}{14.5}(.65, 23.9)
+\begin{minipage}{.42\textwidth}
+\begin{figure}[ht]
+  \begin{minipage}{0.49\textwidth}
+  \resizebox{\linewidth}{!}{
+    \tdplotsetmaincoords{60}{-60}
+    \input{images/toyhull_top.tikz}
+    
+    \draw(0,1,0) -- (1,0,0) -- (0,0,0) -- (0,1,0); 
+     \draw(1,1,1) -- (1,0,0) -- (0,0,0) -- (1,1,1); 
+     \draw(1,1,1) -- (0,1,0) -- (0,0,0) -- (1,1,1); 
+     \draw(1,1,1) -- (0,1,0) -- (1,0,0) -- (1,1,1); 
+    \end{tikzpicture}
+  }
+  \end{minipage}
+  \begin{minipage}{0.49\textwidth}
+  \resizebox{\linewidth}{!}{
+    \tdplotsetmaincoords{60}{-60}
+    \input{images/toyhull_top_2.tikz}
+    
+    \draw(-1,1,-1) -- (1,-1,-1) -- (-1,-1,-1) -- (-1,1,-1); 
+     \draw(1,1,1) -- (1,-1,-1) -- (-1,-1,-1) -- (1,1,1); 
+     \draw(1,1,1) -- (-1,1,-1) -- (-1,-1,-1) -- (1,1,1); 
+     \draw(1,1,1) -- (-1,1,-1) -- (1,-1,-1) -- (1,1,1); 
+    \end{tikzpicture}
+  }
+  \end{minipage}
+  \caption{The convex hulls of the statistic space in three dimensions for a toy RBM with $|\mathcal{V}| = |\mathcal{H}| = 1$ for $\{0,1\}$-encoding (left) and $\{-1,1\}$-encoding (right) enclosed by an unrestricted hull of 3-space.}
+\label{fig:toyhull}
+\end{figure}
+\end{minipage}
+\begin{minipage}{.02\textwidth}
+\hfill
+\end{minipage}
+\begin{minipage}{.55\textwidth}
+\begin{figure}
+\centering
+\includegraphics[scale=1]{images/frac_volume.pdf}
+\label{fig:frac_volume}
+\caption{Volume relationship for the convex hulls of statistics in $Q(\cdot)$ vs. unrestricted space.}
+\end{figure}
+\end{minipage}
 
 \end{textblock}
 
@@ -165,7 +214,11 @@ $\max\limits_{\boldsymbol x_N \in \mathcal{X}_N}[Q(\boldsymbol x_N)] > CN$ for a
 %%Top right box
 %%
 \begin{textblock}{14}(32.4, 5.71)
-{\large \bfseries Managable examples} \\[.25cm]
+{\large \bfseries Manageable (a.k.a. small) examples} \\[.25cm]
+
+
+As the magnitude of $\boldsymbol \theta$ grows, so does the occurence of near-degeneracy, instability, and uninterpretability for RBMs of varying sizes.
+
 \end{textblock}
 
 %%-----------------------------------------------
@@ -190,7 +243,7 @@ In reality it's practically impossible to have at least one of every possible im
 {\large \bfseries Discussion} \\[.25cm]
 \end{textblock}
 
-\begin{textblock}{14.54}(31.86, 24.6)
+\begin{textblock}{14.54}(31.86, 24.8)
 These models very easily are degenerate, unstable, and uninterpretable. Meaning, the space of possible fitted parameter values that leads to a proper model is highly restricted.
 
 To further complicate things, the proper fitting these models is very intricate and easily leads to parameter values running off to $\infty$.
@@ -202,7 +255,7 @@ If you're thinking of using RBMs, or stacked RBMs in a deep architecture, don't.
 %%
 %%Bottom middle box
 %%
-\begin{textblock}{14.5}(16.17, 24.84)
+\begin{textblock}{14.5}(16.17, 25.45)
 {\large \bfseries References}
 \printbibliography[heading=none]
 

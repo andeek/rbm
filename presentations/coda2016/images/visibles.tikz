@@ -1,4 +1,4 @@
-
+\input{images/arrows_new.tikz}
 \begin{tikzpicture}[node distance=3cm, thick, 
                     visible/.style= {circle,
                       fill=isublue,
@@ -11,12 +11,28 @@
                       draw,
                       font=\tiny,
                       inner sep=0pt,
-                      minimum size=1cm}]
+                      minimum size=1cm},
+                    output/.style= {rectangle,
+                    	fill=white,
+                    	draw,
+                    	font=\tiny,
+                    	inner sep=4pt,
+                    	minimum size=1cm,
+                    	rounded corners
+                    },
+                    classify/.style= {forbidden sign,
+                    	fill=white,
+                    	draw,
+                    	font=\tiny,
+                    	inner sep=0pt,
+                    	minimum size=2cm
+                    }]
                       
     \node[anchor=north east,inner sep=0] (image) at (0,0) {\includegraphics[height=2in]{images/visibles.pdf}};
     \begin{scope}[x={(image.south east)},y={(image.north west)}]
         \draw[isured, ultra thick] (0.05,0.05) rectangle (0.11,0.11);
     \end{scope}
+    \node (11) [below of=image] {Example image};
     
 	% define destination coordinates
 	\path (-4.65,-.45) coordinate (first)
@@ -28,10 +44,20 @@
     \node[visible] (3) [below of=2, draw=isured, yshift=2cm] {$v_{16}$};
     \node (4) [below of=3, yshift=2.25cm] {$\vdots$};
     \node[visible] (5) [below of=4, yshift=2cm] {$v_{256}$};
+    \node (12) [right of=11, xshift = 2cm] {$\mathcal{V}$};
     
     \node[hidden] (6) [right of=1] {$h_1$};
     \node(7)[below of=6, yshift=1.3cm] {$\vdotswide$};
     \node[hidden] (8) [right of=5] {$h_H$};
+    %\draw [decorate, decoration={brace,amplitude=10pt}, xshift=-4pt,yshift=0pt](6,-.3) -- (6,-4.8) node (16) [black, midway, right=20pt] {};
+    \draw[decoration={brace, raise=0pt, amplitude=10pt},decorate](6,-.3) -- node[right=-10pt, midway] (16) {} (6,-4.8) ;
+    
+    \node (13) [right of=12] {$\mathcal{H}$};
+    
+    \node[output] (9) [right of=7, align = center, xshift=3cm] {Feature \\ representation};
+    \node (14) [below of=9] {Output layer};
+    \node[classify] (10) [right of=9, xshift=3cm, rotate=90] {};
+    \node (15) [below of=10] {Classifier};
     
     \path
     (1) edge node {} (6)
@@ -39,15 +65,17 @@
     (3) edge node {} (6)
         edge node {} (8) 
     (5) edge node {} (6)
-        edge node {} (8);
+        edge node {} (8)
+    (16) edge[-latexnew, arrowhead=.5cm] node {} (9)
+    (9) edge[-latexnew, arrowhead=.5cm] node {} (10);
 \end{tikzpicture}
 
 % define overlays
 % Note the use of the overlay option. This is required when 
 % you want to access nodes in different pictures.
 \begin{tikzpicture}[overlay]
-        \path[-,black,thick] (first) edge (1);
-        \path[-,isured,thick] (middle) edge (3);
-        \path[-,black,thick] (last) edge (5);
+        \path[-latexnew, arrowhead=.5cm,black,thick] (first) edge (1);
+        \path[-latexnew, arrowhead=.5cm,isured,thick] (middle) edge (3);
+        \path[-latexnew, arrowhead=.5cm,black,thick] (last) edge (5);
 \end{tikzpicture}
 
