@@ -1,6 +1,6 @@
 \begin{tikzpicture}[auto, node distance=3cm, thick, 
                     main node/.style= {circle,
-                      fill=isublue,
+                      fill=white,
                       draw,
                       font=\tiny,
                       inner sep=0pt,
@@ -14,11 +14,11 @@
   \node[main node] (4) [right of=3, xshift = -1.5cm] {};
   \node[main node] (5) [right of=4, xshift = -1.5cm] {};
   \node (0) [right of=5, xshift = 0cm, font=\tiny] {Hidden Layer $\mathcal{H}$};
-  \node[main node] (6) [below left of=1, fill=white, xshift = .5cm, yshift = -1cm, font=\tiny] {$v_i$};
+  \node[main node] (6) [below left of=1, fill=isublue, xshift = .5cm, yshift = -1cm, font=\tiny] {$v_i$};
   \node (12) [below of=6, yshift = 2cm, font=\tiny] {$\theta_{v_i}$};
-  \node[main node] (7) [right of=6, fill=white] {};
-  \node[main node] (8) [right of=7, fill=white] {};
-  \node[main node] (9) [right of=8, fill=white] {};
+  \node[main node] (7) [right of=6, fill=isublue] {};
+  \node[main node] (8) [right of=7, fill=isublue] {};
+  \node[main node] (9) [right of=8, fill=isublue] {};
   \node (10) [right of=9, xshift = 0cm, font=\tiny] {Visible Layer $\mathcal{V}$};
   
   \path

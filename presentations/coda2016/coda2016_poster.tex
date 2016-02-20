@@ -19,28 +19,70 @@ contents={\includegraphics[width=\paperwidth,height=\paperheight]{images/coda201
 %%tikz setup
 \usepackage{tikz, subfig, amsthm}
 \usepackage{tikz-3dplot}
-\usetikzlibrary{arrows, shapes, positioning}
+\usetikzlibrary{arrows, shapes, positioning, backgrounds}
+
 
 %%other options
 \definecolor{isublue}{RGB}{58,117,196}
 \definecolor{isured}{RGB}{206,17,38}
 \counterwithout{figure}{chapter}
+\counterwithout{table}{chapter}
 \usepackage{amsmath}
 \setlength{\parindent}{0cm}
+\def\vdotswide{\vbox{\baselineskip=20pt \lineskiplimit=0pt \kern6pt \hbox{.}\hbox{.}\hbox{.}}} 
+
+%%big sums
+\usepackage{graphicx}
+\usepackage{calc}
+\newlength{\depthofsumsign}
+\setlength{\depthofsumsign}{\depthof{$\sum$}}
+\newcommand{\nsum}[1][1.4]{% only for \displaystyle
+    \mathop{%
+        \raisebox
+            {-#1\depthofsumsign+1\depthofsumsign}
+            {\scalebox
+                {#1}
+                {$\displaystyle\sum$}%
+            }
+    }
+}
+
+\newcommand{\Nsum}[1][1.8]{% only for \displaystyle
+    \mathop{%
+        \raisebox
+            {-#1\depthofsumsign+1\depthofsumsign}
+            {\scalebox
+                {#1}
+                {$\displaystyle\sum$}%
+            }
+    }
+}
+
+%%bibliography
+\usepackage[backend=bibtex]{biblatex}
+\addbibresource{refs.bib}
+\renewcommand*{\bibfont}{\tiny}
 
 \begin{document}
+%% For every picture that defines or uses external nodes, you'll have to
+%% apply the 'remember picture' style. To avoid some typing, we'll apply
+%% the style to all pictures.
+%%http://www.texample.net/tikz/examples/connecting-text-and-graphics/
+\tikzstyle{every picture}+=[remember picture]
+\tikzstyle{na} = [baseline=-.5ex]
+
 
 %%-----------------------------------------------
 %%
 %%Middle big box
 %%
-\begin{textblock}{18.01}(14.53, 6.71)
+\begin{textblock}{16}(15.5, 6.71)
 {\large \bfseries Restricted Boltzmann machine (RBM)}
 
 \begin{figure}[ht]
   \centering
   \resizebox{\linewidth}{!}{\input{images/rbm.tikz}}
-  \caption{An example restricted Boltzmann machine (RBM), which consists of two layers, a hidden ($\mathcal{H}$) and a visible layer ($\mathcal{V}$), with no connections within a layer. Hidden nodes indicated by gray circles and the visible nodes indicated by white circles.}
+  \caption{An example restricted Boltzmann machine (RBM), which consists of two layers, a hidden ($\mathcal{H}$) and a visible layer ($\mathcal{V}$), with no connections within a layer. Hidden nodes indicated by gray circles and the visible nodes indicated by white circles \cite{friedman2001elements}.}
   \label{fig:rbm}
 \end{figure}
 
@@ -56,16 +98,29 @@ contents={\includegraphics[width=\paperwidth,height=\paperheight]{images/coda201
 Let $\boldsymbol x = \{h_1, \dots, h_H, v_1,\dots,v_V\}$ represent the states of the visible and hidden nodes in an RBM. Then  the probability corresponding to the state of each node taking the value of $1$:
 \begin{align}
 \label{eqn:pmf}
-f_{\boldsymbol \theta} (\boldsymbol x) = \dfrac{\exp\left(\sum\limits_{i = 1}^V \sum\limits_{j=1}^H \theta_{ij} v_i h_j + \sum\limits_{i = 1}^V\theta_{v_i} v_i + \sum\limits_{j = 1}^H\theta_{h_j} h_j\right)}{\sum\limits_{\boldsymbol x \in \mathcal{X}}\exp\left(\sum\limits_{i = 1}^V \sum\limits_{j=1}^H \theta_{ij} v_i h_j + \sum\limits_{i = 1}^V\theta_{v_i} v_i + \sum\limits_{j = 1}^H\theta_{h_j} h_j\right)} 
+f_{\boldsymbol \theta} (\boldsymbol x) = \frac{\exp\left(\nsum\limits_{i = 1}^V \nsum\limits_{j=1}^H \theta_{ij} v_i h_j + \nsum\limits_{i = 1}^V\theta_{v_i} v_i + \nsum\limits_{j = 1}^H\theta_{h_j} h_j\right)}{\Nsum\limits_{\boldsymbol x \in \mathcal{X}}\exp\left(\nsum\limits_{i = 1}^V \nsum\limits_{j=1}^H \theta_{ij} v_i h_j + \nsum\limits_{i = 1}^V\theta_{v_i} v_i + \nsum\limits_{j = 1}^H\theta_{h_j} h_j\right)} 
 \end{align}
+
 \end{textblock}
 
 %%-----------------------------------------------
 %%
 %%Top left box
 %%
-\begin{textblock}{14.08}(.8, 5.71)
-{\large \bfseries Deep learning}
+\begin{textblock}{14}(.65, 5.71)
+{\large \bfseries Deep learning} \\[.25cm]
+\begin{minipage}{.62\textwidth}
+Three layer deep Boltzmann machine, with visible-to-hidden and hidden-to-hidden connections but no within-layer connections. This can be considered as multiple single layer restricted Boltzmann machines with the lower stack hidden layer acting as the visible layer for the higher stacked model. Claimed ability to learn "internal representations that become increasingly complex" \cite{salakhutdinov2009deep}, used in classification problems.
+\end{minipage}
+\begin{minipage}{.38\textwidth}
+\begin{figure}
+  \centering
+  \input{images/deep_rbm.tikz}
+  \caption{Deep RBM example.}
+  \label{fig:deep_rbm}
+\end{figure}
+\end{minipage}
+
 
 \end{textblock}
 
@@ -73,17 +128,35 @@ f_{\boldsymbol \theta} (\boldsymbol x) = \dfrac{\exp\left(\sum\limits_{i = 1}^V 
 %%
 %%Middle left box
 %%
-\begin{textblock}{14.08}(.8, 11.83)
-{\large \bfseries Degeneracy in random graph models}
-
+\begin{textblock}{14}(.65, 11.33)
+{\large \bfseries Degeneracy, instability, and uninterpretability... Oh my!}
+~\\[.25cm]
+\begin{table}
+\centering
+\begin{tabular}{| p{.48\linewidth} | p{.5\linewidth} |}
+\hline
+Characteristic & Detection \\
+\hline
+\hline
+{\bfseries Near-degeneracy.} Occurs when there is a disproportionate amount of probability placed on only a few elements of the sample space by the model \cite{handcock2003assessing}. & If the mean parametrization on the model parameters, $\mu(\boldsymbol \theta)$, is close to the boundary of the convex hull of the set of statistics in the neg-potential function $Q(\boldsymbol x)$. \\
+\hline
+{\bfseries Instability.} Small changes in natural parameters result in large changes of the pmf, excessive sensitivity \cite{schweinberger2011instability}. & If for any $C > 0$ there exists $N_C > 0$ such that 
+$\max\limits_{\boldsymbol x_N \in \mathcal{X}_N}[Q(\boldsymbol x_N)] > CN$ for all $N > N_C$. Where $Q(\cdot)$ is the neg-potential function of the model. \\
+\hline
+{\bfseries Uninterpretability.} Due to the existence of dependence, marginal mean-structure no longer maintained \cite{kaiser2007statistical}. & If the magnitude of the difference between model expectations and expectations under independence, $\left|\text{E}(\boldsymbol X | \boldsymbol \theta) - \text{E}(\boldsymbol X | \emptyset ) \right|$, is large.\\
+\hline
+\end{tabular}
+\label{tab:degen}
+\caption{Table of ``bad" model characteristics.}
+\end{table}
 \end{textblock}
 
 %%-----------------------------------------------
 %%
 %%Bottom left box
 %%
-\begin{textblock}{14.08}(.8, 20.64)
-{\large \bfseries Tiny example}
+\begin{textblock}{14}(.65, 22.94)
+{\large \bfseries Variable encoding}
 
 \end{textblock}
 
@@ -91,16 +164,21 @@ f_{\boldsymbol \theta} (\boldsymbol x) = \dfrac{\exp\left(\sum\limits_{i = 1}^V 
 %%
 %%Top right box
 %%
-\begin{textblock}{14.08}(33.5, 5.71)
-{\large \bfseries Managable examples}
+\begin{textblock}{14}(32.4, 5.71)
+{\large \bfseries Managable examples} \\[.25cm]
 \end{textblock}
 
 %%-----------------------------------------------
 %%
 %%Middle right box
 %%
-\begin{textblock}{14.08}(33.5, 12.91)
-{\large \bfseries Fitting}
+\begin{textblock}{14}(32.4, 12.91)
+{\large \bfseries Model fitting} \\[.25cm]
+Fitting is really hard to get right (Bayesian or ML).
+If you are able to fit this model properly, the result is the empirical distribution of images.
+You spent a lot of time just to get the empirical distribution back.
+If you do not have an instance of every possible image in your training set, certain parameter must $\rightarrow \infty$, making fitting more complicated (shrink)
+In reality it's practically impossible to have at least one of every possible image in your training set (large images, color scales, etc.)
 
 \end{textblock}
 
@@ -108,16 +186,26 @@ f_{\boldsymbol \theta} (\boldsymbol x) = \dfrac{\exp\left(\sum\limits_{i = 1}^V 
 %%
 %%Bottom right box
 %%
-\begin{textblock}{14.08}(33.5, 23.85)
-{\large \bfseries Discussion}
+\begin{textblock}{14}(32.4, 23.85)
+{\large \bfseries Discussion} \\[.25cm]
+\end{textblock}
+
+\begin{textblock}{14.54}(31.86, 24.6)
+These models very easily are degenerate, unstable, and uninterpretable. Meaning, the space of possible fitted parameter values that leads to a proper model is highly restricted.
+
+To further complicate things, the proper fitting these models is very intricate and easily leads to parameter values running off to $\infty$.
+
+If you're thinking of using RBMs, or stacked RBMs in a deep architecture, don't. Instead, fit a less flexible and more sensible model.
 \end{textblock}
 
 %%-----------------------------------------------
 %%
 %%Bottom middle box
 %%
-\begin{textblock}{15.08}(16.17, 24.84)
+\begin{textblock}{14.5}(16.17, 24.84)
 {\large \bfseries References}
+\printbibliography[heading=none]
+
 \end{textblock}
 
 \end{document}

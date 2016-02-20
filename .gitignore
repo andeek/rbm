@@ -26,7 +26,8 @@ shinyapps/
 *-blx.bib
 *.blg
 *.aux
-
+*.bcf
+*.dvi
 # stupid files
 *.m~
 *.txt~
