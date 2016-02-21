@@ -46,7 +46,7 @@ ggsave("images/frac_volume.pdf",
        units = "in")
 
 #manageable examples ---------
-#reshape data function
+#reshape data functions
 plot_data <- function(res, grid = FALSE) {
   
   plot.data <- data.frame()
@@ -100,12 +100,118 @@ plot_data <- function(res, grid = FALSE) {
   
   return(plot.data)
 }
+indep_params <- function(samp, H, V) {
+  samp[, (H + V + 1):ncol(samp)] <- 0
+  samp
+}
+max_Q <- function(theta, stats) {
+  apply(crossprod(t(stats), theta), 2, max)
+}
 
+#grid data
 load("../../writing/data/results_grid.RData")
+
+#near-degeneracy
 plot_dat_grid <- res %>% plot_data(grid = TRUE)
 
+plot_dat_grid %>%
+  group_by(r1, r2, H, V) %>%
+  summarise(frac_degen = sum(near_hull)/n(), count = n()) %>% 
+  ungroup() %>% 
+  mutate(Hiddens = paste0("Hiddens: ", H), Visibles = paste0("Visibles: ", V)) -> convex_hull_summary
+
+#uninterpretability
 res %>%
   group_by(H, V, N, r1, r2) %>%
   do(indep_exp = t(expected_value(t(indep_params(.$samp[[1]], .$H, .$V)), .$stat[[1]]))[, -((.$H + .$V + 1):(.$H + .$V + .$H*.$V))],
      marg_exp = .$g_theta[[1]][, (.$H + .$V + .$H*.$V + 1):(ncol(.$g_theta[[1]])-.$H*.$V)]) -> exp_vals
 
+exp_vals %>%
+  group_by(H, V, N, r1, r2) %>%
+  do(data.frame(mean_abs_diff = apply(abs(.$indep_exp[[1]] - .$marg_exp[[1]]), 1, mean))) %>%
+  group_by(H, V, N, r1, r2) %>%
+  summarise(mean_abs_diff = mean(mean_abs_diff)) %>%
+  mutate(Hiddens = paste0("Hiddens: ", H), Visibles = paste0("Visibles: ", V)) -> exp_vals_summary
+
+#instability
+res %>%
+  group_by(H, V, N, r1, r2) %>%
+  do(data.frame(LHS = max_Q(t(.$samp[[1]]), .$stat[[1]])/(.$H + .$V))) %>%
+  summarise(mean_max_q = mean(LHS)) -> max_q_summary
+
+
+convex_hull_summary %>%
+  left_join(max_q_summary) %>%
+  left_join(exp_vals_summary) -> three_ways
+
+three_ways %>%
+  ggplot() +
+  geom_tile(aes(x = r1, y = r2, fill = frac_degen)) +
+  geom_contour(aes(x = r1, y = r2, z = frac_degen), colour = "black", bins = 8) +
+  geom_contour(aes(x = r1, y = r2, z = frac_degen), colour = "black", breaks = .05, size = 1.5) +
+  geom_abline(aes(intercept = 0, slope = 1), alpha = .5, lty = 2) +
+  scale_fill_gradient("Fraction near-degenerate", low = "yellow", high = "red") +
+  facet_grid(Visibles~Hiddens) +
+  xlab(expression(group("||", theta[main], "||"))) +
+  ylab(expression(group("||", theta[interaction], "||"))) +
+  theme(aspect.ratio = 1) +
+  theme(legend.position = "bottom") +
+  ggtitle("Near-degeneracy") +
+  theme(
+    plot.background = element_rect(fill = "transparent", colour = NA),
+    legend.background = element_rect(fill = "transparent", colour = NA)) -> p.degen
+
+three_ways %>%
+  ggplot() +
+  geom_tile(aes(x = r1, y = r2, fill = mean_abs_diff)) +
+  geom_contour(aes(x = r1, y = r2, z = mean_abs_diff), colour = "black", bins = 8) +
+  #geom_contour(aes(x = r1, y = r2, z = mean_abs_diff), colour = "black", breaks = .05, size = 1.5) +
+  geom_abline(aes(intercept = 0, slope = 1), alpha = .5, lty = 2) +
+  scale_fill_gradient(expression(group("|", E(bold(X), "|", bold(theta)) - E(bold(X), "|", plain(independence)), "|")), low = "yellow", high = "red") +
+  facet_grid(Visibles~Hiddens) +
+  xlab(expression(group("||", theta[main], "||"))) +
+  ylab(expression(group("||", theta[interaction], "||"))) +
+  theme(aspect.ratio = 1) +
+  theme(legend.position = "bottom") +
+  ggtitle("Uninterpretability") +
+  theme(
+    plot.background = element_rect(fill = "transparent", colour = NA),
+    legend.background = element_rect(fill = "transparent", colour = NA)) -> p.exp_diff
+
+three_ways %>%
+  ggplot() +
+  geom_tile(aes(x = r1, y = r2, fill = mean_max_q)) +
+  geom_contour(aes(x = r1, y = r2, z = mean_max_q), colour = "black", bins = 8) +
+  #geom_contour(aes(x = r1, y = r2, z = mean_max_q), colour = "black", breaks = .05, size = 1.5) +
+  geom_abline(aes(intercept = 0, slope = 1), alpha = .5, lty = 2) +
+  scale_fill_gradient(expression(frac(max(Q), H + V)), low = "yellow", high = "red") +
+  facet_grid(Visibles~Hiddens) +
+  xlab(expression(group("||", theta[main], "||"))) +
+  ylab(expression(group("||", theta[interaction], "||"))) +
+  theme(aspect.ratio = 1) +
+  theme(legend.position = "bottom") +
+  ggtitle("Instability") +
+  theme(
+    plot.background = element_rect(fill = "transparent", colour = NA),
+    legend.background = element_rect(fill = "transparent", colour = NA)) -> p.max_q
+
+ggsave("images/degeneracy.pdf",
+       plot = p.degen,
+       bg = "transparent",
+       width = 4.5,
+       height = 5.25,
+       units = "in")
+
+ggsave("images/uninterpretability.pdf",
+       plot =p.exp_diff,
+       bg = "transparent",
+       width = 4.5,
+       height = 5.25,
+       units = "in")
+
+ggsave("images/instability.pdf",
+       plot =p.max_q,
+       bg = "transparent",
+       width = 4.5,
+       height = 5.25,
+       units = "in")
