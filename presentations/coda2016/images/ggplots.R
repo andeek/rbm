@@ -159,7 +159,8 @@ three_ways %>%
   ggtitle("Near-degeneracy") +
   theme(
     plot.background = element_rect(fill = "transparent", colour = NA),
-    legend.background = element_rect(fill = "transparent", colour = NA)) -> p.degen
+    legend.background = element_rect(fill = "transparent", colour = NA),
+    plot.title=element_text(size=22)) -> p.degen
 
 three_ways %>%
   ggplot() +
@@ -167,7 +168,7 @@ three_ways %>%
   geom_contour(aes(x = r1, y = r2, z = mean_abs_diff), colour = "black", bins = 8) +
   #geom_contour(aes(x = r1, y = r2, z = mean_abs_diff), colour = "black", breaks = .05, size = 1.5) +
   geom_abline(aes(intercept = 0, slope = 1), alpha = .5, lty = 2) +
-  scale_fill_gradient(expression(group("|", E(bold(X), "|", bold(theta)) - E(bold(X), "|", plain(independence)), "|")), low = "yellow", high = "red") +
+  scale_fill_gradient(expression(paste0("|", E(bold(X), "|", bold(theta)) - E(bold(X), "|", plain(independence)), "|")), low = "yellow", high = "red") +
   facet_grid(Visibles~Hiddens) +
   xlab(expression(group("||", theta[main], "||"))) +
   ylab(expression(group("||", theta[interaction], "||"))) +
@@ -176,7 +177,8 @@ three_ways %>%
   ggtitle("Uninterpretability") +
   theme(
     plot.background = element_rect(fill = "transparent", colour = NA),
-    legend.background = element_rect(fill = "transparent", colour = NA)) -> p.exp_diff
+    legend.background = element_rect(fill = "transparent", colour = NA),
+    plot.title=element_text(size=22)) -> p.exp_diff
 
 three_ways %>%
   ggplot() +
@@ -193,25 +195,27 @@ three_ways %>%
   ggtitle("Instability") +
   theme(
     plot.background = element_rect(fill = "transparent", colour = NA),
-    legend.background = element_rect(fill = "transparent", colour = NA)) -> p.max_q
+    legend.background = element_rect(fill = "transparent", colour = NA),
+    plot.title=element_text(size=22)) -> p.max_q
+
 
 ggsave("images/degeneracy.pdf",
        plot = p.degen,
        bg = "transparent",
        width = 4.5,
-       height = 5.25,
+       height = 5.5,
        units = "in")
 
 ggsave("images/uninterpretability.pdf",
        plot =p.exp_diff,
        bg = "transparent",
        width = 4.5,
-       height = 5.25,
+       height = 5.5,
        units = "in")
 
 ggsave("images/instability.pdf",
        plot =p.max_q,
        bg = "transparent",
        width = 4.5,
-       height = 5.25,
+       height = 5.5,
        units = "in")
