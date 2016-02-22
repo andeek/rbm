@@ -229,31 +229,60 @@ For the $\{-1, 1 \}$ encoding of $\mathcal{V}$ and $\mathcal{H}$, the origin is 
 %%
 %%Middle right box
 %%
-\begin{textblock}{14}(32.4, 14)
-{\large \bfseries Model fitting} \\[.25cm]
-Fitting is really hard to get right (Bayesian or ML).
-If you are able to fit this model properly, the result is the empirical distribution of images.
-You spent a lot of time just to get the empirical distribution back.
-If you do not have an instance of every possible image in your training set, certain parameter must $\rightarrow \infty$, making fitting more complicated (shrink)
-In reality it's practically impossible to have at least one of every possible image in your training set (large images, color scales, etc.)
+\begin{textblock}{14}(32.4, 13.8)
+{\large \bfseries Bayesian model fitting} \\
+{\bfseries Idea:} To avoid model impropriety, avoid parts of the parameter space that lead to \emph{near-degeneracy}, \emph{instability}, and \emph{uninterpretability} (i.e., shrink $\boldsymbol \theta$). \\[-.75cm]
 
+Simulated $n = 5,000$ images (4 pixels) from RBM model with 4 hiddens then fit using Bayesian methods, 
+\vspace{-.5cm}
+\begin{itemize}
+\setlength\itemsep{.05cm}
+\item {\bfseries Trick prior.} Cancel out the normalizing term, resulting full conditionals are normally distributed. {\bfseries Conclusion:} Scalable solution, but requires tuning.
+\vspace{-.75cm}
+$$\pi(\boldsymbol \theta) \propto \gamma(\boldsymbol \theta)^n \exp\left(-\frac{1}{2C_{1}}\boldsymbol \theta_{main}'\boldsymbol \theta_{main} -\frac{1}{2C_{2}}\boldsymbol \theta_{interaction}'\boldsymbol \theta_{interaction}\right), \vspace{-.75cm}
+$$ 
+where $\gamma(\boldsymbol \theta) = \Nsum\limits_{\boldsymbol x \in \mathcal{X}}\exp\left(\nsum\limits_{i = 1}^V \nsum\limits_{j=1}^H \theta_{ij} v_i h_j + \nsum\limits_{i = 1}^V\theta_{v_i} v_i + \nsum\limits_{j = 1}^H\theta_{h_j} h_j\right)$ and $C_{2} < C_{1}$ \cite{li2014biclustering}.
+\item{\bfseries Truncated Normal prior.} Use two independent truncated spherical normal distributions as priors for $\theta_{main}$ and $\theta_{interaction}$ with $\sigma_{interaction} < \sigma_{main}$. Full conditional distributions are not conjugate, requires a geometric adaptive MH step \cite{zhou2014some} and calculation of likelihood normalizing constant. \\{\bfseries Conclusion:} Computationally intensive and convergence issues.
+\item{\bfseries Marginalized likelihood.} Marginalize out $\boldsymbol h$ in $f_{\boldsymbol \theta}(\boldsymbol x)$, and use the truncated Normal prior. {\bfseries Conclusion:} Least scalable, but removes need to gain MCMC convergence for $Hn$ sampled hidden nodes.
+\vspace{-.75cm}
+$$
+g_{\boldsymbol \theta}(\boldsymbol v) = \Nsum\limits_{\boldsymbol h \in \{-1,1\}^H} \exp\left(\nsum\limits_{i = 1}^V \nsum\limits_{j=1}^H \theta_{ij} v_i h_j + \nsum\limits_{i = 1}^V\theta_{v_i} v_i + \nsum\limits_{j = 1}^H\theta_{h_j} h_j\right). \vspace{-.75cm}
+$$
+\end{itemize}
+
+\end{textblock}
+
+\begin{textblock}{14.54}(31.86, 25.5)
+\begin{figure}
+\centering
+\includegraphics{images/image_prediction.pdf}
+\label{fig:image_pred}
+\vspace*{-15mm}
+\caption{Posterior probability of each possible 4-pixel image using priors above.}
+\end{figure}
+
+{\bfseries Big takeaway:} RBMs very easily are degenerate, unstable, and uninterpretable. To further complicate things, a rigorous fitting method for these models is not scalable and replicates the nonparametric solution (empirical distribution).
 \end{textblock}
 
 %%-----------------------------------------------
 %%
 %%Bottom right box
 %%
-\begin{textblock}{14}(32.4, 23.85)
-{\large \bfseries Discussion} \\[.25cm]
-\end{textblock}
+%%\begin{textblock}{14}(32.4, 23.85)
+%%{\large \bfseries Discussion} \\[.25cm]
+%%\end{textblock}
 
-\begin{textblock}{14.54}(31.86, 24.8)
-These models very easily are degenerate, unstable, and uninterpretable. Meaning, the space of possible fitted parameter values that leads to a proper model is highly restricted.
+%%\begin{textblock}{14.54}(31.86, 24.8)
+%%These models very easily are degenerate, unstable, and uninterpretable. Meaning, the space of possible fitted parameter values that leads to a proper model is highly restricted.
 
-To further complicate things, the proper fitting these models is very intricate and easily leads to parameter values running off to $\infty$.
+%%To further complicate things, the proper fitting these models is very intricate and easily leads to parameter values running off to $\infty$.
 
-If you're thinking of using RBMs, or stacked RBMs in a deep architecture, don't. Instead, fit a less flexible and more sensible model.
-\end{textblock}
+%%If you're thinking of using RBMs, or stacked RBMs in a deep architecture, don't. Instead, fit a less flexible and more sensible model.
+
+%%If you do not have an instance of every possible image in your training set, certain parameter must $\rightarrow \infty$, making fitting more complicated (shrink)
+
+%%In reality it's practically impossible to have at least one of every possible image in your training set (large images, color scales, etc.)
+%%\end{textblock}
 
 %%-----------------------------------------------
 %%

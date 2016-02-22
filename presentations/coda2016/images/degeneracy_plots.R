@@ -168,7 +168,7 @@ three_ways %>%
   geom_contour(aes(x = r1, y = r2, z = mean_abs_diff), colour = "black", bins = 8) +
   #geom_contour(aes(x = r1, y = r2, z = mean_abs_diff), colour = "black", breaks = .05, size = 1.5) +
   geom_abline(aes(intercept = 0, slope = 1), alpha = .5, lty = 2) +
-  scale_fill_gradient(expression(paste0("|", E(bold(X), "|", bold(theta)) - E(bold(X), "|", plain(independence)), "|")), low = "yellow", high = "red") +
+  scale_fill_gradient(expression(group("|", E(group("", bold(X), "|")*bold(theta)) - E(group("", bold(X), "|")*plain(independence)), "|")), low = "yellow", high = "red") +
   facet_grid(Visibles~Hiddens) +
   xlab(expression(group("||", theta[main], "||"))) +
   ylab(expression(group("||", theta[interaction], "||"))) +
