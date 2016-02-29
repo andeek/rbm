@@ -37,6 +37,7 @@ sample_sphere <- function(stat, n, r = 1) {
     group_by(samp) %>%
     mutate(vals = samp(ncol(stat), r)) %>%
     separate(col = vals, sep = ",", into = colnames(stat)) %>%
+    ungroup() %>%
     select(-samp) %>%
     data.matrix() %>%
     t()

@@ -4,19 +4,19 @@ library(tidyr)
 source("functions.R")
 
 model_data <- function(res) {
-  
+
   model.data <- list()
   for(i in 1:nrow(res)) {
     tmp <- res$samp[[i]]
     H <- res[i,]$H
     V <- res[i,]$V
-    
-    tmp %>% 
-      data.frame() %>% 
-      rowwise() %>% 
-      mutate_(ss_ratio = paste0("(", paste(paste0(names(.)[(H + V + 1):(H + V + H*V)], "^2"), collapse = " + "), ")/sum(", paste(paste0(names(.)[1:(H+V)],"^2"), collapse = " + "), ")")) %>%    
+
+    tmp %>%
+      data.frame() %>%
+      rowwise() %>%
+      mutate_(ss_ratio = paste0("(", paste(paste0(names(.)[(H + V + 1):(H + V + H*V)], "^2"), collapse = " + "), ")/sum(", paste(paste0(names(.)[1:(H+V)],"^2"), collapse = " + "), ")")) %>%
       ungroup() -> ratio
-    
+
     inner_join(ratio, res$outside[[i]] %>% ungroup()) %>%
       mutate(H = H, V = V, n_param = H + V + H*V) -> model.data[[i]]
   }
@@ -32,10 +32,10 @@ set.seed(10-22-1985) #best day ever!
 
 model.dat <- list()
 for(i in seq(0, 1, by = 0.1)) {
-  load(paste0("apps/results_", i, ".RData")) 
+  load(paste0("written/results_", i, ".RData"))
   model_dat <- lapply(res, model_data)
   names(model_dat) <- r_center
-  
+
   model.dat[[i*10 + 1]] <- model_dat
 }
 names(model.dat) <- seq(0, 1, by = 0.1)
@@ -47,10 +47,10 @@ expand.grid(power = as.numeric(names(model.dat)), multiplier = as.numeric(names(
 
 frame %>%
   group_by(power, multiplier, n_param) %>%
-  mutate(frac_degen = sum(models[[1]]$near_hull)/nrow(models[[1]]), 
+  mutate(frac_degen = sum(models[[1]]$near_hull)/nrow(models[[1]]),
          radius = (models[[1]]$H[1] + models[[1]]$V[1])^power,
          happy = frac_degen < .05) %>%
-  group_by(n_param, happy) %>% 
+  group_by(n_param, happy) %>%
   sample_n(20) -> models.samp
 
 
@@ -68,7 +68,7 @@ no_int %>%
   group_by(n_param) %>%
   do(models = do.call(rbind, .$models)) %>%
   group_by(n_param) %>%
-  do(compare = .$models[[1]] %>% 
+  do(compare = .$models[[1]] %>%
        select(h1:exp_h1) %>%
        select(-starts_with("exp")) %>%
        data.matrix() %>%
@@ -78,8 +78,8 @@ no_int %>%
               do(stats = stats(.$models[[1]]$H[1], .$models[[1]]$V[1]))) %>%
   group_by(n_param) %>%
   do(no_int = expected_value(theta = .$compare[[1]], stats = .$stats[[1]]) %>% t()) %>%
-  left_join(no_int %>% 
-              group_by(n_param) %>% 
+  left_join(no_int %>%
+              group_by(n_param) %>%
               do(int = do.call(rbind, .$models) %>% select(starts_with("exp")) %>% data.matrix())) %>%
   group_by(n_param) %>%
   do(diff = .$no_int[[1]] - .$int[[1]]) %>%

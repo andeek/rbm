@@ -12,11 +12,11 @@ find_prop <- function(g_theta, stat, r_exp) {
     do(samp = sample_points_outside(as.numeric(.), stat, r_exp)$in_hull) %>%
     group_by_(.dots = c(colnames(g_theta))) %>%
     do(as.data.frame(sum(.$samp[[1]]) > 0)) -> is_outside # count of not in hull greater than zero => there exists a point outside hull for this model
-  
-  is_outside %>% 
+
+  is_outside %>%
     rename_(near_hull = as.name(names(is_outside)[ncol(is_outside)])) %>%
     mutate(r = r_exp) -> inside_outside
-  
+
   return(inside_outside)
 }
 
@@ -27,9 +27,9 @@ sample_points_outside <- function(g_theta, stats, r, n = 100) {
     mutate(vals = samp_exp(length(g_theta), g_theta, r)) %>%
     separate(col = vals, sep = ",", into = colnames(stats)) %>%
     select(-samp)
-  
+
   x0$in_hull <- !apply(x0, 1, in_hull, stats)
-  
+
   return(x0)
 }
 
@@ -47,12 +47,12 @@ in_hull <- function(point, hull_points) {
   require(lpSolveAPI)
   P <- data.matrix(point)
   A <- t(data.matrix(hull_points))
-  
+
   lp_obj <- make.lp(nrow = 0, ncol = ncol(A))
   sapply(1:nrow(A), function(x) add.constraint(lp_obj, A[x,], type = "=", rhs = P[x]))
   add.constraint(lp_obj, rep(1, ncol(A)), type = "=", rhs = 1)
   sapply(1:ncol(A), function(x) add.constraint(lp_obj, 1, type = ">=", rhs = 0, indices = x))
-  
+
   return(solve(lp_obj) == 0)
 }
 
@@ -62,12 +62,12 @@ r_exp <- .05
 
 expand.grid(H = 1:4, V = 1:4, r1 = seq(0.001, 3, length.out = 20), r2 = seq(0.001, 3, length.out = 20)) %>%
   mutate(N = H + V) %>%
-  group_by(H, V, r1, r2, N) %>% 
+  group_by(H, V, r1, r2, N) %>%
   do(samp = cbind(sample_sphere_unif(.$N, n, 0, .$r1), sample_sphere_unif(.$H*.$V, n, 0, .$r2))) -> grid_sample
 
 expand.grid(H = 1:4, V = 1:4, r1 = seq(0.001, 3, length.out = 20), r2 = seq(0.001, 3, length.out = 20)) %>%
   mutate(N = H + V) %>%
-  group_by(H, V, r1, r2, N) %>% 
+  group_by(H, V, r1, r2, N) %>%
   do(stat = stats(.$H, .$V, "negative")) -> grid_sample_stat
 
 grid_sample <- inner_join(grid_sample, grid_sample_stat)
@@ -83,7 +83,5 @@ grid %>%
   group_by(H, V, N, r1, r2) %>%
   do(outside = find_prop(.$g_theta[[1]] %>% data.frame() %>% select(starts_with("exp")), .$stat[[1]], r_exp)) -> tmp
 
-res <- inner_join(tmp, grid) 
-save(res, file = "apps/results_grid.RData")
-
-
+res <- inner_join(tmp, grid)
+save(res, file = "written/results_grid.RData")

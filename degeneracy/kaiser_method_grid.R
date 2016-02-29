@@ -6,7 +6,7 @@ source("functions.R")
 
 #load sample params ---------------------------------------------
 n <- 100
-load("apps/results_grid.RData") 
+load("written/results_grid.RData")
 
 indep_params <- function(samp, H, V) {
   samp[, (H + V + 1):ncol(samp)] <- 0
@@ -35,7 +35,7 @@ exp_vals %>%
   ylab(expression(group("||", theta[interaction], "||"))) +
   theme(aspect.ratio = 1)
 
-exp_vals %>% 
+exp_vals %>%
   mutate(dist = sqrt(r1^2 + r2^2)) %>%
   group_by(dist, H, V) %>%
   do(data.frame(mean_abs_diff = mean(abs(.$indep_exp[[1]] - .$marg_exp[[1]])))) %>%

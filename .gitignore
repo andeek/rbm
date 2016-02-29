@@ -12,7 +12,7 @@
 *.Rproj
 
 # shinyapps
-shinyapps/
+degeneracy/apps/rsconnect/
 
 # no pdfs
 *.pdf
@@ -40,7 +40,7 @@ shinyapps/
 
 #too much rdata
 4x4 model/written/*.Rdata
-
+degeneracy/written/
 
 writing/degeneracy/draft_cache
 writing/data/*.Rdata

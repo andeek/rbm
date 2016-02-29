@@ -51,4 +51,3 @@ segments(segs[,1], segs[,2], segs[,3], segs[,4], lty=2)
 
 ## Plot of min_dist by radius
 qplot(r, min_dist, colour = min_dist < 1e-4, data=min_points) + geom_hline(aes(yintercept=1e-4))
-

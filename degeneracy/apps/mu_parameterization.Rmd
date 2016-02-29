@@ -1,6 +1,4 @@
 ---
-author: "Andee Kaplan"
-date: "11/08/2014"
 output:
   html_document:
     theme: readable

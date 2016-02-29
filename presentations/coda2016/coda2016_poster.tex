@@ -142,12 +142,13 @@ The highly flexible nature of the RBM ($H + V + HV$ parameters) makes the follow
 Characteristic & Detection \\
 \hline
 \hline
-{\bfseries Near-degeneracy.} Occurs when there is a disproportionate amount of probability placed on only a few elements of the sample space by the model \cite{handcock2003assessing}. & If the mean parametrization on the model parameters, $\mu(\boldsymbol \theta)$, is close to the boundary of the convex hull of the set of statistics in the neg-potential function $Q(\boldsymbol x)$. \\
+{\bfseries Near-degeneracy.} Occurs when there is a disproportionate amount of probability placed on only a few elements of the sample space by the model \cite{handcock2003assessing}. & If random variables in the neg-potential function $Q(\cdot)$, having support set $\mathcal{S}$, have a collective mean $\mu(\boldsymbol \theta)$ close to the boundary of the convex hull of $\mathcal{S}$. \\
+%If the mean parametrization on the model parameters, $\mu(\boldsymbol \theta)$, is close to the boundary of the convex hull of the set of statistics in the neg-potential function $Q(\boldsymbol x)$. \\
 \hline
-{\bfseries Instability.} Small changes in natural parameters result in large changes of the pmf, excessive sensitivity \cite{schweinberger2011instability}. & If for any $C > 0$ there exists $N_C > 0$ such that 
-$\max\limits_{\boldsymbol x_N \in \mathcal{X}_N}[Q(\boldsymbol x_N)] > CN$ for all $N > N_C$. Where $Q(\cdot)$ is the neg-potential function of the model. \\
+{\bfseries Instability.} Small changes in natural parameters result in large changes in probability masses, excessive sensitivity \cite{schweinberger2011instability}. & If for any $C > 0$ there exists $N_C > 0$ such that 
+$\max\limits_{\boldsymbol x_N \in \mathcal{X}_N}[Q(\boldsymbol x_N)] > CN$ for all $N > N_C$, where $Q(\cdot)$ is the neg-potential function of the model. \\
 \hline
-{\bfseries Uninterpretability.} Due to the existence of dependence, marginal mean-structure no longer maintained \cite{kaiser2007statistical}. & If the magnitude of the difference between model expectations and expectations under independence, $\left|\text{E}(\boldsymbol X | \boldsymbol \theta) - \text{E}(\boldsymbol X | \emptyset ) \right|$, is large.\\
+{\bfseries Uninterpretability.} Due to the existence of dependence, marginal mean-structure no longer maintained \cite{kaiser2007statistical}. & If the magnitude of the difference between model expectations and expectations under independence (dependence parameters of zero), $\left|\text{E}(\boldsymbol X | \boldsymbol \theta) - \text{E}(\boldsymbol X | \emptyset ) \right|$, is large.\\
 \hline
 \end{tabular}
 \label{tab:degen}
@@ -160,9 +161,9 @@ $\max\limits_{\boldsymbol x_N \in \mathcal{X}_N}[Q(\boldsymbol x_N)] > CN$ for a
 %%Bottom left box
 %%
 \begin{textblock}{14}(.65, 21.5)
-{\large \bfseries Avoiding degeneracy} \\[-.75cm]
+{\large \bfseries Data coding to mitigate degeneracy} \\[-.75cm]
 
-For the $\{-1, 1 \}$ encoding of $\mathcal{V}$ and $\mathcal{H}$, the origin is the center of the parameter space. In particular, at $\boldsymbol \theta = \boldsymbol 0$, the RBM is equivalent to elements of $\boldsymbol X$ being distributed as iid Bernoulli$\left(\frac{1}{2}\right)$ r.v.s. $\Rightarrow$ No \emph{near-degeneracy}, \emph{instability}, or \emph{uninterpretability}!
+For the $\{-1, 1 \}$ encoding of $\mathcal{V}$ and $\mathcal{H}$, the origin is the center of the parameter space. In particular, at $\boldsymbol \theta = \boldsymbol 0$, the RBM is equivalent to elements of $\boldsymbol X$ being distributed as iid Bernoulli$\left(\frac{1}{2}\right)$ $\Rightarrow$ No \emph{near-degeneracy}, \emph{instability}, or \emph{uninterpretability}!
 \end{textblock}
 \begin{textblock}{14.5}(.65, 23.9)
 \begin{minipage}{.42\textwidth}
@@ -221,7 +222,7 @@ For the $\{-1, 1 \}$ encoding of $\mathcal{V}$ and $\mathcal{H}$, the origin is 
 \includegraphics{images/instability.pdf}
 \includegraphics{images/uninterpretability.pdf}
 \label{fig:three_ways}
-\caption{As the magnitude of $\boldsymbol \theta$ grows, so does the occurence of near-degeneracy, instability, and uninterpretability for RBMs of varying sizes.}
+\caption{As the magnitude of $\boldsymbol \theta$ grows ($\boldsymbol \theta$ moves from $\boldsymbol 0$), so does the occurence of near-degeneracy, instability, and uninterpretability for RBMs of varying sizes.}
 \end{figure}
 \end{textblock}
 
@@ -261,7 +262,8 @@ $$
 \caption{Posterior probability of each possible 4-pixel image using priors above.}
 \end{figure}
 
-{\bfseries Big takeaway:} RBMs very easily are degenerate, unstable, and uninterpretable. To further complicate things, a rigorous fitting method for these models is not scalable and replicates the nonparametric solution (empirical distribution).
+{\bfseries Big takeaway:} RBMs very easily are degenerate, unstable, and uninterpretable. As compounding issues, a rigorous fitting method for these models is not scalable and merely replicates the empirical data distribution, a.k.a optimal nonparametric solution.
+%only replicates the nonparametric solution (empirical distribution).
 \end{textblock}
 
 %%-----------------------------------------------
