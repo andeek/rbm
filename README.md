@@ -1,4 +1,4 @@
-deep-learning
+rbm
 =============
 
 Repo to store research on deep learning and restricted Boltzmann machines.
