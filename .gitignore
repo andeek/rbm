@@ -38,6 +38,7 @@ degeneracy/apps/rsconnect/
 # Jing's code
 11/
 
+
 #too much rdata
 4x4 model/written/*.Rdata
 degeneracy/written/
@@ -52,3 +53,6 @@ writing/data/*.Rdata
 
 #big files
 degeneracy/apps/results_grid*
+
+#cache
+writing/draft_cache/*

@@ -1,0 +1,30 @@
+---
+title: "Cut text for later"
+author: "Andee Kaplan"
+date: "April 20, 2016"
+output: html_document
+---
+
+We consider three related definitions of degeneracy as they relate to a graphical model. Section \ref{mean-parameterization} presents a definition from @handcock2003assessing based on the mean parameterization of the model parameters, section \ref{neg-potential} presents a definition from @schweinberger2011instability based on the neg-potential function, and section \ref{conditional-expectation} presents a definition from @kaiser2006markov that involves the difference between expectations of the model and expectations under independence.
+
+which is characterized by excessive sensitivity and near-degeneracy
+
+it is evident that the fraction of near-degenerate models simulated at specified magnitudes of $\boldsymbol \theta_{main}$ and $\boldsymbol \theta_{interaction}$ is more closely related to the combined distance from the origin of these two vectors, than any individual group of parameter values.
+
+```{r}
+three_ways %>% 
+  mutate(dist = sqrt(r1^2 + r2^2)) %>% 
+  group_by(N, dist) %>% 
+  summarise(mean_max_q = mean(mean_max_q)) %>% 
+  ggplot() + 
+  geom_line(aes(N, mean_max_q, colour = dist, group = dist))
+ 
+three_ways %>% 
+  ggplot() + 
+  geom_point(aes(mean_abs_diff, frac_degen), alpha = .3) +
+  geom_smooth(aes(mean_abs_diff, frac_degen), method = "lm") +
+  facet_grid(Hiddens ~ Visibles)
+
+three_ways %>% group_by(Hiddens, Visibles) %>% summarise(corr = cor(mean_abs_diff, frac_degen))
+
+```
