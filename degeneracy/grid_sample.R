@@ -61,11 +61,13 @@ n <- 100
 r_exp <- .05
 
 expand.grid(H = 1:4, V = 1:4, r1 = seq(0.001, 3, length.out = 20), r2 = seq(0.001, 3, length.out = 20)) %>%
+  mutate(r1 = r1*(H + V), r2 = r2*(H*V)) %>%
   mutate(N = H + V) %>%
   group_by(H, V, r1, r2, N) %>%
   do(samp = cbind(sample_sphere_unif(.$N, n, 0, .$r1), sample_sphere_unif(.$H*.$V, n, 0, .$r2))) -> grid_sample
 
 expand.grid(H = 1:4, V = 1:4, r1 = seq(0.001, 3, length.out = 20), r2 = seq(0.001, 3, length.out = 20)) %>%
+  mutate(r1 = r1*(H + V), r2 = r2*(H*V)) %>%
   mutate(N = H + V) %>%
   group_by(H, V, r1, r2, N) %>%
   do(stat = stats(.$H, .$V, "negative")) -> grid_sample_stat
