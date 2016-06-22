@@ -262,11 +262,11 @@ Finally, we can look at the difference between model expectations, E$\left[\bold
 \frac{\exp\left(\theta_{v_1}\right) + \exp\left(\theta_{v_1} + \theta_{h_1}\right)}{\exp\left(\theta_{v_1}\right) + \exp\left(\theta_{h_1}\right) + \exp\left(\theta_{v_1} + \theta_{h_1}\right)} \\
 \frac{\exp\left(\theta_{h_1}\right) + \exp\left(+ \theta_{v_1} + \theta_{h_1}\right)}{\exp\left(\theta_{v_1}\right) + \exp\left(\theta_{h_1}\right) + \exp\left(+ \theta_{v_1} + \theta_{h_1}\right)} 
 \end{matrix} \right] \right|\\
-&= 
+&= \left[
 \begin{matrix}
 \frac{\left|\exp\left(\theta_{11} + \theta_{v_1} + 2\theta_{h_1}\right) - \exp\left( \theta_{v_1} + 2\theta_{h_1}\right) \right| }{\left(\exp\left(\theta_{v_1}\right) + \exp\left(\theta_{h_1}\right) + \exp\left(\theta_{11} + \theta_{v_1} + \theta_{h_1}\right)\right)\left(\exp\left(\theta_{v_1}\right) + \exp\left(\theta_{h_1}\right) + \exp\left(+ \theta_{v_1} + \theta_{h_1}\right)\right)} \\
 \frac{\left|\exp\left(\theta_{11} + 2\theta_{v_1} + \theta_{h_1}\right) - \exp\left( 2\theta_{v_1} + \theta_{h_1}\right) \right| }{\left(\exp\left(\theta_{v_1}\right) + \exp\left(\theta_{h_1}\right) + \exp\left(\theta_{11} + \theta_{v_1} + \theta_{h_1}\right)\right)\left(\exp\left(\theta_{v_1}\right) + \exp\left(\theta_{h_1}\right) + \exp\left(+ \theta_{v_1} + \theta_{h_1}\right)\right)}
-\end{matrix}
+\end{matrix}\right]
 \end{align*}
 
 Again, we can inspect these functions over multiple values of $\boldsymbol \theta$ to look for a relationship between parameter values and uninterpretability for the toy RBM.
@@ -308,7 +308,7 @@ exp_dep %>%
   facet_grid(mu_parameter ~ theta_11, labeller = label_parsed) +
   xlab(expression(theta[v1])) +
   ylab(expression(theta[h1])) +
-  scale_fill_gradient(expression(group("|", E(group("", bold(X), "|")*bold(theta)) - E(group("", bold(X), "|")*plain(independence)), "|")), low = "yellow", high = "red", limits = c(0, 1)) +
+  scale_fill_gradient(expression(group("|", E(group("", bold(X), "|")*bold(theta)) - E(group("", bold(X), "|")*symbol("\306")), "|")), low = "yellow", high = "red", limits = c(0, 1)) +
   theme(aspect.ratio = 1)
 ```
 
@@ -479,9 +479,9 @@ convex_hull_summary %>%
 ```
 
 
-To explore the behavior of the RBM parameters $\boldsymbol \theta$ as it related to model degeneracy and near degeneracy, we example various models of small size. For $H, V \in \{1, \dots, 4\}$, we sample uniformly `r dim(res$samp[[1]])[1]` values of $\boldsymbol \theta$ with magnitude, $||\boldsymbol \theta || = \sqrt{\sum_{i = 1, \dots, H + V + H*V} \theta_i^2}$, between `r min(plot_dat_grid$r1)` and `r max(plot_dat_grid$r1)`. For each set of parameters we then calculate the three metrics of model impropriety introduced in section \ref{degeneracy-instability-and-uninterpretability-oh-my}, $\mu(\boldsymbol \theta)$, $\max\limits_{\boldsymbol x_N \in \mathcal{X}_N}[Q(\boldsymbol x_N)]/N$, and $\left|\text{E}\left[\boldsymbol X | \boldsymbol \theta\right] -   \text{E}\left[\boldsymbol X | \emptyset \right] \right|$. In the case of near-degeneracy, we can go further and classify each model as near-degenerate or viable based on the distance of $\mu(\boldsymbol \theta)$ from the convex hull of $\{t_k(\boldsymbol x): \boldsymbol x \in \mathcal{X}, k = 1, \dots, K\}$ and look at the fraction of models that were near-degenerate for each combination of magnitude of $\boldsymbol \theta$ and model size. 
+To explore the behavior of the RBM parameters $\boldsymbol \theta$ as it related to model degeneracy and near degeneracy, we example various models of small size. For $H, V \in \{1, \dots, 4\}$, we sample uniformly `r dim(res$samp[[1]])[1]` values of $\boldsymbol \theta$ with various magnitudes. For each set of parameters we then calculate the three metrics of model impropriety introduced in section \ref{degeneracy-instability-and-uninterpretability-oh-my}, $\mu(\boldsymbol \theta)$, $R(\boldsymbol x)/V$, and $\left|\text{E}\left[\boldsymbol X | \boldsymbol \theta\right] -   \text{E}\left[\boldsymbol X | \emptyset \right] \right|$. In the case of near-degeneracy, we can go further and classify each model as near-degenerate or viable based on the distance of $\mu(\boldsymbol \theta)$ from the convex hull of $\{t_k(\boldsymbol x): \boldsymbol x \in \mathcal{X}, k = 1, \dots, K\}$ and look at the fraction of models that were near-degenerate for each combination of magnitude of $\boldsymbol \theta$ and model size. 
 
-In this numerical experiment, we split $\boldsymbol \theta$ into $\boldsymbol \theta_{interaction}$ and $\boldsymbol \theta_{main}$, in reference to which sufficient statistics the parameters correspond to, and allow the two types of terms to have varying magnitudes. The results of this numerical study can be seen in figures \ref{fig:degen_plots}, \ref{fig:instab_plots}, and \ref{fig:uninterp_plots}. From these three figures, it s clear to see that all three indications of model impropriety show higher values the larger the magnitude of the parameters. Additionally, since there are $H*V$ interaction terms in $\boldsymbol \theta$ versus only $H + V$ main effects terms, for large models this dictates that there are many more interaction parameters in the model. And so, perhaps limiting the magnitude of the overall distance from the origin for $\boldsymbol \theta_{interaction}$ may help to limit the effects of model impropriety. 
+In this numerical experiment, we split $\boldsymbol \theta$ into $\boldsymbol \theta_{interaction}$ and $\boldsymbol \theta_{main}$, in reference to which sufficient statistics the parameters correspond to, and allow the two types of terms to have varying average magnitudes, $||\boldsymbol \theta_{main} || /(H+V)$ and $||\boldsymbol \theta_{interaction} || /(H*V)$. These magnitudes vary on a grid between `r min(plot_dat_grid$r1/(plot_dat_grid$H + plot_dat_grid$V))` and `r max(plot_dat_grid$r1/(plot_dat_grid$H + plot_dat_grid$V))`. By looking at the average magnitudes, we are able to consider the potential benefit of shrinking each parameter value $\theta_i$ towards zero in a Bayesian fitting technique. The results of this numerical study can be seen in figures \ref{fig:degen_plots}, \ref{fig:instab_plots}, and \ref{fig:uninterp_plots}. From these three figures, it s clear to see that all three indications of model impropriety show higher values the larger the magnitude of the parameters. Additionally, since there are $H*V$ interaction terms in $\boldsymbol \theta$ versus only $H + V$ main effects terms, for large models this dictates that there are many more interaction parameters in the model. And so, perhaps limiting the magnitude of the overall distance from the origin for $\boldsymbol \theta_{interaction}$ may help to limit the effects of model impropriety. 
 
 ```{r degen_plots, fig.cap="\\label{fig:degen_plots}A numerical experiment looking at the fraction of models that were near-degenerate for each combination of magnitude of $\\boldsymbol \\theta$ and model size. The thick black line shows the level where the fraction of -near degenerate models is .05.", fig.height=4}
 three_ways %>%
@@ -504,7 +504,7 @@ three_ways %>%
   geom_contour(aes(x = r1, y = r2, z = max_abs_diff), colour = "black", bins = 8) +
   #geom_contour(aes(x = r1, y = r2, z = mean_abs_diff), colour = "black", breaks = .05, size = 1.5) +
   geom_abline(aes(intercept = 0, slope = 1), alpha = .5, lty = 2) +
-  scale_fill_gradient(expression(group("|", E(group("", bold(X), "|")*bold(theta)) - E(group("", bold(X), "|")*plain(independence)), "|")), low = "yellow", high = "red", limits = c(0,2)) +
+  scale_fill_gradient(expression(group("|", E(group("", bold(X), "|")*bold(theta)) - E(group("", bold(X), "|")*symbol("\306")), "|")), low = "yellow", high = "red", limits = c(0,2)) +
   facet_grid(Visibles~Hiddens) +
   xlab(expression(paste(group("||", theta[main], "||"), "/(H + V)"))) +
   ylab(expression(paste(group("||", theta[interaction], "||"), "/(H*V)"))) +
@@ -531,7 +531,7 @@ three_ways %>%
   geom_contour(aes(x = r1, y = r2, z = LHS2), colour = "black", bins = 8) +
   #geom_contour(aes(x = r1, y = r2, z = mean_max_q), colour = "black", breaks = .05, size = 1.5) +
   geom_abline(aes(intercept = 0, slope = 1), alpha = .5, lty = 2) +
-  scale_fill_gradient(expression(frac(max(Q) - min[v](max[h](Q)) - Hlog(2), H + V)), low = "yellow", high = "red") +
+  scale_fill_gradient(expression(frac(R(theta), V)), low = "yellow", high = "red") +
   facet_grid(Visibles~Hiddens) +
   xlab(expression(paste(group("||", theta[main], "||"), "/(H + V)"))) +
   ylab(expression(paste(group("||", theta[interaction], "||"), "/(H*V)"))) +
@@ -542,12 +542,12 @@ p.degen
 ```
 
 
-```{r instab_plots_2, fig.cap="\\label{fig:instab_plots}A numerical experiment looking at $(\\max\\limits_{\\boldsymbol x_N \\in \\mathcal{X}_N}[Q(\\boldsymbol x_N)] - \\min\\limits_{\\boldsymbol v} \\max\\limits_{\\boldsymbol h}[Q(\\boldsymbol x_N)] - H\\log(2))/N$ for each combination of magnitude of $\\boldsymbol \\theta$ and model size. As the magnitude of $\\boldsymbol \\theta$ grows, so does the value of this metric.", fig.height=4}
+```{r instab_plots_2, fig.cap="\\label{fig:instab_plots}A numerical experiment looking at $R(\\boldsymbol \\theta)/V$ for each combination of magnitude of $\\boldsymbol \\theta$ and model size. As the magnitude of $\\boldsymbol \\theta$ grows, so does the value of this metric, indicating instability in the model.", fig.height=4}
 p.min_max_q
 ```
 
 
-```{r uninterp_plots, fig.cap="\\label{fig:split_plots}The difference between model expectations, E$\\left[\\boldsymbol X | \\boldsymbol \\theta\\right]$, and expectations given independence, E$\\left[\\boldsymbol X | \\emptyset\\right ]$ for each combination of magnitude of $\\boldsymbol \\theta$ and model size. Larger magnitudes of $\\boldsymbol \\theta$ correspond to larger differences, thus indicating higher uninterpretability.", fig.height=4}
+```{r uninterp_plots, fig.cap="\\label{fig:uninterp_plots}The difference between model expectations, E$\\left[\\boldsymbol X | \\boldsymbol \\theta\\right]$, and expectations given independence, E$\\left[\\boldsymbol X | \\emptyset\\right ]$ for each combination of magnitude of $\\boldsymbol \\theta$ and model size. Larger magnitudes of $\\boldsymbol \\theta$ correspond to larger differences, thus indicating higher uninterpretability.", fig.height=4}
 p.exp_diff
 ```
 
