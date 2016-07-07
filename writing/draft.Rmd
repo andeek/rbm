@@ -633,19 +633,16 @@ V <- 4
 load("data/fitted_models_adaptive_mh_trunc_distn_marginal_1.Rdata")
 marginal_bad_1 <- models_bad
 marginal_good_1 <- models_good
-marginal_degen_1 <- models_degen
 
 #load Jing's prior
 load("data/fitted_models_distn_0.26.Rdata")
 jing_bad <- models_bad
 jing_good <- models_good
-jing_degen <- models_degen
 
 #truncated normal
 load("data/fitted_models_adaptive_mh_trunc_distn_shrunk_jing_match.Rdata")
 shrunk_jing_bad <- models_bad
 shrunk_jing_good <- models_good
-shrunk_jing_degen <- models_degen
 
 #rm unneccesary data
 rm(models_bad)

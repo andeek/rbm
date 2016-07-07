@@ -8,7 +8,7 @@ source("sample_functs.R")
 H <- 4
 V <- 4
 set.seed(102285) #reproducible seed
-mc.iter <- 500
+mc.iter <- 200
 
 load("written/sample_images.Rdata")
 load("written/variance_params.Rdata")
@@ -19,7 +19,7 @@ params <- list(main_hidden = rnorm(H, mean = 0, sd = sqrt(variance_params$C)),
                main_visible = rnorm(V, mean = 0, sd = sqrt(variance_params$C)),
                interaction = matrix(rnorm(H*V, mean = 0, sd = sqrt(variance_params$C_prime)), nrow = H))
 
-# data.frame(expand.grid(tau_main = seq(.1, 1, by = .1), tau_interaction = seq(.1, 1, by = .1))) %>%
+# data.frame(expand.grid(tau_main = seq(.001, .02, by = .002), tau_interaction = seq(.001, .02, by = .002))) %>%
 #   group_by(tau_main, tau_interaction) %>%
 #   do(model = sample_mh_within_gibbs(visibles = flat_images_good$visibles, params0 = params, C = variance_params$C, C_prime = variance_params$C_prime, tau_main = .$tau_main, tau_interaction = .$tau_interaction, mc.iter = mc.iter)) -> models
 # 

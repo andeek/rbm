@@ -33,9 +33,9 @@ trunc_const <- 1
 
 models_good <- sample_single_adaptive_mh_within_gibbs(visibles = flat_images_good$visibles, params0 = params, C = variance_params$C, C_prime =  variance_params$C_prime, trunc_const = trunc_const, h = h, s1 = s1, s2 = s2, mc.iter = mc.iter, conditional_function = log_conditional_marginal)
 models_bad <- sample_single_adaptive_mh_within_gibbs(visibles = flat_images_good$visibles, params0 = params, C = variance_params$C, C_prime = variance_params$C, trunc_const = trunc_const, h = h, s1 = s1, s2 = s2, mc.iter = mc.iter, conditional_function = log_conditional_marginal)
-models_degen <- sample_single_adaptive_mh_within_gibbs(visibles = flat_images_degen$visibles, params0 = params, C = variance_params$C, C_prime = variance_params$C_prime, trunc_const = trunc_const, h = h, s1 = s1, s2 = s2, mc.iter = mc.iter, conditional_function = log_conditional_marginal)
+#models_degen <- sample_single_adaptive_mh_within_gibbs(visibles = flat_images_degen$visibles, params0 = params, C = variance_params$C, C_prime = variance_params$C_prime, trunc_const = trunc_const, h = h, s1 = s1, s2 = s2, mc.iter = mc.iter, conditional_function = log_conditional_marginal)
 
-save(models_good, models_bad, models_degen, file = "written/fitted_models_adaptive_mh_full_trunc_distn_marginal_3.Rdata")
+save(models_good, models_bad, models_degen, file = "written/fitted_models_adaptive_mh_full_trunc_distn_marginal.Rdata")
 
 #burnin + thinning
 burnin_thinning <- function(models) {
@@ -51,6 +51,6 @@ burnin_thinning <- function(models) {
 
 models_good <- burnin_thinning(models_good)
 models_bad <- burnin_thinning(models_bad)
-models_degen <- burnin_thinning(models_degen)
+#models_degen <- burnin_thinning(models_degen)
 
-save(models_good, models_bad, models_degen, file = "written/fitted_models_adaptive_mh_trunc_distn_marginal_3.Rdata")
+save(models_good, models_bad, models_degen, file = "written/fitted_models_adaptive_mh_trunc_distn_marginal.Rdata")

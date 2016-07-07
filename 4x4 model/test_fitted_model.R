@@ -10,7 +10,7 @@ V <- 4
 
 load("written/sample_images.Rdata")
 # load("written/fitted_models_adaptive_mh_trunc_distn.Rdata")
-load("written/fitted_models_adaptive_mh_full_trunc_distn_marginal_2.Rdata")
+load("written/fitted_models_jing_7.Rdata")
 load("written/sample.params.Rdata")
 params_degen <- list(main_hidden = sample.params %>% ungroup() %>% filter(near_hull) %>% select(starts_with("h"), -H) %>% data.matrix(),
                      main_visible = sample.params %>% ungroup() %>% filter(near_hull) %>% select(starts_with("v"), -V) %>% data.matrix(),
@@ -85,7 +85,7 @@ reshape_sample_distn <- function(model) {
   sample_distn <- model$distn
   dim(sample_distn) <- c(dim(sample_distn)[1]*dim(sample_distn)[2], dim(sample_distn)[3])
   sample_distn %>% data.frame() -> sample_distn
-  names(sample_distn) <- names(distn_degen)
+  names(sample_distn) <- names(distn_good)
   
   sample_distn %>%
     group_by(image_id) %>%
@@ -155,7 +155,5 @@ data.frame(good = colSums(exp(possibles %*% t(models_good$theta))),
   gather(model, normalizer, -iter) %>%
   ggplot() +
   geom_line(aes(iter, normalizer, colour = model))
-
-  
 
 
