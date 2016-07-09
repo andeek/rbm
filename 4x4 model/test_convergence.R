@@ -2,7 +2,7 @@ library(dplyr)
 library(ggplot2)
 library(tidyr)
 
-load("written/fitted_models_jing_0.1.Rdata")
+load("written/fitted_models_jing_7.Rdata")
 load("written/sample.params.Rdata")
 theta_good <- sample.params %>% 
   ungroup() %>% 
@@ -12,9 +12,9 @@ theta_good <- sample.params %>%
 
 
 if("params" %in% names(models_good)) {
-  theta_est <- data.frame(models_good$params$main_visible, models_good$params$main_hidden, models_good$params$interaction)
+  theta_est <- data.frame(models_bad$params$main_visible, models_bad$params$main_hidden, models_bad$params$interaction)
 } else if("theta" %in% names(models_good)) {
-  theta_est <- models_good$theta %>% data.frame()
+  theta_est <- models_bad$theta %>% data.frame()
 }
 names(theta_est) <- colnames(theta_good)
 
@@ -25,6 +25,12 @@ theta_est %>%
   ggplot() + 
   geom_abline(aes(intercept = true_value, slope = 0), data = theta_good %>% data.frame %>% gather(variable, true_value), colour = "red") +
   geom_line(aes(iter, value)) + 
+  facet_wrap(~variable, scales = "free")
+
+theta_est %>%
+  gather(variable, value) %>% 
+  ggplot() + 
+  geom_histogram(aes(value)) + 
   facet_wrap(~variable, scales = "free")
 
 var <- models_good$var %>% data.frame

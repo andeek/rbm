@@ -9,8 +9,8 @@ H <- 4
 V <- 4
 
 load("written/sample_images.Rdata")
-# load("written/fitted_models_adaptive_mh_trunc_distn.Rdata")
-load("written/fitted_models_jing_7.Rdata")
+load("written/fitted_models_trunc_full.Rdata")
+# load("written/fitted_models_jing_7.Rdata")
 load("written/sample.params.Rdata")
 params_degen <- list(main_hidden = sample.params %>% ungroup() %>% filter(near_hull) %>% select(starts_with("h"), -H) %>% data.matrix(),
                      main_visible = sample.params %>% ungroup() %>% filter(near_hull) %>% select(starts_with("v"), -V) %>% data.matrix(),
@@ -96,7 +96,7 @@ reshape_sample_distn <- function(model) {
 
 sample_good <- reshape_sample_distn(models_good)
 sample_bad <- reshape_sample_distn(models_bad)
-sample_degen <- reshape_sample_distn(models_degen)
+# sample_degen <- reshape_sample_distn(models_degen)
 
 
 sample_good %>% rename(good = prob) %>%

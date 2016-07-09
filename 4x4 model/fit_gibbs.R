@@ -11,8 +11,8 @@ mc.iter <- 5000
 set.seed(102285) #reproducible seed
 
 load("written/sample_images.Rdata")
-load("written/variance_params.Rdata")
-load("written/sample.params.Rdata")
+load("written/params_theta.Rdata")
+load("written/params_variance.Rdata")
 
 params <- list(main_hidden = rnorm(H, mean = 0, sd = sqrt(variance_params$C)),
                main_visible = rnorm(V, mean = 0, sd = sqrt(variance_params$C)),
