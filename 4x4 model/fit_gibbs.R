@@ -2,7 +2,7 @@
 library(dplyr)
 library(tidyr)
 library(ggplot2)
-source("sample_functs.R")
+source("functs_sample.R")
 
 #data and params ------------------------
 H <- 4
@@ -10,20 +10,23 @@ V <- 4
 mc.iter <- 5000
 set.seed(102285) #reproducible seed
 
+#rule of thumb for variance params
+C <- 1/(H + V)
+C_prime = 1/(H*V)
+
 load("written/sample_images.Rdata")
 load("written/params_theta.Rdata")
-load("written/params_variance.Rdata")
 
-params <- list(main_hidden = rnorm(H, mean = 0, sd = sqrt(variance_params$C)),
-               main_visible = rnorm(V, mean = 0, sd = sqrt(variance_params$C)),
-               interaction = matrix(rnorm(H*V, mean = 0, sd = sqrt(variance_params$C_prime)), nrow = H))
+params <- list(main_hidden = rnorm(H, mean = 0, sd = sqrt(C)),
+               main_visible = rnorm(V, mean = 0, sd = sqrt(C)),
+               interaction = matrix(rnorm(H*V, mean = 0, sd = sqrt(C_prime)), nrow = H))
 
 N <- nrow(flat_images_good$visibles)
-consts <- 6:8 #tune constant 
+consts <- c(5.5, 5.6, 5.7) #tune constant 
 
 for(const in consts) {
-  models_good <- sample_gibbs(visibles = flat_images_good$visibles, params0 = params, C = const*variance_params$C/N, C_prime = const*variance_params$C_prime/N, mc.iter = mc.iter)
-  models_bad <- sample_gibbs(visibles = flat_images_good$visibles, params0 = params, C = const*variance_params$C/N, C_prime = const*variance_params$C/N, mc.iter = mc.iter)
+  models_good <- sample_gibbs(visibles = flat_images_good$visibles, params0 = params, C = const*C/N, C_prime = const*C_prime/N, mc.iter = mc.iter)
+  models_bad <- sample_gibbs(visibles = flat_images_good$visibles, params0 = params, C = const*C/N, C_prime = const*C/N, mc.iter = mc.iter)
   #models_degen <- sample_gibbs(visibles = flat_images_degen$visibles, params0 = params, C = const*variance_params$C/N, C_prime = const*variance_params$C_prime/N, mc.iter = mc.iter)
   
   #burnin + thinning

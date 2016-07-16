@@ -9,7 +9,7 @@ H <- 4
 V <- 4
 
 load("written/sample_images.Rdata")
-load("written/sample.params.Rdata")
+load("written/params_theta.Rdata")
 params_degen <- list(main_hidden = sample.params %>% ungroup() %>% filter(near_hull) %>% select(starts_with("h"), -H) %>% data.matrix(),
                      main_visible = sample.params %>% ungroup() %>% filter(near_hull) %>% select(starts_with("v"), -V) %>% data.matrix(),
                      interaction = sample.params %>% ungroup() %>% filter(near_hull) %>% select(starts_with("theta")) %>% data.matrix() %>% matrix(4))
@@ -22,7 +22,7 @@ distn_good <- visible_distn(params = params_good)
 distn_degen <- visible_distn(params = params_degen)
 
 #data ----------------------
-consts <- c(0.1, 0.2, 0.3, 0.4, 0.5, 1, 2, 3, 4, 5, 6, 7, 8)
+consts <- c(0.1, 0.2, 0.3, 0.4, 0.5, 1, 2, 3, 4, 5, 5.5, 5.6, 5.7, 5.8, 5.9, 6, 6.1, 6.2, 7, 8)
 reshape_sample_distn <- function(model) {
   sample_distn <- model$distn
   dim(sample_distn) <- c(dim(sample_distn)[1]*dim(sample_distn)[2], dim(sample_distn)[3])
@@ -58,7 +58,9 @@ res %>%
   summarise(mse = mean(error)) -> error
 
 error %>%
-  spread(which, mse) 
+  ungroup() %>%
+  mutate(min_mse = min(mse)) %>%
+  filter(mse == min_mse)
 
 error %>%
   ggplot() +

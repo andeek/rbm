@@ -139,7 +139,7 @@ sample_single_theta_adaptive_mh <- function(theta, hiddens, visibles, C, trunc_c
   theta_star[index] <- theta_star_single
   
   const <- ifelse(shrink, C*trunc_const, C)
-  if(theta_star_single^2 > const) return(list(theta = theta[index], var = NA)) #truncation
+  if(theta_star_single^2 > 9*const) return(list(theta = theta[index], var = NA)) #truncation at 3*sigma
   
   u <- runif(1)
   

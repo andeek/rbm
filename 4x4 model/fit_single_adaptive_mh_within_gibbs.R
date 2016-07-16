@@ -2,7 +2,7 @@
 library(dplyr)
 library(tidyr)
 library(ggplot2)
-source("sample_functs.R")
+source("functs_sample.R")
 
 #data and params ------------------------
 H <- 4
@@ -12,7 +12,6 @@ set.seed(102285) #reproducible seed
 
 load("written/sample_images.Rdata")
 load("written/params_theta.Rdata")
-load("written/params_variance.Rdata")
 
 params <- list(main_hidden = rep(0, H),
                main_visible = rep(0, V),
@@ -22,8 +21,10 @@ h <- .01
 s1 <- 1e-4
 s2 <- 1e4
 trunc_const <- 1
-C <- variance_params$C
-C_prime <- variance_params$C_prime
+
+#rule of thumb for variance params
+C <- 1/(H + V)
+C_prime = 1/(H*V)
 
 #run models ------------
 models_good <- sample_single_adaptive_mh_within_gibbs(visibles = flat_images_good$visibles, params0 = params, C = C, C_prime = C_prime, trunc_const = trunc_const, h = h, s1 = s1, s2 = s2, mc.iter = mc.iter)

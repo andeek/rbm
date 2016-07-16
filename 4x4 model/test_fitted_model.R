@@ -9,9 +9,9 @@ H <- 4
 V <- 4
 
 load("written/sample_images.Rdata")
-load("written/fitted_models_trunc_full.Rdata")
-# load("written/fitted_models_jing_7.Rdata")
-load("written/sample.params.Rdata")
+# load("written/fitted_models_trunc_full.Rdata")
+load("written/fitted_models_jing_5.8.Rdata")
+load("written/params_theta.Rdata")
 params_degen <- list(main_hidden = sample.params %>% ungroup() %>% filter(near_hull) %>% select(starts_with("h"), -H) %>% data.matrix(),
                      main_visible = sample.params %>% ungroup() %>% filter(near_hull) %>% select(starts_with("v"), -V) %>% data.matrix(),
                      interaction = sample.params %>% ungroup() %>% filter(near_hull) %>% select(starts_with("theta")) %>% data.matrix() %>% matrix(4))
