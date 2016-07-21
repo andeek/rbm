@@ -2,8 +2,8 @@ library(dplyr)
 library(ggplot2)
 library(tidyr)
 
-load("written/fitted_models_jing_7.Rdata")
-load("written/sample.params.Rdata")
+load("written/fitted_models_trunc_marginal_full.Rdata")
+load("written/params_theta.Rdata")
 theta_good <- sample.params %>% 
   ungroup() %>% 
   filter(!near_hull) %>% 
@@ -12,9 +12,9 @@ theta_good <- sample.params %>%
 
 
 if("params" %in% names(models_good)) {
-  theta_est <- data.frame(models_bad$params$main_visible, models_bad$params$main_hidden, models_bad$params$interaction)
+  theta_est <- data.frame(models_good$params$main_visible, models_good$params$main_hidden, models_good$params$interaction)
 } else if("theta" %in% names(models_good)) {
-  theta_est <- models_bad$theta %>% data.frame()
+  theta_est <- models_good$theta %>% data.frame()
 }
 names(theta_est) <- colnames(theta_good)
 

@@ -2,7 +2,7 @@
 library(dplyr)
 library(tidyr)
 library(ggplot2)
-source("sample_functs.R")
+source("functs_sample.R")
 
 #params ------------------------
 H <- 4
@@ -53,16 +53,15 @@ for(const in consts) {
 #error rates --------------
 res %>%
   gather(which, est_prob, good, bad) %>%
-  mutate(error = (true_prob - est_prob)^2) %>%
+  mutate(error = abs(true_prob - est_prob)) %>%
+  group_by(which, const, image_id) %>%
+  summarise(med_se = median(error)) %>%
   group_by(which, const) %>%
-  summarise(mse = mean(error)) -> error
+  summarise(max_med_se = max(med_se)) -> error
 
-error %>%
-  ungroup() %>%
-  mutate(min_mse = min(mse)) %>%
-  filter(mse == min_mse)
 
 error %>%
   ggplot() +
-  geom_line(aes(const, mse, colour = which)) +
-  geom_point(aes(const, mse, colour = which))
+  geom_line(aes(const, max_med_se, colour = which)) +
+  geom_point(aes(const, max_med_se, colour = which)) +
+  ylim(c(0, 1))
