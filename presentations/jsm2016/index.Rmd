@@ -34,10 +34,10 @@ JSM - Chicago, IL<br/>
 Restricted Boltzmann machine (RBM), which consists of two layers - a hidden ($\mathcal{H}$) and a visible ($\mathcal{V}$).
 </p>
 <p class="double-flow">
-<img src="images/rbm.pdf" class="one-col-image"></br>
+<img src="images/rbm.png" class="one-col-image"></br>
 </p>
 </div>
-<img src="images/visibles_image.pdf"></br>
+<img src="images/visibles_image.png"></br>
 Image classification using a RBM. Each image pixel comprises a node in the visible layer, $\mathcal{V}$. The output is used to create features which are then passed to a supervised learning algorithm [@friedman2001elements].
 
 ## Joint Distribution
@@ -56,7 +56,7 @@ $$
 "Deep Boltzmann machine" - multiple single layer restricted Boltzmann machines with the lower stack hidden layer acting as the visible layer for the higher stacked model
 </p>
 <p class="double-flow">
-<img src="images/deep_rbm.pdf"></br>
+<img src="images/deep_rbm.png"></br>
 </p>
 </div><br/>
 
@@ -95,8 +95,8 @@ Let $R(\theta) = \max_{v} \max_{h}Q(x) - \min_{v}\max_{h}Q(x) - H\log 2$.
 
 <div class="double">
 <p class="double-flow">
-<img src="images/toyhull_top.pdf">
-<img src="images/toyhull_top_2.pdf">
+<img src="images/toyhull_top.png">
+<img src="images/toyhull_top_2.png">
 </p>
 <p class="double-flow">
 Convex hulls of the statistic space for a toy RBM with $V = H = 1$ for $\{0,1\}$-encoding and $\{-1,1\}$-encoding enclosed by an unrestricted hull of 3-space.

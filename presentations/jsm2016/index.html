@@ -42,10 +42,10 @@ Andee Kaplan, Daniel Nordman, and Stephen Vardeman<br/> Iowa State University<br
 Restricted Boltzmann machine (RBM), which consists of two layers - a hidden (<span class="math inline">\(\mathcal{H}\)</span>) and a visible (<span class="math inline">\(\mathcal{V}\)</span>).
 </p>
 <p class="double-flow">
-<img src="images/rbm.pdf" class="one-col-image"></br>
+<img src="images/rbm.png" class="one-col-image"></br>
 </p>
 </div>
-<p><img src="images/visibles_image.pdf"></br> Image classification using a RBM. Each image pixel comprises a node in the visible layer, <span class="math inline">\(\mathcal{V}\)</span>. The output is used to create features which are then passed to a supervised learning algorithm <span class="citation" data-cites="friedman2001elements">(Friedman, Hastie, and Tibshirani 2001)</span>.</p>
+<p><img src="images/visibles_image.png"></br> Image classification using a RBM. Each image pixel comprises a node in the visible layer, <span class="math inline">\(\mathcal{V}\)</span>. The output is used to create features which are then passed to a supervised learning algorithm <span class="citation" data-cites="friedman2001elements">(Friedman, Hastie, and Tibshirani 2001)</span>.</p>
 </section><section id="joint-distribution" class="slide level2">
 <h2>Joint Distribution</h2>
 <p>Let <span class="math inline">\(x = \{h_1, ..., h_H, v_1, ...,v_V\}\)</span> represent the states of the visible and hidden nodes in an RBM. Then the probability each node taking the the value corresponding to <span class="math inline">\(x\)</span> is:</p>
@@ -59,7 +59,7 @@ f_{\theta} (x) = \frac{\exp\left(\sum\limits_{i = 1}^V \sum\limits_{j=1}^H \thet
 “Deep Boltzmann machine” - multiple single layer restricted Boltzmann machines with the lower stack hidden layer acting as the visible layer for the higher stacked model
 </p>
 <p class="double-flow">
-<img src="images/deep_rbm.pdf"></br>
+<img src="images/deep_rbm.png"></br>
 </p>
 </div>
 <p><br/></p>
@@ -132,7 +132,7 @@ f_{\theta} (x) = \frac{\exp\left(\sum\limits_{i = 1}^V \sum\limits_{j=1}^H \thet
 <h2>Data coding to mitigate degeneracy</h2>
 <div class="double">
 <p class="double-flow">
-<img src="images/toyhull_top.pdf"> <img src="images/toyhull_top_2.pdf">
+<img src="images/toyhull_top.png"> <img src="images/toyhull_top_2.png">
 </p>
 <p class="double-flow">
 Convex hulls of the statistic space for a toy RBM with <span class="math inline">\(V = H = 1\)</span> for <span class="math inline">\(\{0,1\}\)</span>-encoding and <span class="math inline">\(\{-1,1\}\)</span>-encoding enclosed by an unrestricted hull of 3-space.
