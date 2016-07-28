@@ -1,0 +1,116 @@
+---
+title: "An Exposition on the Propriety of Restricted Boltzmann Machines"
+author: http://bit.ly/jsm2016
+ratio: 16x10
+output:
+  rmdshower::shower_presentation:
+    self_contained: false
+    theme: ribbon
+    katex: true
+    fig_caption: true
+    css: style.css
+bibliography: refs.bib
+---
+
+## An exposition on the propriety of restricted Boltzmann machines { .white }
+
+<img src="images/title_background.jpg" class="cover" style="height: 100%" alt="https://www.flickr.com/photos/kevin53/13427959404/in/photolist-mszNvs-9MQYEj-4yexiR-ks7nip-6o3CdZ-ngtetn-canv9W-bmdAKd-4vidoh-6PLNA8-5gvtyL-3MDEAo-8SsP23-ks6CS4-oJ44cc-93LLtu-jYhtWc-e4nSK4-pJrmi4-62mmJ-dANTW2-8zyj8N-ks7nFP-cSDsyd-pmTfZt-9dL7vS-nyf63n-8q76xZ-dzE85u-63vAS1-djhyF4-pZKfE7-dr9oRc-8i1GXY-jmsNrz-4wC15t-4wBZMp-8XmJa8-co9uys-63nQSn-a5tzkd-fqbZm4-au3EME-mszUiu-sbVvKY-ajAP7X-9kUypA-o4stRL-J5n3or-7icjfY">
+
+<p class="white">
+Andee Kaplan, Daniel Nordman, and Stephen Vardeman<br/>
+Iowa State University<br/>
+July 31, 2016<br/>
+JSM - Chicago, IL<br/>
+</br></br></br></br>
+<a href="http://bit.ly/jsm2016">http://bit.ly/jsm2016</a>
+</p>
+
+# Restricted Boltzmann machines
+
+## What is this?
+
+<div class="double">
+<p class="double-flow">
+Restricted Boltzmann machine (RBM), which consists of two layers - a hidden ($\mathcal{H}$) and a visible ($\mathcal{V}$).
+</p>
+<p class="double-flow">
+<img src="images/rbm.pdf" class="one-col-image"></br>
+</p>
+</div>
+<img src="images/visibles_image.pdf"></br>
+Image classification using a RBM. Each image pixel comprises a node in the visible layer, $\mathcal{V}$. The output is used to create features which are then passed to a supervised learning algorithm [@friedman2001elements].
+
+## Joint Distribution
+
+Let $x = \{h_1, ..., h_H, v_1, ...,v_V\}$ represent the states of the visible and hidden nodes in an RBM. Then the probability each node taking the the value corresponding to $x$ is:
+
+$$
+f_{\theta} (x) = \frac{\exp\left(\sum\limits_{i = 1}^V \sum\limits_{j=1}^H \theta_{ij} v_i h_j + \sum\limits_{i = 1}^V\theta_{v_i} v_i + \sum\limits_{j = 1}^H\theta_{h_j} h_j\right)}{\sum\limits_{x \in \mathcal{X}}\exp\left(\sum\limits_{i = 1}^V \sum\limits_{j=1}^H \theta_{ij} v_i h_j + \sum\limits_{i = 1}^V\theta_{v_i} v_i + \sum\limits_{j = 1}^H\theta_{h_j} h_j\right)}
+$$
+
+## Deep learning
+
+
+<div class="double">
+<p class="double=flow">
+"Deep Boltzmann machine" - multiple single layer restricted Boltzmann machines with the lower stack hidden layer acting as the visible layer for the higher stacked model
+</p>
+<p class="double-flow">
+<img src="images/deep_rbm.pdf"></br>
+</p>
+</div><br/>
+
+Claimed ability to learn "internal representations that become increasingly complex" [@salakhutdinov2009deep], used in classification problems.
+
+# Degeneracy, instability, and uninterpretability. Oh my!
+
+## Near-degeneracy
+
+The highly flexible nature of the RBM ($H + V + HV$ parameters) makes three characteristics of model impropriety of particular concern. 
+
+Let $Q(\cdot)$ denotes the neg-potentional function of the model, having support set $\mathcal{S}$.
+
+
+| Characteristic | Detection |
+|:----------------------------------------------------------------|:-------------------------------------------------------|
+|Disproportionate amount of probability placed on only a few elements of the sample space by the model [@handcock2003assessing] | If random variables in $Q(\cdot)$ have a collective mean $\mu(\theta)$ close to the boundary of the convex hull of $\mathcal{S}$. |
+
+## Instability
+
+Let $R(\theta) = \max_{v} \max_{h}Q(x) - \min_{v}\max_{h}Q(x) - H\log 2$.
+
+| Characteristic | Detection |
+|:----------------------------------------------------------------|:-------------------------------------------------------|
+| Small changes in natural parameters result in large changes in probability masses, excessive sensitivity [@schweinberger2011instability]. | If $R(\theta)/V$ is large, then the the maximum log-likelihood ratio of two images that differ in only one pixel is large. |
+
+
+## Uninterpretability
+
+| Characteristic | Detection |
+|:----------------------------------------------------------------|:-------------------------------------------------------|
+| Due to the existence of dependence, marginal mean-structure no longer maintained [@kaiser2007statistical]. | If the magnitude of the difference between model expectations and expectations under independence (dependence parameters of zero), $\left\vert E( X \vert \theta) -E( X \vert \emptyset ) \right\vert$, is large. |
+
+
+## Data coding to mitigate degeneracy
+
+<div class="double">
+<p class="double-flow">
+<img src="images/toyhull_top.pdf">
+<img src="images/toyhull_top_2.pdf">
+</p>
+<p class="double-flow">
+Convex hulls of the statistic space for a toy RBM with $V = H = 1$ for $\{0,1\}$-encoding and $\{-1,1\}$-encoding enclosed by an unrestricted hull of 3-space.
+</p>
+</div>
+
+- For the $\{-1, 1 \}$ encoding of $\mathcal{V}$ and $\mathcal{H}$, the origin is the center of the parameter space
+- At $\theta = 0$, the RBM is equivalent to elements of $X$ being distributed as iid Bernoulli$\left(\frac{1}{2}\right)$ $\Rightarrow$ No *near-degeneracy*, *instability*, or *uninterpretability*!
+
+
+## Manageable (a.k.a. small) examples
+
+# Bayesian model fitting
+
+# Thank you!
+
+## References {.small}

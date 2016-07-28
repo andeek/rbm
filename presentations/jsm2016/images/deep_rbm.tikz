@@ -1,0 +1,61 @@
+\begin{tikzpicture}[auto, node distance=3cm, thick, 
+                    visible/.style= {circle,
+                      fill=isublue,
+                      draw,
+                      font=\Large,
+                      inner sep=0pt,
+                      minimum size=1cm},
+                    hidden/.style= {circle,
+                      fill=white,
+                      draw,
+                      font=\Large,
+                      inner sep=0pt,
+                      minimum size=1cm}]
+                      
+
+  \node[visible] (1) {};
+  \node[visible] (2) [below of=1] {};
+  \node[visible] (3) [below of=2] {};
+  \node (13) [below of = 3, yshift = 2cm] {$\mathcal{V}$};
+  \node[hidden] (4) [right of=1] {};
+  \node[hidden] (5) [right of=2] {};
+  \node[hidden] (6) [right of=3] {};
+  \node (14) [below of = 6, yshift = 2cm] {$\mathcal{H}^{(1)}$};
+  \node[hidden] (7) [right of=4] {};
+  \node[hidden] (8) [right of=5] {};
+  \node[hidden] (9) [right of=6] {};
+  \node (15) [below of = 9, yshift = 2cm] {$\mathcal{H}^{(2)}$};
+  \node[hidden] (10) [right of=7] {};
+  \node[hidden] (11) [right of=8] {};
+  \node[hidden] (12) [right of=9] {};
+  \node (16) [below of = 12, yshift = 2cm] {$\mathcal{H}^{(3)}$};
+  
+  \path
+    (1) edge node {} (4)
+        edge node {} (5)
+        edge node {} (6)
+    (2) edge node {} (4)
+        edge node {} (5) 
+        edge node {} (6)
+    (3) edge node {} (4)
+        edge node {} (5)
+        edge node {} (6)
+    (4) edge node {} (7)
+        edge node {} (8) 
+        edge node {} (9)
+    (5) edge node {} (7)
+        edge node {} (8) 
+        edge node {} (9)
+    (6) edge node {} (7)
+        edge node {} (8) 
+        edge node {} (9)
+    (7) edge node {} (10)
+        edge node {} (11) 
+        edge node {} (12)
+    (8) edge node {} (10)
+        edge node {} (11) 
+        edge node {} (12)
+    (9) edge node {} (10)
+        edge node {} (11) 
+        edge node {} (12);
+\end{tikzpicture}

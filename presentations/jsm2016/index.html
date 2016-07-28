@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>An Exposition on the Propriety of Restricted Boltzmann Machines</title>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="index_files/rmdshower/node_modules/shower-ribbon/styles/screen-4x3.css">
+  <link rel="stylesheet" href="index_files/rmdshower/style-common.css">
+  <link rel="stylesheet" href="index_files/rmdshower/style-ribbon.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/katex.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/katex.min.js"></script>
+  <script src="index_files/rmdshower/auto-render.min.js" type="text/javascript"></script>
+  
+  
+  
+            <link rel="stylesheet" href="style.css"/>
+      
+  
+</head>
+
+<body class="shower list">
+
+  <header class="caption">
+    <h1>An Exposition on the Propriety of Restricted Boltzmann Machines</h1>
+    <p><a href="http://bit.ly/jsm2016" class="uri">http://bit.ly/jsm2016</a></p>
+  </header>
+
+    
+  
+<section id="an-exposition-on-the-propriety-of-restricted-boltzmann-machines" class="slide level2 white">
+<h2>An exposition on the propriety of restricted Boltzmann machines</h2>
+<p><img src="images/title_background.jpg" class="cover" style="height: 100%" alt="https://www.flickr.com/photos/kevin53/13427959404/in/photolist-mszNvs-9MQYEj-4yexiR-ks7nip-6o3CdZ-ngtetn-canv9W-bmdAKd-4vidoh-6PLNA8-5gvtyL-3MDEAo-8SsP23-ks6CS4-oJ44cc-93LLtu-jYhtWc-e4nSK4-pJrmi4-62mmJ-dANTW2-8zyj8N-ks7nFP-cSDsyd-pmTfZt-9dL7vS-nyf63n-8q76xZ-dzE85u-63vAS1-djhyF4-pZKfE7-dr9oRc-8i1GXY-jmsNrz-4wC15t-4wBZMp-8XmJa8-co9uys-63nQSn-a5tzkd-fqbZm4-au3EME-mszUiu-sbVvKY-ajAP7X-9kUypA-o4stRL-J5n3or-7icjfY"></p>
+<p class="white">
+Andee Kaplan, Daniel Nordman, and Stephen Vardeman<br/> Iowa State University<br/> July 31, 2016<br/> JSM - Chicago, IL<br/> </br></br></br></br> <a href="http://bit.ly/jsm2016">http://bit.ly/jsm2016</a>
+</p>
+</section>
+<section id="restricted-boltzmann-machines" class="titleslide slide level1"><h2 class="shout">Restricted Boltzmann machines</h2></section><section id="what-is-this" class="slide level2">
+<h2>What is this?</h2>
+<div class="double">
+<p class="double-flow">
+Restricted Boltzmann machine (RBM), which consists of two layers - a hidden (<span class="math inline">\(\mathcal{H}\)</span>) and a visible (<span class="math inline">\(\mathcal{V}\)</span>).
+</p>
+<p class="double-flow">
+<img src="images/rbm.pdf" class="one-col-image"></br>
+</p>
+</div>
+<p><img src="images/visibles_image.pdf"></br> Image classification using a RBM. Each image pixel comprises a node in the visible layer, <span class="math inline">\(\mathcal{V}\)</span>. The output is used to create features which are then passed to a supervised learning algorithm <span class="citation" data-cites="friedman2001elements">(Friedman, Hastie, and Tibshirani 2001)</span>.</p>
+</section><section id="joint-distribution" class="slide level2">
+<h2>Joint Distribution</h2>
+<p>Let <span class="math inline">\(x = \{h_1, ..., h_H, v_1, ...,v_V\}\)</span> represent the states of the visible and hidden nodes in an RBM. Then the probability each node taking the the value corresponding to <span class="math inline">\(x\)</span> is:</p>
+<p><span class="math display">\[
+f_{\theta} (x) = \frac{\exp\left(\sum\limits_{i = 1}^V \sum\limits_{j=1}^H \theta_{ij} v_i h_j + \sum\limits_{i = 1}^V\theta_{v_i} v_i + \sum\limits_{j = 1}^H\theta_{h_j} h_j\right)}{\sum\limits_{x \in \mathcal{X}}\exp\left(\sum\limits_{i = 1}^V \sum\limits_{j=1}^H \theta_{ij} v_i h_j + \sum\limits_{i = 1}^V\theta_{v_i} v_i + \sum\limits_{j = 1}^H\theta_{h_j} h_j\right)}
+\]</span></p>
+</section><section id="deep-learning" class="slide level2">
+<h2>Deep learning</h2>
+<div class="double">
+<p class="double=flow">
+“Deep Boltzmann machine” - multiple single layer restricted Boltzmann machines with the lower stack hidden layer acting as the visible layer for the higher stacked model
+</p>
+<p class="double-flow">
+<img src="images/deep_rbm.pdf"></br>
+</p>
+</div>
+<p><br/></p>
+<p>Claimed ability to learn “internal representations that become increasingly complex” <span class="citation" data-cites="salakhutdinov2009deep">(Salakhutdinov and Hinton 2009)</span>, used in classification problems.</p>
+</section>
+<section id="degeneracy-instability-and-uninterpretability.-oh-my" class="titleslide slide level1"><h2 class="shout">Degeneracy, instability, and uninterpretability. Oh my!</h2></section><section id="near-degeneracy" class="slide level2">
+<h2>Near-degeneracy</h2>
+<p>The highly flexible nature of the RBM (<span class="math inline">\(H + V + HV\)</span> parameters) makes three characteristics of model impropriety of particular concern.</p>
+<p>Let <span class="math inline">\(Q(\cdot)\)</span> denotes the neg-potentional function of the model, having support set <span class="math inline">\(\mathcal{S}\)</span>.</p>
+<table>
+<colgroup>
+<col style="width: 53%" />
+<col style="width: 46%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Characteristic</th>
+<th style="text-align: left;">Detection</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Disproportionate amount of probability placed on only a few elements of the sample space by the model <span class="citation" data-cites="handcock2003assessing">(Handcock et al. 2003)</span></td>
+<td style="text-align: left;">If random variables in <span class="math inline">\(Q(\cdot)\)</span> have a collective mean <span class="math inline">\(\mu(\theta)\)</span> close to the boundary of the convex hull of <span class="math inline">\(\mathcal{S}\)</span>.</td>
+</tr>
+</tbody>
+</table>
+</section><section id="instability" class="slide level2">
+<h2>Instability</h2>
+<p>Let <span class="math inline">\(R(\theta) = \max_{v} \max_{h}Q(x) - \min_{v}\max_{h}Q(x) - H\log 2\)</span>.</p>
+<table>
+<colgroup>
+<col style="width: 53%" />
+<col style="width: 46%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Characteristic</th>
+<th style="text-align: left;">Detection</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Small changes in natural parameters result in large changes in probability masses, excessive sensitivity <span class="citation" data-cites="schweinberger2011instability">(Schweinberger 2011)</span>.</td>
+<td style="text-align: left;">If <span class="math inline">\(R(\theta)/V\)</span> is large, then the the maximum log-likelihood ratio of two images that differ in only one pixel is large.</td>
+</tr>
+</tbody>
+</table>
+</section><section id="uninterpretability" class="slide level2">
+<h2>Uninterpretability</h2>
+<table>
+<colgroup>
+<col style="width: 53%" />
+<col style="width: 46%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Characteristic</th>
+<th style="text-align: left;">Detection</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Due to the existence of dependence, marginal mean-structure no longer maintained <span class="citation" data-cites="kaiser2007statistical">(Kaiser 2007)</span>.</td>
+<td style="text-align: left;">If the magnitude of the difference between model expectations and expectations under independence (dependence parameters of zero), <span class="math inline">\(\left\vert E( X \vert \theta) -E( X \vert \emptyset ) \right\vert\)</span>, is large.</td>
+</tr>
+</tbody>
+</table>
+</section><section id="data-coding-to-mitigate-degeneracy" class="slide level2">
+<h2>Data coding to mitigate degeneracy</h2>
+<div class="double">
+<p class="double-flow">
+<img src="images/toyhull_top.pdf"> <img src="images/toyhull_top_2.pdf">
+</p>
+<p class="double-flow">
+Convex hulls of the statistic space for a toy RBM with <span class="math inline">\(V = H = 1\)</span> for <span class="math inline">\(\{0,1\}\)</span>-encoding and <span class="math inline">\(\{-1,1\}\)</span>-encoding enclosed by an unrestricted hull of 3-space.
+</p>
+</div>
+<ul>
+<li>For the <span class="math inline">\(\{-1, 1 \}\)</span> encoding of <span class="math inline">\(\mathcal{V}\)</span> and <span class="math inline">\(\mathcal{H}\)</span>, the origin is the center of the parameter space</li>
+<li>At <span class="math inline">\(\theta = 0\)</span>, the RBM is equivalent to elements of <span class="math inline">\(X\)</span> being distributed as iid Bernoulli<span class="math inline">\(\left(\frac{1}{2}\right)\)</span> <span class="math inline">\(\Rightarrow\)</span> No <em>near-degeneracy</em>, <em>instability</em>, or <em>uninterpretability</em>!</li>
+</ul>
+</section><section id="manageable-a.k.a.-small-examples" class="slide level2">
+<h2>Manageable (a.k.a. small) examples</h2>
+</section>
+<section id="bayesian-model-fitting" class="titleslide slide level1"><h2 class="shout">Bayesian model fitting</h2></section></section>
+<section id="thank-you" class="titleslide slide level1"><h2 class="shout">Thank you!</h2></section><section id="references" class="slide level2 unnumbered small">
+<h2>References</h2>
+<div id="refs" class="references">
+<div id="ref-friedman2001elements">
+<p>Friedman, Jerome, Trevor Hastie, and Robert Tibshirani. 2001. <em>The Elements of Statistical Learning</em>. Vol. 1. Springer series in statistics Springer, Berlin.</p>
+</div>
+<div id="ref-handcock2003assessing">
+<p>Handcock, Mark S, Garry Robins, Tom AB Snijders, Jim Moody, and Julian Besag. 2003. “Assessing Degeneracy in Statistical Models of Social Networks.” Working paper.</p>
+</div>
+<div id="ref-kaiser2007statistical">
+<p>Kaiser, Mark S. 2007. “Statistical Dependence in Markov Random Field Models.” <em>Statistics Preprints</em> Paper 57. Digital Repository @ Iowa State University. <a href="http://lib.dr.iastate.edu/stat_las_preprints/57/" class="uri">http://lib.dr.iastate.edu/stat_las_preprints/57/</a>.</p>
+</div>
+<div id="ref-salakhutdinov2009deep">
+<p>Salakhutdinov, Ruslan, and Geoffrey E Hinton. 2009. “Deep Boltzmann Machines.” In <em>International Conference on Artificial Intelligence and Statistics</em>, 448–55.</p>
+</div>
+<div id="ref-schweinberger2011instability">
+<p>Schweinberger, Michael. 2011. “Instability, Sensitivity, and Degeneracy of Discrete Exponential Families.” <em>Journal of the American Statistical Association</em> 106 (496). Taylor &amp; Francis: 1361–70.</p>
+</div>
+</div>
+</section>
+
+  <!--
+  To hide progress bar from entire presentation
+  just remove “progress” element.
+  -->
+  <!-- <div class="progress"></div> -->
+  <script src="index_files/rmdshower/node_modules/shower/node_modules/shower-core/shower.min.js"></script>
+  <!-- Copyright © 2015 Yours Truly, Famous Inc. -->
+  <!-- Photos by John Carey, fiftyfootshadows.net -->
+
+    <script>renderMathInElement(document.body);</script>
+  
+  
+</body>
+</html>

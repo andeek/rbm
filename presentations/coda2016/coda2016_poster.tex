@@ -8,7 +8,7 @@
 scale=1,
 angle=0,
 opacity=1,  %% adjust
-contents={\includegraphics[width=\paperwidth,height=\paperheight]{images/coda2016_poster_background.pdf}}
+contents={\includegraphics[width=\paperwidth,height=\paperheight]{../images/coda2016_poster_background.pdf}}
 }
 
 %%put words where I want
@@ -82,7 +82,7 @@ contents={\includegraphics[width=\paperwidth,height=\paperheight]{images/coda201
 
 \begin{figure}[ht]
   \centering
-  \resizebox{\linewidth}{!}{\input{images/rbm.tikz}}
+  \resizebox{\linewidth}{!}{\input{../images/rbm.tikz}}
   \caption{An example restricted Boltzmann machine (RBM), which consists of two layers, a hidden ($\mathcal{H}$) and a visible layer ($\mathcal{V}$), with no connections within a layer. Hidden nodes indicated by white circles and the visible nodes indicated by blue circles \cite{friedman2001elements}.}
   \label{fig:rbm}
 \end{figure}
@@ -90,7 +90,7 @@ contents={\includegraphics[width=\paperwidth,height=\paperheight]{images/coda201
 \vspace{1cm}
 \begin{figure}[ht]
   \centering
-  \input{images/visibles.tikz}
+  \input{../images/visibles.tikz}
   \caption{Image classification using a RBM. On the left, each image pixel comprises a node in the visible layer, $\mathcal{V}$. On the right, the output of the RBM is used to create features which are then passed to a supervised learning algorithm.} 
   \label{fig:visibles}
 \end{figure}
@@ -117,7 +117,7 @@ Three layer deep Boltzmann machine, with visible-to-hidden and hidden-to-hidden 
 \begin{minipage}{.38\textwidth}
 \begin{figure}
   \centering
-  \input{images/deep_rbm.tikz}
+  \input{../images/deep_rbm.tikz}
   \caption{Deep RBM example.}
   \label{fig:deep_rbm}
 \end{figure}
@@ -171,7 +171,7 @@ For the $\{-1, 1 \}$ encoding of $\mathcal{V}$ and $\mathcal{H}$, the origin is 
   \begin{minipage}{0.49\textwidth}
   \resizebox{\linewidth}{!}{
     \tdplotsetmaincoords{60}{-60}
-    \input{images/toyhull_top.tikz}
+    \input{../images/toyhull_top.tikz}
     
     \draw(0,1,0) -- (1,0,0) -- (0,0,0) -- (0,1,0); 
      \draw(1,1,1) -- (1,0,0) -- (0,0,0) -- (1,1,1); 
@@ -183,7 +183,7 @@ For the $\{-1, 1 \}$ encoding of $\mathcal{V}$ and $\mathcal{H}$, the origin is 
   \begin{minipage}{0.49\textwidth}
   \resizebox{\linewidth}{!}{
     \tdplotsetmaincoords{60}{-60}
-    \input{images/toyhull_top_2.tikz}
+    \input{../images/toyhull_top_2.tikz}
     
     \draw(-1,1,-1) -- (1,-1,-1) -- (-1,-1,-1) -- (-1,1,-1); 
      \draw(1,1,1) -- (1,-1,-1) -- (-1,-1,-1) -- (1,1,1); 
@@ -202,7 +202,7 @@ For the $\{-1, 1 \}$ encoding of $\mathcal{V}$ and $\mathcal{H}$, the origin is 
 \begin{minipage}{.55\textwidth}
 \begin{figure}
 \centering
-\includegraphics[scale=1]{images/frac_volume.pdf}
+\includegraphics[scale=1]{../images/frac_volume.pdf}
 \label{fig:frac_volume}
 \caption{Volume relationship for the convex hulls of statistics in $Q(\cdot)$ vs. unrestricted space.}
 \end{figure}
@@ -218,9 +218,9 @@ For the $\{-1, 1 \}$ encoding of $\mathcal{V}$ and $\mathcal{H}$, the origin is 
 {\large \bfseries Manageable (a.k.a. small) examples}
 \begin{figure}
 \centering
-\includegraphics{images/degeneracy.pdf}
-\includegraphics{images/instability.pdf}
-\includegraphics{images/uninterpretability.pdf}
+\includegraphics{../images/degeneracy.pdf}
+\includegraphics{../images/instability.pdf}
+\includegraphics{../images/uninterpretability.pdf}
 \label{fig:three_ways}
 \caption{As the magnitude of $\boldsymbol \theta$ grows ($\boldsymbol \theta$ moves from $\boldsymbol 0$), so does the occurence of near-degeneracy, instability, and uninterpretability for RBMs of varying sizes.}
 \end{figure}
@@ -256,7 +256,7 @@ $$
 \begin{textblock}{14.54}(31.86, 25.5)
 \begin{figure}
 \centering
-\includegraphics{images/image_prediction.pdf}
+\includegraphics{../images/image_prediction.pdf}
 \label{fig:image_pred}
 \vspace*{-15mm}
 \caption{Posterior probability of each possible 4-pixel image using priors above.}

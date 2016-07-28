@@ -1,0 +1,18 @@
+\tdplotsetmaincoords{60}{-60}
+\begin{tikzpicture}[tdplot_main_coords]
+      \draw[dotted,->,black] (0,0,0) -- (3,0,0) node[anchor=west]{$x$};
+      \draw[dotted,->] (0,0,0) -- (0,3,0) node[anchor=north east]{$y$};
+      \draw[dotted,->] (0,0,0) -- (0,0,3) node[anchor=east]{$z$};
+      
+      \draw[thin,color=lightgray] (0,0,0) -- (1,0,0) -- (1,1,0) -- (0,1,0) -- (0,0,0);
+      \draw[thin,color=lightgray] (0,0,0) -- (0,0,1) -- (1,0,1) -- (1,0,0) -- (0,0,0);
+      \draw[thin,color=lightgray] (0,0,0) -- (0,0,1) -- (0,1,1) -- (0,1,0) -- (0,0,0);
+      \draw[thin,color=lightgray] (0,0,1) -- (1,0,1) -- (1,1,1) -- (0,1,1) -- (0,0,1);
+      \draw[thin,color=lightgray] (0,1,0) -- (1,1,0) -- (1,1,1) -- (0,1,1) -- (0,1,0);
+      \draw[thin,color=lightgray] (1,1,0) -- (1,1,1) -- (1,0,1) -- (1,0,0) -- (1,1,0);
+      
+     \draw(0,1,0) -- (1,0,0) -- (0,0,0) -- (0,1,0); 
+     \draw(1,1,1) -- (1,0,0) -- (0,0,0) -- (1,1,1); 
+     \draw(1,1,1) -- (0,1,0) -- (0,0,0) -- (1,1,1); 
+     \draw(1,1,1) -- (0,1,0) -- (1,0,0) -- (1,1,1); 
+\end{tikzpicture}

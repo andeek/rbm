@@ -1,0 +1,78 @@
+\input{arrows_new.tikz}
+\begin{tikzpicture}[node distance=3cm, thick, 
+                    visible/.style= {circle,
+                      fill=isublue,
+                      draw,
+                      font=\Large,
+                      inner sep=0pt,
+                      minimum size=1cm},
+                    hidden/.style= {circle,
+                      fill=white,
+                      draw,
+                      font=\Large,
+                      inner sep=0pt,
+                      minimum size=1cm},
+                    output/.style= {rectangle,
+                    	fill=white,
+                    	draw,
+                    	font=\Large,
+                    	inner sep=4pt,
+                    	minimum size=1cm,
+                    	rounded corners
+                    },
+                    classify/.style= {forbidden sign,
+                    	fill=white,
+                    	draw,
+                    	font=\Large,
+                    	inner sep=0pt,
+                    	minimum size=2cm
+                    },
+                    remember picture]
+
+    \node[anchor=north east,inner sep=0] (image) at (0,0) {\includegraphics[height=2in]{visibles.pdf}};
+    \begin{scope}[x={(image.south east)},y={(image.north west)}]
+        \draw[isured, ultra thick] (0.05,0.05) rectangle (0.11,0.11);
+    \end{scope}
+    \node (11) [below of=image, font=\Large] {Example image};
+    
+	% define destination coordinates
+	\path (-4.65,-.45) coordinate (first)
+		  (-.45,-.45) coordinate (middle)
+          (-.45,-4.65) coordinate (last);
+
+
+
+    \node[visible] (1) [xshift = 2cm, yshift = -.8cm] {$v_1$};
+    \node (2) [below of=1, yshift=2.25cm] {$\vdots$};
+    \node[visible] (3) [below of=2, draw=isured, yshift=2cm] {$v_{16}$};
+    \node (4) [below of=3, yshift=2.25cm] {$\vdots$};
+    \node[visible] (5) [below of=4, yshift=2cm] {$v_{256}$};
+    \node (12) [right of=11, xshift = 1.5cm, font=\Large] {$\mathcal{V}$};
+    
+    \node[hidden] (6) [right of=1] {$h_1$};
+    \node(7)[below of=6, yshift=1.3cm] {$\vdotswide$};
+    \node[hidden] (8) [right of=5] {$h_H$};
+    %\draw [decorate, decoration={brace,amplitude=10pt}, xshift=-4pt,yshift=0pt](6,-.3) -- (6,-4.8) node (16) [black, midway, right=20pt] {};
+    \draw[decoration={brace, raise=0pt, amplitude=10pt},decorate](6,-.3) -- node[right=0.5pt, midway] (16) {} (6,-4.8) ;
+    
+    \node (13) [right of=12, font=\Large] {$\mathcal{H}$};
+    
+    \node[output] (9) [right of=7, align = center, xshift=3cm] {Feature \\ representation};
+    \node (14) [below of=9, font=\Large] {Output layer};
+    \node[classify] (10) [right of=9, xshift=3cm, rotate=90] {};
+    \node (15) [below of=10, font=\Large] {Classifier};
+    
+    \path
+    (1) edge node {} (6)
+        edge node {} (8)
+    (3) edge node {} (6)
+        edge node {} (8) 
+    (5) edge node {} (6)
+        edge node {} (8)
+    (16) edge[-latexnew, arrowhead=.5cm] node {} (9)
+    (9) edge[-latexnew, arrowhead=.5cm] node {} (10);
+    
+     \path[-latexnew, arrowhead=.5cm,black,thick] (first) edge (1);
+     \path[-latexnew, arrowhead=.5cm,isured,thick] (middle) edge (3);
+     \path[-latexnew, arrowhead=.5cm,black,thick] (last) edge (5);
+\end{tikzpicture}
