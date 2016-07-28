@@ -1,6 +1,6 @@
 ---
 title: "An Exposition on the Propriety of Restricted Boltzmann Machines"
-author: http://bit.ly/jsm2016
+author: http://bit.ly/jsm2016-rbm
 ratio: 16x10
 output:
   rmdshower::shower_presentation:
@@ -22,7 +22,7 @@ Iowa State University<br/>
 July 31, 2016<br/>
 JSM - Chicago, IL<br/>
 </br></br></br></br>
-<a href="http://bit.ly/jsm2016">http://bit.ly/jsm2016</a>
+<a href="http://bit.ly/jsm2016-rbm">http://bit.ly/jsm2016-rbm</a>
 </p>
 
 # Restricted Boltzmann machines
