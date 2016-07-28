@@ -603,7 +603,7 @@ To avoid model impropriety, we want to avoid parts of the parameter space that l
 
 Using this idea of shrinkage, we simulated $n = 5,000$ images with four pixels (four visible nodes) from an RBM model with 4 hiddens and fit the RBM using Bayesian methods, and three separate methods.
 
-1. *Trick prior.* Cancel out the normalizing term, resulting full conditionals are normally distributed. 
+1. *Trick prior.* Cancel out normalizing term, resulting full conditionals normally distributed. 
     \begin{align*}
     \pi(\boldsymbol \theta) \propto \gamma(\boldsymbol \theta)^n \exp\left(-\frac{1}{2C_{1}}\boldsymbol \theta_{main}'\boldsymbol \theta_{main} -\frac{1}{2C_{2}}\boldsymbol \theta_{interaction}'\boldsymbol \theta_{interaction}\right), \vspace{-.75cm}
     \end{align*}

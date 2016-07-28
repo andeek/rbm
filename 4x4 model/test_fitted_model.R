@@ -9,9 +9,9 @@ H <- 4
 V <- 4
 
 load("written/sample_images.Rdata")
-load("written/fitted_models_trunc_marginal_thin.Rdata")
+# load("written/fitted_models_trunc_marginal_thin.Rdata")
 # load("written/fitted_models_trunc_thin.Rdata")
-# load("written/fitted_models_jing_4.Rdata")
+load("written/fitted_models_jing_5.8.Rdata")
 load("written/params_theta.Rdata")
 params_degen <- list(main_hidden = sample.params %>% ungroup() %>% filter(near_hull) %>% select(starts_with("h"), -H) %>% data.matrix(),
                      main_visible = sample.params %>% ungroup() %>% filter(near_hull) %>% select(starts_with("v"), -V) %>% data.matrix(),
@@ -135,8 +135,8 @@ sample_good %>% rename(good = prob) %>%
   geom_line(aes(iter, prob, colour = model)) +
   geom_abline(aes(intercept = true_prob, slope = 0)) +
   #geom_abline(aes(intercept = prop, slope = 0), data = data_props_good, colour = "red") +
-  facet_wrap(~image_id) +
-  ylim(c(0,1))
+  facet_wrap(~image_id, scales="free_y")
+  #ylim(c(0,1))
 
 # sample_degen %>% 
 #   left_join(distn_degen %>% rename(true_prob = prob) %>% select(-image_id)) %>%

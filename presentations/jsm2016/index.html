@@ -150,8 +150,20 @@ f_{\theta} (x) = \frac{\exp\left(\sum\limits_{i = 1}^V \sum\limits_{j=1}^H \thet
 <h2>Manageable (a.k.a. small) examples</h2>
 <p><img src="index_files/figure-revealjs/unnamed-chunk-1-1.png" width="33%" /><img src="index_files/figure-revealjs/unnamed-chunk-1-2.png" width="33%" /><img src="index_files/figure-revealjs/unnamed-chunk-1-3.png" width="33%" /> RBMs easily are <em>near-degenerate</em>, <em>unstable</em>, and <em>uninterpretable</em> for large portions of parameter space.</p>
 </section>
-<section id="bayesian-model-fitting" class="titleslide slide level1"><h2 class="shout">Bayesian model fitting</h2></section><section id="a-tale-of-three-priors" class="slide level2">
-<h2>A tale of three priors</h2>
+<section id="bayesian-model-fitting" class="titleslide slide level1"><h2 class="shout">Bayesian model fitting</h2></section><section id="a-tale-of-three-methods" class="slide level2">
+<h2>A tale of three methods</h2>
+<ol type="1">
+<li class="fragment next"><em>Trick prior.</em> Cancel out the normalizing term, full conditionals normally dist’d. <span class="math display">\[
+\pi(\theta) \propto \gamma(\theta)^n \exp\left(-\frac{1}{2C_{1}} \theta_{main}&#39; \theta_{main} -\frac{1}{2C_{2}} \theta_{int}&#39; \theta_{int}\right),
+\]</span> where <span class="math inline">\(\gamma(\theta)\)</span> is the normalizing term <span class="citation" data-cites="li2014biclustering">(Li 2014)</span>.</li>
+<li class="fragment next"><em>Truncated Normal prior.</em> Use two independent truncated spherical normal distributions as priors for <span class="math inline">\(\theta_{main}\)</span> and <span class="math inline">\(\theta_{int}\)</span> with <span class="math inline">\(\sigma_{int} &lt; \sigma_{main}\)</span>. Not conjugate <span class="math inline">\(\Rightarrow\)</span> geometric adaptive MH step <span class="citation" data-cites="zhou2014some">(Zhou 2014)</span> and calculation of <span class="math inline">\(\gamma(\theta)\)</span>.</li>
+<li class="fragment next"><em>Marginalized likelihood</em> Marginalize out <span class="math inline">\(h\)</span> in <span class="math inline">\(f_{\theta}(x)\)</span>, use trunc. Normal prior. <span class="math display">\[
+g_{ \theta}(v) = \sum\limits_{\in \{-1,1\}^H} \exp\left(\sum\limits_{i = 1}^V \sum\limits_{j=1}^H \theta_{ij} v_i h_j + \sum\limits_{i = 1}^V\theta_{v_i} v_i + \sum\limits_{j = 1}^H\theta_{h_j} h_j\right)
+\]</span></li>
+</ol>
+</section><section id="posterior-distributions-of-images" class="slide level2">
+<h2>Posterior distributions of images</h2>
+<p><img src="index_files/figure-revealjs/models-plot-1.png" /><!-- --> Each of these rigorous fitting methods seeks to merely replicate the empirical data distribution, which is the optimal nonparametric solution.</p>
 </section>
 <section id="thank-you" class="titleslide slide level1"><h2 class="shout">Thank you!</h2></section><section id="references" class="slide level2 unnumbered small">
 <h2>References</h2>
@@ -165,11 +177,17 @@ f_{\theta} (x) = \frac{\exp\left(\sum\limits_{i = 1}^V \sum\limits_{j=1}^H \thet
 <div id="ref-kaiser2007statistical">
 <p>Kaiser, Mark S. 2007. “Statistical Dependence in Markov Random Field Models.” <em>Statistics Preprints</em> Paper 57. Digital Repository @ Iowa State University. <a href="http://lib.dr.iastate.edu/stat_las_preprints/57/" class="uri">http://lib.dr.iastate.edu/stat_las_preprints/57/</a>.</p>
 </div>
+<div id="ref-li2014biclustering">
+<p>Li, Jing. 2014. “Biclustering Methods and a Bayesian Approach to Fitting Boltzmann Machines in Statistical Learning.” PhD thesis, Iowa State University; Graduate Theses; Dissertations. <a href="http://lib.dr.iastate.edu/etd/14173/" class="uri">http://lib.dr.iastate.edu/etd/14173/</a>.</p>
+</div>
 <div id="ref-salakhutdinov2009deep">
 <p>Salakhutdinov, Ruslan, and Geoffrey E Hinton. 2009. “Deep Boltzmann Machines.” In <em>International Conference on Artificial Intelligence and Statistics</em>, 448–55.</p>
 </div>
 <div id="ref-schweinberger2011instability">
 <p>Schweinberger, Michael. 2011. “Instability, Sensitivity, and Degeneracy of Discrete Exponential Families.” <em>Journal of the American Statistical Association</em> 106 (496). Taylor &amp; Francis: 1361–70.</p>
+</div>
+<div id="ref-zhou2014some">
+<p>Zhou, Wen. 2014. “Some Bayesian and Multivariate Analysis Methods in Statistical Machine Learning and Applications.” PhD thesis, Iowa State University; Graduate Theses; Dissertations. <a href="http://lib.dr.iastate.edu/etd/13816/" class="uri">http://lib.dr.iastate.edu/etd/13816/</a>.</p>
 </div>
 </div>
 </section>
