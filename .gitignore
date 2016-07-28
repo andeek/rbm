@@ -42,6 +42,7 @@ degeneracy/apps/rsconnect/
 #too much rdata
 4x4 model/written/*.Rdata
 degeneracy/written/
+presentaations/jsm2016/index_cache/*
 
 writing/degeneracy/draft_cache
 writing/data/*.Rdata
