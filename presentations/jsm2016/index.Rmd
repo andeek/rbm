@@ -31,14 +31,14 @@ JSM - Chicago, IL<br/>
 
 <div class="double">
 <p class="double-flow">
-Restricted Boltzmann machine (RBM), which consists of two layers - a hidden ($\mathcal{H}$) and a visible ($\mathcal{V}$).
+Restricted Boltzmann machine (RBM) with two layers - hidden ($\mathcal{H}$) and visible ($\mathcal{V}$) [@friedman2001elements].
 </p>
 <p class="double-flow">
-<img src="images/rbm.png" class="one-col-image"></br>
+<img src="images/rbm.png" width="100%"></br>
 </p>
 </div>
-<img src="images/visibles_image.png"></br>
-Image classification using a RBM. Each image pixel comprises a node in the visible layer, $\mathcal{V}$. The output is used to create features which are then passed to a supervised learning algorithm [@friedman2001elements].
+<img src="images/visibles_image.png" width="100%"></br>
+Used for image classification. Each image pixel is a node in the visible layer. The output creates features, passed to supervised learning.
 
 ## Joint Distribution
 
@@ -56,7 +56,7 @@ $$
 "Deep Boltzmann machine" - multiple single layer restricted Boltzmann machines with the lower stack hidden layer acting as the visible layer for the higher stacked model
 </p>
 <p class="double-flow">
-<img src="images/deep_rbm.png"></br>
+<img src="images/deep_rbm.png" width="100%"></br>
 </p>
 </div><br/>
 
@@ -95,13 +95,16 @@ Let $R(\theta) = \max_{v} \max_{h}Q(x) - \min_{v}\max_{h}Q(x) - H\log 2$.
 
 <div class="double">
 <p class="double-flow">
-<img src="images/toyhull_top.png">
-<img src="images/toyhull_top_2.png">
+<img src="images/toyhull_top.png" width="100%">
 </p>
 <p class="double-flow">
-Convex hulls of the statistic space for a toy RBM with $V = H = 1$ for $\{0,1\}$-encoding and $\{-1,1\}$-encoding enclosed by an unrestricted hull of 3-space.
+<img src="images/toyhull_top_2.png" width="70%">
 </p>
 </div>
+
+Convex hulls of the statistic space for a toy RBM with $V = H = 1$ for $\{0,1\}$ and $\{-1,1\}$-encoding enclosed by an unrestricted hull of 3-space.
+
+## Data coding to mitigate degeneracy (cont'd)
 
 - For the $\{-1, 1 \}$ encoding of $\mathcal{V}$ and $\mathcal{H}$, the origin is the center of the parameter space
 - At $\theta = 0$, the RBM is equivalent to elements of $X$ being distributed as iid Bernoulli$\left(\frac{1}{2}\right)$ $\Rightarrow$ No *near-degeneracy*, *instability*, or *uninterpretability*!
