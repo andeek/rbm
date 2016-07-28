@@ -135,7 +135,7 @@ sample_good %>% rename(good = prob) %>%
   geom_line(aes(iter, prob, colour = model)) +
   geom_abline(aes(intercept = true_prob, slope = 0)) +
   #geom_abline(aes(intercept = prop, slope = 0), data = data_props_good, colour = "red") +
-  facet_wrap(~image_id, scales="free_y")
+  facet_wrap(~image_id, scales="free_y") 
   #ylim(c(0,1))
 
 # sample_degen %>% 

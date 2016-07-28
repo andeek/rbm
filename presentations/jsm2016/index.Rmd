@@ -419,10 +419,10 @@ all_statistics %>%
   mutate(statistic = factor(statistic, labels = paste("Image", 1:length(unique(statistic))))) %>%
   left_join(distn_good %>% select(-image_id)) %>% 
   ggplot() +
-  geom_density(aes(value, colour = method, fill = method), alpha = .2) +
+  geom_density(aes(value, y=..scaled.., colour = method, fill = method), alpha = .2) +
   geom_vline(aes(xintercept = prob)) +
   facet_wrap(~statistic, scales = "free_x") + 
-  ylab("Posterior Density") + xlab("Probability of Image") +
+  ylab("Scaled Posterior Density") + xlab("Probability of Image") +
   scale_colour_discrete("Method", labels = c("Marginalized likelihood", "Trick prior", "Truncated Normal prior")) +
   scale_fill_discrete("Method", labels = c("Marginalized likelihood", "Trick prior", "Truncated Normal prior")) -> p.models
 ```
