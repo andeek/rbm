@@ -43,7 +43,7 @@ JSM - Chicago, IL<br/>
 
 <div class="double">
 <p class="double-flow">
-Restricted Boltzmann machine (RBM) with two layers - hidden ($\mathcal{H}$) and visible ($\mathcal{V}$) [@friedman2001elements].
+Restricted Boltzmann machine (RBM) with two layers - hidden ($\mathcal{H}$) and visible ($\mathcal{V}$) [smolensky1986information].
 </p>
 <p class="double-flow">
 <img src="images/rbm.png" width="100%"></br>
@@ -74,6 +74,16 @@ $$
 
 Claimed ability to learn "internal representations that become increasingly complex" [@salakhutdinov2009deep], used in classification problems.
 
+## Why do I care?
+
+Current heuristic fitting methods seem to work for classification. Beyond classification, RBMs are generative models:
+
+> To generate data from an RBM, we can start with a random state in one of the layers and then perform alternating Gibbs sampling.
+[@hinton2006fast]
+
+Can we fit a model that generates data that looks like data?
+
+
 # Degeneracy, instability, and uninterpretability. Oh my!
 
 ## Near-degeneracy
@@ -101,60 +111,6 @@ Let $R(\theta) = \max_{v} \max_{h}Q(x) - \min_{v}\max_{h}Q(x) - H\log 2$.
 | Characteristic | Detection |
 |:----------------------------------------------------------------|:-------------------------------------------------------|
 | Due to the existence of dependence, marginal mean-structure no longer maintained [@kaiser2007statistical]. | If the magnitude of the difference between model expectations and expectations under independence (dependence parameters of zero), $\left\vert E( X \vert \theta) -E( X \vert \emptyset ) \right\vert$, is large. |
-
-
-## Data coding to mitigate degeneracy
-
-<div class="double">
-<p class="double-flow">
-<img src="images/toyhull_top.png" width="100%">
-</p>
-<p class="double-flow">
-<img src="images/toyhull_top_2.png" width="70%">
-</p>
-</div>
-
-Convex hulls of the statistic space for a toy RBM with $V = H = 1$ for $\{0,1\}$ and $\{-1,1\}$-encoding enclosed by an unrestricted hull of 3-space.
-
-## Data coding to mitigate degeneracy (cont'd)
-
-- For the $\{-1, 1 \}$ encoding of $\mathcal{V}$ and $\mathcal{H}$, the origin is the center of the parameter space
-- At $\theta = 0$, the RBM is equivalent to elements of $X$ being distributed as iid Bernoulli$\left(\frac{1}{2}\right)$ $\Rightarrow$ No *near-degeneracy*, *instability*, or *uninterpretability*!
-
-
-```{r encoding-volume, echo = FALSE, fig.height=3}
-test_cases <- expand.grid(data.frame(1:4)[,rep(1,2)]) %>% 
-  rename(H = X1.4, V = X1.4.1) %>%
-  filter(H <= V) %>% #remove those cases with less visibles than hiddens. Is this necessary?
-  mutate(n_param = H*V + H + V) %>%
-  mutate(max_facets = (2^(H+V))^(floor(n_param/2))) %>%
-  filter(n_param <= 11) #calc_hull can't handle any higher dimensions currently
-
-bin_res <- plyr::dlply(test_cases, plyr::.(n_param), function(x) calc_hull(x$V, x$H, "binary"))
-neg_res <- plyr::dlply(test_cases, plyr::.(n_param), function(x) calc_hull(x$V, x$H, "negative"))
-
-plyr::ldply(bin_res, function(x) x$c_hull$vol) %>% 
-  mutate(frac_vol = V1/(1^n_param)) %>%
-  inner_join(plyr::ldply(neg_res, function(x) x$c_hull$vol) %>% 
-               mutate(frac_vol = V1/(2^n_param)),
-             by="n_param") %>%
-  rename(vol.bin = V1.x, vol.neg = V1.y, frac_vol.bin = frac_vol.x, frac_vol.neg = frac_vol.y) %>%
-  gather(vars, value, -n_param) %>%
-  separate(vars, c("type", "encoding"), "\\.") %>%
-  spread(type, value) %>%
-  ggplot() +
-  geom_point(aes(x=n_param, y=frac_vol, colour=encoding)) +
-  geom_line(aes(x=n_param, y=frac_vol, colour=encoding, group=encoding)) +
-  ylab("Fraction of unrestricted volume") +
-  xlab("Number of parameters") +
-  scale_colour_discrete("Encoding", labels=c("Binary (1,0)", "Negative (1,-1)")) +           
-  theme(
-    plot.background = element_rect(fill = "transparent", colour = NA),
-    legend.background = element_rect(fill = "transparent", colour = NA)) -> p
-
-p
-```
-
 
 ## Manageable (a.k.a. small) examples
 
@@ -334,6 +290,59 @@ p.exp_diff
 ```
 RBMs easily are *near-degenerate*, *unstable*, and *uninterpretable* for large portions of parameter space. 
 
+## Data coding to mitigate degeneracy
+
+<div class="double">
+<p class="double-flow">
+<img src="images/toyhull_top.png" width="100%">
+</p>
+<p class="double-flow">
+<img src="images/toyhull_top_2.png" width="70%">
+</p>
+</div>
+
+Convex hulls of the statistic space for a toy RBM with $V = H = 1$ for $\{0,1\}$ and $\{-1,1\}$-encoding enclosed by an unrestricted hull of 3-space.
+
+## Data coding to mitigate degeneracy (cont'd)
+
+- For the $\{-1, 1 \}$ encoding of $\mathcal{V}$ and $\mathcal{H}$, the origin is the center of the parameter space
+- At $\theta = 0$, the RBM is equivalent to elements of $X$ being distributed as iid Bernoulli$\left(\frac{1}{2}\right)$ $\Rightarrow$ No *near-degeneracy*, *instability*, or *uninterpretability*!
+
+
+```{r encoding-volume, echo = FALSE, fig.height=3}
+test_cases <- expand.grid(data.frame(1:4)[,rep(1,2)]) %>% 
+  rename(H = X1.4, V = X1.4.1) %>%
+  filter(H <= V) %>% #remove those cases with less visibles than hiddens. Is this necessary?
+  mutate(n_param = H*V + H + V) %>%
+  mutate(max_facets = (2^(H+V))^(floor(n_param/2))) %>%
+  filter(n_param <= 11) #calc_hull can't handle any higher dimensions currently
+
+bin_res <- plyr::dlply(test_cases, plyr::.(n_param), function(x) calc_hull(x$V, x$H, "binary"))
+neg_res <- plyr::dlply(test_cases, plyr::.(n_param), function(x) calc_hull(x$V, x$H, "negative"))
+
+plyr::ldply(bin_res, function(x) x$c_hull$vol) %>% 
+  mutate(frac_vol = V1/(1^n_param)) %>%
+  inner_join(plyr::ldply(neg_res, function(x) x$c_hull$vol) %>% 
+               mutate(frac_vol = V1/(2^n_param)),
+             by="n_param") %>%
+  rename(vol.bin = V1.x, vol.neg = V1.y, frac_vol.bin = frac_vol.x, frac_vol.neg = frac_vol.y) %>%
+  gather(vars, value, -n_param) %>%
+  separate(vars, c("type", "encoding"), "\\.") %>%
+  spread(type, value) %>%
+  ggplot() +
+  geom_point(aes(x=n_param, y=frac_vol, colour=encoding)) +
+  geom_line(aes(x=n_param, y=frac_vol, colour=encoding, group=encoding)) +
+  ylab("Fraction of unrestricted volume") +
+  xlab("Number of parameters") +
+  scale_colour_discrete("Encoding", labels=c("Binary (1,0)", "Negative (1,-1)")) +           
+  theme(
+    plot.background = element_rect(fill = "transparent", colour = NA),
+    legend.background = element_rect(fill = "transparent", colour = NA)) -> p
+
+p
+```
+
+
 # Bayesian model fitting
 
 ## A tale of three methods
@@ -346,12 +355,15 @@ RBMs easily are *near-degenerate*, *unstable*, and *uninterpretable* for large p
 > 2. *Truncated Normal prior.* Use two independent truncated spherical normal distributions as priors for $\theta_{main}$ and $\theta_{int}$ with $\sigma_{int} < \sigma_{main}$. Not conjugate $\Rightarrow$ geometric adaptive MH step [@zhou2014some] and calculation of $\gamma(\theta)$. 
 > 3. *Marginalized likelihood* Marginalize out $h$ in $f_{\theta}(x)$, use trunc. Normal prior. 
     $$
-    g_{ \theta}(v) = \sum\limits_{\in \{-1,1\}^H} \exp\left(\sum\limits_{i = 1}^V \sum\limits_{j=1}^H \theta_{ij} v_i h_j + \sum\limits_{i = 1}^V\theta_{v_i} v_i + \sum\limits_{j = 1}^H\theta_{h_j} h_j\right)
+    g_{ \theta}(v) = \sum\limits_{h \in \{-1,1\}^H} \exp\left(\sum\limits_{i = 1}^V \sum\limits_{j=1}^H \theta_{ij} v_i h_j + \sum\limits_{i = 1}^V\theta_{v_i} v_i + \sum\limits_{j = 1}^H\theta_{h_j} h_j\right)
     $$
 
 ## Posterior distributions of images
 
 ```{r models, cache=TRUE}
+
+##TODO: Add empirical line
+
 source("../../4x4 model/functs_sample.R")
 
 #data and params ------------------------
@@ -429,7 +441,15 @@ all_statistics %>%
 ```{r models-plot, fig.width=8, fig.height=4}
 p.models
 ```
-Each of these rigorous fitting methods seeks to merely replicate the empirical data distribution, which is the optimal nonparametric solution.
+Each of these rigorous fitting methods seeks to merely replicate the empirical data distribution, which is the likelihood maximizer.
+
+## Wrapping up
+
+- While RMBs can be useful for classification, in the context of a statistical model as a representation of data, RBMs poor fit due to
+    1. *near-degeneracy*, 
+    2. *instability*, and
+    3. *uninterpretability*.
+- Rigorous fitting methodology is possible but slow, and ultimately results in the empirical data distribution. 
 
 # Thank you!
 

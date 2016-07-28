@@ -39,7 +39,7 @@ Andee Kaplan, Daniel Nordman, and Stephen Vardeman<br/> Iowa State University<br
 <h2>What is this?</h2>
 <div class="double">
 <p class="double-flow">
-Restricted Boltzmann machine (RBM) with two layers - hidden (<span class="math inline">\(\mathcal{H}\)</span>) and visible (<span class="math inline">\(\mathcal{V}\)</span>) <span class="citation" data-cites="friedman2001elements">(Friedman, Hastie, and Tibshirani 2001)</span>.
+Restricted Boltzmann machine (RBM) with two layers - hidden (<span class="math inline">\(\mathcal{H}\)</span>) and visible (<span class="math inline">\(\mathcal{V}\)</span>) [smolensky1986information].
 </p>
 <p class="double-flow">
 <img src="images/rbm.png" width="100%"></br>
@@ -64,6 +64,13 @@ f_{\theta} (x) = \frac{\exp\left(\sum\limits_{i = 1}^V \sum\limits_{j=1}^H \thet
 </div>
 <p><br/></p>
 <p>Claimed ability to learn “internal representations that become increasingly complex” <span class="citation" data-cites="salakhutdinov2009deep">(Salakhutdinov and Hinton 2009)</span>, used in classification problems.</p>
+</section><section id="why-do-i-care" class="slide level2">
+<h2>Why do I care?</h2>
+<p>Current heuristic fitting methods seem to work for classification. Beyond classification, RBMs are generative models:</p>
+<blockquote>
+<p>To generate data from an RBM, we can start with a random state in one of the layers and then perform alternating Gibbs sampling. <span class="citation" data-cites="hinton2006fast">(Hinton, Osindero, and Teh 2006)</span></p>
+</blockquote>
+<p>Can we fit a model that generates data that looks like data?</p>
 </section>
 <section id="degeneracy-instability-and-uninterpretability.-oh-my" class="titleslide slide level1"><h2 class="shout">Degeneracy, instability, and uninterpretability. Oh my!</h2></section><section id="near-degeneracy" class="slide level2">
 <h2>Near-degeneracy</h2>
@@ -128,6 +135,9 @@ f_{\theta} (x) = \frac{\exp\left(\sum\limits_{i = 1}^V \sum\limits_{j=1}^H \thet
 </tr>
 </tbody>
 </table>
+</section><section id="manageable-a.k.a.-small-examples" class="slide level2">
+<h2>Manageable (a.k.a. small) examples</h2>
+<p><img src="index_files/figure-revealjs/unnamed-chunk-1-1.png" width="33%" /><img src="index_files/figure-revealjs/unnamed-chunk-1-2.png" width="33%" /><img src="index_files/figure-revealjs/unnamed-chunk-1-3.png" width="33%" /> RBMs easily are <em>near-degenerate</em>, <em>unstable</em>, and <em>uninterpretable</em> for large portions of parameter space.</p>
 </section><section id="data-coding-to-mitigate-degeneracy" class="slide level2">
 <h2>Data coding to mitigate degeneracy</h2>
 <div class="double">
@@ -146,9 +156,6 @@ f_{\theta} (x) = \frac{\exp\left(\sum\limits_{i = 1}^V \sum\limits_{j=1}^H \thet
 <li>At <span class="math inline">\(\theta = 0\)</span>, the RBM is equivalent to elements of <span class="math inline">\(X\)</span> being distributed as iid Bernoulli<span class="math inline">\(\left(\frac{1}{2}\right)\)</span> <span class="math inline">\(\Rightarrow\)</span> No <em>near-degeneracy</em>, <em>instability</em>, or <em>uninterpretability</em>!</li>
 </ul>
 <p><img src="index_files/figure-revealjs/encoding-volume-1.png" /><!-- --></p>
-</section><section id="manageable-a.k.a.-small-examples" class="slide level2">
-<h2>Manageable (a.k.a. small) examples</h2>
-<p><img src="index_files/figure-revealjs/unnamed-chunk-1-1.png" width="33%" /><img src="index_files/figure-revealjs/unnamed-chunk-1-2.png" width="33%" /><img src="index_files/figure-revealjs/unnamed-chunk-1-3.png" width="33%" /> RBMs easily are <em>near-degenerate</em>, <em>unstable</em>, and <em>uninterpretable</em> for large portions of parameter space.</p>
 </section>
 <section id="bayesian-model-fitting" class="titleslide slide level1"><h2 class="shout">Bayesian model fitting</h2></section><section id="a-tale-of-three-methods" class="slide level2">
 <h2>A tale of three methods</h2>
@@ -158,21 +165,32 @@ f_{\theta} (x) = \frac{\exp\left(\sum\limits_{i = 1}^V \sum\limits_{j=1}^H \thet
 \]</span> where <span class="math inline">\(\gamma(\theta)\)</span> is the normalizing term <span class="citation" data-cites="li2014biclustering">(Li 2014)</span>.</li>
 <li class="fragment next"><em>Truncated Normal prior.</em> Use two independent truncated spherical normal distributions as priors for <span class="math inline">\(\theta_{main}\)</span> and <span class="math inline">\(\theta_{int}\)</span> with <span class="math inline">\(\sigma_{int} &lt; \sigma_{main}\)</span>. Not conjugate <span class="math inline">\(\Rightarrow\)</span> geometric adaptive MH step <span class="citation" data-cites="zhou2014some">(Zhou 2014)</span> and calculation of <span class="math inline">\(\gamma(\theta)\)</span>.</li>
 <li class="fragment next"><em>Marginalized likelihood</em> Marginalize out <span class="math inline">\(h\)</span> in <span class="math inline">\(f_{\theta}(x)\)</span>, use trunc. Normal prior. <span class="math display">\[
-g_{ \theta}(v) = \sum\limits_{\in \{-1,1\}^H} \exp\left(\sum\limits_{i = 1}^V \sum\limits_{j=1}^H \theta_{ij} v_i h_j + \sum\limits_{i = 1}^V\theta_{v_i} v_i + \sum\limits_{j = 1}^H\theta_{h_j} h_j\right)
+g_{ \theta}(v) = \sum\limits_{h \in \{-1,1\}^H} \exp\left(\sum\limits_{i = 1}^V \sum\limits_{j=1}^H \theta_{ij} v_i h_j + \sum\limits_{i = 1}^V\theta_{v_i} v_i + \sum\limits_{j = 1}^H\theta_{h_j} h_j\right)
 \]</span></li>
 </ol>
 </section><section id="posterior-distributions-of-images" class="slide level2">
 <h2>Posterior distributions of images</h2>
-<p><img src="index_files/figure-revealjs/models-plot-1.png" /><!-- --> Each of these rigorous fitting methods seeks to merely replicate the empirical data distribution, which is the optimal nonparametric solution.</p>
+<p><img src="index_files/figure-revealjs/models-plot-1.png" /><!-- --> Each of these rigorous fitting methods seeks to merely replicate the empirical data distribution, which is the likelihood maximizer.</p>
+</section><section id="wrapping-up" class="slide level2">
+<h2>Wrapping up</h2>
+<ul>
+<li>While RMBs can be useful for classification, in the context of a statistical model as a representation of data, RBMs poor fit due to
+<ol type="1">
+<li><em>near-degeneracy</em>,</li>
+<li><em>instability</em>, and</li>
+<li><em>uninterpretability</em>.</li>
+</ol></li>
+<li>Rigorous fitting methodology is possible but slow, and ultimately results in the empirical data distribution.</li>
+</ul>
 </section>
 <section id="thank-you" class="titleslide slide level1"><h2 class="shout">Thank you!</h2></section><section id="references" class="slide level2 unnumbered small">
 <h2>References</h2>
 <div id="refs" class="references">
-<div id="ref-friedman2001elements">
-<p>Friedman, Jerome, Trevor Hastie, and Robert Tibshirani. 2001. <em>The Elements of Statistical Learning</em>. Vol. 1. Springer series in statistics Springer, Berlin.</p>
-</div>
 <div id="ref-handcock2003assessing">
 <p>Handcock, Mark S, Garry Robins, Tom AB Snijders, Jim Moody, and Julian Besag. 2003. “Assessing Degeneracy in Statistical Models of Social Networks.” Working paper.</p>
+</div>
+<div id="ref-hinton2006fast">
+<p>Hinton, Geoffrey E, Simon Osindero, and Yee-Whye Teh. 2006. “A Fast Learning Algorithm for Deep Belief Nets.” <em>Neural Computation</em> 18 (7). MIT Press: 1527–54.</p>
 </div>
 <div id="ref-kaiser2007statistical">
 <p>Kaiser, Mark S. 2007. “Statistical Dependence in Markov Random Field Models.” <em>Statistics Preprints</em> Paper 57. Digital Repository @ Iowa State University. <a href="http://lib.dr.iastate.edu/stat_las_preprints/57/" class="uri">http://lib.dr.iastate.edu/stat_las_preprints/57/</a>.</p>
