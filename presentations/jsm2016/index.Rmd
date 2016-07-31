@@ -54,7 +54,7 @@ Used for image classification. Each image pixel is a node in the visible layer. 
 
 ## Joint Distribution
 
-Let $x = \{h_1, ..., h_H, v_1, ...,v_V\}$ represent the states of the visible and hidden nodes in an RBM. Then the probability each node taking the the value corresponding to $x$ is:
+Let $x = \{h_1, ..., h_H, v_1, ...,v_V\}$ represent the states of the visible and hidden nodes in an RBM. Then the probability each node taking the value corresponding to $x$ is:
 
 $$
 f_{\theta} (x) = \frac{\exp\left(Q(x)\right)}{\sum\limits_{x \in \mathcal{X}}\exp\left(Q(x)\right)}
