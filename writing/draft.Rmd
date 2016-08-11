@@ -1,7 +1,7 @@
 ---
 title: "An exposition on the propriety of restricted Boltzmann machines"
 author: "Andee Kaplan, Stephen Vardeman, Daniel Nordman"
-date: "June, 2016"
+date: "August, 2016"
 output: 
   pdf_document:
     fig_caption: yes
@@ -110,6 +110,8 @@ Instability in a model is in itself a measure of model impropriety, however ther
 If a discrete exponential family distribution is unstable, then it is degenerate in the sense that for any $0 < \epsilon < 1$, $P_\theta(\boldsymbol X_N \in \mathcal{M}_{\epsilon, N}) \rightarrow 1$ as $N \rightarrow \infty$ where $\mathcal{M}_{\epsilon, N}$ is the subset of $\epsilon$-modes of the probability mass function.
 \end{lemma}
 
+Thus, if a discrete exponential family model is unstable, then it is also degenerate.
+
 ###Uninterpretability
 @kaiser2007statistical defines a measure of model impropriety called *uninterpretability*, which is characterized as due to the existence of dependence, marginal mean-structure no longer being maintained in the model. This measure concerns the difference between model expectations, E$\left[\boldsymbol X | \boldsymbol \theta\right]$, and expectations given independence, E$\left[\boldsymbol X | \emptyset\right ]$. Using this concept of dependence in a model, it is possible to understand what conditions lead to uninterpretability in a model versus those that guarantee interpretable models. In this method, a model is considered without uninterpretability if its expected value is not very different from the same model with assumed independence. The quantities to compare in the RBM case are
 
@@ -126,7 +128,10 @@ and
 
 If $|\text{E}\left[\boldsymbol X | \boldsymbol \theta\right] - \text{E}\left[\boldsymbol X | \emptyset\right]$ is large then the RBM is uninterpetable.
 
-#Characterizations
+#Simulations
+
+We explore the relationship between magnitudes of $\boldsymbol \theta$ and the three measures of model impropriety, near-degeneracy, instability, and uninterpretability, for varying sized RBM models through simulated data.
+
 ##Tiny example
 To illustrate the ideas of graph near-degeneracy, instability, and uninterpretability in a RBM, we will consider a the smallest possible toy example that consists of one visible node $v_1$ and one hidden node $h_1$, both binary. A schematic of this model can be found in figure \ref{fig:toymodel}. 
 
@@ -599,7 +604,7 @@ left_join(tmp %>%
 It is evidenced from these manageable examples that RBMs very easily are near-degenerate, unstable, and uninterpretable for large portions of the parameter space. The question becomes, can a rigorous fitting method be developed that avoids these issues?
 
 #Bayesian model fitting
-To avoid model impropriety, we want to avoid parts of the parameter space that lead to near-degeneracy}, instability, and uninterpretability. Based on the evidence in section \ref{exploring-manageable-examples}, one idea is to shrink $\boldsymbol \theta$ by specifying priors that place low probability on high values of $\boldsymbol \theta$.
+To avoid model impropriety, we want to avoid parts of the parameter space that lead to near-degeneracy, instability, and uninterpretability. Based on the evidence in section \ref{exploring-manageable-examples}, one idea is to shrink $\boldsymbol \theta$ by specifying priors that place low probability on high values of $\boldsymbol \theta$, specifically focusing on shrinking $\boldsymbol \theta_{interaction}$ more than $\boldsymbol \theta_{main}$.
 
 Using this idea of shrinkage, we simulated $n = 5,000$ images with four pixels (four visible nodes) from an RBM model with 4 hiddens and fit the RBM using Bayesian methods, and three separate methods.
 
@@ -620,55 +625,77 @@ Using this idea of shrinkage, we simulated $n = 5,000$ images with four pixels (
     g_{\boldsymbol \theta}(\boldsymbol v) = \sum\limits_{\boldsymbol h \in \{-1,1\}^H} \exp\left(\sum\limits_{i = 1}^V \sum\limits_{j=1}^H \theta_{ij} v_i h_j + \sum\limits_{i = 1}^V\theta_{v_i} v_i + \sum\limits_{j = 1}^H\theta_{h_j} h_j\right). \vspace{-.75cm}
     \end{align*}
     
-The three fitting methods are ordered by computational feasibility in a real data situation with the trick prior being the most possible due to conjugacy and the marginalized likelihood method the least feasible due to the marginalization and need for an adaptive Metropolis Hastings step. The trick prior, however, does require extensive tuning to choose $C_1$ and $C_2$, making it less appealing.
+The three fitting methods are ordered by computational feasibility in a real data situation with the trick prior being the most possible due to conjugacy and the marginalized likelihood method the least feasible due to the marginalization and need for an adaptive Metropolis Hastings step. All three priors do require choosing the values of hyperparameters. In each case, we have chosed the values based on a rule of thumb that maintains the property of shrinking $\boldsymbol \theta_{interaction}$ more than $\boldsymbol \theta_{main}$. Additionally, the trick prior requires additional tuning to choose $C_1$ and $C_2$, making it less appealing. The values used for the hyperparameters are presented in table \ref{tab:hyperparam}.
 
-Figure \ref{fig:fitting_plot} shows the posterior probability of each possible binary image with four pixels after fitting the model in the three ways detailed in this section. The black lines show the true probabilities of each image based on the parameters used to simulate the images. From these posterior predictive checks, it is evident that the marginalized likelihood method shows the closest fit to the actual data. However, this model requires a marginalization step, which is infeasible for a model of any real size.
+\begin{table}[ht]
+\centering
+\begin{tabular}{|l|c|c|}
+\hline 
+Method & Hyperparameter & Value \\ 
+\hline \hline
+\multirow{2}{*}{Trick Prior} & $C_1$ & $\frac{C}{N}\frac{1}{H + V}$ \\
+ & $C_2$ & $\frac{C}{N}\frac{1}{H*V}$ \\
+\hline
+\multirow{2}{*}{Truncated Normal} & $\sigma^2_{main}$ & $\frac{1}{H + V}$ \\
+ & $\sigma^2_{interaction}$ & $\frac{1}{H*V}$ \\
+\hline
+\multirow{2}{*}{Marginalized Likelihood} & $\sigma^2_{main}$ & $\frac{1}{H + V}$ \\
+ & $\sigma^2_{interaction}$ & $\frac{1}{H*V}$ \\
+\hline
+\end{tabular}
+\caption{The values used for the hyperparameters for all three fitting methods. A rule of thumb is imposed which decreases as the size of the model increases and also shrinks $\boldsymbol \theta_{interaction}$ more than $\boldsymbol \theta_{main}$.}
+\label{tab:hyperparam}
+\end{table}
+
+Figure \ref{fig:fitting_plot} shows the posterior probability of each possible binary image with four pixels after fitting the model in the three ways detailed in this section. The black vertical lines show the true probabilities of each image based on the parameters used to simulate the images while the red vertical lines show the empirical distribution. From these posterior predictive checks, it is evident that the marginalized likelihood method shows the closest fit to the actual data. However, this model requires a marginalization step, which is infeasible for a model of any real size.
     
 ```{r fitting}
+source("helpers/functions.R")
+load("data/sample_images.Rdata")
+
 #data and params ------------------------
 H <- 4
 V <- 4
 
 #marginalized likelihood
-load("data/fitted_models_adaptive_mh_trunc_distn_marginal_1.Rdata")
-marginal_bad_1 <- models_bad
-marginal_good_1 <- models_good
+load("data/fitted_models_trunc_marginal_thin.Rdata")
+marginal_bad <- models_bad
+marginal_good <- models_good
 
-#load Jing's prior
-load("data/fitted_models_distn_0.26.Rdata")
-jing_bad <- models_bad
-jing_good <- models_good
+#load trick prior
+load("data/fitted_models_jing_5.8.Rdata")
+trick_bad <- models_bad
+trick_good <- models_good
 
 #truncated normal
-load("data/fitted_models_adaptive_mh_trunc_distn_shrunk_jing_match.Rdata")
-shrunk_jing_bad <- models_bad
-shrunk_jing_good <- models_good
+load("data/fitted_models_trunc_thin.Rdata")
+trunc_bad <- models_bad
+trunc_good <- models_good
 
 #rm unneccesary data
 rm(models_bad)
-rm(models_degen)
 rm(models_good)
 
-load("data/sample.params.Rdata")
-params_degen <- list(main_hidden = sample.params %>% ungroup() %>% filter(near_hull) %>% select(starts_with("h"), -H) %>% data.matrix(),
-                     main_visible = sample.params %>% ungroup() %>% filter(near_hull) %>% select(starts_with("v"), -V) %>% data.matrix(),
-                     interaction = sample.params %>% ungroup() %>% filter(near_hull) %>% select(starts_with("theta")) %>% data.matrix() %>% matrix(4))
+load("data/params_theta.Rdata")
+
 params_good <- list(main_hidden = sample.params %>% ungroup() %>% filter(!near_hull) %>% select(starts_with("h"), -H) %>% data.matrix(),
                     main_visible = sample.params %>% ungroup() %>% filter(!near_hull) %>% select(starts_with("v"), -V) %>% data.matrix(),
                     interaction = sample.params %>% ungroup() %>% filter(!near_hull) %>% select(starts_with("theta")) %>% data.matrix() %>% matrix(4))
 
-
-load("data/sample_images.Rdata")
-
 #computing actual distributions ---------------------
+flat_images_good$visibles %>%
+  data.frame() %>% 
+  rename(v1 = X1, v2 = X2, v3 = X3, v4 = X4) %>%
+  group_by(v1, v2, v3, v4) %>%
+  summarise(prob = n()/nrow(flat_images_good$visibles)) -> distn_emp
+
 distn_good <- visible_distn(params = params_good)
-distn_degen <- visible_distn(params = params_degen)
 
 reshape_sample_distn <- function(model) {
   sample_distn <- model$distn
   dim(sample_distn) <- c(dim(sample_distn)[1]*dim(sample_distn)[2], dim(sample_distn)[3])
   sample_distn %>% data.frame() -> sample_distn
-  names(sample_distn) <- names(distn_degen)
+  names(sample_distn) <- names(distn_good)
   
   sample_distn %>%
     group_by(image_id) %>%
@@ -677,47 +704,46 @@ reshape_sample_distn <- function(model) {
   return(sample_distn)
 }
 
-marginal_sample_good_1 <- reshape_sample_distn(marginal_good_1)
-jing_sample_good <- reshape_sample_distn(jing_good)
-shrunk_jing_sample_good <- reshape_sample_distn(shrunk_jing_good) %>% filter(iter > 500) %>% mutate(iter = 1:n()) 
+marginal_sample_good <- reshape_sample_distn(marginal_good)
+trick_sample_good <- reshape_sample_distn(trick_good)
+trunc_sample_good <- reshape_sample_distn(trunc_good)
 
-#plots -------------------
-marginal_sample_good_1 %>% rename(marginal = prob) %>%
-  left_join(jing_sample_good %>% ungroup() %>% select(-image_id) %>% rename(trick = prob)) %>%
-  left_join(shrunk_jing_sample_good %>% ungroup() %>% select(-image_id) %>% rename(trunc = prob)) %>%
+marginal_sample_good %>% rename(marginal = prob) %>%
+  left_join(trick_sample_good %>% ungroup() %>% select(-image_id) %>% rename(trick = prob)) %>%
+  left_join(trunc_sample_good %>% ungroup() %>% select(-image_id) %>% rename(trunc = prob)) %>%
   ungroup() %>%
-  mutate(method = "good", image_id = paste0("image_", image_id)) %>% 
-  #select_(.dots = paste0("-v", 1:V)) %>%
-  gather(prior, prob, trick, marginal, trunc) %>%
+  mutate(image_id = paste0("image_", image_id)) %>% 
+  gather(method, prob, trick, marginal, trunc) %>%
   spread(image_id, prob) -> all_statistics
 
 all_statistics %>%
-  gather(statistic, value, -iter, -method, -prior, -starts_with("v")) %>%
+  gather(statistic, value, -iter, -method, -starts_with("v")) %>%
   filter(grepl("image", statistic) & !is.na(value)) %>%
   separate(statistic, into = c("junk", "statistic")) %>%
   mutate(statistic = factor(statistic, labels = paste("Image", 1:length(unique(statistic))))) %>%
-  left_join(distn_good %>% select(-image_id)) %>% 
+  left_join(distn_emp %>% rename(prob_emp = prob) %>% right_join(distn_good %>% select(-image_id))) %>%
   ggplot() +
-  geom_line(aes(iter/100, value, colour = prior)) +
-  geom_abline(aes(slope = 0, intercept = prob)) +
-  facet_wrap(~statistic) +
-  ylim(c(0,.5)) +
-  xlab("MCMC Iteration (in 100s)") + ylab("Posterior Probability") +
-  theme(legend.position = "bottom") +
-  scale_colour_discrete("Method", labels = c("Marginalized likelihood", "Trick prior", "Truncated Normal prior")) -> p
-
+  geom_density(aes(value, y=..scaled.., colour = method, fill = method), alpha = .2) +
+  geom_vline(aes(xintercept = prob)) +
+  geom_vline(aes(xintercept = prob_emp), colour = "red") +
+  facet_wrap(~statistic, scales = "free_x") + 
+  ylab("Scaled Posterior Density") + xlab("Probability of Image") +
+  scale_colour_discrete("Method", labels = c("Marginalized likelihood", "Trick prior", "Truncated Normal prior")) +
+  scale_fill_discrete("Method", labels = c("Marginalized likelihood", "Trick prior", "Truncated Normal prior")) +
+  theme(legend.position = "bottom") -> p.models
 ```
 
-```{r fitting_plot, fig.cap="\\label{fig:fitting_plot}Posterior probability of each possible 4-pixel image using three Bayesian fitting techniques, trick prior, truncated Normal prior, and marginalized likelihood. The black lines show the true probabilities of each image based on the parameters used to simulate the images. The marginalized likelihood method has the best fit for the data, however is also the most computationally intensive and least feasible with a real dataset.", fig.height=6}
-p
+```{r fitting_plot, fig.cap="\\label{fig:fitting_plot}Posterior probability of each possible 4-pixel image using three Bayesian fitting techniques, trick prior, truncated Normal prior, and marginalized likelihood. The black vertical lines show the true probabilities of each image based on the parameters used to simulate the images while the red vertical lines show the empirical distribution. The marginalized likelihood method has the best fit for the data, however is also the most computationally intensive and least feasible with a real dataset.", fig.height=6}
+p.models
 ```
 
 It should also be noted that each of these rigorous fitting methods seeks to merely replicate the empirical data distribution, which is the optimal nonparametric solution. In a data application with a large sample space it is unlikely that the training set will include one of each possible image, thus there will be possible images that are not realized in the training set, unlike this small example.
 
 **TODO: Add proof that likelihood goes to infinity.**  
-**TODO: Add comparison to contrastive divergence**
 
 #Discussion
+
+**TODO: Add comparison to contrastive divergence**
 
 #Appendix
 
