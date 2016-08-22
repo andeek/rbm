@@ -24,19 +24,20 @@ theme_set(theme_bw(base_family="serif"))
 
 source("helpers/functions.R")
 ```
-#Introduction
 
-The data mining and machine learning communities have recently found a great interest in deep learning, specifically in stacked restricted Boltzmann machines (RBM). (TODO: deep learning, deep RBM references.) A RBM is an undirected graphical model constructed for discrete or continuous random variables, specified as having two layers, a hidden and a visible layer with no conditional dependency within a layer. These models are typically used with success in classification of images. (TODO: classification references.) However, the model properties are largely unexplored in the literature and the fitting methodology remains heuristic based and abstruse. In this paper, we attept to give a thorough understanding of the model and its behavior from the context of statistical model theory as well as explore the possibility of a rigorous fitting methodology. (TODO: statistical model definition) Through our study, we find the RBM model to be deficient in two fundamental ways. 
+# Introduction
 
-First, the models are unsatisfactory as a conceptualization of how data is generated. Specifically, these models often fail to generate data that resembles realistic data. Additionally, it is evidenced that RBMs easily exhibit instability in the parameter space. In practice, this is seen when a single pixel change in an image results in a wildly different classification (TODO: add ref). We investigate these phenomena in section \ref{explorations} through simulations of small, manageable examples.
+The data mining and machine learning communities have recently found a great interest in deep learning, specifically in stacked restricted Boltzmann machines (RBM). (**TODO: deep learning, deep RBM references.**) A RBM is an undirected graphical model constructed for discrete or continuous random variables, specified as having two layers, a hidden and a visible layer with no conditional dependency within a layer. These models are typically used with success in classification of images. (**TODO: classification references.**) However, the model properties are largely unexplored in the literature and the fitting methodology remains heuristic based and abstruse. In this paper, we attempt to give a thorough understanding of the model and its behavior from the context of statistical model theory as well as explore the possibility of a rigorous fitting methodology. Through our study, we find the RBM model to be deficient in two fundamental ways. 
 
-Secondly, the fitting of these models is problematic. As the size of these models grows, a computationally intractible situation is created quickly when fitting with either maximum likelihood or through Bayesian methods. However, even in models small enough to feasibly fit, there are unique challenges due to the overparameterization of RBMs. In section \ref{bayesian-model-fitting} we try three Bayesian modelling techniques, each with the goal of avoiding parts of the parameter space that yield improper models. As could be expected, with computational complexity comes an increase in accuracy, but at the cost of feasibility. Additionally, because these models are overparametrized, any honest fitting method will reproduce the empirical distribution. Thus, there is no smoothing achieved with a RBM that is fit using a rigourous method. We are therefore very skeptical that any model built using these structures, like a deep Boltzmann machine, can achieve prediction or inference in a principled way.
+First, the models are unsatisfactory as a conceptualization of how data is generated. According to Fisher, the aim of a statistical model is to represent data in a compact way [@fisher1922mathematical]. Neyman and Box agree with this assessment and go further to state that a model should "provide an explanation of the mechanism underlying the observed phenomena" [@lehmann1990model, @box1967discrimination]. In the case of RBMs, these models often fail to generate data that resembles realistic data. Thus, providing an unsatisfactory conceptualization of the data generation process. Additionally, it is evidenced that RBMs easily exhibit instability in the parameter space. In practice, this is seen when a single pixel change in an image results in a wildly different classification. These model impropriety measures has been documented in other deep architectures recently as well [@szegedy2013intriguing, @nguyen2014deep]. We investigate these phenomena in RBMs in section \ref{explorations} through simulations of small, manageable examples.
 
-This paper is structured as follows, section \ref{background} gives a definition of the RBM including the joint distribution and shows the connection to deep learning. Additionally, measures of model impropriety and methods of detecting them are defined. Section \ref{explorations} details our explorations into the model behavior and propriety (or lack thereof) of the RBM. We discuss three Bayesian fitting techniques with the goal of avoiding model impropriety in section \ref{bayesian-model-fitting} and wrap up with a discussion in section \ref{discussion}. Additionally, there are two accompanying appendices with auxillary proofs relating to the choice of data encoding and parameter behavior during fitting with incomplete training data in section \ref{appendix}.
+Secondly, the fitting of these models is problematic. As the size of these models grows, a computationally intractable situation is created quickly when fitting with either maximum likelihood or through Bayesian methods. However, even in models small enough to feasibly fit, there are unique challenges due to the overparameterization of RBMs. In section \ref{bayesian-model-fitting} we try three Bayesian modelling techniques, each with the goal of avoiding parts of the parameter space that yield improper models. As could be expected, with computational complexity comes an increase in accuracy, but at the cost of feasibility. Additionally, because these models are overparametrized, any honest fitting method will reproduce the empirical distribution. Thus, there is no smoothing achieved with a RBM that is fit using a rigorous method. We are therefore very skeptical that any model built using these structures, like a deep Boltzmann machine, can achieve prediction or inference in a principled way.
 
-#Background
+This paper is structured as follows, section \ref{background} gives a definition of the RBM including the joint distribution and shows the connection to deep learning. Additionally, measures of model impropriety and methods of detecting them are defined. Section \ref{explorations} details our explorations into the model behavior and propriety (or lack thereof) of the RBM. We discuss three Bayesian fitting techniques with the goal of avoiding model impropriety in section \ref{bayesian-model-fitting} and wrap up with a discussion in section \ref{discussion}. Additionally, there are two accompanying appendices with auxiliary proofs relating to the choice of data encoding and parameter behavior during fitting with incomplete training data in section \ref{appendix}.
 
-##Restricted Boltzmann machines
+# Background
+
+## Restricted Boltzmann machines
 
 A restricted Boltzmann machine (RBM) is a specific undirected graphical model specified for discrete or continuous random variables, binary being the most common. In this paper, we consider the binary case of an RBM only. The architecture of an RBM is specified as having two layers, a hidden ($\mathcal{H}$) and a visible layer ($\mathcal{V}$), with no connections within a layer. An example of this structure is visualized in figure \ref{fig:rbm} with the hidden nodes indicated by gray circles and the visible nodes indicated by white circles. 
 
@@ -49,7 +50,7 @@ A restricted Boltzmann machine (RBM) is a specific undirected graphical model sp
 
 A common use for the RBM is to create features for use in classification. For example, a binary image could be classified where the pixel values would be considered the visible variables $v_i$.
 
-###Joint distribution
+### Joint distribution
 Let $\boldsymbol x = \{h_1, \dots, h_H, v_1,\dots,v_V\}$ represent the states of the visible and hidden nodes in an RBM. Then we posit a parametric form for probabilities corresponding to the state of each node taking the value of $1$.
 
 \begin{align}
@@ -59,15 +60,15 @@ f_{\boldsymbol \theta} (\boldsymbol x) = \frac{\exp\left(\sum\limits_{i = 1}^V \
 
 Let the normalizing constant in equation \ref{eqn:pmf} be denoted $\gamma(\boldsymbol \theta)$ [@Vardeman602, pp.163-167]. Additionally, we can refer to $Q(\boldsymbol x) = \sum\limits_{i = 1}^H\sum\limits_{j=1}^V \theta_{ij} h_i v_j + \sum\limits_{i = 1}^H\theta_{hi} h_i + \sum\limits_{j = 1}^V\theta_{vj} v_j$ as the neg-potential function in our model. The RBM model is parameterized by $\boldsymbol \theta$, which contains two types of parameters, main effects and interaction effects. The main effects parameters ($\theta_{v_i}, \theta_{h_j}$) weight to the values of the visible and hidden nodes and the interaction effects parameters ($\theta_{ij}$) weight the values of the connections, or dependencies, between hidden and visible layers.
 
-Due to the potential size of the model the normalizing constant $\gamma(\boldsymbol \theta)$ can be infeasible to calculate, making it impossible to estimate the model exactly. An approximation can be achieved using Gibbs sampling, which is a natural fit due to the restricted architecture of the RBM. Specifically, the conditional independence of each layer given the other allows for simulation of the main and hidden layers.
+Due to the potential size of the model the normalizing constant $\gamma(\boldsymbol \theta)$ can be unfeasible to calculate, making it impossible to estimate the model exactly. An approximation can be achieved using Gibbs sampling, which is a natural fit due to the restricted architecture of the RBM. Specifically, the conditional independence of each layer given the other allows for simulation of the main and hidden layers.
 
-###Connection to Deep Learning
+### Connection to Deep Learning
 RBMs have risen to prominence in recent years due to their connection to deep learning [see @hinton2006fast, @salakhutdinov2012efficient, or @srivastava2013modeling for examples]. By stacking multiple layers of RBMs in a deep architecture, the method's proponents claim the ability to learn "internal representations that become increasingly complex, which is considered to be a promising way of solving object and speech recognition problems" [@salakhutdinov2009deep, pp. 450]. The stacking is achieved by treating a hidden layer of one RBM as the visible layer in a second RBM, and so on until the desired architecture is created.
 
-##Degeneracy, instability, and uninterpretability... Oh my!
+## Degeneracy, instability, and uninterpretability... Oh my!
 The highly flexible nature of the RBM ($H + V + H V$ parameters) makes three characteristics of model impropriety of particular concern, *degeneracy, instability, and uninterpretability*. In this section we define these characteristics, discuss how to detect them in the RBM, and point out their relationship to one another.
 
-###Near-degeneracy
+### Near-degeneracy
 In Random Graph Model theory, *degeneracy* occurs when there is a disproportionate amount of probability placed on only a few elements of the sample space, $\mathcal{X}$, by the model. @handcock2003assessing define a model to be near degenerate if $\mu(\boldsymbol \theta)$, the mean parametrization on the model parameters, is close to the boundary of the convex hull of $\{t_k(\boldsymbol x): \boldsymbol x \in \mathcal{X}, k = 1, \dots, K\}$, where $t_k(\boldsymbol x), k = 1, \dots, K\}$ is the set of statistics in the neg-potential function $Q(\boldsymbol x)$ from equation \ref{eqn:pmf}. In other words, if random variables in the neg-potential function $Q(\cdot)$, having support set $\mathcal{S}$, have a collective mean $\mu(\boldsymbol \theta)$ close to the boundary of the convex hull of $\mathcal{S}$ then the model is near-degenerate, as defined by @handcock2003assessing.
 
 The mean parameterization on the model parameters, $\mu(\boldsymbol \theta)$, for the RBM is defined as
@@ -77,7 +78,7 @@ The mean parameterization on the model parameters, $\mu(\boldsymbol \theta)$, fo
 &= \sum\limits_{x \in \mathcal{X}} \left\{ t(\boldsymbol x)\dfrac{\exp\left(\sum\limits_{i = 1}^V \sum\limits_{j=1}^H \theta_{ij} v_i h_j + \sum\limits_{i = 1}^V\theta_{v_i} v_i + \sum\limits_{j = 1}^H\theta_{h_j} h_j\right)}{\sum\limits_{\boldsymbol x \in \mathcal{X}}\exp\left(\sum\limits_{i = 1}^V \sum\limits_{j=1}^H \theta_{ij} v_i h_j + \sum\limits_{i = 1}^V\theta_{v_i} v_i + \sum\limits_{j = 1}^H\theta_{h_j} h_j\right)}\right\} \\
 \end{align*}
 
-###Instability
+### Instability
 @schweinberger2011instability introduces a related concept, *instability*, which occurs when small changes in the natural parameters result in large changes in probability masses. This can be characterized of as excessive sensitivity in the model, where a small change in $\boldsymbol x$ leads to a large change in the probability mass function. @schweinberger2011instability provides the following tool for detecting instability in the a discrete exponential family model.
 
 \begin{defn}
@@ -122,7 +123,7 @@ If a discrete exponential family distribution is unstable, then it is degenerate
 
 Thus, if a discrete exponential family model is unstable, then it is also degenerate.
 
-###Uninterpretability
+### Uninterpretability
 @kaiser2007statistical defines a measure of model impropriety called *uninterpretability*, which is characterized as due to the existence of dependence, marginal mean-structure no longer being maintained in the model. This measure concerns the difference between model expectations, E$\left[\boldsymbol X | \boldsymbol \theta\right]$, and expectations given independence, E$\left[\boldsymbol X | \emptyset\right ]$. Using this concept of dependence in a model, it is possible to understand what conditions lead to uninterpretability in a model versus those that guarantee interpretable models. In this method, a model is considered without uninterpretability if its expected value is not very different from the same model with assumed independence. The quantities to compare in the RBM case are
 
 \begin{align*}
@@ -138,11 +139,11 @@ and
 
 If $|\text{E}\left[\boldsymbol X | \boldsymbol \theta\right] - \text{E}\left[\boldsymbol X | \emptyset\right]$ is large then the RBM is uninterpetable.
 
-#Explorations
+# Explorations
 
 We explore the relationship between magnitudes of $\boldsymbol \theta$ and the three measures of model impropriety, near-degeneracy, instability, and uninterpretability, for varying sized RBM models through simulated data.
 
-##Tiny example
+## Tiny example
 To illustrate the ideas of graph near-degeneracy, instability, and uninterpretability in a RBM, we will consider a the smallest possible toy example that consists of one visible node $v_1$ and one hidden node $h_1$, both binary. A schematic of this model can be found in figure \ref{fig:toymodel}. 
 
 \begin{figure}[ht]
@@ -152,7 +153,7 @@ To illustrate the ideas of graph near-degeneracy, instability, and uninterpretab
   \label{fig:toymodel}
 \end{figure}
 
-###Impropriety three ways
+### Impropriety three ways
 
 For this small model, we are able to investigate the symptoms of the three measure of model impropriety, near-degeneracy, instability uninterpretability. First, we are able to illustrate the shape of boundary of the convex hull of $\{t_k(\boldsymbol x): \boldsymbol x \in \mathcal{X}, k = 1, \dots, K\}$ and explore the behavior of the mean parameterization of the parameters because we are in three dimensions. In figure \ref{fig:toyhull}, the convex hull of our statistic space in three dimensions for the toy RBM with one visible and one hidden node from multiple perspectives enclosed by an unrestricted hull of $\{0,1\}^3$ space is shown. In this small model, $\{t(\boldsymbol x)\}$ is defined as $\{t(\boldsymbol x)\} = \{v_1, h_1, v_1 h_1\}$ by definition and form of the neg-potential function $Q(\boldsymbol x)$. Note that the convex hull of $\{t(\boldsymbol x)\}$ does not fill the unrestricted hull because of the relationship between the elements of $\{t(\boldsymbol x)\}$.
 
@@ -329,10 +330,10 @@ exp_dep %>%
 
 Figure \ref{fig:uninterp} shows that the absolute difference between model expectations, E$\left[\boldsymbol X | \boldsymbol \theta\right]$, and expectations given independence, E$\left[\boldsymbol X | \emptyset\right ]$ for the RBM with one hidden and one visible node grows as the values of $\boldsymbol \theta$ are farther from zero, especially for large magnitudes of $\theta_11$. This is a third indication that parameters of large magnitude could lead to model impropriety in an RBM using a model with only one hidden and one visible node.
 
-###Data coding to mitigate degeneracy
-Multiple encodings of the binary variables are possible. For example, we could allow $\mathcal{H} \subset \{0,1\}^H, \mathcal{V} \subset \{0,1\}^V$, as in the previous sections or we could encode the state of the variables as $\mathcal{H} \subset \{-1,1\}^H, \mathcal{V} \subset \{-1,1\}^V$. This will result in $t(\boldsymbol x) \in \{0,1\}^{H + V + HV}$ or $t(\boldsymbol x) \in \{-1,1\}^{H + V + HV}$ depending on how we encode on and off states in the nodes. To explore the effect of this encoding on the potential near degeneracy of an RBM, we can explore the behavior of the ratio of the volume of the unrestricted convex hull to the restructed convex hull of $\{t(\boldsymbol x)\}$ to determine how much the restriction in our statistics by including the cross product terms incurs.
+### Data coding to mitigate degeneracy
+Multiple encodings of the binary variables are possible. For example, we could allow $\mathcal{H} \subset \{0,1\}^H, \mathcal{V} \subset \{0,1\}^V$, as in the previous sections or we could encode the state of the variables as $\mathcal{H} \subset \{-1,1\}^H, \mathcal{V} \subset \{-1,1\}^V$. This will result in $t(\boldsymbol x) \in \{0,1\}^{H + V + HV}$ or $t(\boldsymbol x) \in \{-1,1\}^{H + V + HV}$ depending on how we encode on and off states in the nodes. To explore the effect of this encoding on the potential near degeneracy of an RBM, we can explore the behavior of the ratio of the volume of the unrestricted convex hull to the restricted convex hull of $\{t(\boldsymbol x)\}$ to determine how much the restriction in our statistics by including the cross product terms incurs.
 
-For the small two node example, the binary encoding loses `r round((1-m1_bin$c_hull$vol)*100,2)`% of the volume compared to unrestricted space and the negative encoding loses `r round((1-m1_neg$c_hull$vol/(2^3))*100,2)`% of the volume compared to unrestricted space. This notion of lost volume can be helpful to conceptualize how difficult it will be for the mean parameterized vector $\mu(\boldsymbol \theta)$ to avoid the boundary, and thus avoid near degeneracy. In fact, if we look at the ratio of volume within a convex hull versus the volume of an unrestricted hull, we can see a relationship emerge as the number of nodes (and thus parameters) increases. In figure \ref{fig:volume_plot}, it is evident that as the number of parameters increses, this ratio is decreasing at an increasing rate, meaning it gets more and more difficult to avoid the boundary of the convex hull and thus near degeneracy. Additionally, it appears that the $\{-1,1\}$ encoding suffers slightly less from this problem.
+For the small two node example, the binary encoding loses `r round((1-m1_bin$c_hull$vol)*100,2)`% of the volume compared to unrestricted space and the negative encoding loses `r round((1-m1_neg$c_hull$vol/(2^3))*100,2)`% of the volume compared to unrestricted space. This notion of lost volume can be helpful to conceptualize how difficult it will be for the mean parameterized vector $\mu(\boldsymbol \theta)$ to avoid the boundary, and thus avoid near degeneracy. In fact, if we look at the ratio of volume within a convex hull versus the volume of an unrestricted hull, we can see a relationship emerge as the number of nodes (and thus parameters) increases. In figure \ref{fig:volume_plot}, it is evident that as the number of parameters increases, this ratio is decreasing at an increasing rate, meaning it gets more and more difficult to avoid the boundary of the convex hull and thus near degeneracy. Additionally, it appears that the $\{-1,1\}$ encoding suffers slightly less from this problem.
 
 ```{r volume_plot, echo=FALSE, fig.cap="\\label{fig:volume_plot}The relationship between volume within the convex hull of our statistics and the convex hull of unrestricted space for different configurations of nodes. We compare the two encodings for on and off in a node.", out.height = "3in", fig.align='center'}
 test_cases <- expand.grid(data.frame(1:4)[,rep(1,2)]) %>% 
@@ -368,7 +369,7 @@ In addition to the argument that the $\{-1,1\}$ data encoding mitigates some nea
 
 Thus, moving forward we will restrict our examinations to the $\{-1, 1\}$-encoding of the binary variables in the RBM.
 
-##Exploring manageable examples
+## Exploring manageable examples
 ```{r degen-data, message=FALSE, warning=FALSE, cache=TRUE}
 #reshape data functions
 plot_data <- function(res, grid = FALSE) {
@@ -613,7 +614,7 @@ left_join(tmp %>%
 ```
 It is evidenced from these manageable examples that RBMs very easily are near-degenerate, unstable, and uninterpretable for large portions of the parameter space. The question becomes, can a rigorous fitting method be developed that avoids these issues?
 
-#Bayesian model fitting
+# Bayesian model fitting
 To avoid model impropriety, we want to avoid parts of the parameter space that lead to near-degeneracy, instability, and uninterpretability. Based on the evidence in section \ref{exploring-manageable-examples}, one idea is to shrink $\boldsymbol \theta$ by specifying priors that place low probability on high values of $\boldsymbol \theta$, specifically focusing on shrinking $\boldsymbol \theta_{interaction}$ more than $\boldsymbol \theta_{main}$.
 
 Using this idea of shrinkage, we simulated $n = 5,000$ images with four pixels (four visible nodes) from an RBM model with 4 hiddens and fit the RBM using Bayesian methods, and three separate methods.
@@ -635,7 +636,7 @@ Using this idea of shrinkage, we simulated $n = 5,000$ images with four pixels (
     g_{\boldsymbol \theta}(\boldsymbol v) = \sum\limits_{\boldsymbol h \in \{-1,1\}^H} \exp\left(\sum\limits_{i = 1}^V \sum\limits_{j=1}^H \theta_{ij} v_i h_j + \sum\limits_{i = 1}^V\theta_{v_i} v_i + \sum\limits_{j = 1}^H\theta_{h_j} h_j\right). \vspace{-.75cm}
     \end{align*}
     
-The three fitting methods are ordered by computational feasibility in a real data situation with the trick prior being the most possible due to conjugacy and the marginalized likelihood method the least feasible due to the marginalization and need for an adaptive Metropolis Hastings step. All three priors do require choosing the values of hyperparameters. In each case, we have chosed the values based on a rule of thumb that maintains the property of shrinking $\boldsymbol \theta_{interaction}$ more than $\boldsymbol \theta_{main}$. Additionally, the trick prior requires additional tuning to choose $C_1$ and $C_2$, making it less appealing. The values used for the hyperparameters are presented in table \ref{tab:hyperparam}.
+The three fitting methods are ordered by computational feasibility in a real data situation with the trick prior being the most possible due to conjugacy and the marginalized likelihood method the least feasible due to the marginalization and need for an adaptive Metropolis Hastings step. All three priors do require choosing the values of hyperparameters. In each case, we have chosen the values based on a rule of thumb that maintains the property of shrinking $\boldsymbol \theta_{interaction}$ more than $\boldsymbol \theta_{main}$. Additionally, the trick prior requires additional tuning to choose $C_1$ and $C_2$, making it less appealing. The values used for the hyperparameters are presented in table \ref{tab:hyperparam}.
 
 \begin{table}[ht]
 \centering
@@ -657,7 +658,7 @@ Method & Hyperparameter & Value \\
 \label{tab:hyperparam}
 \end{table}
 
-Figure \ref{fig:fitting_plot} shows the posterior probability of each possible binary image with four pixels after fitting the model in the three ways detailed in this section. The black vertical lines show the true probabilities of each image based on the parameters used to simulate the images while the red vertical lines show the empirical distribution. From these posterior predictive checks, it is evident that the marginalized likelihood method shows the closest fit to the actual data. However, this model requires a marginalization step, which is infeasible for a model of any real size.
+Figure \ref{fig:fitting_plot} shows the posterior probability of each possible binary image with four pixels after fitting the model in the three ways detailed in this section. The black vertical lines show the true probabilities of each image based on the parameters used to simulate the images while the red vertical lines show the empirical distribution. From these posterior predictive checks, it is evident that the marginalized likelihood method shows the closest fit to the actual data. However, this model requires a marginalization step, which is unfeasible for a model of any real size.
     
 ```{r fitting}
 source("helpers/functions.R")
@@ -751,7 +752,7 @@ It should also be noted that each of these rigorous fitting methods seeks to mer
 
 **TODO: Add proof that likelihood goes to infinity.**  
 
-#Discussion
+# Discussion
 
 **TODO: Add comparison to contrastive divergence**
 
