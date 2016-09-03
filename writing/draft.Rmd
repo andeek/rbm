@@ -148,15 +148,15 @@ If $|\text{E}\left[\boldsymbol X | \boldsymbol \theta\right] - \text{E}\left[\bo
 
 # Explorations
 
-We explore the relationship between magnitudes of $\boldsymbol \theta$ and the three measures of model impropriety, near-degeneracy, instability, and uninterpretability, for varying sized RBM models through simulated data.
+We explore the relationship between magnitudes of $\boldsymbol \theta$ and the three measures of model impropriety, near-degeneracy, instability, and uninterpretability, for RBM models of varying size through simulated data.
 
 ## Tiny example
-To illustrate the ideas of graph near-degeneracy, instability, and uninterpretability in a RBM, we will consider a the smallest possible toy example that consists of one visible node $v_1$ and one hidden node $h_1$, both binary. A schematic of this model can be found in figure \ref{fig:toymodel}. 
+To illustrate the ideas of graph near-degeneracy, instability, and uninterpretability in a RBM, we consider first the smallest possible (toy) example that consists of one visible node $v_1$ and one hidden node $h_1$, both binary. A schematic of this model can be found in figure \ref{fig:toymodel}. 
 
 \begin{figure}[ht]
   \centering
   \resizebox{1cm}{!}{\input{tikz/toymodel.tikz}}
-  \caption{A small example restricted Boltzmann machine (RBM), which consists of two nodes, one hidden and one visible.}
+  \caption{A small example restricted Boltzmann machine (RBM), with two nodes, one hidden and one visible.}
   \label{fig:toymodel}
 \end{figure}
 
@@ -208,9 +208,9 @@ Additionally, we can compute the mean parametrization of the model parameters as
 \frac{\exp\left(\theta_{11} + \theta_{v_1} + \theta_{h_1}\right)}{\gamma(\boldsymbol \theta)} \\
 \end{matrix} \right]
 \end{align*}
-These three functions can be visualized over multiple values of $\boldsymbol \theta$, as seen in figure \ref{fig:toymodel}. By examining these functions, we can see that as values of $\boldsymbol \theta$ grow larger in magnitude, at least one mean-parameterization functions is approaching the values 0 or 1, indicating a potential to be near to the boundary of the convex hull of $\{t_k(\boldsymbol x): \boldsymbol x \in \mathcal{X}, k = 1, \dots, K\}$. Thus, for a very small example we can see the relationship between values of $\boldsymbol \theta$ and model degeneracy.
+These three functions can be visualized over multiple values of $\boldsymbol \theta$, as seen in figure \ref{fig:degen_toy}. By examining these functions, we can see that as values of $\boldsymbol \theta$ grow larger in magnitude, at least one mean-parameterization functions is approaching the values 0 or 1, indicating a potential to be near to the boundary of the convex hull of $\{t_k(\boldsymbol x): \boldsymbol x \in \mathcal{X}, k = 1, \dots, K\}$. Thus, for a very small example we can see the relationship between values of $\boldsymbol \theta$ and model degeneracy.
 
-```{r near_dependency, fig.cap="\\label{fig:toymodel}The three mean-parameterization functions of the model parameters for a RBM with one visible and one hidden node.", fig.height = 4, fig.align='center', message=FALSE, cache=TRUE}
+```{r near_dependency, fig.cap="\\label{fig:degen_toy}The three mean-parameterization functions of the model parameters for a RBM with one visible and one hidden node.", fig.height = 4, fig.align='center', message=FALSE, cache=TRUE}
 possibles <- stats(1, 1, type = "binary")
 
 expand.grid(theta_h1 = seq(-5, 5, length.out = 21),
