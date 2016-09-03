@@ -40,32 +40,32 @@ This paper is structured as follows, section \ref{background} gives a definition
 
 ## Restricted Boltzmann machines
 
-A restricted Boltzmann machine (RBM) is a specific undirected graphical model specified for discrete or continuous random variables, binary being the most common. In this paper, we consider the binary case of an RBM only. The architecture of an RBM is specified as having two layers, a hidden ($\mathcal{H}$) and a visible layer ($\mathcal{V}$), with no connections within a layer. An example of this structure is visualized in figure \ref{fig:rbm} with the hidden nodes indicated by gray circles and the visible nodes indicated by white circles. 
+A restricted Boltzmann machine (RBM) is an undirected graphical model specified for discrete or continuous random variables, binary variables being most common. In this paper, we consider the binary case of an RBM only. A RBM architecture has two layers, hidden ($\mathcal{H}$) and visible ($\mathcal{V}$), with no connections within a layer. An example of this structure is in figure \ref{fig:rbm} with the hidden nodes indicated by gray circles and the visible nodes indicated by white circles. 
 
 \begin{figure}[ht]
   \centering
   \resizebox{\linewidth}{!}{\input{tikz/rbm.tikz}}
-  \caption{An example restricted Boltzmann machine (RBM), which consists of two layers, a hidden ($\mathcal{H}$) and a visible layer ($\mathcal{V}$), with no connections within a layer. Hidden nodes indicated by gray circles and the visible nodes indicated by white circles.}
+  \caption{An example restricted Boltzmann machine (RBM), consisting of two layers, one hidden ($\mathcal{H}$) and one visible ($\mathcal{V}$), with no connections within a layer. Hidden nodes are indicated by gray circles and the visible nodes indicated by white circles.}
   \label{fig:rbm}
 \end{figure}
 
-A common use for the RBM is to create features for use in classification. For example, a binary image could be classified where the pixel values would be considered the visible variables $v_i$.
+A common use for RBMs is to create features for use in classification. For example, binary images could be classified where the pixel values would be treated as the visible variables $v_i$.
 
 ### Joint distribution
-Let $\boldsymbol x = \{h_1, \dots, h_H, v_1,\dots,v_V\}$ represent the states of the visible and hidden nodes in an RBM. Then we posit a parametric form for probabilities corresponding to the state of each node taking the value of $1$.
+Let $\boldsymbol x = \{h_1, \dots, h_H, v_1,\dots,v_V\}$ represent the states of the visible and hidden nodes in an RBM. We will consider both $\boldsymbol x \in \{0,1\}^{H + V}$ and $\boldsymbol x \in \{-1, 1\}^{H + V}$, two binary $H + V$-dimensional spaces. We posit a parametric form for probabilities corresponding to a potential vector of states of each node taking the value of $1$.
 
 \begin{align}
 \label{eqn:pmf}
 f_{\boldsymbol \theta} (\boldsymbol x) = \frac{\exp\left(\sum\limits_{i = 1}^V \sum\limits_{j=1}^H \theta_{ij} v_i h_j + \sum\limits_{i = 1}^V\theta_{v_i} v_i + \sum\limits_{j = 1}^H\theta_{h_j} h_j\right)}{\sum\limits_{\boldsymbol x \in \mathcal{X}}\exp\left(\sum\limits_{i = 1}^V \sum\limits_{j=1}^H \theta_{ij} v_i h_j + \sum\limits_{i = 1}^V\theta_{v_i} v_i + \sum\limits_{j = 1}^H\theta_{h_j} h_j\right)} 
 \end{align}
 
-Let the normalizing constant in equation \ref{eqn:pmf} be denoted $\gamma(\boldsymbol \theta)$ [@Vardeman602, pp.163-167]. Additionally, we can refer to $Q(\boldsymbol x) = \sum\limits_{i = 1}^H\sum\limits_{j=1}^V \theta_{ij} h_i v_j + \sum\limits_{i = 1}^H\theta_{hi} h_i + \sum\limits_{j = 1}^V\theta_{vj} v_j$ as the neg-potential function in our model. The RBM model is parameterized by $\boldsymbol \theta$, which contains two types of parameters, main effects and interaction effects. The main effects parameters ($\theta_{v_i}, \theta_{h_j}$) weight to the values of the visible and hidden nodes and the interaction effects parameters ($\theta_{ij}$) weight the values of the connections, or dependencies, between hidden and visible layers.
+Let the normalizing constant in equation (\ref{eqn:pmf}) be denoted $\gamma(\boldsymbol \theta)$.It is standard to refer to $Q(\boldsymbol x) = \sum\limits_{i = 1}^H\sum\limits_{j=1}^V \theta_{ij} h_i v_j + \sum\limits_{i = 1}^H\theta_{hi} h_i + \sum\limits_{j = 1}^V\theta_{vj} v_j$ as the neg-potential function in this model. The RBM model is parameterized by $\boldsymbol \theta$, which contains two types of parameters, main effects and interaction effects. The main effects parameters ($\theta_{v_i}, \theta_{h_j}$) weight the values of the visible and hidden nodes and the interaction effects parameters ($\theta_{ij}$) weight the values of the connections, or dependencies, between hidden and visible layers.
 
-Due to the potential size of the model the normalizing constant $\gamma(\boldsymbol \theta)$ can be unfeasible to calculate, making it impossible to estimate the model exactly. An approximation can be achieved using Gibbs sampling, which is a natural fit due to the restricted architecture of the RBM. Specifically, the conditional independence of each layer given the other allows for simulation of the main and hidden layers.
+Due to the potential size of the model the normalizing constant $\gamma(\boldsymbol \theta)$ can be practically impossible to calculate, making it impossible to estimate the model parameter vector in an obvious fashion. A kind of Gibbs sampling can be tried, which is natural due to the restricted architecture of the RBM. Specifically, the conditional independence of nodes in each layer given those in the other allows for simulation of the main and hidden layers.
 
 ### Connection to Deep Learning
 
-RBMs have risen to prominence in recent years due to their connection to deep learning [see @hinton2006fast, @salakhutdinov2012efficient, or @srivastava2013modeling for examples]. By stacking multiple layers of RBMs in a deep architecture, the method's proponents claim the ability to learn "internal representations that become increasingly complex, which is considered to be a promising way of solving object and speech recognition problems" [@salakhutdinov2009deep, pp. 450]. The stacking is achieved by treating a hidden layer of one RBM as the visible layer in a second RBM, and so on until the desired architecture is created. 
+RBMs have risen to prominence in recent years due to their connection to deep learning [see @hinton2006fast, @salakhutdinov2012efficient, or @srivastava2013modeling for examples]. By stacking multiple layers of RBMs in a deep architecture, proponents of the models claim the ability to learn "internal representations that become increasingly complex, which is considered to be a promising way of solving object and speech recognition problems" [@salakhutdinov2009deep, pp. 450]. The stacking is achieved by treating a hidden layer of one RBM as the visible layer in a second RBM, and so on until the desired multi-layer architecture is created. 
 
 ## Degeneracy, instability, and uninterpretability... Oh my!
 The highly flexible nature of the RBM ($H + V + H V$ parameters) makes three characteristics of model impropriety of particular concern, *degeneracy, instability, and uninterpretability*. In this section we define these characteristics, discuss how to detect them in the RBM, and point out their relationship to one another.
