@@ -675,10 +675,10 @@ sample.params %>%
   gather("Parameter", "Value") -> tbl
 
 cbind(tbl[1:8,], tbl[9:16,], tbl[17:24,]) %>%
-  kable(caption = "\\label{tab:theta}Parameters used to fit a test case with $V = H = 4$. This parameter vector was chosen as a sampled value of $\\boldsymbol \\theta$ that was not near the convex hull of the sufficient statistics for a grid point in figure \\ref{fig:degen_plots} with $< 5%$ near-degeneracy.")
+  kable(caption = "\\label{tab:theta}Parameters used to fit a test case with $V = H = 4$. This parameter vector was chosen as a sampled value of $\\boldsymbol \\theta$ that was not near the convex hull of the sufficient statistics for a grid point in figure \\ref{fig:degen_plots} with $< 5$\\% near-degeneracy.")
 ```
 
-We considered a test case with $V = H = 4$ and parameters given in table \ref{tab:theta}. This parameter vector was chosen as a sampled value of $\\boldsymbol \\theta$ that was not near the convex hull of the sufficient statistics for a grid point in figure \\ref{fig:degen_plots} with $< 5%$ near-degeneracy. We simulated $n = 5,000$ as a training set and fit the RBM using three Bayes methodologies. These involved the following:
+We considered a test case with $V = H = 4$ and parameters given in table \ref{tab:theta}. This parameter vector was chosen as a sampled value of $\boldsymbol \theta$ that was not near the convex hull of the sufficient statistics for a grid point in figure \ref{fig:degen_plots} with $< 5$\% near-degeneracy. We simulated $n = 5,000$ as a training set and fit the RBM using three Bayes methodologies. These involved the following:
 
 1. *A trick prior.* Here we cancel out normalizing term in the likelihood so that resulting full conditionals of $\boldsymbol \theta$ are multivariate Normal. The $h_j$ are carried allong in the MCMC sampling from the posterior as latent variables.
     \begin{align*}
@@ -701,6 +701,8 @@ The three fitting methods are ordered by computational feasibility in a real-dat
 
 \begin{table}[ht]
 \centering
+\caption{The values used for the hyperparameters for all three fitting methods. A rule of thumb is imposed which decreases prior variances for the model parameters as the size of the model increases and also shrinks $\boldsymbol \theta_{interaction}$ more than $\boldsymbol \theta_{main}$.}
+\label{tab:hyperparam}
 \begin{tabular}{|l|c|c|}
 \hline 
 Method & Hyperparameter & Value \\ 
@@ -715,8 +717,6 @@ Method & Hyperparameter & Value \\
  & $\sigma^2_{interaction}$ & $\frac{1}{H*V}$ \\
 \hline
 \end{tabular}
-\caption{The values used for the hyperparameters for all three fitting methods. A rule of thumb is imposed which decreases prior variances for the model parameters as the size of the model increases and also shrinks $\boldsymbol \theta_{interaction}$ more than $\boldsymbol \theta_{main}$.}
-\label{tab:hyperparam}
 \end{table}
 
 Figure \ref{fig:fitting_plot} shows the posterior probability of each possible $\boldsymbol v \in \{-1,1\}^4$ after fitting the model in the three ways detailed in this section. The black vertical lines show the true probabilities of each image based on the parameters used to simulate the training set while the red vertical lines show the empirical distribution. From these posterior predictive checks, it is evident that the marginalized likelihood method produces the closest fit to the actual data. However, this method requires a marginalization step, which is infeasible for a model with $H$ of any real size.
