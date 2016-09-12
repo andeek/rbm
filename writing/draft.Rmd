@@ -338,7 +338,7 @@ exp_dep %>%
   facet_grid(mu_parameter ~ theta_11, labeller = label_parsed) +
   xlab(expression(theta[v1])) +
   ylab(expression(theta[h1])) +
-  scale_fill_gradient("Component difference", low = "yellow", high = "red", limits = c(0, 1)) +
+  scale_fill_gradient("Component absolute difference", low = "yellow", high = "red", limits = c(0, 1)) +
   theme(aspect.ratio = 1)
 ```
 
@@ -377,10 +377,7 @@ plyr::ldply(bin_res, function(x) x$c_hull$vol) %>%
   scale_colour_discrete("Encoding", labels=c("Binary (1,0)", "Negative (1,-1)"))
 ```
 
-In addition to the argument that the $-1/1$ data encoding mitigates some perceived prevalence of near-degeneracy it also has the benefit of providing a guaranteed non-degenerate model at $\boldsymbol \theta = \boldsymbol 0 \in \mathbb{R}^{H + V + H*V}$. The proof of this is included in appendix \ref{appendix:center}. And while from some computing perspectives $0/1$ coding might seem most natural, the $-1/1$ coding is far more convenient and interpretable from the point of view of statistical modeling, where it makes parameters simply interpreted in terms of symmetrically defined main effects and interactions. In light of all of these matters we will henceforth employ the $-1/1$ coding.
-
-**TODO: Add center of the universe proof**
-
+In addition to the argument that the $-1/1$ data encoding mitigates some perceived prevalence of near-degeneracy it also has the benefit of providing a guaranteed non-degenerate model at $\boldsymbol \theta = \boldsymbol 0 \in \mathbb{R}^{H + V + H*V}$. The proof of this is included in appendix \ref{center-of-the-universe}. And while from some computing perspectives $0/1$ coding might seem most natural, the $-1/1$ coding is far more convenient and interpretable from the point of view of statistical modeling, where it makes parameters simply interpreted in terms of symmetrically defined main effects and interactions. In light of all of these matters we will henceforth employ the $-1/1$ coding.
 
 ## Exploring manageable examples
 ```{r degen-data, message=FALSE, warning=FALSE, cache=TRUE}
@@ -472,7 +469,7 @@ plot_dat_grid %>%
   group_by(r1, r2, H, V) %>%
   summarise(frac_degen = sum(near_hull)/n(), count = n()) %>% 
   ungroup() %>% 
-  mutate(Hiddens = paste0("Hiddens: ", H), Visibles = paste0("Visibles: ", V)) -> convex_hull_summary
+  mutate(Hiddens = paste0("H = ", H), Visibles = paste0("V = ", V)) -> convex_hull_summary
 
 #uninterpretability
 res %>%
@@ -485,7 +482,7 @@ exp_vals %>%
   do(data.frame(max_abs_diff = apply(abs(.$indep_exp[[1]] - .$marg_exp[[1]]), 1, max))) %>%
   group_by(H, V, N, r1, r2) %>%
   summarise(max_abs_diff = mean(max_abs_diff)) %>%
-  mutate(Hiddens = paste0("Hiddens: ", H), Visibles = paste0("Visibles: ", V)) -> exp_vals_summary
+  mutate(Hiddens = paste0("H = ", H), Visibles = paste0("V = ", V)) -> exp_vals_summary
 
 #instability
 res %>%
@@ -508,11 +505,13 @@ convex_hull_summary %>%
 ```
 
 
-To explore the behavior of the RBM parameters $\boldsymbol \theta$ as it related to model degeneracy and near degeneracy, we example various models of small size. For $H, V \in \{1, \dots, 4\}$, we sample uniformly `r dim(res$samp[[1]])[1]` values of $\boldsymbol \theta$ with various magnitudes. For each set of parameters we then calculate the three metrics of model impropriety introduced in section \ref{degeneracy-instability-and-uninterpretability-oh-my}, $\mu(\boldsymbol \theta)$, $R(\boldsymbol x)/V$, and $\left|\text{E}\left[\boldsymbol X | \boldsymbol \theta\right] -   \text{E}\left[\boldsymbol X | \emptyset \right] \right|$. In the case of near-degeneracy, we can go further and classify each model as near-degenerate or viable based on the distance of $\mu(\boldsymbol \theta)$ from the convex hull of $\{t_k(\boldsymbol x): \boldsymbol x \in \mathcal{X}, k = 1, \dots, K\}$ and look at the fraction of models that were near-degenerate for each combination of magnitude of $\boldsymbol \theta$ and model size. 
+To explore the behavior of the RBM parameters $\boldsymbol \theta$ as it relates to near-degeneracy, instability, and uninterpretability. we consider models of small size. For $H, V \in \{1, \dots, 4\}$, we sample `r dim(res$samp[[1]])[1]` values of $\boldsymbol \theta$ with various magnitudes (details to follow). For each set of parameters we then calculate the three metrics of model impropriety introduced in section \ref{degeneracy-instability-and-uninterpretability-oh-my}, $\boldsymbol \mu(\boldsymbol \theta)$, $R(\boldsymbol x)/V$, and the coordinates of $\left|\text{E}\left[\boldsymbol X | \boldsymbol \theta\right] -   \text{E}\left[\boldsymbol X | \boldsymbol \theta^* \right] \right|$. In the case of near-degeneracy, we can go further and classify each model as near-degenerate or "viable" based on the distance of $\boldsymbol \mu(\boldsymbol \theta)$ from the boundary of the convex hull of $\boldsymbol \tau$ and look at the fraction of models that are "near-degenerate", meaning they are within a small distance to the boundary of the convex hull.
 
-In this numerical experiment, we split $\boldsymbol \theta$ into $\boldsymbol \theta_{interaction}$ and $\boldsymbol \theta_{main}$, in reference to which sufficient statistics the parameters correspond to, and allow the two types of terms to have varying average magnitudes, $||\boldsymbol \theta_{main} || /(H+V)$ and $||\boldsymbol \theta_{interaction} || /(H*V)$. These magnitudes vary on a grid between `r min(plot_dat_grid$r1/(plot_dat_grid$H + plot_dat_grid$V))` and `r max(plot_dat_grid$r1/(plot_dat_grid$H + plot_dat_grid$V))`. By looking at the average magnitudes, we are able to consider the potential benefit of shrinking each parameter value $\theta_i$ towards zero in a Bayesian fitting technique. The results of this numerical study can be seen in figures \ref{fig:degen_plots}, \ref{fig:instab_plots}, and \ref{fig:uninterp_plots}. From these three figures, it s clear to see that all three indications of model impropriety show higher values the larger the magnitude of the parameters. Additionally, since there are $H*V$ interaction terms in $\boldsymbol \theta$ versus only $H + V$ main effects terms, for large models this dictates that there are many more interaction parameters in the model. And so, perhaps limiting the magnitude of the overall distance from the origin for $\boldsymbol \theta_{interaction}$ may help to limit the effects of model impropriety. 
+In this numerical experiment, we split $\boldsymbol \theta$ into $\boldsymbol \theta_{interaction}$ and $\boldsymbol \theta_{main}$, in reference to which sufficient statistics the parameters correspond to (whether they multiply a $v_i$ or a $h_j$ or they multiply a $v_i h_j$), and allow the two types of terms to have varying average magnitudes, $||\boldsymbol \theta_{main} || /(H+V)$ and $||\boldsymbol \theta_{interaction} || /(H*V)$. These average magnitudes vary on a grid between `r min(plot_dat_grid$r1/(plot_dat_grid$H + plot_dat_grid$V))` and `r max(plot_dat_grid$r1/(plot_dat_grid$H + plot_dat_grid$V))` with `r length(unique(plot_dat_grid$r1/(plot_dat_grid$H + plot_dat_grid$V)))` breaks, yielding `r length(unique(plot_dat_grid$r1/(plot_dat_grid$H + plot_dat_grid$V)))^2` grid points. (By looking at the average magnitudes, we are able to later consider the potential benefit of shrinking each parameter value $\theta_i$ towards zero in a Bayesian fitting technique.) At each point in the grid, `r dim(res$samp[[1]])[1]` vectors are uniformly sampled on a sphere with radius corresponding to the first coordinate in the grid ($\boldsymbol \theta_{main}$) and `r dim(res$samp[[1]])[1]` vectors are uniformly sampled on a sphere with radius corresponding to the second coordinate in the grid ($\boldsymbol \theta_{main}$) via sums of squared and scaled iid Normal$(0, 1)$ variables. These vectors are then paired to create `r dim(res$samp[[1]])[1]` values of $\boldsymbol \theta$ with magnitudes at each point in the grid.
 
-```{r degen_plots, fig.cap="\\label{fig:degen_plots}A numerical experiment looking at the fraction of models that were near-degenerate for each combination of magnitude of $\\boldsymbol \\theta$ and model size. The thick black line shows the level where the fraction of -near degenerate models is .05.", fig.height=4}
+The results of this numerical study are summarized in figures \ref{fig:degen_plots}, \ref{fig:instab_plots}, and \ref{fig:uninterp_plots}. From these three figures, it s clear to see that all three measures of model impropriety show higher values the larger the magnitude of the parameter vectors. Additionally, since there are $H*V$ interaction terms in $\boldsymbol \theta$ versus only $H + V$ main effects terms, for large models there are many more interaction parameters than main effects in the model. And so, severely limiting the magnitude of the indivisual interactions may well help prevent model impropriety. 
+
+```{r degen_plots, fig.cap="\\label{fig:degen_plots}Results from the numerical experiment, here looking at the fraction of models that were near-degenerate for each combination of magnitude of $\\boldsymbol \\theta$ and model size. Black lines show the contour levels for fraction of near-degenerace, while the thick black line shows the level where the fraction of near-degenerate models is .05.", fig.height=4}
 three_ways %>%
   mutate(r1 = round(r1/(H + V), 8), r2 = round(r2/(H * V), 8)) %>% 
   ggplot() +
@@ -522,8 +521,8 @@ three_ways %>%
   geom_abline(aes(intercept = 0, slope = 1), alpha = .5, lty = 2) +
   scale_fill_gradient("Fraction near-degenerate", low = "yellow", high = "red") +
   facet_grid(Visibles~Hiddens) +
-  xlab(expression(paste(group("||", theta[main], "||"), "/(H + V)"))) +
-  ylab(expression(paste(group("||", theta[interaction], "||"), "/(H*V)"))) +
+  xlab(expression(paste(paste("||", theta[main], "||", "/(H + V)")))) +
+  ylab(expression(paste(paste("||", theta[interaction], "||", "/(H*V)")))) +
   theme(aspect.ratio = 1) -> p.degen
 
 three_ways %>%
@@ -533,10 +532,10 @@ three_ways %>%
   geom_contour(aes(x = r1, y = r2, z = max_abs_diff), colour = "black", bins = 8) +
   #geom_contour(aes(x = r1, y = r2, z = mean_abs_diff), colour = "black", breaks = .05, size = 1.5) +
   geom_abline(aes(intercept = 0, slope = 1), alpha = .5, lty = 2) +
-  scale_fill_gradient(expression(group("|", E(group("", bold(X), "|")*bold(theta)) - E(group("", bold(X), "|")*symbol("\306")), "|")), low = "yellow", high = "red", limits = c(0,2)) +
+  scale_fill_gradient("Mean max absolute difference", low = "yellow", high = "red", limits = c(0,2)) +
   facet_grid(Visibles~Hiddens) +
-  xlab(expression(paste(group("||", theta[main], "||"), "/(H + V)"))) +
-  ylab(expression(paste(group("||", theta[interaction], "||"), "/(H*V)"))) +
+  xlab(expression(paste(paste("||", theta[main], "||", "/(H + V)")))) +
+  ylab(expression(paste(paste("||", theta[interaction], "||", "/(H*V)")))) +
   theme(aspect.ratio = 1) -> p.exp_diff
 
 three_ways %>%
@@ -548,8 +547,8 @@ three_ways %>%
   geom_abline(aes(intercept = 0, slope = 1), alpha = .5, lty = 2) +
   scale_fill_gradient(expression(frac(max(Q) - min(Q), H + V)), low = "yellow", high = "red") +
   facet_grid(Visibles~Hiddens) +
-  xlab(expression(paste(group("||", theta[main], "||"), "/(H + V)"))) +
-  ylab(expression(paste(group("||", theta[interaction], "||"), "/(H*V)"))) +
+  xlab(expression(paste(paste("||", theta[main], "||", "/(H + V)")))) +
+  ylab(expression(paste(paste("||", theta[interaction], "||", "/(H*V)")))) +
   theme(aspect.ratio = 1) -> p.max_q
 
 
@@ -560,10 +559,10 @@ three_ways %>%
   geom_contour(aes(x = r1, y = r2, z = LHS2), colour = "black", bins = 8) +
   #geom_contour(aes(x = r1, y = r2, z = mean_max_q), colour = "black", breaks = .05, size = 1.5) +
   geom_abline(aes(intercept = 0, slope = 1), alpha = .5, lty = 2) +
-  scale_fill_gradient(expression(frac(R(theta), V)), low = "yellow", high = "red") +
+  scale_fill_gradient(expression(frac(bar(R(theta)), V)), low = "yellow", high = "red") +
   facet_grid(Visibles~Hiddens) +
-  xlab(expression(paste(group("||", theta[main], "||"), "/(H + V)"))) +
-  ylab(expression(paste(group("||", theta[interaction], "||"), "/(H*V)"))) +
+  xlab(expression(paste(paste("||", theta[main], "||", "/(H + V)")))) +
+  ylab(expression(paste(paste("||", theta[interaction], "||", "/(H*V)")))) +
   theme(aspect.ratio = 1) -> p.min_max_q
 
 
@@ -571,30 +570,31 @@ p.degen
 ```
 
 
-```{r instab_plots_2, fig.cap="\\label{fig:instab_plots}A numerical experiment looking at $R(\\boldsymbol \\theta)/V$ for each combination of magnitude of $\\boldsymbol \\theta$ and model size. As the magnitude of $\\boldsymbol \\theta$ grows, so does the value of this metric, indicating instability in the model.", fig.height=4}
+```{r instab_plots_2, fig.cap="\\label{fig:instab_plots}Results from the experiment, here looking at the sample mean value of $R(\\boldsymbol \\theta)/V$ at each grid point for each combination of magnitude of $\\boldsymbol \\theta$ and model size. As the magnitude of $\\boldsymbol \\theta$ grows, so does the value of this metric, indicating typical instability in the model.", fig.height=4}
 p.min_max_q
 ```
 
 
-```{r uninterp_plots, fig.cap="\\label{fig:uninterp_plots}The difference between model expectations, E$\\left[\\boldsymbol X | \\boldsymbol \\theta\\right]$, and expectations given independence, E$\\left[\\boldsymbol X | \\emptyset\\right ]$ for each combination of magnitude of $\\boldsymbol \\theta$ and model size. Larger magnitudes of $\\boldsymbol \\theta$ correspond to larger differences, thus indicating higher uninterpretability.", fig.height=4}
+```{r uninterp_plots, fig.cap="\\label{fig:uninterp_plots}The sample mean of the maximum component of the absolute difference between the model expectation vector, E$\\left[\\boldsymbol X | \\boldsymbol \\theta\\right]$, and the expectation vector given independence, E$\\left[\\boldsymbol X | \\boldsymbol \\theta^* \\right ]$. Larger magnitudes of $\\boldsymbol \\theta$ correspond to larger differences, thus indicating reduced interpretability.", fig.height=4}
 p.exp_diff
 ```
 
-Figure \ref{fig:split_plots_dist} shows the fraction near-degenerate for each magnitude of $\boldsymbol \theta$ for each model. For each number of visibles in the model, the fraction near-degenerate becomes greater than zero at larger values of $||\boldsymbol \theta||$ as $H$ increases and the slope becomes steeper as $H$ increases also. This shows that as model size gets larger, the risk of degeneracy starts at a slightly larger magnitude of parameters, but very quickly increases until reaching close to 1. 
+Figure \ref{fig:split_plots_dist} shows the fraction near-degenerate for each magnitude of $\boldsymbol \theta$ for each model architecture. For each number of visibles in the model, the fraction near-degenerate becomes greater than zero at larger values of $||\boldsymbol \theta||$ as $H$ increases and the slope becomes steeper as $H$ increases also. This shows that as model size gets larger, the risk of degeneracy starts at a slightly larger magnitude of parameters, but very quickly increases until reaching close to 1. 
 
-```{r split_plots2, warning=FALSE, fig.cap="\\label{fig:split_plots_dist}The fraction near-degenerate for each magnitude of $\\boldsymbol \\theta$ for each model. For each number of visibles in the model, the fraction near-degenerate becomes greater than zero at larger values of $||\\boldsymbol \\theta||$ as $H$ increases and the slope becomes steeper as $H$ increases also.", fig.height=5}
+```{r split_plots2, warning=FALSE, fig.cap="\\label{fig:split_plots_dist}The fraction near-degenerate for each magnitude of $\\boldsymbol \\theta$. For each number of visibles in the model, the fraction near-degenerate becomes greater than zero at larger values of $||\\boldsymbol \\theta||$ as $H$ increases and the slope becomes steeper as $H$ increases also.", fig.height=5}
 plot_dat_grid %>% 
   mutate(dist = sqrt(r1^2 + r2^2)/(H + V + H*V)) %>%
   group_by(dist, H, V) %>%
   summarise(frac_degen = sum(near_hull)/n()) %>%
-  mutate(Hiddens = as.character(H), Visibles = paste0("Visibles: ", V)) %>%
+  mutate(Hiddens = as.character(H), Visibles = paste0("V = ", V)) %>%
   ggplot() +
   geom_point(aes(dist, frac_degen, colour = Hiddens), size = .5) +
   #geom_smooth(aes(dist, frac_degen, colour = Hiddens, group = Hiddens)) +
   facet_wrap(~Visibles) +
   ylim(c(0,1)) +
-  xlab(expression(paste(group("||", theta, "||"), "/(H + V + H*V), Average distance from the origin"))) +
-  ylab("Fraction Near-degenerate")
+  xlab(expression(paste("||", theta, "||", "/(H + V + H*V), Average distance from the origin"))) +
+  ylab("Fraction Near-degenerate") +
+  scale_colour_discrete("H")
 ```
 
 ```{r, frac-degen, include=FALSE}
@@ -625,14 +625,62 @@ left_join(tmp %>%
 
   
 ```
-It is evidenced from these manageable examples that RBMs very easily are near-degenerate, unstable, and uninterpretable for large portions of the parameter space. The question becomes, can a rigorous fitting method be developed that avoids these issues?
+These manageable examples indicate that RBMs are near-degenerate, unstable, and uninterpretable for large portions of the parameter space. This, however, is not the only potential problem to be faced when using these models. There is the matter of pricipled/rigorous fitting of RBM models.
 
-# Bayesian model fitting
-To avoid model impropriety, we want to avoid parts of the parameter space that lead to near-degeneracy, instability, and uninterpretability. Based on the evidence in section \ref{exploring-manageable-examples}, one idea is to shrink $\boldsymbol \theta$ by specifying priors that place low probability on high values of $\boldsymbol \theta$, specifically focusing on shrinking $\boldsymbol \theta_{interaction}$ more than $\boldsymbol \theta_{main}$.
+# Model Fitting
 
-Using this idea of shrinkage, we simulated $n = 5,000$ images with four pixels (four visible nodes) from an RBM model with 4 hiddens and fit the RBM using Bayesian methods, and three separate methods.
+Typically, fitting a RBM via maximum likelihood (ML) methods will be infeasible mainly due to the intractibility of the normalizing term $\gamma(\boldsymbol \theta)$ in a model of any realistic size. Ad hoc methods are used instead, which aim to avoid this problem by using stochastic ML that employ a small number of MCMC draws. 
 
-1. *Trick prior.* Cancel out normalizing term, resulting full conditionals normally distributed. 
+However, computational concerns are not the only issues with fitting an RBM using ML. In addition, the RBM model, with the appropriate choice of parameters, has the potential to re-create any distribution for the data (i.e., reproduce any specification of cell probabilities for the -1/1 valued data outcomes). This hyper-flexibility dictates that ML fitting will merely replicate the empirical data distribution, which is the optimal nonparametric solution. In a data application with a large sample space it is unlikely that the training set will include one of each possible image, thus there will be possible images that are not realized in the training set, unlike this small example. The presence of empty cells in the empirical distribution drives coordinates of $\boldsymbol \theta$ to $\infty$ in order to make the corresponding cell probabilities arbitrarily close to zero. As we have already discussed in secion \ref{explorations}, large magnitudes of $\boldsymbol \theta$ lead to model impropriety in the RBM. A detailed discussion of this phenomenon are included in appendix \ref{incomplete-cases}.
+
+Here we consider what might be done in a principled manner, testing on a $V = H = 4$ case that already stretched the limits of what is computable - in particular we consider Bayes methods. 
+
+## Bayesian model fitting
+To avoid model impropriety for a fitted RBM, we want to avoid parts of the parameter space $\mathbb{R}^{V + H + VH}$ that lead to near-degeneracy, instability, and uninterpretability. Motivated by the insights in section \ref{exploring-manageable-examples}, one idea is to shrink $\boldsymbol \theta$ toward $\boldsymbol 0$ by specifying priors that place low probability on large values of $||\boldsymbol \theta||$, specifically focusing on shrinking $\boldsymbol \theta_{interaction}$ more than $\boldsymbol \theta_{main}$.
+
+```{r param-table}
+load("data/params_theta.Rdata")
+
+params_good <- list(main_hidden = sample.params %>% ungroup() %>% filter(!near_hull) %>% select(starts_with("h"), -H) %>% data.matrix(),
+                    main_visible = sample.params %>% ungroup() %>% filter(!near_hull) %>% select(starts_with("v"), -V) %>% data.matrix(),
+                    interaction = sample.params %>% ungroup() %>% filter(!near_hull) %>% select(starts_with("theta")) %>% data.matrix() %>% matrix(4))
+
+sample.params %>% 
+  ungroup %>% 
+  filter(!near_hull) %>% select(starts_with("v"), starts_with("h"), starts_with("theta"), -H, -V) %>%
+  rename(`$\\theta_{v1}$` = v1,
+         `$\\theta_{v2}$` = v2,
+         `$\\theta_{v3}$` = v3,
+         `$\\theta_{v4}$` = v4,
+         `$\\theta_{h1}$` = h1,
+         `$\\theta_{h2}$` = h2,
+         `$\\theta_{h3}$` = h3,
+         `$\\theta_{h4}$` = h4,
+         `$\\theta_{11}$` = theta11,
+         `$\\theta_{12}$` = theta12,
+         `$\\theta_{13}$` = theta13,
+         `$\\theta_{14}$` = theta14,
+         `$\\theta_{21}$` = theta21,
+         `$\\theta_{22}$` = theta22,
+         `$\\theta_{23}$` = theta23,
+         `$\\theta_{24}$` = theta24,
+         `$\\theta_{31}$` = theta31,
+         `$\\theta_{32}$` = theta32,
+         `$\\theta_{33}$` = theta33,
+         `$\\theta_{34}$` = theta34,
+         `$\\theta_{41}$` = theta41,
+         `$\\theta_{42}$` = theta42,
+         `$\\theta_{43}$` = theta43,
+         `$\\theta_{44}$` = theta44) %>%
+  gather("Parameter", "Value") -> tbl
+
+cbind(tbl[1:8,], tbl[9:16,], tbl[17:24,]) %>%
+  kable(caption = "\\label{tab:theta}Parameters used to fit a test case with $V = H = 4$. This parameter vector was chosen as a sampled value of $\\boldsymbol \\theta$ that was not near the convex hull of the sufficient statistics for a grid point in figure \\ref{fig:degen_plots} with $< 5%$ near-degeneracy.")
+```
+
+We considered a test case with $V = H = 4$ and parameters given in table \ref{tab:theta}. This parameter vector was chosen as a sampled value of $\\boldsymbol \\theta$ that was not near the convex hull of the sufficient statistics for a grid point in figure \\ref{fig:degen_plots} with $< 5%$ near-degeneracy. We simulated $n = 5,000$ as a training set and fit the RBM using three Bayes methodologies. These involved the following:
+
+1. *A trick prior.* Here we cancel out normalizing term in the likelihood so that resulting full conditionals of $\boldsymbol \theta$ are multivariate Normal. The $h_j$ are carried allong in the MCMC sampling from the posterior as latent variables.
     \begin{align*}
     \pi(\boldsymbol \theta) \propto \gamma(\boldsymbol \theta)^n \exp\left(-\frac{1}{2C_{1}}\boldsymbol \theta_{main}'\boldsymbol \theta_{main} -\frac{1}{2C_{2}}\boldsymbol \theta_{interaction}'\boldsymbol \theta_{interaction}\right), \vspace{-.75cm}
     \end{align*}
@@ -642,14 +690,14 @@ Using this idea of shrinkage, we simulated $n = 5,000$ images with four pixels (
     \begin{align*}
     \gamma(\boldsymbol \theta) = \sum\limits_{\boldsymbol x \in \mathcal{X}}\exp\left(\sum\limits_{i = 1}^V\sum\limits_{j=1}^H \theta_{ij} v_i h_j + \sum\limits_{i = 1}^V\theta_{v_i} v_i + \sum\limits_{j = 1}^H\theta_{h_j} h_j\right) \text{ and } C_{2} < C_{1}
     \end{align*}
-    [@li2014biclustering].
-2. *Truncated Normal prior.* Use two independent truncated spherical normal distributions as priors for $\theta_{main}$ and $\theta_{interaction}$ with $\sigma_{interaction} < \sigma_{main}$. Full conditional distributions are not conjugate, requires a geometric adaptive Metropolis Hastings step [@zhou2014some] and calculation of likelihood normalizing constant. 
-3. *Marginalized likelihood* Marginalize out $\boldsymbol h$ in $f_{\boldsymbol \theta}(\boldsymbol x)$, and use the truncated Normal prior. 
+    This is the method of @li2014biclustering.
+2. *A truncated Normal prior.* Here we use independent truncated spherical normal distributions as priors for $\boldsymbol \theta_{main}$ and $\boldsymbol \theta_{interaction}$ with $\sigma_{interaction} < \sigma_{main}$. Full conditional distributions are not conjugate, and simulaion from the posterior was accomplished using a geometric adaptive Metropolis Hastings step [@zhou2014some] and calculation of likelihood normalizing constant. (This computation is barely feasible for a problem of this size.) Here the $h_j$ are carried along in the MCMC implementation as latent variables.
+3. *A truncated Normal prior and marginalized likelihood.* Here we marginalize out $\boldsymbol h$ in $f_{\boldsymbol \theta}(\boldsymbol x)$, and use the truncated Normal prior. 
     \begin{align*}
     g_{\boldsymbol \theta}(\boldsymbol v) = \sum\limits_{\boldsymbol h \in \{-1,1\}^H} \exp\left(\sum\limits_{i = 1}^V \sum\limits_{j=1}^H \theta_{ij} v_i h_j + \sum\limits_{i = 1}^V\theta_{v_i} v_i + \sum\limits_{j = 1}^H\theta_{h_j} h_j\right). \vspace{-.75cm}
     \end{align*}
     
-The three fitting methods are ordered by computational feasibility in a real data situation with the trick prior being the most possible due to conjugacy and the marginalized likelihood method the least feasible due to the marginalization and need for an adaptive Metropolis Hastings step. All three priors do require choosing the values of hyperparameters. In each case, we have chosen the values based on a rule of thumb that maintains the property of shrinking $\boldsymbol \theta_{interaction}$ more than $\boldsymbol \theta_{main}$. Additionally, the trick prior requires additional tuning to choose $C_1$ and $C_2$, making it less appealing. The values used for the hyperparameters are presented in table \ref{tab:hyperparam}.
+The three fitting methods are ordered by computational feasibility in a real-data situation, with the trick prior being the most feasible due to conjugacy and the marginalized likelihood method the least feasible due to the marginalization and need for an adaptive Metropolis Hastings step. All three methods require choosing the values of hyperparameters. In each case, we have chosen the values based on a rule of thumb that shrinks $\boldsymbol \theta_{interaction}$ more than $\boldsymbol \theta_{main}$. Additionally, the trick prior requires additional tuning to choose $C_1$ and $C_2$, reducing its appeal. The values used for the hyperparameters in our simulation are presented in table \ref{tab:hyperparam}.
 
 \begin{table}[ht]
 \centering
@@ -667,11 +715,11 @@ Method & Hyperparameter & Value \\
  & $\sigma^2_{interaction}$ & $\frac{1}{H*V}$ \\
 \hline
 \end{tabular}
-\caption{The values used for the hyperparameters for all three fitting methods. A rule of thumb is imposed which decreases as the size of the model increases and also shrinks $\boldsymbol \theta_{interaction}$ more than $\boldsymbol \theta_{main}$.}
+\caption{The values used for the hyperparameters for all three fitting methods. A rule of thumb is imposed which decreases prior variances for the model parameters as the size of the model increases and also shrinks $\boldsymbol \theta_{interaction}$ more than $\boldsymbol \theta_{main}$.}
 \label{tab:hyperparam}
 \end{table}
 
-Figure \ref{fig:fitting_plot} shows the posterior probability of each possible binary image with four pixels after fitting the model in the three ways detailed in this section. The black vertical lines show the true probabilities of each image based on the parameters used to simulate the images while the red vertical lines show the empirical distribution. From these posterior predictive checks, it is evident that the marginalized likelihood method shows the closest fit to the actual data. However, this model requires a marginalization step, which is infeasible for a model of any real size.
+Figure \ref{fig:fitting_plot} shows the posterior probability of each possible $\boldsymbol v \in \{-1,1\}^4$ after fitting the model in the three ways detailed in this section. The black vertical lines show the true probabilities of each image based on the parameters used to simulate the training set while the red vertical lines show the empirical distribution. From these posterior predictive checks, it is evident that the marginalized likelihood method produces the closest fit to the actual data. However, this method requires a marginalization step, which is infeasible for a model with $H$ of any real size.
     
 ```{r fitting}
 source("helpers/functions.R")
@@ -699,12 +747,6 @@ trunc_good <- models_good
 #rm unneccesary data
 rm(models_bad)
 rm(models_good)
-
-load("data/params_theta.Rdata")
-
-params_good <- list(main_hidden = sample.params %>% ungroup() %>% filter(!near_hull) %>% select(starts_with("h"), -H) %>% data.matrix(),
-                    main_visible = sample.params %>% ungroup() %>% filter(!near_hull) %>% select(starts_with("v"), -V) %>% data.matrix(),
-                    interaction = sample.params %>% ungroup() %>% filter(!near_hull) %>% select(starts_with("theta")) %>% data.matrix() %>% matrix(4))
 
 #computing actual distributions ---------------------
 flat_images_good$visibles %>%
@@ -761,10 +803,6 @@ all_statistics %>%
 p.models
 ```
 
-It should also be noted that each of these rigorous fitting methods seeks to merely replicate the empirical data distribution, which is the optimal nonparametric solution. In a data application with a large sample space it is unlikely that the training set will include one of each possible image, thus there will be possible images that are not realized in the training set, unlike this small example.
-
-**TODO: Add proof that likelihood goes to infinity.**  
-
 # Discussion
 
 **TODO: Add comparison to contrastive divergence**
@@ -773,7 +811,11 @@ It should also be noted that each of these rigorous fitting methods seeks to mer
 
 ##Center of the universe
 
+**TODO: Add**
+
 ##Incomplete cases
+
+**TODO: Add**
 
 #References
 
