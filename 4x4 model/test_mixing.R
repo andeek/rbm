@@ -42,7 +42,7 @@ marginal_sample <- reshape_sample_distn(marginal)
 trunc_sample <- reshape_sample_distn(trunc)
 
 
-
+## acf -------------------------------
 marginal_sample %>% 
   group_by(v1, v2, v3, v4, image_id) %>% 
   do(data.frame(acf = acf(.$prob, plot=FALSE)$acf,
@@ -63,9 +63,105 @@ marginal_acfs %>% ungroup() %>% select(-image_id) %>% rename(marginal = acf) %>%
   xlab("Lag") +
   ylab("ACF")
 
-
-
-
+## block bootstrap effective sample size ----------------
+###
+### MBB Statistic
+###
+mbb_mean <- function(data_star, data, b) {
+  m <- length(data_star)
+  n <- length(data)
+  N <- n - b + 1
   
+  blockmeans <- rep(0, N)
+  for(i in 1:N) {
+    blockmeans[i] <- mean(data[i:(b + i - 1)])
+  }
+  
+  sqrt(m)*(mean(data_star) - mean(blockmeans))
+}
 
+###
+### MBB Sample
+###
+mbb_sample <- function(data, b) {
+  n <- length(data)
+  k <- floor(n/b)
+  
+  start <- sample.int(n - b + 1, k, replace = TRUE)
+  data_star <- NULL
+  for(i in 1:k) {
+    data_star <- c(data_star, data[start[i]:(start[i] + b - 1)])
+  }
+  
+  return(data_star)
+}
+
+###
+### Block Bootstrap function
+###
+bb <- function(x, b, B, boot_stat, boot_sample) {
+  #ii. For blocksize b, generate B MBB versions of statistic
+  bb.stat <- array(NA, B)
+  for(i in seq_len(B)) {
+    bb.stat[i] <- boot_stat(boot_sample(x, b), x, b)
+  }
+  return(bb.stat)
+}
+
+marginal_sample %>% 
+  group_by(v1, v2, v3, v4, image_id) %>%
+  do(mbb = bb(.$prob, 2000^(1/3), 2000, mbb_mean, mbb_sample)) -> marginal_mbb
+
+trunc_sample %>% 
+  group_by(v1, v2, v3, v4, image_id) %>%
+  do(mbb = bb(.$prob, 5000^(1/3), 2000, mbb_mean, mbb_sample)) -> trunc_mbb
+
+epsilon <- 1/1000
+
+marginal_mbb %>%
+  group_by(v1, v2, v3, v4, image_id) %>%
+  do(data.frame(C = var(.$mbb[[1]]))) %>%
+  left_join(marginal_sample %>% group_by(v1, v2, v3, v4) %>% summarise(sigma2 = var(prob))) %>%
+  mutate(T_star = 1/epsilon * C/sigma2) %>%
+  ungroup() %>%
+  summarise(T_star = max(T_star)) %>% as.numeric() %>% ceiling() -> marginal_T
+
+trunc_mbb %>%
+  group_by(v1, v2, v3, v4, image_id) %>%
+  do(data.frame(C = var(.$mbb[[1]]))) %>%
+  left_join(trunc_sample %>% group_by(v1, v2, v3, v4) %>% summarise(sigma2 = var(prob))) %>%
+  mutate(T_star = 1/epsilon * C/sigma2) %>%
+  ungroup() %>%
+  summarise(T_star = max(T_star)) %>% as.numeric() %>% ceiling() -> trunc_T
+
+## timing ---------------------------
+H <- 4
+V <- 4
+mc.iter <- 100
+params <- list(main_hidden = rep(0, H),
+               main_visible = rep(0, V),
+               interaction = rep(0, H*V))
+
+h <- .01
+s1 <- 1e-4
+s2 <- 1e4
+trunc_const <- 1
+
+#rule of thumb for variance params
+C <- 1/(H + V)
+C_prime = 1/(H*V)
+
+time <- Sys.time()
+sample_single_adaptive_mh_within_gibbs(visibles = flat_images_good$visibles, params0 = params, C = C, C_prime = C_prime, trunc_const = trunc_const, h = h, s1 = s1, s2 = s2, mc.iter = mc.iter)
+trunc_time <- difftime(Sys.time(), time, units = "secs")
+
+time <- Sys.time()
+sample_single_adaptive_mh_within_gibbs(visibles = flat_images_good$visibles, params0 = params, C = C, C_prime =  C_prime, trunc_const = trunc_const, h = h, s1 = s1, s2 = s2, mc.iter = mc.iter, conditional_function = log_conditional_marginal)
+marginal_time <- difftime(Sys.time(), time, units = "secs")
+
+
+trunc_time/mc.iter*trunc_T
+marginal_time/mc.iter*marginal_T
+
+## note: even still, marginal is way slower.
 
