@@ -135,8 +135,6 @@ trunc_mbb %>%
   summarise(T_star = max(T_star)) %>% as.numeric() %>% ceiling() -> trunc_T
 
 ## timing ---------------------------
-H <- 4
-V <- 4
 mc.iter <- 100
 params <- list(main_hidden = rep(0, H),
                main_visible = rep(0, V),

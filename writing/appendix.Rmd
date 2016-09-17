@@ -1,18 +1,18 @@
 For integers $m,n \geq 1$, consider random vectors $\bm{V}_m \equiv(V_1,\ldots,V_m)$ and $\bm{H}_n\equiv (H_1,\ldots,H_n)$, where the random variables $V_i$ and $H_j$ assume values in $\{1,-1\}$, $i=1,\ldots,m$, $j=1,\ldots,n$. We suppose the vector $(\bm{V}_m,\bm{H}_n)$ follows a restricted Boltzmann machine (RBM) distribution
-
-\begin{eqnarray*}
-&&P(V_1= v_1,\ldots,V_m= v_m, H_1= h_1,\ldots,H_n=h_n|\bm{\theta})   \\&\propto &\exp\left[ \sum_{i=1}^m v_i \theta_{v_j} + \sum_{j=1}^n h_j \theta_{h_j} + \sum_{i=1}^m  \sum_{j=1}^n v_i  h_j \theta_{ij} \right], \quad \{v_i\}_{i=1}^m,\{h_j\}_{j=1}^n \subset\{\pm 1\},
-\end{eqnarray*}
+\begin{align*}
+&P(V_1= v_1,\ldots,V_m= v_m, H_1= h_1,\ldots,H_n=h_n|\bm{\theta}) \propto \exp\left[ \sum_{i=1}^m v_i \theta_{v_j} + \sum_{j=1}^n h_j \theta_{h_j} + \sum_{i=1}^m  \sum_{j=1}^n v_i  h_j \theta_{ij} \right], \\
+& \quad \{v_i\}_{i=1}^m,\{h_j\}_{j=1}^n \subset\{\pm 1\},
+\end{align*}
 with $m+n+mn$ real parameters $\theta_{v_1},\ldots,\theta_{v_m},\theta_{h_1},\ldots,\theta_{h_m}$ and
 $\theta_{ij}$, $i=1,\ldots,m$, $j=1,\ldots,n$ collected in a parameter vector denoted as $\bm{\theta}\in \mathbb{R}^{m+n+mn}$.
 Denote the distribution of $(\bm{V}_m,\bm{H}_n)$ as RBM$(m,n,\bm{\theta})$. In the following, for convenience, we say a symmetric random variable $X$ has a Bernoulli$(1/2)$ distribution if $P(X=1)=1/2=P(X=-1)$.
 
 Denote the random vector $\bm{V}_m*\bm{H}_n = (V_1 H_1,\ldots,V_1 H_n, V_2 H_1,\ldots,V_2 H_n,\ldots, V_m H_1,\ldots,V_m H_n)$.
 For the RBM$(m,n,\bm{\theta})$ model, we are interested in the function $\bm{g}: \mathbb{R}^{m+n+mn} \rightarrow   \mathcal{I} \subset \mathbb{R}^{m+n+mn}$ given by
-\begin{eqnarray*}
-\bm{g}(\bm{\theta}) &=& \E_{\bm{\theta}}(\bm{V}_m,\bm{H}_n,\bm{V}_m*\bm{H}_n)\\
-& = & \sum_{\bm{v}_m \in \{\pm 1\}^m, \bm{h}_n \in \{\pm 1\}^n} (\bm{v}_m,\bm{h}_n,\bm{v}_m*\bm{h}_n)P(\bm{V}_m=\bm{v}_m,\bm{H}_n=\bm{h}_n|\bm{\theta})
-\end{eqnarray*}
+\begin{align*}
+\bm{g}(\bm{\theta}) &= \E_{\bm{\theta}}(\bm{V}_m,\bm{H}_n,\bm{V}_m*\bm{H}_n)\\
+&= \sum_{\bm{v}_m \in \{\pm 1\}^m, \bm{h}_n \in \{\pm 1\}^n} (\bm{v}_m,\bm{h}_n,\bm{v}_m*\bm{h}_n)P(\bm{V}_m=\bm{v}_m,\bm{H}_n=\bm{h}_n|\bm{\theta})
+\end{align*}
 for $\bm{\theta}\in \mathbb{R}^{m+n+mn}$; above $\mathcal{I} \equiv \{\bm{g}(\bm{\theta}) : \bm{\theta}\in \mathbb{R}^{m+n+mn}\}$ denotes the image of the mapping.
 
 
@@ -36,18 +36,15 @@ let $P_i$ and $\E$ denote probability and expectation under $\bm{\theta}_i$, $i=
 
 **Proof of Theorem 1.** We first establish the equivalence of claims 2 and 3. If claim 2 holds, then
  claim 3 holds trivially. Suppose claim 3 holds and pick $\ell \in \{1,\ldots,m\}$. Let  $\theta_{v_1},\ldots,\theta_{v_m},\theta_{h_1},\ldots,\theta_{h_n}$, $\theta_{ij}$, $i=1,\ldots,m$, $j=1,\ldots,n$, denote the components of $\bm{\theta}_1$ and let $\tilde{\theta}_{v_1},\ldots,\tilde{\theta}_{v_m},\tilde{\theta}_{h_1},\ldots,\tilde{\theta}_{h_n}$, $\tilde{\theta}_{ij}$, $i=1,\ldots,m$, $j=1,\ldots,n$, denote the analogous components of $\bm{\theta}_2$. Then, by assumption,
-\begin{eqnarray*}
-&& \exp\left[ 2\theta_{v_\ell} +2 \sum_{j=1}^n  h_j \theta_{\ell j} \right]\\
-&=&  \frac{P_1\left(\{V_\ell = 1\} \cap \bigcap_{i=1 \atop i \neq \ell}^m \{V_i=v_i\} \cap \bigcap_{j=1}^n \{H_j=h_j\}\right)} {P_1\left(\{V_\ell = -1\} \cap \bigcap_{i=1 \atop i \neq \ell}^m \{V_i=v_i\} \cap \bigcap_{j=1}^n \{H_j=h_j\}\right)}\\
-&=& \frac{P_2\left(\{V_\ell = 1\} \cap \bigcap_{i=1 \atop i \neq \ell}^m \{V_i=v_i\} \cap \bigcap_{j=1}^n \{H_j=h_j\}\right)}
-{P_2\left(\{V_\ell = -1\} \cap \bigcap_{i=1 \atop i \neq \ell}^m \{V_i=v_i\} \cap \bigcap_{j=1}^n \{H_j=h_j\}\right)}\\
-&& \exp\left[ 2\tilde{\theta}_{v_\ell} +2 \sum_{j=1}^n  h_j \tilde{\theta}_{\ell j} \right]
-\end{eqnarray*}
+\begin{align*}
+\exp\left[ 2\theta_{v_\ell} +2 \sum_{j=1}^n  h_j \theta_{\ell j} \right] &= \frac{P_1\left(\{V_\ell = 1\} \cap \bigcap_{i=1 \atop i \neq \ell}^m \{V_i=v_i\} \cap \bigcap_{j=1}^n \{H_j=h_j\}\right)} {P_1\left(\{V_\ell = -1\} \cap \bigcap_{i=1 \atop i \neq \ell}^m \{V_i=v_i\} \cap \bigcap_{j=1}^n \{H_j=h_j\}\right)}\\
+&= \frac{P_2\left(\{V_\ell = 1\} \cap \bigcap_{i=1 \atop i \neq \ell}^m \{V_i=v_i\} \cap \bigcap_{j=1}^n \{H_j=h_j\}\right)}
+{P_2\left(\{V_\ell = -1\} \cap \bigcap_{i=1 \atop i \neq \ell}^m \{V_i=v_i\} \cap \bigcap_{j=1}^n \{H_j=h_j\}\right)}\exp\left[ 2\tilde{\theta}_{v_\ell} +2 \sum_{j=1}^n  h_j \tilde{\theta}_{\ell j} \right]
+\end{align*}
 for any $\{v_i\}_{i=1,i\neq \ell}^m,\{h_j\}_{j=1}^n \subset\{\pm 1\}$. Equating exponents, we have $\theta_{v_\ell} - \tilde{\theta}_{v_\ell} = \sum_{j=1}^n  h_j (  \tilde{\theta}_{\ell j} -\theta{\ell j})$ for any $\{h_j\}_{j=1}^n \subset \{\pm 1\}$. Taking all $h_j=1$ or all $h_j=-1$ for $1 \leq j \leq n$ yields $\theta_{v_\ell} = \tilde{\theta}_{v_\ell}$. This result further implies $\tilde{\theta}_{\ell 1} -\theta{\ell 1} = -  \sum_{j=2}^n  h_j (  \tilde{\theta}_{\ell j} -\theta_{\ell j})$ for
 any given $\{h_j\}_{j=2}^n \subset \{\pm 1\}$, so that $\theta{\ell 1}=\tilde{\theta}_{\ell 1}$ must hold. Iterating this argument, sequentially for each $j=2,\ldots,m$, shows $\theta{\ell j}=\tilde{\theta}_{\ell j}$ for any $1 \leq j \leq n$ in addition to $\theta_{v_\ell}=\tilde{\theta}_{v_\ell}$.  As $\ell\in\{1,\ldots,m\}$ was arbitrary, we have $\theta_{v_i}=\tilde{\theta}_{v_i}$ and $\theta{i j}=\tilde{\theta}_{i j}$ for any $1 \leq i \leq m$, $1 \leq j \leq n$.
 
-Now pick $k \in \{1,\ldots,n\}$ so that, by the RBM$(m,n,\bm{\theta})$ probability structure as above, we have
- analogously that
+Now pick $k \in \{1,\ldots,n\}$ so that, by the RBM$(m,n,\bm{\theta})$ probability structure as above, we have analogously that
 $$
 \theta_{h_k} + \sum_{i=1}^m  v_i \theta_{i k} =  \tilde{\theta}_{h_k} + \sum_{i=1}^m  v_i \tilde{\theta}_{i k}
 $$
@@ -68,9 +65,9 @@ follows if $\E_1 V_i = \E_2 V_i$, $\E_1 H_j = \E_2 H_j$, $\E_1 V_i H_j = \E_2 V_
 
 Considering random variables $(\bm{V}_{m+1},\bm{H}_n) = (V_1,\ldots,V_m,V_{m+1}, H_1,\ldots,H_n)$, the induction hypothesis
 applies to $(\bm{V}_{m},\bm{H}_n)$ where $\bm{V}_m =(V_1,\ldots,V_m)$. Hence, for any $\bm{v}_m \in \{a,b\}^{m}, \bm{h}_n \in \{a,b\}^{n}$, we have $P_1(\bm{V}_m=\bm{v}_m,\bm{H}_n=\bm{h}_n) = P_2(\bm{V}_m=\bm{v}_m,\bm{H}_n=\bm{h}_n)>0$, $P_1( \bm{H}_n=\bm{h}_n) = P_2(\bm{H}_n=\bm{h}_n)>0$ and consequently
-\begin{equation}\label{eqn0}
+\begin{align}\label{eqn0}
 P_1(\bm{V}_m=\bm{v}_m|\bm{H}_n=\bm{h}_n) =P_2(\bm{V}_m=\bm{v}_m |\bm{H}_n=\bm{h}_n).
-\end{equation}
+\end{align}
 Likewise, by the induction hypothesis applied to $(\bm{V}_{m-},\bm{H}_n)$ for $\bm{V}_{m-} = (V_2,\ldots,V_{m+1})$, we have
 \begin{eqnarray}\label{eqn1}
  1- P_1(V_{m+1} = b | \bm{H}_n=\bm{h}_n) &=& P_1(V_{m+1} = a |\bm{H}_n=\bm{h}_n)\\
@@ -81,7 +78,7 @@ for any $\bm{h}_n \in \{a,b\}^{n}$. Now fix  $\bm{v}_m \in \{a,b\}^{m}, \bm{h}_n
 $$
 P_i( \bm{V}_{m+1}=\bm{v}_{m+1}| \bm{H}_n=\bm{h}_n) = P_i( V_{m+1}=v_{m+1}| \bm{H}_n=\bm{h}_n) P_i( \bm{V}_{m}=v_{m}| \bm{H}_n=\bm{h}_n)
 $$
-for $i=1,2,$,  so that we have   $P_1( \bm{V}_{m+1}=\bm{v}_{m+1}| \bm{H}_n=\bm{h}_n) = P_2( \bm{V}_{m+1}=\bm{v}_{m+1}| \bm{H}_n=\bm{h}_n)$ by (\ref{eqn0})-(\ref{eqn1}). Consequently, it follows that
+for $i=1,2$,  so that we have $P_1( \bm{V}_{m+1}=\bm{v}_{m+1}| \bm{H}_n=\bm{h}_n) = P_2( \bm{V}_{m+1}=\bm{v}_{m+1}| \bm{H}_n=\bm{h}_n)$ by (\ref{eqn0})-(\ref{eqn1}). Consequently, it follows that
 \begin{eqnarray*}
 P_1( \bm{V}_{m+1}=\bm{v}_{m+1}, \bm{H}_n=\bm{h}_n) &=& P_1( \bm{V}_{m+1}=\bm{v}_{m+1}| \bm{H}_n=\bm{h}_n) P_1(\bm{H}_n=\bm{h}_n)\\
 & =& P_2( \bm{V}_{m+1}=\bm{v}_{m+1}| \bm{H}_n=\bm{h}_n)P_2(\bm{H}_n=\bm{h}_n) \\&=&P_2( \bm{V}_{m+1}=\bm{v}_{m+1}, \bm{H}_n=\bm{h}_n)
@@ -91,18 +88,18 @@ by $P_1(\bm{H}_n=\bm{h}_n)=P_2(\bm{H}_n=\bm{h}_n)$. As $\bm{v}_{m+1}\in \{a,b\}^
 \begin{lemma} Suppose the discrete random vector $(X,Y)$ has support $\{a,b\}\times \{a,b\}$, for some $a\neq b \in \mathbb{R}$,
 under two probability distributions $P_1$ and $P_2$. Let $\E_i$ denote expectation under the distribution $P_i$, $i=1,2$. Then, the following are equivalent
 \begin{enumerate}
-\item $\E_1 X = \E_2 X$, $\E_1 Y = \E_2 Y$, $ \E_1 X Y = \E_2 X Y$, where $\E_i$ denotes expectation under $P_i$, $i=1,2$.
+\item $\E_1 X = \E_2 X$, $\E_1 Y = \E_2 Y$, $\E_1 X Y = \E_2 X Y$, where $\E_i$ denotes expectation under $P_i$, $i=1,2$.
 \item $P_1(X=x,Y=y)=P_2(X=x,Y=y)$ for $x,y\in\{a,b\}$, i.e., $(X,Y)$ has the same distribution under $P_1$ and $P_2$.
 \end{enumerate}
 \end{lemma}
 
-*Proof.* Denote the four probabilities by which the random vector $(X,Y)$ assume pairs $(b,b),(b,a),(a,b),(a,a)$, respectively, as $c_1,c_2,c_3,1-c_1-c_2-c_3$ under $P_1$ and $d_1,d_2,d_3,1-d_1-d_2-d_3$ under $P_2$.  The conditions $\E_1 X = \E_2 X$, $\E_1 Y = \E_2 Y$, $ \E_1 X Y = \E_2 X Y$ with $b\neq a$ imply that
+*Proof.* Denote the four probabilities by which the random vector $(X,Y)$ assume pairs $(b,b),(b,a),(a,b),(a,a)$, respectively, as $c_1,c_2,c_3,1-c_1-c_2-c_3$ under $P_1$ and $d_1,d_2,d_3,1-d_1-d_2-d_3$ under $P_2$. The conditions $\E_1 X = \E_2 X$, $\E_1 Y = \E_2 Y$, $\E_1 X Y = \E_2 X Y$ with $b\neq a$ imply that
 $$
 (c_1+c_2) = (d_1+d_2), \quad  (c_1+c_3) = (d_1+d_3) \quad (b-a) c_1 + a (2c_1+c_2+c_3) =  (b-a) d_1 + a (2d_1+d_2+d_3).
 $$
-As $(2c_1+c_2+c_3) = (2d_1+d_2+d_3) $ and $b\neq a$, we conclude that $c_1=d_1$, from which it follows that $c_2=d_2$ and $c_3=d_3$. Hence, claim 1 implies claim 2 in Lemma 2.  Claim 2 also trivially implies claim 1. $\Box$
+As $(2c_1+c_2+c_3) = (2d_1+d_2+d_3)$ and $b\neq a$, we conclude that $c_1=d_1$, from which it follows that $c_2=d_2$ and $c_3=d_3$. Hence, claim 1 implies claim 2 in Lemma 2. Claim 2 also trivially implies claim 1. $\Box$
  
-\begin{theoremnew4} Let $m,n\geq 1$ and suppose the random vector   $(\bm{V}_m,\bm{H}_n) = (V_1,\ldots,V_m, H_1,\ldots,H_n)$ follows a RBM$(m,n,\bm{\theta})$ distribution.  Then, the following are equivalent
+\begin{theoremnew4} Let $m,n\geq 1$ and suppose the random vector $(\bm{V}_m,\bm{H}_n) = (V_1,\ldots,V_m, H_1,\ldots,H_n)$ follows a RBM$(m,n,\bm{\theta})$ distribution.  Then, the following are equivalent
 \begin{enumerate}
 \item $\E V_i=0$, $\E H_j=0$ and $\E V_i H_j =0$ for any $i=1,\ldots,m$, $j=1,\ldots,n$.
 \item $\bm{\theta} = \bm{0}\in \mathbb{R}^{m+n+mn}$.
@@ -115,10 +112,10 @@ As $(2c_1+c_2+c_3) = (2d_1+d_2+d_3) $ and $b\neq a$, we conclude that $c_1=d_1$,
 Now suppose claim 3 holds. Pick $\ell \in \{1,\ldots,m\}$. Then, by the RBM$(m,n,\bm{\theta})$ probability structure and the iid Bernoulli assumption, we have the conditional probability
 \begin{eqnarray*}
 \frac{1}{2} &=& P\left(V_\ell = v_{\ell}\Big| \bigcap_{i=1 \atop i \neq \ell}^m \{V_i=v_i\} \cap \bigcap_{j=1}^n \{H_j=h_j\}\right) \\
-&\equiv &\frac{\exp\left( v_\ell\theta_\ell +  v_\ell\sum_{j=1}^n  h_j \lambda_{\ell,j}\right)}{\exp\left(
-\theta_\ell + \sum_{j=1}^n   h_j\lambda_{\ell,j} \right) +\exp\left(-\theta_\ell  -\sum_{j=1}^n  h_j\lambda_{\ell,j}\right) }
+&\equiv &\frac{\exp\left( v_\ell\theta_\ell +  v_\ell\sum_{j=1}^n  h_j \theta_{\ell j}\right)}{\exp\left(
+\theta_\ell + \sum_{j=1}^n   h_j\theta_{\ell j} \right) +\exp\left(-\theta_\ell  -\sum_{j=1}^n  h_j\theta_{\ell j}\right) }
 \end{eqnarray*}
-for any subsets $\{v_i\}_{i=1}^m,\{h_j\}_{j=1}^n \subset\{\pm 1\}$. Equating conditional probabilities when $v_\ell=1$ or when $v_\ell=-1$, we have   $\theta_\ell = -  \sum_{j=1}^m  h_j \lambda_{\ell,j}$ for any given $\{h_j\}_{j=1}^n \subset \{\pm 1\}$. Taking all $h_j=1$ or all $h_j=-1$ for $1 \leq j \leq n$ yields $\theta_\ell=0$.  This result further implies $\lambda_{\ell,1} = - \sum_{j=2}^n  h_j \lambda_{\ell,j}$ for any given $\{h_j\}_{j=2}^n \subset \{\pm 1\}$, so that $\lambda_{\ell,1}=0$ must hold. Iterating this argument, sequentially for each $j=2,\ldots,m$, shows $\lambda_{\ell,j}=0$ for any $1 \leq j \leq n$ in addition to $\theta_\ell=0$. As $\ell\in\{1,\ldots,m\}$ was arbitrary, we have $\theta_i=0$ and $\lambda_{i,j}=0$ for any $1 \leq i \leq m$, $1 \leq j \leq n$.
+for any subsets $\{v_i\}_{i=1}^m,\{h_j\}_{j=1}^n \subset\{\pm 1\}$. Equating conditional probabilities when $v_\ell=1$ or when $v_\ell=-1$, we have   $\theta_\ell = -  \sum_{j=1}^m  h_j \theta_{\ell j}$ for any given $\{h_j\}_{j=1}^n \subset \{\pm 1\}$. Taking all $h_j=1$ or all $h_j=-1$ for $1 \leq j \leq n$ yields $\theta_\ell=0$.  This result further implies $\theta_{\ell 1} = - \sum_{j=2}^n  h_j \theta_{\ell j}$ for any given $\{h_j\}_{j=2}^n \subset \{\pm 1\}$, so that $\theta_{\ell 1}=0$ must hold. Iterating this argument, sequentially for each $j=2,\ldots,m$, shows $\theta_{\ell j}=0$ for any $1 \leq j \leq n$ in addition to $\theta_{v_\ell}=0$. As $\ell\in\{1,\ldots,m\}$ was arbitrary, we have $\theta_{v_i}=0$ and $\theta_{i j}=0$ for any $1 \leq i \leq m$, $1 \leq j \leq n$.
 
 Now pick $k \in \{1,\ldots,n\}$ so that, by the RBM$(m,n,\bm{\theta})$ probability structure and the iid assumption, we have the conditional probability
 $$

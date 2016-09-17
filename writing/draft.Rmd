@@ -763,9 +763,9 @@ Method & Hyperparameter & Value \\
 \end{tabular}
 \end{table}
 
-Figure \ref{fig:fitting_plot} shows the posterior probability of each possible $\boldsymbol v \in \{-1,1\}^4$ after fitting the model in the three ways detailed in this section. The black vertical lines show the true probabilities of each image based on the parameters used to simulate the training set while the red vertical lines show the empirical distribution. From these posterior predictive checks, it is evident that the marginalized likelihood method produces the closest fit to the actual data. However, this method requires a marginalization step, which is infeasible for a model with $H$ of any real size.
-    
-```{r fitting}
+It should be noted that the truncated normal method (2) and the marginalized likelihood method (3) are drawing from the same stationary posterior distribution for images. The difference between these two methods is in how well the chains mix and how quickly they arrive at the target distribution. After a burn-in period of 50 iterations selected by inspecting the trace plots, we assess the issue of mixing in two ways. First, the autocorrelation functions (ACF) for each image are assessed at multiple lags for each method and plotted in figure \ref{fig:acf} with the truncated normal method in black and the marginalized likelihood method in red. As expected, ACF corresponding to the method that marginalizes out the hidden variables from the likelihood decreases to zero at a much faster rate, indicating better mixing for the chain. Secondly, 
+
+```{r models}
 source("helpers/functions.R")
 load("data/sample_images.Rdata")
 
@@ -774,7 +774,7 @@ H <- 4
 V <- 4
 
 #marginalized likelihood
-load("data/fitted_models_trunc_marginal_thin.Rdata")
+load("data/fitted_models_trunc_marginal_full.Rdata")
 marginal_bad <- models_bad
 marginal_good <- models_good
 
@@ -784,7 +784,7 @@ trick_bad <- models_bad
 trick_good <- models_good
 
 #truncated normal
-load("data/fitted_models_trunc_thin.Rdata")
+load("data/fitted_models_trunc_full.Rdata")
 trunc_bad <- models_bad
 trunc_good <- models_good
 
@@ -817,7 +817,33 @@ reshape_sample_distn <- function(model) {
 marginal_sample_good <- reshape_sample_distn(marginal_good)
 trick_sample_good <- reshape_sample_distn(trick_good)
 trunc_sample_good <- reshape_sample_distn(trunc_good)
+```
 
+```{r acf, fig.cap="\\label{fig:acf}The autocorrelation functions (ACF) for each image assessed at multiple lags for each method with the truncated normal method in black and the marginalized likelihood method in red. As expected, ACF corresponding to the method that marginalizes out the hidden variables from the likelihood decreases to zero at a much faster rate, indicating better mixing for the chain."}
+marginal_sample_good %>% 
+  group_by(v1, v2, v3, v4, image_id) %>% 
+  do(data.frame(acf = acf(.$prob, plot=FALSE)$acf,
+     lag = acf(.$prob, plot=FALSE)$lag)) -> marginal_acfs
+
+trunc_sample_good %>% 
+  group_by(v1, v2, v3, v4, image_id) %>% 
+  do(data.frame(acf = acf(.$prob, plot=FALSE)$acf,
+                lag = acf(.$prob, plot=FALSE)$lag)) -> trunc_acfs
+
+marginal_acfs %>% ungroup() %>% select(-image_id) %>% rename(marginal = acf) %>%
+  left_join(trunc_acfs %>% rename(truncated = acf)) %>%
+  ggplot() +
+  geom_segment(aes(x=lag, xend=lag, y=0, yend=truncated), colour = "black") +
+  geom_segment(aes(x=lag, xend=lag, y=0, yend=marginal), colour = "red") +
+  facet_wrap(~image_id) +
+  xlab("Lag") +
+  ylab("ACF")
+
+```
+
+Figure \ref{fig:fitting_plot} shows the posterior probability of each possible $\boldsymbol v \in \{-1,1\}^4$ after fitting the model in the three ways detailed in this section. The black vertical lines show the true probabilities of each image based on the parameters used to simulate the training set while the red vertical lines show the empirical distribution. From these posterior predictive checks, it is evident that the marginalized likelihood method produces the closest fit to the actual data. However, this method requires a marginalization step, which is infeasible for a model with $H$ of any real size.
+    
+```{r posterior-dsn}
 marginal_sample_good %>% rename(marginal = prob) %>%
   left_join(trick_sample_good %>% ungroup() %>% select(-image_id) %>% rename(trick = prob)) %>%
   left_join(trunc_sample_good %>% ungroup() %>% select(-image_id) %>% rename(trunc = prob)) %>%
