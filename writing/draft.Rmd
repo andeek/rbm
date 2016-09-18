@@ -763,9 +763,9 @@ Method & Hyperparameter & Value \\
 \end{tabular}
 \end{table}
 
-It should be noted that the truncated normal method (2) and the marginalized likelihood method (3) are drawing from the same stationary posterior distribution for images. The difference between these two methods is in how well the chains mix and how quickly they arrive at the target distribution. After a burn-in period of 50 iterations selected by inspecting the trace plots, we assess the issue of mixing in two ways. First, the autocorrelation functions (ACF) for each image are assessed at multiple lags for each method and plotted in figure \ref{fig:acf} with the truncated normal method in black and the marginalized likelihood method in red. As expected, ACF corresponding to the method that marginalizes out the hidden variables from the likelihood decreases to zero at a much faster rate, indicating better mixing for the chain. Secondly, 
+It should be noted that the truncated Normal method (2) and the marginalized likelihood method (3) are drawing from the same stationary posterior distribution for images. The difference between these two methods is in how well the chains mix and how quickly they arrive at the target distribution. After a burn-in period of 50 iterations selected by inspecting the trace plots, we assess the issue of mixing in two ways. First, the autocorrelation functions (ACF) for each image are assessed at multiple lags for each method and plotted in figure \ref{fig:acf} with the truncated Normal method in black and the marginalized likelihood method in red. As expected, ACF corresponding to the method that marginalizes out the hidden variables from the likelihood decreases to zero at a much faster rate, indicating better mixing for the chain. 
 
-```{r models}
+```{r models-load}
 source("helpers/functions.R")
 load("data/sample_images.Rdata")
 
@@ -819,13 +819,15 @@ trick_sample_good <- reshape_sample_distn(trick_good)
 trunc_sample_good <- reshape_sample_distn(trunc_good)
 ```
 
-```{r acf, fig.cap="\\label{fig:acf}The autocorrelation functions (ACF) for each image assessed at multiple lags for each method with the truncated normal method in black and the marginalized likelihood method in red. As expected, ACF corresponding to the method that marginalizes out the hidden variables from the likelihood decreases to zero at a much faster rate, indicating better mixing for the chain."}
+```{r acf, fig.cap="\\label{fig:acf}The autocorrelation functions (ACF) for each image assessed at multiple lags for each method with the truncated Normal method in black and the marginalized likelihood method in red. As expected, ACF corresponding to the method that marginalizes out the hidden variables from the likelihood decreases to zero at a much faster rate, indicating better mixing for the chain."}
 marginal_sample_good %>% 
+  filter(iter > 50) %>%
   group_by(v1, v2, v3, v4, image_id) %>% 
   do(data.frame(acf = acf(.$prob, plot=FALSE)$acf,
      lag = acf(.$prob, plot=FALSE)$lag)) -> marginal_acfs
 
 trunc_sample_good %>% 
+  filter(iter > 50) %>%
   group_by(v1, v2, v3, v4, image_id) %>% 
   do(data.frame(acf = acf(.$prob, plot=FALSE)$acf,
                 lag = acf(.$prob, plot=FALSE)$lag)) -> trunc_acfs
@@ -841,15 +843,92 @@ marginal_acfs %>% ungroup() %>% select(-image_id) %>% rename(marginal = acf) %>%
 
 ```
 
-Figure \ref{fig:fitting_plot} shows the posterior probability of each possible $\boldsymbol v \in \{-1,1\}^4$ after fitting the model in the three ways detailed in this section. The black vertical lines show the true probabilities of each image based on the parameters used to simulate the training set while the red vertical lines show the empirical distribution. From these posterior predictive checks, it is evident that the marginalized likelihood method produces the closest fit to the actual data. However, this method requires a marginalization step, which is infeasible for a model with $H$ of any real size.
+```{r M_eff, cache=TRUE}
+###
+### MBB Statistic
+###
+mbb_mean <- function(data_star, data, b) {
+  m <- length(data_star)
+  n <- length(data)
+  N <- n - b + 1
+  
+  blockmeans <- rep(0, N)
+  for(i in 1:N) {
+    blockmeans[i] <- mean(data[i:(b + i - 1)])
+  }
+  
+  sqrt(m)*(mean(data_star) - mean(blockmeans))
+}
+
+###
+### MBB Sample
+###
+mbb_sample <- function(data, b) {
+  n <- length(data)
+  k <- floor(n/b)
+  
+  start <- sample.int(n - b + 1, k, replace = TRUE)
+  data_star <- NULL
+  for(i in 1:k) {
+    data_star <- c(data_star, data[start[i]:(start[i] + b - 1)])
+  }
+  
+  return(data_star)
+}
+
+###
+### Block Bootstrap function
+###
+bb <- function(x, b, B, boot_stat, boot_sample) {
+  #ii. For blocksize b, generate B MBB versions of statistic
+  bb.stat <- array(NA, B)
+  for(i in seq_len(B)) {
+    bb.stat[i] <- boot_stat(boot_sample(x, b), x, b)
+  }
+  return(bb.stat)
+}
+
+marginal_sample_good %>% 
+  group_by(v1, v2, v3, v4, image_id) %>%
+  do(mbb = bb(.$prob, 2000^(1/3), 2000, mbb_mean, mbb_sample)) -> marginal_mbb
+
+trunc_sample_good %>% 
+  group_by(v1, v2, v3, v4, image_id) %>%
+  do(mbb = bb(.$prob, 5000^(1/3), 2000, mbb_mean, mbb_sample)) -> trunc_mbb
+
+marginal_mbb %>%
+  group_by(v1, v2, v3, v4, image_id) %>%
+  do(data.frame(C = var(.$mbb[[1]]))) %>%
+  left_join(marginal_sample_good %>% group_by(v1, v2, v3, v4) %>% summarise(sigma2 = var(prob))) %>%
+  mutate(M_eff = sigma2/C) %>%
+  ungroup() %>%
+  summarise(M_eff = min(M_eff)) %>% as.numeric() -> marginal_M_eff
+
+trunc_mbb %>%
+  group_by(v1, v2, v3, v4, image_id) %>%
+  do(data.frame(C = var(.$mbb[[1]]))) %>%
+  left_join(trunc_sample_good %>% group_by(v1, v2, v3, v4) %>% summarise(sigma2 = var(prob))) %>%
+  mutate(M_eff = sigma2/C) %>%
+  ungroup() %>%
+  summarise(M_eff = min(M_eff)) %>% as.numeric() -> trunc_M_eff
+```
+
+Secondly, we can assess the mixing of our chain using an idea of effective sample size. If the MCMC chain were truly iid draws from the target distribution, then the estimate of the posterior mean probability of image $i$, $\bar{p}^{(i)}$ would be distributed approximately Normal with mean the true posterior probability of image $i$, $p^{(i)}$, and variance $\sigma^2_i/M$, where $\sigma^2_i$ is the true posterior variance of image $i$ and $M$ is the length of the chain. However, with the presence of correlation in our chain, the aysmptotic variance of $\bar{p}^{(i)}$ is instead some $C_i/M$, where $C_i$ is some positive constant such that $C_i > \sigma^2_i$. We use a block bootstrap method with overlapping blocks to get an estimate for $C_i$, $\hat{C}_i$, and compare it to an estimate of $\sigma^2_i$ using the raw chain, $\hat{\sigma}^2_i$. Formally,
+
+$$
+M_{eff}^{(i)} = M\frac{\hat{\sigma}^2_i}{\hat{C}_i}.
+$$
+
+Using this metric, a chain of length $M = 1000$ for the marginalized likelihood method yields $\min_i M_{eff}^{(i)} = `r round(1000*marginal_M_eff, 2)`$, while the truncated Normal method only yields $\min_i M_{eff}^{(i)} = `r round(1000*trunc_M_eff, 2)`$. Thus, the truncated likelihood would require $`r round(marginal_M_eff/trunc_M_eff, 1)`$ times more iterations to be run of the MCMC chain in order to achieve the same amount of effective information about the posterior distribution. For this reason, in conjuction with the ACF results, the truncated Normal method is not an effective method for fitting the RBM.
+
+Figure \ref{fig:fitting_plot} shows the posterior probability of each possible $\boldsymbol v \in \{-1,1\}^4$ after fitting the RBM model in the two ways detailed in this section, excluding the truncated Normal method. The black vertical lines show the true probabilities of each image based on the parameters used to simulate the training set while the red vertical lines show the empirical distribution. From these posterior predictive checks, it is evident that the marginalized likelihood method produces the closest fit to the actual data. However, this method requires a marginalization step, which is infeasible for a model with $H$ of any real size.
     
 ```{r posterior-dsn}
-marginal_sample_good %>% rename(marginal = prob) %>%
+marginal_sample_good %>% rename(marginal = prob) %>% filter(iter > 50) %>%
   left_join(trick_sample_good %>% ungroup() %>% select(-image_id) %>% rename(trick = prob)) %>%
-  left_join(trunc_sample_good %>% ungroup() %>% select(-image_id) %>% rename(trunc = prob)) %>%
   ungroup() %>%
   mutate(image_id = paste0("image_", image_id)) %>% 
-  gather(method, prob, trick, marginal, trunc) %>%
+  gather(method, prob, trick, marginal) %>%
   spread(image_id, prob) -> all_statistics
 
 all_statistics %>%
@@ -864,12 +943,12 @@ all_statistics %>%
   geom_vline(aes(xintercept = prob_emp), colour = "red") +
   facet_wrap(~statistic, scales = "free_x") + 
   ylab("Scaled Posterior Density") + xlab("Probability of Image") +
-  scale_colour_discrete("Method", labels = c("Marginalized likelihood", "Trick prior", "Truncated Normal prior")) +
-  scale_fill_discrete("Method", labels = c("Marginalized likelihood", "Trick prior", "Truncated Normal prior")) +
+  scale_colour_discrete("Method", labels = c("Marginalized likelihood", "Trick prior")) +
+  scale_fill_discrete("Method", labels = c("Marginalized likelihood", "Trick prior")) +
   theme(legend.position = "bottom") -> p.models
 ```
 
-```{r fitting_plot, fig.cap="\\label{fig:fitting_plot}Posterior probability of each possible 4-pixel image using three Bayesian fitting techniques, trick prior, truncated Normal prior, and marginalized likelihood. The black vertical lines show the true probabilities of each image based on the parameters used to simulate the images while the red vertical lines show the empirical distribution. The marginalized likelihood method has the best fit for the data, however is also the most computationally intensive and least feasible with a real dataset.", fig.height=6}
+```{r fitting_plot, fig.cap="\\label{fig:fitting_plot}Posterior probability of each possible 4-pixel image using two of the three Bayesian fitting techniques, trick prior and marginalized likelihood. The black vertical lines show the true probabilities of each image based on the parameters used to simulate the images while the red vertical lines show the empirical distribution. The marginalized likelihood method has the best fit for the data, however is also the most computationally intensive and least feasible with a real dataset.", fig.height=6}
 p.models
 ```
 
