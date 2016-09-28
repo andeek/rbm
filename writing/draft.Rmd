@@ -86,23 +86,30 @@ The RBM class of models can be thought to exhibit an analogous occurrence of *ne
 
 ### Instability
 
-@schweinberger2011instability introduces a related concept, *instability*. Instability is characterized by excessive sensitivity in the model, where a small change in $\boldsymbol x$ leads to a large change in the probability mass function. Consider discrete exponential families of distributions with probability mass functions of the form 
+Considering a class of exponential families of distributions, @schweinberger2011instability introduced a concept of model defficiency related to *instability*. Instability is characterized by excessive sensitivity in the model, where small changes in the components of potential data outcomes, $\boldsymbol x$, may lead to substantial changes in the probability mass function. To quantify "instability", it is useful to imagine how a data model (the RBM in particular) might be expanded to incorporate more and more observations. To increase the size of a RBM model to handle more "visible variables", it becomes necessary to expand the number of model parameters (and in the process of increasing the model size in visibles, one may also arbitrarily expand the number of hidden variables to be included). A relevant quantity to this end is a (scaled) extremal log-probability ratio given by 
+\begin{align}
+\frac{1}{V} \log \left[\frac{\max\limits_{(v_1, \dots, v_V) \in \{-1,1\}^V}P_{\boldsymbol \theta}(v_1, \dots, v_V)}{\min\limits_{(v_1, \dots, v_V) \in \{-1,1\}^V}P_{\boldsymbol \theta}(v_1, \dots, v_V)}\right] \equiv \frac{1}{V} \text{ELPR}_V(\boldsymbol \theta) \label{eqn:elpr}
+\end{align}
+where $P_{\boldsymbol \theta}(v_1, \dots, v_V) \propto \sum_{\{h_j\}\in \{-1,1\}}\exp\left(\sum_{i = 1}^V \theta_{v_i} v_i + \sum_{j = 1}^H \theta_{h_j} h_j + \sum_{i = 1}^V \sum_{j = 1}^H \theta_{ij} v_i h_j\right)$ is the RBM probability of observing outcome $(v_1, \dots, v_V)$ for the visible variables for parameters $\boldsymbol \theta = (\theta_{v_1}, \dots, \theta_{HV})$.
+
+Essentially, in the process of developing a model to handle increasing numbers of visibles (i.e., $V \rightarrow \infty$), we want (\ref{eqn:elpr}) to stay bounded, meaning that the largest probability under this model should maintain a magnitude within the smallest probability allowed under the model. This leads to the following definition:
+
+\begin{defn}[unstable RBM]
+A RBM model formulation is \emph{unstable} if, as the number of visible variables increase ($V \rightarrow \infty$), it holds that 
 \begin{align*}
-f_{\boldsymbol \theta} (\boldsymbol x) = \frac{\exp\left(\eta^T(\boldsymbol \theta) t(\boldsymbol x)\right)}{\gamma(\boldsymbol \theta)}
+\lim\limits_{V \rightarrow \infty} \frac{1}{V} \log \left[\frac{\max\limits_{(v_1, \dots, v_V) \in \{-1,1\}^V}P_{\boldsymbol \theta}(v_1, \dots, v_V)}{\min\limits_{(v_1, \dots, v_V) \in \{-1,1\}^V}P_{\boldsymbol \theta}(v_1, \dots, v_V)}\right] = \infty.
 \end{align*}
-@schweinberger2011instability provides the following formal definition for instability in a discrete exponential family model.
-
-\begin{defn}
-A discrete exponential family distribution is \emph{unstable} if for any $C > 0$, however large, there exists $N_C > 0$ such that 
-\begin{align}
-\max\limits_{\boldsymbol x_N \in \mathcal{X}_N}[\eta^T(\boldsymbol \theta) t(\boldsymbol x)] - \min\limits_{\boldsymbol x_N \in \mathcal{X}_N}[\eta^T(\boldsymbol \theta) t(\boldsymbol x)] > CN \text{ for all } N > N_C \label{eq:unstable}
-\end{align}
-
-Conversely, a discrete exponential family distribution is \emph{stable} if there exists constants $C > 0$ and $N_C > 0$ such that 
-\begin{align}
-\max\limits_{\boldsymbol x_N \in \mathcal{X}_N}[\eta^T(\boldsymbol \theta) t(\boldsymbol x)] - \min\limits_{\boldsymbol x_N \in \mathcal{X}_N}[\eta^T(\boldsymbol \theta) t(\boldsymbol x)] \le CN \text{ for all } N > N_C. \label{eq:stable}
-\end{align}
 \end{defn}
+In other words, given any $C > 0$, there exists an integer $V_C > 0$ so that $\frac{1}{V}\text{ELPR}_V(\boldsymbol \theta) > C$ for all $V \ge V_C$.
+
+Note that this definition of *unstable* is a generalization of that in @schweinberger2011instability allowing nonexponential family models and an increasing number of parameters (while this definition appears different, it does match that in @schweinberger2011instability for the special exponential models considered there).
+
+Unstable RBM models are undesirable for several reasons. One is that, as mentioned above, small changes in data can lead to overly-sensitive changes in probability. Consider, for example, 
+$$
+\Delta_V(\boldsymbol \theta) \equiv \max \left\{\log \frac{P_{\boldsymbol \theta}(v_1, \dots, v_V)}{P_{\boldsymbol \theta}(v_1^*, \dots, v_V^*)} : (v_1, \dots, v_V) \& (v_1^*, \dots, v_V^*) \in \{-1,1\}^V \text{ differ by exactly one component}\right\},
+$$
+the biggest log-probability ratio for a one-pixed (one component) change in data outcomes (visibles). We then have the following result.
+
 
 For RBMs, an analogous concept could concern the joint distribution of both hidden and visible nodes, where $N$ is the number of nodes in the model, $H + V$. However, instability in terms of only the visible nodes is a more useful measure of model impropriety. To see this, consider modeling images using an RBM. One would be interested in the maximum change in the likelihood when a single pixel is changed in the visibles as a proxy for instability in the model. So we concern ourselves with a notion of instability that deals with the maximum likelihood ratio of two vectors of visibles that differ at only one coordinate.
 
@@ -126,13 +133,6 @@ For RBMs, an analogous concept could concern the joint distribution of both hidd
 
 Let $R(\boldsymbol \theta) \equiv \max_{\boldsymbol v} \max_{\boldsymbol h}Q(\boldsymbol x) - \min_{\boldsymbol v}\max_{\boldsymbol h}Q(\boldsymbol x) - H\log 2$. Then, if $R(\boldsymbol \theta) > C*V$, this implies that the maximum log-likelihood ratio of two observations that differ in only one element is greater than $C$. So, by examining $R(\boldsymbol\theta)/V$, we can determine a lower bound for the maximum log-likelihood ratio of two sets of observables that differ in only one element, which if large is consistent with the concept of instability detailed above.
 
-Instability in a discrete exponential model is in itself a measure of model impropriety, however there is also a relationship between instability and near-degeneracy in a discrete exponential model.
-
-\begin{lemma}[Schweinberger (2011)]
-If a discrete exponential family distribution is unstable, then it is degenerate in the sense that for any $0 < \epsilon < 1$, $P_\theta(\boldsymbol X \in \mathcal{M}_{\epsilon, N}) \rightarrow 1$ as $N \rightarrow \infty$ where $\mathcal{M}_{\epsilon, N} = \{\boldsymbol x \in \mathcal{X}^N:  \eta^T(\boldsymbol \theta) t(\boldsymbol x) > (1-\epsilon)\max\limits_{\boldsymbol x_N \in \mathcal{X}_N}[\eta^T(\boldsymbol \theta) t(\boldsymbol x)]\}$ is the set of points in the sample space that yield arbitrarily high values of the unnormalized pmf.
-\end{lemma}
-
-Thus, if a discrete exponential family model is unstable, then it is also near-degenerate. Discrete RBMs (the focus of this paper) are curved exponential family models for particular choice of sufficient statistics ($\boldsymbol \tau = \{h_j, v_i, v_i h_j: i = 1, \dots, V, j= 1, \dots, H\}$), meaning instability in the RBM implies near-degeneracy as well.
 
 ### Uninterpretability
 @kaiser2007statistical defines a measure of model impropriety he calls *uninterpretability*, which is characterized by marginal mean-structure not being maintained in the model. A measure of this is the magnitude of the difference between model expectations, E$\left[\boldsymbol X | \boldsymbol \theta\right]$, and expectations given independence, E$\left[\boldsymbol X | \boldsymbol \theta^* \right]$, where $\boldsymbol \theta^*$ is defined to equal $\boldsymbol \theta$ with all $\theta_{ij} = 0$ for $i = 1, \dots, V, j = 1, \dots, H$. Using this concept it is possible to investigate what conditions lead to uninterpretability in a model versus those that guarantee interpretable models. A model is considered without uninterpretability if its expected value is not very different from the same model with assumed independence. The quantities to compare in the RBM case are
