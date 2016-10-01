@@ -110,29 +110,37 @@ $$
 $$
 the biggest log-probability ratio for a one-pixed (one component) change in data outcomes (visibles). We then have the following result.
 
+\begin{prop}
+\label{prop:instab}
+If $\frac{1}{V}\text{ELPR}_V(\boldsymbol \theta) > C$, then $\Delta_V(\boldsymbol \theta) > C$.
+\end{prop}
 
-For RBMs, an analogous concept could concern the joint distribution of both hidden and visible nodes, where $N$ is the number of nodes in the model, $H + V$. However, instability in terms of only the visible nodes is a more useful measure of model impropriety. To see this, consider modeling images using an RBM. One would be interested in the maximum change in the likelihood when a single pixel is changed in the visibles as a proxy for instability in the model. So we concern ourselves with a notion of instability that deals with the maximum likelihood ratio of two vectors of visibles that differ at only one coordinate.
+In other words, if the quantity (\ref{eqn:elpr}) is too large, then the RBM model will exhibit large probability shifts for very small changes in the data configuration (i.e. instability mentioned earlier).
 
-\begin{align*}
-&\max\left\{\log\frac{P_{\boldsymbol \theta}(v_1, \dots, v_V)}{P_{\boldsymbol \theta}(v^*_1, \dots, v^*_V)}: (v_1, \dots, v_V) \text{ and } (v^*_1, \dots, v^*_V) \in \{-1, 1\}^V \text{ differ by one component} \right\} \\
-&\quad = \max\limits_{k \in 1, \dots, V}\left\{\log\frac{\sum\limits_{\boldsymbol h \in \{-1,1\}^H} \exp\left(
-\sum\limits_{i = 1}^V \theta_{v_i}v_i + \sum\limits_{j = 1}^H \theta_{h_j}h_j + \sum\limits_{i = 1}^V\sum\limits_{j = 1}^H \theta_{ij}v_i h_j\right)}{\sum\limits_{\boldsymbol h \in \{-1,1\}^H} \exp\left(
-\sum\limits_{i \not= k} \theta_{v_i}v_i + \sum\limits_{j = 1}^H \theta_{h_j}h_j + \sum\limits_{i \not=k}\sum\limits_{j = 1}^H \theta_{ij}v_i h_j + \theta_{v_k}v_k^* + v_k^*\sum\limits_{j = 1}^H \theta_{kj}h_j
-\right)}: v_k \not= v^*_k \right\} \\
-& \quad \ge \max\limits_{k \in 1, \dots, V}\left\{\log\frac{\max\limits_{\boldsymbol h \in \{-1,1\}^H}\exp\left(
-\sum\limits_{i = 1}^V \theta_{v_i}v_i + \sum\limits_{j = 1}^H \theta_{h_j}h_j + \sum\limits_{i = 1}^V\sum\limits_{j = 1}^H \theta_{ij}v_i h_j\right)}{2^H\max\limits_{\boldsymbol h \in \{-1,1\}^H}\exp\left(
-\sum\limits_{i \not= k} \theta_{v_i}v_i + \sum\limits_{j = 1}^H \theta_{h_j}h_j + \sum\limits_{i \not=k}\sum\limits_{j = 1}^H \theta_{ij}v_i h_j + \theta_{v_k}v_k^* + v_k^*\sum\limits_{j = 1}^H \theta_{kj}h_j
-\right)}: v_k \not= v^*_k \right\} \\
-&\quad = \max\limits_{k \in 1, \dots, V}\left\{\max\limits_{\boldsymbol h \in \{-1,1\}^H}\left\{
-\sum\limits_{i = 1}^V \theta_{v_i}v_i + \sum\limits_{j = 1}^H \theta_{h_j}h_j + \sum\limits_{i = 1}^V\sum\limits_{j = 1}^H \theta_{ij}v_i h_j\right\}\right. \\
-& \quad \quad \left. - \max\limits_{\boldsymbol h \in \{-1,1\}^H}
-\left\{\sum\limits_{i \not= k} \theta_{v_i}v_i + \sum\limits_{j = 1}^H \theta_{h_j}h_j + \sum\limits_{i \not=k}\sum\limits_{j = 1}^H \theta_{ij}v_i h_j + \theta_{v_k}v_k^* + v_k^*\sum\limits_{j = 1}^H \theta_{kj}h_j
-\right\} - H\log2: v_k \not= v^*_k \right\} \\
-&\quad \ge \max\limits_{\boldsymbol v \in \{-1,1\}^V}\max\limits_{\boldsymbol h \in \{-1,1\}^H}Q(\boldsymbol x) - \min\limits_{\boldsymbol v \in \{-1,1\}^V}\max\limits_{\boldsymbol h \in \{-1,1\}^H}Q(\boldsymbol x) - H\log 2
-\end{align*}
+Additionally, unstable RBM models are connected to degenerate models (placing all probability on a small pieace of the sample space). Define a model set 
+$$
+M_{\epsilon, \boldsymbol \theta} \equiv \left\{(v_1, \dots, v_V) \in \{-1,1\}^V: \log P_{\boldsymbol \theta}(v_1, \dots, v_V) > (1-\epsilon)\max\limits_{(v_1^*, \dots, v_V^*)}P_{\boldsymbol \theta}(v_1^*, \dots, v_V^*) + \epsilon\min\limits_{(v_1^*, \dots, v_V^*)}P_{\boldsymbol \theta}(v_1^*, \dots, v_V^*) \right\}
+$$
+of possible outcomes, for a given $0 < \epsilon < 1$.
 
-Let $R(\boldsymbol \theta) \equiv \max_{\boldsymbol v} \max_{\boldsymbol h}Q(\boldsymbol x) - \min_{\boldsymbol v}\max_{\boldsymbol h}Q(\boldsymbol x) - H\log 2$. Then, if $R(\boldsymbol \theta) > C*V$, this implies that the maximum log-likelihood ratio of two observations that differ in only one element is greater than $C$. So, by examining $R(\boldsymbol\theta)/V$, we can determine a lower bound for the maximum log-likelihood ratio of two sets of observables that differ in only one element, which if large is consistent with the concept of instability detailed above.
+\begin{prop}
+\label{prop:degen}
+For an unstable RBM model, and for any given $0 < \epsilon < 1$, $P_{\boldsymbol \theta}\left((v_1, \dots, v_V) \in M_{\epsilon, \boldsymbol \theta}\right) \rightarrow 1$ holds as $V \rightarrow \infty$.
+\end{prop}
 
+In other words, as a consequence of unstable models, all probability will stack up on mode sets or potentially those few outcomes with the highest probability. Proofs of both proposition \ref{prop:instab} and proposition \ref{prop:degen} are provided in appendix \ref{instability-proofs}. Propositions \ref{prop:instab}-\ref{prop:degen} have counterpart results in @schweinberger2011instability, but, unlike results there, we do not consider exponential family forms with a fixednumber of parameters (i.e. our results are broader for a more complicated model form for the visibles). Essentially, with our generalized definition of *unstable* models, one can establish instability results as in @schweinberger2011instability under assumptions that the sample space is finite and all model outcomes have a non-zero probability.
+
+To later numerically investigate unstable RBM models, it is useful to define a computationally tractable lower bound on (\ref{eqn:elpr}) given by
+$$
+\frac{1}{V}R(\boldsymbol \theta) \text{ for } R(\boldsymbol \theta) \equiv \max_{\boldsymbol v} \max_{\boldsymbol h}Q(\boldsymbol x) - \min_{\boldsymbol v}\max_{\boldsymbol h}Q(\boldsymbol x) - H\log 2.
+$$
+That is, it holds that, in (\ref{eqn:elpr}),
+\begin{align}
+\frac{1}{V} \text{ELPR}_V(\boldsymbol \theta) \equiv \frac{1}{V} \log \left[\frac{\max\limits_{(v_1, \dots, v_V) \in \{-1,1\}^V}P_{\boldsymbol \theta}(v_1, \dots, v_V)}{\min\limits_{(v_1, \dots, v_V) \in \{-1,1\}^V}P_{\boldsymbol \theta}(v_1, \dots, v_V)}\right] \ge \frac{1}{V}R(\boldsymbol \theta). \label{eqn:lowerbnd}
+\end{align}
+(A proof of (\ref{eqn:lowerbnd}) appears in appendix \ref{instability-proofs}.)
+
+The benefit of (\ref{eqn:lowerbnd}) is that $R(\boldsymbol \theta)/V$ is simple to compute (i.e. compared to (\ref{eqn:elpr}), $R(\boldsymbol \theta)$ requires no summation over hidden variables) and that propositions \ref{prop:instab}-\ref{prop:degen} would continue to hold upon replcing (\ref{eqn:elpr}) with $R(\boldsymbol \theta)/V$, due to (\ref{eqn:lowerbnd}). Hence, larger values of $R(\boldsymbol \theta)/V$ indicate unstable RBM models.
 
 ### Uninterpretability
 @kaiser2007statistical defines a measure of model impropriety he calls *uninterpretability*, which is characterized by marginal mean-structure not being maintained in the model. A measure of this is the magnitude of the difference between model expectations, E$\left[\boldsymbol X | \boldsymbol \theta\right]$, and expectations given independence, E$\left[\boldsymbol X | \boldsymbol \theta^* \right]$, where $\boldsymbol \theta^*$ is defined to equal $\boldsymbol \theta$ with all $\theta_{ij} = 0$ for $i = 1, \dots, V, j = 1, \dots, H$. Using this concept it is possible to investigate what conditions lead to uninterpretability in a model versus those that guarantee interpretable models. A model is considered without uninterpretability if its expected value is not very different from the same model with assumed independence. The quantities to compare in the RBM case are
@@ -947,7 +955,12 @@ p.models
 
 ## On the one-to-one correspondence between parameters and moments in the RBM distribution
 
-```{r child='appendix.Rmd'}
+```{r child='appendix-center.Rmd'}
+```
+
+## Instability proofs
+
+```{r child='appendix-instability.Rmd'}
 ```
 
 #References
