@@ -19,20 +19,16 @@ Then,
 \end{align*}
 as $V \rightarrow \infty$ by the definition of an unstable RBM model.$\Box$
 
+{\bf Proof of (\ref{eqn:lowerbnd}).} With algebra, we have
+
 \begin{align*}
-&\max\left\{\log\frac{P_{\boldsymbol \theta}(v_1, \dots, v_V)}{P_{\boldsymbol \theta}(v^*_1, \dots, v^*_V)}: (v_1, \dots, v_V) \text{ and } (v^*_1, \dots, v^*_V) \in \{-1, 1\}^V \text{ differ by one component} \right\} \\
-&\quad = \max\limits_{k \in 1, \dots, V}\left\{\log\frac{\sum\limits_{\boldsymbol h \in \{-1,1\}^H} \exp\left(
-\sum\limits_{i = 1}^V \theta_{v_i}v_i + \sum\limits_{j = 1}^H \theta_{h_j}h_j + \sum\limits_{i = 1}^V\sum\limits_{j = 1}^H \theta_{ij}v_i h_j\right)}{\sum\limits_{\boldsymbol h \in \{-1,1\}^H} \exp\left(
-\sum\limits_{i \not= k} \theta_{v_i}v_i + \sum\limits_{j = 1}^H \theta_{h_j}h_j + \sum\limits_{i \not=k}\sum\limits_{j = 1}^H \theta_{ij}v_i h_j + \theta_{v_k}v_k^* + v_k^*\sum\limits_{j = 1}^H \theta_{kj}h_j
-\right)}: v_k \not= v^*_k \right\} \\
-& \quad \ge \max\limits_{k \in 1, \dots, V}\left\{\log\frac{\max\limits_{\boldsymbol h \in \{-1,1\}^H}\exp\left(
-\sum\limits_{i = 1}^V \theta_{v_i}v_i + \sum\limits_{j = 1}^H \theta_{h_j}h_j + \sum\limits_{i = 1}^V\sum\limits_{j = 1}^H \theta_{ij}v_i h_j\right)}{2^H\max\limits_{\boldsymbol h \in \{-1,1\}^H}\exp\left(
-\sum\limits_{i \not= k} \theta_{v_i}v_i + \sum\limits_{j = 1}^H \theta_{h_j}h_j + \sum\limits_{i \not=k}\sum\limits_{j = 1}^H \theta_{ij}v_i h_j + \theta_{v_k}v_k^* + v_k^*\sum\limits_{j = 1}^H \theta_{kj}h_j
-\right)}: v_k \not= v^*_k \right\} \\
-&\quad = \max\limits_{k \in 1, \dots, V}\left\{\max\limits_{\boldsymbol h \in \{-1,1\}^H}\left\{
-\sum\limits_{i = 1}^V \theta_{v_i}v_i + \sum\limits_{j = 1}^H \theta_{h_j}h_j + \sum\limits_{i = 1}^V\sum\limits_{j = 1}^H \theta_{ij}v_i h_j\right\}\right. \\
-& \quad \quad \left. - \max\limits_{\boldsymbol h \in \{-1,1\}^H}
-\left\{\sum\limits_{i \not= k} \theta_{v_i}v_i + \sum\limits_{j = 1}^H \theta_{h_j}h_j + \sum\limits_{i \not=k}\sum\limits_{j = 1}^H \theta_{ij}v_i h_j + \theta_{v_k}v_k^* + v_k^*\sum\limits_{j = 1}^H \theta_{kj}h_j
-\right\} - H\log2: v_k \not= v^*_k \right\} \\
-&\quad \ge \max\limits_{\boldsymbol v \in \{-1,1\}^V}\max\limits_{\boldsymbol h \in \{-1,1\}^H}Q(\boldsymbol x) - \min\limits_{\boldsymbol v \in \{-1,1\}^V}\max\limits_{\boldsymbol h \in \{-1,1\}^H}Q(\boldsymbol x) - H\log 2
+&\log\left[\frac{\max\limits_{(v_1, \dots, v_V) \in \{-1, 1\}^V}P_{\boldsymbol \theta}(v_1, \dots, v_V)}{\min\limits_{(v_1, \dots, v_V) \in \{-1, 1\}^V}P_{\boldsymbol \theta}(v_1, \dots, v_V)} \right] = \\
+& \qquad \log\left[\frac{\max\limits_{(v_1, \dots, v_V)}\sum\limits_{\boldsymbol h \in \{-1,1\}^H} \exp\left(\sum\limits_{i = 1}^V \theta_{v_i}v_i + \sum\limits_{j = 1}^H \theta_{h_j}h_j + \sum\limits_{i = 1}^V\sum\limits_{j = 1}^H \theta_{ij}v_i h_j\right)}
+{\min\limits_{(v_1, \dots, v_V)}\sum\limits_{\boldsymbol h \in \{-1,1\}^H} \exp\left(\sum\limits_{i = 1}^V \theta_{v_i}v_i + \sum\limits_{j = 1}^H \theta_{h_j}h_j + \sum\limits_{i = 1}^V\sum\limits_{j = 1}^H \theta_{ij}v_i h_j\right)}\right] \\
+& \qquad \ge \log\frac{\max\limits_{(v_1, \dots, v_V)}\max\limits_{\boldsymbol h \in \{-1,1\}^H}\exp\left(\sum\limits_{i = 1}^V \theta_{v_i}v_i + \sum\limits_{j = 1}^H \theta_{h_j}h_j + \sum\limits_{i = 1}^V\sum\limits_{j = 1}^H \theta_{ij}v_i h_j\right)}
+{\min\limits_{(v_1, \dots, v_V)}2^H\max\limits_{\boldsymbol h \in \{-1,1\}^H}\exp\left(\sum\limits_{i = 1}^V \theta_{v_i}v_i + \sum\limits_{j = 1}^H \theta_{h_j}h_j + \sum\limits_{i = 1}^V\sum\limits_{j = 1}^H \theta_{ij}v_i h_j\right)} \\
+& \qquad = \max\limits_{(v_1, \dots, v_V)}\max\limits_{\boldsymbol h \in \{-1,1\}^H}\left\{\sum\limits_{i = 1}^V \theta_{v_i}v_i + \sum\limits_{j = 1}^H \theta_{h_j}h_j + \sum\limits_{i = 1}^V\sum\limits_{j = 1}^H \theta_{ij}v_i h_j\right\} - \\
+& \qquad \qquad \min\limits_{(v_1, \dots, v_V)}\max\limits_{\boldsymbol h \in \{-1,1\}^H}\left\{\sum\limits_{i = 1}^V \theta_{v_i}v_i + \sum\limits_{j = 1}^H \theta_{h_j}h_j + \sum\limits_{i = 1}^V\sum\limits_{j = 1}^H \theta_{ij}v_i h_j\right\} -H\log2 \\
+& \qquad \equiv R(\boldsymbol \theta)
 \end{align*}
+using above the monotonicity of $\log(\cdot)$.

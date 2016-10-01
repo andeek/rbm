@@ -34,7 +34,7 @@ First, the models are unsatisfactory as a conceptualization of how data is gener
 
 Secondly, the fitting of these models is problematic. As the size of these models grows, both maximum likelihood and Bayesian methods of fitting quickly being intractable. But even when fitting is feasible, there are unique challenges due to the overparameterization of RBMs. In section \ref{bayesian-model-fitting} we compare three Bayesian modelling techniques, each proposed with the goal of avoiding parts of the RBM parameter space that yield improper models. As could be expected, with computational complexity comes an increase in fitting accuracy, but at the cost of feasibility. Additionally, because these models are highly overparametrized, any fully principled fitting method will reproduce the empirical distribution of most realistic training sets. There is no "smoothing" achieved with a RBM fit using a rigorous method. We are therefore led to be skeptical that any model built using these structures, like a deep Boltzmann machine, can achieve prediction or inference in a principled way.
 
-This paper is structured as follows, section \ref{background} gives a definition of the RBM including the joint distribution of hidden and visible variables and shows the connection to deep learning. Additionally, measures of model impropriety and methods of detecting them are defined. Section \ref{explorations} details our explorations into the model behavior and propriety (or lack thereof) of the RBM class. We discuss three Bayesian fitting techniques with the goal of avoiding model impropriety in section \ref{bayesian-model-fitting} and wrap up with a discussion in section \ref{discussion}. Additionally, there is an accompanying appendix with auxiliary proofs relating to the choice of data encoding in section \ref{appendix}.
+This paper is structured as follows, section \ref{background} gives a definition of the RBM including the joint distribution of hidden and visible variables and shows the connection to deep learning. Additionally, measures of model impropriety and methods of detecting them are defined. Section \ref{explorations} details our explorations into the model behavior and propriety (or lack thereof) of the RBM class. We discuss three Bayesian fitting techniques with the goal of avoiding model impropriety in section \ref{bayesian-model-fitting} and wrap up with a discussion in section \ref{discussion}. Additionally, there is an accompanying appendix with auxiliary proofs relating to the choice of data encoding and propositions on instability in section \ref{appendix}.
 
 # Background
 
@@ -385,7 +385,7 @@ plyr::ldply(bin_res, function(x) x$c_hull$vol) %>%
   scale_colour_discrete("Encoding", labels=c("Binary (1,0)", "Negative (1,-1)"))
 ```
 
-In addition to the argument that the $-1/1$ data encoding mitigates some perceived prevalence of near-degeneracy it also has the benefit of providing a guaranteed non-degenerate model at $\boldsymbol \theta = \boldsymbol 0 \in \mathbb{R}^{H + V + H*V}$. The proof of this is included in appendix \ref{on-the-one-to-one-correspondence-between parameters-and moments-in-the-rbm-distribution}. And while from some computing perspectives $0/1$ coding might seem most natural, the $-1/1$ coding is far more convenient and interpretable from the point of view of statistical modeling, where it makes parameters simply interpreted in terms of symmetrically defined main effects and interactions. In light of all of these matters we will henceforth employ the $-1/1$ coding.
+In addition to the argument that the $-1/1$ data encoding mitigates some perceived prevalence of near-degeneracy it also has the benefit of providing a guaranteed non-degenerate model at $\boldsymbol \theta = \boldsymbol 0 \in \mathbb{R}^{H + V + H*V}$. The proof of this is included in appendix \ref{center-of-universe}. And while from some computing perspectives $0/1$ coding might seem most natural, the $-1/1$ coding is far more convenient and interpretable from the point of view of statistical modeling, where it makes parameters simply interpreted in terms of symmetrically defined main effects and interactions. In light of all of these matters we will henceforth employ the $-1/1$ coding.
 
 ## Exploring manageable examples
 ```{r degen-data, message=FALSE, warning=FALSE, cache=TRUE}
@@ -954,11 +954,12 @@ p.models
 
 \begin{appendix}
 \section{Appendices}
+\label{appendix}
 \newtheorem{apptheorem}{Theorem}[section]
 \newtheorem{applemma}{Lemma}[section]
 
 \subsection{On the one-to-one correspondence between parameters and moments in the RBM distribution}
-\label{on-the-one-to-one-correspondence-between-parameters-and-moments-in-the-rbm-distribution}
+\label{center-of-universe}
 
 ```{r child='appendix-center.Rmd'}
 ```
