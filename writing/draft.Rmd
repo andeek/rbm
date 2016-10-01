@@ -20,7 +20,7 @@ library(ggplot2)
 library(dplyr)
 library(tidyr)
 
-opts_chunk$set(echo=FALSE, message=FALSE, warnings=FALSE)
+opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE)
 theme_set(theme_bw(base_family="serif"))
 
 source("helpers/functions.R")
