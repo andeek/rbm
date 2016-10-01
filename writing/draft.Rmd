@@ -951,17 +951,25 @@ p.models
 
 **TODO: Add comparison to contrastive divergence**
 
-# Appendix
 
-## On the one-to-one correspondence between parameters and moments in the RBM distribution
+\begin{appendix}
+\section{Appendices}
+\newtheorem{apptheorem}{Theorem}[section]
+\newtheorem{applemma}{Lemma}[section]
+
+\subsection{On the one-to-one correspondence between parameters and moments in the RBM distribution}
+\label{on-the-one-to-one-correspondence-between-parameters-and-moments-in-the-rbm-distribution}
 
 ```{r child='appendix-center.Rmd'}
 ```
 
-## Instability proofs
+\subsection{Instability proofs}
+\label{instability-proofs}
 
 ```{r child='appendix-instability.Rmd'}
 ```
+
+\end{appendix}
 
 #References
 

@@ -19,30 +19,31 @@ for $\bm{\theta}\in \mathbb{R}^{m+n+mn}$; above $\mathcal{I} \equiv \{\bm{g}(\bm
 We have the following properties:
 
 
-1. The function $\bm{g}: \mathbb{R}^{m+n+mn} \rightarrow \mathcal{I}$ is one-to-one; see Theorem 1 below. Hence, these moments uniquely characterize the parameters in the RBM$(m,n,\bm{\theta})$ model. (Additionally, two RBM models have the same parameters if and only if the models have the same probability functions.)
+1. The function $\bm{g}: \mathbb{R}^{m+n+mn} \rightarrow \mathcal{I}$ is one-to-one; see Theorem \ref{thm:one} below. Hence, these moments uniquely characterize the parameters in the RBM$(m,n,\bm{\theta})$ model. (Additionally, two RBM models have the same parameters if and only if the models have the same probability functions.)
 1. The image $\mathcal{I}$ is a symmetric set (i.e., $\bm{g}(\bm{\theta})=-\bm{g}(-\bm{\theta})$) and must be a connected (not necessarily convex) region in $\mathbb{R}^{m+n+mn}$, without any voids in it (by the continuity of $\bm{g}(\bm{\theta})$).
-1. The center of the image $\mathcal{I}$ (the zero vector in $\mathbb{R}^{m+n+mn}$) is given only by $\bm{\theta}=\bm{0}$ (the zero vector in the parameter space).  This corresponds to the case where all the random vectors $V_1,\ldots,V_m,H_1,\ldots,H_n$ are iid with a symmetric Bernoulli$(1/2)$ distribution; see Theorem 2.
+1. The center of the image $\mathcal{I}$ (the zero vector in $\mathbb{R}^{m+n+mn}$) is given only by $\bm{\theta}=\bm{0}$ (the zero vector in the parameter space).  This corresponds to the case where all the random vectors $V_1,\ldots,V_m,H_1,\ldots,H_n$ are iid with a symmetric Bernoulli$(1/2)$ distribution; see Theorem \ref{thm:two}.
 
-\newtheorem{theoremnew4}{Theorem}
-\begin{theoremnew4} Let $m,n\geq 1$ and suppose the random vector   $(\bm{V}_m,\bm{H}_n) = (V_1,\ldots,V_m, H_1,\ldots,H_n)$ follows a RBM$(m,n,\bm{\theta})$ distribution. Let $\bm{\theta}_1,\bm{\theta}_2 \in \mathbb{R}^{m+n+mn}$ and
+\begin{apptheorem} 
+\label{thm:one}
+Let $m,n\geq 1$ and suppose the random vector   $(\bm{V}_m,\bm{H}_n) = (V_1,\ldots,V_m, H_1,\ldots,H_n)$ follows a RBM$(m,n,\bm{\theta})$ distribution. Let $\bm{\theta}_1,\bm{\theta}_2 \in \mathbb{R}^{m+n+mn}$ and
 let $P_i$ and $\E$ denote probability and expectation under $\bm{\theta}_i$, $i=1,2$. Then, the following are equivalent
 \begin{enumerate}
 \item $\E_1 V_i=\E_2 V_i$, $\E_1 H_j=\E_2 H_j$ and $\E_1 V_i H_j =\E_2 V_i H_j  $ for any $i=1,\ldots,m$, $j=1,\ldots,n$.
 \item $\bm{\theta}_1 =\bm{\theta}_2$.
 \item $P_1$ and  $P_2$ are the same distribution for  $(\bm{V}_m,\bm{H}_n)$.\\
 \end{enumerate}
-\end{theoremnew4}
+\end{apptheorem}
 
 
-**Proof of Theorem 1.** We first establish the equivalence of claims 2 and 3. If claim 2 holds, then
+{\bf Proof of Theorem \ref{thm:one}.} We first establish the equivalence of claims 2 and 3. If claim 2 holds, then
  claim 3 holds trivially. Suppose claim 3 holds and pick $\ell \in \{1,\ldots,m\}$. Let  $\theta_{v_1},\ldots,\theta_{v_m},\theta_{h_1},\ldots,\theta_{h_n}$, $\theta_{ij}$, $i=1,\ldots,m$, $j=1,\ldots,n$, denote the components of $\bm{\theta}_1$ and let $\tilde{\theta}_{v_1},\ldots,\tilde{\theta}_{v_m},\tilde{\theta}_{h_1},\ldots,\tilde{\theta}_{h_n}$, $\tilde{\theta}_{ij}$, $i=1,\ldots,m$, $j=1,\ldots,n$, denote the analogous components of $\bm{\theta}_2$. Then, by assumption,
 \begin{align*}
 \exp\left[ 2\theta_{v_\ell} +2 \sum_{j=1}^n  h_j \theta_{\ell j} \right] &= \frac{P_1\left(\{V_\ell = 1\} \cap \bigcap_{i=1 \atop i \neq \ell}^m \{V_i=v_i\} \cap \bigcap_{j=1}^n \{H_j=h_j\}\right)} {P_1\left(\{V_\ell = -1\} \cap \bigcap_{i=1 \atop i \neq \ell}^m \{V_i=v_i\} \cap \bigcap_{j=1}^n \{H_j=h_j\}\right)}\\
 &= \frac{P_2\left(\{V_\ell = 1\} \cap \bigcap_{i=1 \atop i \neq \ell}^m \{V_i=v_i\} \cap \bigcap_{j=1}^n \{H_j=h_j\}\right)}
 {P_2\left(\{V_\ell = -1\} \cap \bigcap_{i=1 \atop i \neq \ell}^m \{V_i=v_i\} \cap \bigcap_{j=1}^n \{H_j=h_j\}\right)}\exp\left[ 2\tilde{\theta}_{v_\ell} +2 \sum_{j=1}^n  h_j \tilde{\theta}_{\ell j} \right]
 \end{align*}
-for any $\{v_i\}_{i=1,i\neq \ell}^m,\{h_j\}_{j=1}^n \subset\{\pm 1\}$. Equating exponents, we have $\theta_{v_\ell} - \tilde{\theta}_{v_\ell} = \sum_{j=1}^n  h_j (  \tilde{\theta}_{\ell j} -\theta{\ell j})$ for any $\{h_j\}_{j=1}^n \subset \{\pm 1\}$. Taking all $h_j=1$ or all $h_j=-1$ for $1 \leq j \leq n$ yields $\theta_{v_\ell} = \tilde{\theta}_{v_\ell}$. This result further implies $\tilde{\theta}_{\ell 1} -\theta{\ell 1} = -  \sum_{j=2}^n  h_j (  \tilde{\theta}_{\ell j} -\theta_{\ell j})$ for
-any given $\{h_j\}_{j=2}^n \subset \{\pm 1\}$, so that $\theta{\ell 1}=\tilde{\theta}_{\ell 1}$ must hold. Iterating this argument, sequentially for each $j=2,\ldots,m$, shows $\theta{\ell j}=\tilde{\theta}_{\ell j}$ for any $1 \leq j \leq n$ in addition to $\theta_{v_\ell}=\tilde{\theta}_{v_\ell}$.  As $\ell\in\{1,\ldots,m\}$ was arbitrary, we have $\theta_{v_i}=\tilde{\theta}_{v_i}$ and $\theta{i j}=\tilde{\theta}_{i j}$ for any $1 \leq i \leq m$, $1 \leq j \leq n$.
+for any $\{v_i\}_{i=1,i\neq \ell}^m,\{h_j\}_{j=1}^n \subset\{\pm 1\}$. Equating exponents, we have $\theta_{v_\ell} - \tilde{\theta}_{v_\ell} = \sum_{j=1}^n  h_j (  \tilde{\theta}_{\ell j} -\theta_{\ell j})$ for any $\{h_j\}_{j=1}^n \subset \{\pm 1\}$. Taking all $h_j=1$ or all $h_j=-1$ for $1 \leq j \leq n$ yields $\theta_{v_\ell} = \tilde{\theta}_{v_\ell}$. This result further implies $\tilde{\theta}_{\ell 1} -\theta{\ell 1} = -  \sum_{j=2}^n  h_j (  \tilde{\theta}_{\ell j} -\theta_{\ell j})$ for
+any given $\{h_j\}_{j=2}^n \subset \{\pm 1\}$, so that $\theta_{\ell 1}=\tilde{\theta}_{\ell 1}$ must hold. Iterating this argument, sequentially for each $j=2,\ldots,m$, shows $\theta_{\ell j}=\tilde{\theta}_{\ell j}$ for any $1 \leq j \leq n$ in addition to $\theta_{v_\ell}=\tilde{\theta}_{v_\ell}$.  As $\ell\in\{1,\ldots,m\}$ was arbitrary, we have $\theta_{v_i}=\tilde{\theta}_{v_i}$ and $\theta{i j}=\tilde{\theta}_{i j}$ for any $1 \leq i \leq m$, $1 \leq j \leq n$.
 
 Now pick $k \in \{1,\ldots,n\}$ so that, by the RBM$(m,n,\bm{\theta})$ probability structure as above, we have analogously that
 $$
@@ -50,18 +51,20 @@ $$
 $$
 fsor any $\{v_i\}_{i=1}^m \subset \{\pm 1\}$, so that $\theta_{h_k}  =  \tilde{\theta}_{h_k}$. As $k \in \{1,\ldots,n\}$ was arbitrary, we have now established claim 2 from claim 3. 
 
-To establish the equivalence of claims 1 and 3 in Theorem 1 under the RBM$(m,n,\bm{\theta})$ model, we note that claim 3 easily implies claim 1. Hence, it suffices now to establish claim 3 from claim 1. This follows immediately from Lemma 1 below and the fact that the variables $V_1,\ldots,V_m$ are independent given $H_1,\ldots,H_n$ in the RBM$(m,n,\bm{\theta})$ model (and likewise $H_1,\ldots,H_n$ are independent given $V_1,\ldots,V_m$).
+To establish the equivalence of claims 1 and 3 in Theorem \ref{thm:one} under the RBM$(m,n,\bm{\theta})$ model, we note that claim 3 easily implies claim 1. Hence, it suffices now to establish claim 3 from claim 1. This follows immediately from Lemma \ref{lemma:one} below and the fact that the variables $V_1,\ldots,V_m$ are independent given $H_1,\ldots,H_n$ in the RBM$(m,n,\bm{\theta})$ model (and likewise $H_1,\ldots,H_n$ are independent given $V_1,\ldots,V_m$).
 
-\begin{lemma} Let $m,n\geq 1$.  Let $P_1,P_2$ denote two probability distributions for a random vector $(\bm{V}_m,\bm{H}_n) = (V_1,\ldots,V_m, H_1,\ldots,H_n)$ supported on $\{a,b\}^{m+n}$, for some real constants $a\neq b \in\mathbb{R}$, such that $P_i( \bm{V}_m=\bm{v}_m, \bm{H}_n=\bm{h}_n)>0$, $i=1,2$, for any $\bm{v}_m \in \{a,b\}^{m}$, $\bm{h}_n \in \{a,b\}^{n}$. Suppose additionally that, under $P_1$ or $P_2$,  the variables $V_1,\ldots,V_m$ are independent given $\bm{H}_n=\bm{h}_n \in \{a,b\}^{n}$ and that the variables $H_1,\ldots,H_n$ are independent given $\bm{V}_m=\bm{v}_m \in \{a,b\}^{m}$.
+\begin{applemma} 
+\label{lemma:one}
+Let $m,n\geq 1$.  Let $P_1,P_2$ denote two probability distributions for a random vector $(\bm{V}_m,\bm{H}_n) = (V_1,\ldots,V_m, H_1,\ldots,H_n)$ supported on $\{a,b\}^{m+n}$, for some real constants $a\neq b \in\mathbb{R}$, such that $P_i( \bm{V}_m=\bm{v}_m, \bm{H}_n=\bm{h}_n)>0$, $i=1,2$, for any $\bm{v}_m \in \{a,b\}^{m}$, $\bm{h}_n \in \{a,b\}^{n}$. Suppose additionally that, under $P_1$ or $P_2$,  the variables $V_1,\ldots,V_m$ are independent given $\bm{H}_n=\bm{h}_n \in \{a,b\}^{n}$ and that the variables $H_1,\ldots,H_n$ are independent given $\bm{V}_m=\bm{v}_m \in \{a,b\}^{m}$.
 
 Let $\E_i$ denote expectation under the distribution $P_i$, $i=1,2$. Then, for any $\bm{v}_m \in \{a,b\}^{m}, \bm{h}_n \in \{a,b\}^{n}$,
 $$
 P_1( \bm{V}_m=\bm{v}_m, \bm{H}_n=\bm{h}_n) = P_2( \bm{V}_m=\bm{v}_m, \bm{H}_n=\bm{h}_n), \qquad
 $$
 follows if $\E_1 V_i = \E_2 V_i$, $\E_1 H_j = \E_2 H_j$, $\E_1 V_i H_j = \E_2 V_j H_j$ holds for all $i\in\{1,\ldots,m\}$, $j\in \{1,\ldots,n\}$.
-\end{lemma}
+\end{applemma}
 
-*Proof.* The case $m=n=1$ follows from Lemma 2. We now use an induction argument, assuming that the result of Lemma 1 holds for some given order of $(m,n)$ with $m,n\geq 1$ and show the the result continues to hold for $(m+1,n)$ or $(m,n+1)$. We shall treat the case $(m+1,n)$ (where the other case $(m,n+1)$ follows by symmetrical arguments).
+{\bf Proof.} The case $m=n=1$ follows from Lemma \ref{lemma:two}. We now use an induction argument, assuming that the result of Lemma \ref{lemma:one} holds for some given order of $(m,n)$ with $m,n\geq 1$ and show the the result continues to hold for $(m+1,n)$ or $(m,n+1)$. We shall treat the case $(m+1,n)$ (where the other case $(m,n+1)$ follows by symmetrical arguments).
 
 Considering random variables $(\bm{V}_{m+1},\bm{H}_n) = (V_1,\ldots,V_m,V_{m+1}, H_1,\ldots,H_n)$, the induction hypothesis
 applies to $(\bm{V}_{m},\bm{H}_n)$ where $\bm{V}_m =(V_1,\ldots,V_m)$. Hence, for any $\bm{v}_m \in \{a,b\}^{m}, \bm{h}_n \in \{a,b\}^{n}$, we have $P_1(\bm{V}_m=\bm{v}_m,\bm{H}_n=\bm{h}_n) = P_2(\bm{V}_m=\bm{v}_m,\bm{H}_n=\bm{h}_n)>0$, $P_1( \bm{H}_n=\bm{h}_n) = P_2(\bm{H}_n=\bm{h}_n)>0$ and consequently
@@ -83,31 +86,35 @@ for $i=1,2$,  so that we have $P_1( \bm{V}_{m+1}=\bm{v}_{m+1}| \bm{H}_n=\bm{h}_n
 P_1( \bm{V}_{m+1}=\bm{v}_{m+1}, \bm{H}_n=\bm{h}_n) &=& P_1( \bm{V}_{m+1}=\bm{v}_{m+1}| \bm{H}_n=\bm{h}_n) P_1(\bm{H}_n=\bm{h}_n)\\
 & =& P_2( \bm{V}_{m+1}=\bm{v}_{m+1}| \bm{H}_n=\bm{h}_n)P_2(\bm{H}_n=\bm{h}_n) \\&=&P_2( \bm{V}_{m+1}=\bm{v}_{m+1}, \bm{H}_n=\bm{h}_n)
 \end{eqnarray*}
-by $P_1(\bm{H}_n=\bm{h}_n)=P_2(\bm{H}_n=\bm{h}_n)$. As $\bm{v}_{m+1}\in \{a,b\}^{m+1},\bm{h}_n \in \{a,b\}^{n}$ were arbitrary, this completes the proof of Lemma 1. $\Box$
+by $P_1(\bm{H}_n=\bm{h}_n)=P_2(\bm{H}_n=\bm{h}_n)$. As $\bm{v}_{m+1}\in \{a,b\}^{m+1},\bm{h}_n \in \{a,b\}^{n}$ were arbitrary, this completes the proof of Lemma \ref{lemma:one}. $\Box$
 
-\begin{lemma} Suppose the discrete random vector $(X,Y)$ has support $\{a,b\}\times \{a,b\}$, for some $a\neq b \in \mathbb{R}$,
+\begin{applemma} 
+\label{lemma:two}
+Suppose the discrete random vector $(X,Y)$ has support $\{a,b\}\times \{a,b\}$, for some $a\neq b \in \mathbb{R}$,
 under two probability distributions $P_1$ and $P_2$. Let $\E_i$ denote expectation under the distribution $P_i$, $i=1,2$. Then, the following are equivalent
 \begin{enumerate}
 \item $\E_1 X = \E_2 X$, $\E_1 Y = \E_2 Y$, $\E_1 X Y = \E_2 X Y$, where $\E_i$ denotes expectation under $P_i$, $i=1,2$.
 \item $P_1(X=x,Y=y)=P_2(X=x,Y=y)$ for $x,y\in\{a,b\}$, i.e., $(X,Y)$ has the same distribution under $P_1$ and $P_2$.
 \end{enumerate}
-\end{lemma}
+\end{applemma}
 
-*Proof.* Denote the four probabilities by which the random vector $(X,Y)$ assume pairs $(b,b),(b,a),(a,b),(a,a)$, respectively, as $c_1,c_2,c_3,1-c_1-c_2-c_3$ under $P_1$ and $d_1,d_2,d_3,1-d_1-d_2-d_3$ under $P_2$. The conditions $\E_1 X = \E_2 X$, $\E_1 Y = \E_2 Y$, $\E_1 X Y = \E_2 X Y$ with $b\neq a$ imply that
+{\bf Proof.} Denote the four probabilities by which the random vector $(X,Y)$ assume pairs $(b,b),(b,a),(a,b),(a,a)$, respectively, as $c_1,c_2,c_3,1-c_1-c_2-c_3$ under $P_1$ and $d_1,d_2,d_3,1-d_1-d_2-d_3$ under $P_2$. The conditions $\E_1 X = \E_2 X$, $\E_1 Y = \E_2 Y$, $\E_1 X Y = \E_2 X Y$ with $b\neq a$ imply that
 $$
 (c_1+c_2) = (d_1+d_2), \quad  (c_1+c_3) = (d_1+d_3) \quad (b-a) c_1 + a (2c_1+c_2+c_3) =  (b-a) d_1 + a (2d_1+d_2+d_3).
 $$
-As $(2c_1+c_2+c_3) = (2d_1+d_2+d_3)$ and $b\neq a$, we conclude that $c_1=d_1$, from which it follows that $c_2=d_2$ and $c_3=d_3$. Hence, claim 1 implies claim 2 in Lemma 2. Claim 2 also trivially implies claim 1. $\Box$
+As $(2c_1+c_2+c_3) = (2d_1+d_2+d_3)$ and $b\neq a$, we conclude that $c_1=d_1$, from which it follows that $c_2=d_2$ and $c_3=d_3$. Hence, claim 1 implies claim 2 in Lemma \ref{lemma:two}. Claim 2 also trivially implies claim 1. $\Box$
  
-\begin{theoremnew4} Let $m,n\geq 1$ and suppose the random vector $(\bm{V}_m,\bm{H}_n) = (V_1,\ldots,V_m, H_1,\ldots,H_n)$ follows a RBM$(m,n,\bm{\theta})$ distribution.  Then, the following are equivalent
+\begin{apptheorem} 
+\label{thm:two}
+Let $m,n\geq 1$ and suppose the random vector $(\bm{V}_m,\bm{H}_n) = (V_1,\ldots,V_m, H_1,\ldots,H_n)$ follows a RBM$(m,n,\bm{\theta})$ distribution.  Then, the following are equivalent
 \begin{enumerate}
 \item $\E V_i=0$, $\E H_j=0$ and $\E V_i H_j =0$ for any $i=1,\ldots,m$, $j=1,\ldots,n$.
 \item $\bm{\theta} = \bm{0}\in \mathbb{R}^{m+n+mn}$.
 \item $V_1,\ldots,V_m, H_1,\ldots,H_n$ are iid Bernoulli$(1/2)$ random variables.\\
 \end{enumerate}
-\end{theoremnew4}
+\end{apptheorem}
 
-**Proof of Theorem 2.**  We first establish the equivalence of claims 2 and 3. If claim 2 holds, then claim 3 follows easily from the resulting uniform cell probabilities: $P(V_1= v_1,\ldots,V_m= v_m, H_1= h_1,\ldots,H_n=h_n|\bm{\theta})=2^{-mn}$ for any $v_i,h_j\in\{\pm 1\}$, $i=1,\ldots,m$, $j=1,\ldots,n$.
+{\bf Proof of Theorem \ref{thm:two}.}  We first establish the equivalence of claims 2 and 3. If claim 2 holds, then claim 3 follows easily from the resulting uniform cell probabilities: $P(V_1= v_1,\ldots,V_m= v_m, H_1= h_1,\ldots,H_n=h_n|\bm{\theta})=2^{-mn}$ for any $v_i,h_j\in\{\pm 1\}$, $i=1,\ldots,m$, $j=1,\ldots,n$.
 
 Now suppose claim 3 holds. Pick $\ell \in \{1,\ldots,m\}$. Then, by the RBM$(m,n,\bm{\theta})$ probability structure and the iid Bernoulli assumption, we have the conditional probability
 \begin{eqnarray*}
@@ -124,4 +131,4 @@ $$
 for any $\{h_j\}_{j=1}^n \subset \{\pm 1\}$.  Considering $h_k=1$ or $h_k=-1$, we conclude that $\theta_{h_k} = -\theta_{h_k}$
 or $\theta_{h_k}=0$.  As $k \in \{1,\ldots,n\}$ was arbitrary, we have now established claim 2 from claim 3.
 
-To establish the equivalence of claims 1 and 2 in Theorem 2 under the RBM$(m,n,\bm{\theta})$ model, we note that claim 2 again implies claim 3, which then easily implies claim 1. By Theorem 1, if claim 1 holds then the only possibility for this is $\bm{\theta} = \bm{0} \in \mathbb{R}^{m+n+mn}$. $\Box$
+To establish the equivalence of claims 1 and 2 in Theorem \ref{thm:two} under the RBM$(m,n,\bm{\theta})$ model, we note that claim 2 again implies claim 3, which then easily implies claim 1. By Theorem \ref{thm:one}, if claim 1 holds then the only possibility for this is $\bm{\theta} = \bm{0} \in \mathbb{R}^{m+n+mn}$. $\Box$
