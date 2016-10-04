@@ -108,7 +108,7 @@ Unstable RBM models are undesirable for several reasons. One is that, as mention
 $$
 \Delta_V(\boldsymbol \theta) \equiv \max \left\{\log \frac{P_{\boldsymbol \theta}(v_1, \dots, v_V)}{P_{\boldsymbol \theta}(v_1^*, \dots, v_V^*)} : (v_1, \dots, v_V) \& (v_1^*, \dots, v_V^*) \in \{-1,1\}^V \text{ differ by exactly one component}\right\},
 $$
-the biggest log-probability ratio for a one-pixed (one component) change in data outcomes (visibles). We then have the following result.
+the biggest log-probability ratio for a one-pixel (one component) change in data outcomes (visibles). We then have the following result.
 
 \begin{prop}
 \label{prop:instab}

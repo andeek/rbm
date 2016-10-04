@@ -1,0 +1,97 @@
+---
+title: "A note on the instability and degeneracy of deep learning models"
+author: "Andee Kaplan, Daniel Nordman, Stephen Vardeman"
+date: "October, 2016"
+linestretch: 2
+output: 
+  pdf_document:
+    fig_caption: yes
+    includes:
+      in_header: header.tex
+    number_sections: yes
+bibliography: references/refs.bib
+abstract: |
+---
+
+# Discrete Expanding Finite space models and notions of instability
+
+Consider $(X_1, \dots X_N)$, a set of discrete random variables with a finite sample space, $\mathcal{X}^N$. Let $P_{\boldsymbol \theta_N}(x_1, \dots, x_N)$ denote the probability of the data outcome $(x_1, \dots, x_N) \in \mathcal{X}^N$, which is a sequence of expanding models that potentially grow size as the dimension of the data become larger (i.e. $\boldsymbol \theta_N \in \mathbb{R}^{q(N)}$, where $q(N)$ is a function of $N$). Further, the model support of $P_{\boldsymbol \theta_N}(x_1, \dots, x_N)$ is equal to the sample space $\mathcal{X}^N$. We will call this class of models *Discrete Expanding Finite space*, or DEF models.
+
+To quantify "instability" in a model with discrete outcomes, it is useful to imagine how a data model might be expanded to incorporate more and more observations. A relevant quantity to this end is a (scaled) extremal log-probability ratio given by 
+\begin{align}
+\frac{1}{N} \log \left[\frac{\max\limits_{(x_1, \dots, x_N) \in \mathcal{X}^N}P_{\boldsymbol \theta_N}(x_1, \dots, x_N)}{\min\limits_{(x_1, \dots, x_N) \in \mathcal{X}^N}P_{\boldsymbol \theta}(x_1, \dots, x_N)}\right] \equiv \frac{1}{V} \text{ELPR}_N(\boldsymbol \theta_N) \label{eqn:elpr}
+\end{align}
+
+
+Essentially, in the process of developing a model to handle increasing numbers of variable (i.e., $N \rightarrow \infty$), we want (\ref{eqn:elpr}) to stay bounded, meaning that the largest probability under this model should maintain a magnitude within the smallest probability allowed under the model. This leads to the following definition:
+
+\begin{defn}[unstable DEF]
+A DEF model formulation is \emph{unstable} if, as the number of variables increase ($N \rightarrow \infty$), it holds that 
+\begin{align*}
+\lim\limits_{N \rightarrow \infty} \frac{1}{N} \log \left[\frac{\max\limits_{(x_1, \dots, x_N) \in \mathcal{X}^N}P_{\boldsymbol \theta_N}(x_1, \dots, x_N)}{\min\limits_{(x_1, \dots, x_N) \in \mathcal{X}^N}P_{\boldsymbol \theta}(x_1, \dots, x_N)}\right] = \infty.
+\end{align*}
+\end{defn}
+In other words, given any $C > 0$, there exists an integer $N_C > 0$ so that $\frac{1}{N}\text{ELPR}_N(\boldsymbol \theta_N) > C$ for all $N \ge N_C$.
+
+Note that this definition of *unstable* is a generalization of that in @schweinberger2011instability allowing nonexponential family models and an increasing number of parameters (while this definition appears different, it does match that in @schweinberger2011instability for the special exponential models considered there, see Section \ref{discrete-exponential-family-models} for details).
+
+Unstable DEF models are undesirable for several reasons. One is that small changes in data can lead to overly-sensitive changes in probability. Consider, for example, 
+$$
+\Delta_N(\boldsymbol \theta_N) \equiv \max \left\{\log \frac{P_{\boldsymbol \theta_N}(x_1, \dots, x_N)}{P_{\boldsymbol \theta_N}(x_1^*, \dots, x_N^*)} : (x_1, \dots, x_N) \& (x_1^*, \dots, x_N^*) \in \mathcal{X}^N \text{ differ by exactly one component}\right\},
+$$
+the biggest log-probability ratio for a one component change in data outcomes. We then have the following result.
+
+\begin{prop}
+\label{prop:instab}
+If $\frac{1}{N}\text{ELPR}_N(\boldsymbol \theta_N) > C$, then $\Delta_N(\boldsymbol \theta_N) > C$.
+\end{prop}
+
+In other words, if the quantity (\ref{eqn:elpr}) is too large, then the DEF model will exhibit large probability shifts for very small changes in the data configuration (i.e. instability mentioned earlier).
+
+**Proof of Proposition \ref{prop:instab}.** We prove the contrapositive. Suppose that $\Delta_N(\boldsymbol \theta_N) \le C$ holds for some $C > 0$. Under the DEF model, $P_{\boldsymbol \theta_V}(\boldsymbol x) > 0$ holds for each outcome $\boldsymbol x \in \mathcal{X}^N$. Let $\boldsymbol x_{min} \equiv \argmin\limits_{\boldsymbol x \in \mathcal{X}^N}P_{\boldsymbol \theta_N}(\boldsymbol x)$ and $\boldsymbol x_{max} \equiv \argmax\limits_{\boldsymbol x \in \mathcal{X}^N}P_{\boldsymbol \theta_N}(\boldsymbol x)$. Note there exists a sequence $\boldsymbol x_{min} \equiv \boldsymbol x_0, \boldsymbol x_1, \dots, \boldsymbol x_k \equiv \boldsymbol x_{max}$ in $\mathcal{X}^N$ of component-wise switches to move from $\boldsymbol x_{min}$ to $\boldsymbol x_{max}$ in the sample space (i.e. $\boldsymbol x_i, \boldsymbol x_{i + 1} \in \mathcal{X}^N$ differ by exactly $1$ component for $i = 0, \dots, k$) for some integer $k \in \{0, 1, \dots, N\}$. Then
+\begin{align*}
+\log\left[\frac{P_{\boldsymbol \theta_N}(\boldsymbol x_{max})}{P_{\boldsymbol \theta_N}(\boldsymbol x_{min})}\right] &= \left|\sum\limits_{i = 1}^k\log\left(\frac{P_{\boldsymbol \theta_N}(\boldsymbol x_i)}{P_{\boldsymbol \theta_N}(\boldsymbol x_{i-1})}\right)\right| \\
+& \le \sum\limits_{i = 1}^k\left|\log\left(\frac{P_{\boldsymbol \theta_N}(\boldsymbol x_i)}{P_{\boldsymbol \theta}(\boldsymbol x_{i-1})}\right)\right| \\
+& \le k \Delta_N(\boldsymbol \theta_N) \le NC
+\end{align*}
+using $k \le N$ and $\Delta_N(\boldsymbol \theta_N) \le C$.$\Box$
+
+Additionally, unstable RBM models are connected to degenerate models, where *degeneracy* implies placing all probability on a small pieace of the sample space. Define a model set 
+$$
+M_{\epsilon, \boldsymbol \theta_N} \equiv \left\{(x_1, \dots, x_N) \in \mathcal{X}^N: \log P_{\boldsymbol \theta_N}(x_1, \dots, x_N) > (1-\epsilon)\max\limits_{(x_1^*, \dots, x_N^*)}P_{\boldsymbol \theta_N}(x_1^*, \dots, x_N^*) + \epsilon\min\limits_{(x_1^*, \dots, x_N^*)}P_{\boldsymbol \theta_N}(x_1^*, \dots, x_N^*) \right\}
+$$
+of possible outcomes, for a given $0 < \epsilon < 1$.
+
+\begin{prop}
+\label{prop:degen}
+For an unstable DEF model, and for any given $0 < \epsilon < 1$, $P_{\boldsymbol \theta_N}\left((x_1, \dots, x_N) \in M_{\epsilon, \boldsymbol \theta_N}\right) \rightarrow 1$ holds as $N \rightarrow \infty$.
+\end{prop}
+
+In other words, as a consequence of unstable models, all probability will stack up on mode sets or potentially those few outcomes with the highest probability.
+
+**Proof of Proposition \ref{prop:degen}.** Define $\boldsymbol x_{max}$ and $\boldsymbol x_{min}$ as in the proof of Proposition \ref{prop:instab}. Fix $0 < \epsilon < 1$ Then, $\boldsymbol x_{max} \in M_{\epsilon, \boldsymbol \theta_N}$, so $P_{\boldsymbol \theta_N}(M_{\epsilon, \boldsymbol \theta_N}) \ge P_{\boldsymbol \theta_N}(\boldsymbol x_{max})$. If $\boldsymbol x \in \mathcal{X}^N \setminus M_{\epsilon, \boldsymbol \theta_N}$, then by definition $P_{\boldsymbol \theta_N}(\boldsymbol x) \le [P_{\boldsymbol \theta_N}(\boldsymbol x_{max})]^{1-\epsilon}[P_{\boldsymbol \theta_N}(\boldsymbol x_{min})]^{\epsilon}$ holds so that
+\begin{align*}
+1-P_{\boldsymbol \theta_N}(M_{\epsilon, \boldsymbol \theta_N}) &= P_{\boldsymbol \theta_N}(M_{\epsilon, \boldsymbol \theta_N}^C) \\
+& = \sum\limits_{\boldsymbol x \in \mathcal{X}^N \setminus M_{\epsilon, \boldsymbol \theta_N}}P_{\boldsymbol \theta_N}(\boldsymbol x) \\
+& \le (2^N)[P_{\boldsymbol \theta_N}(\boldsymbol x_{max})]^{1-\epsilon}[P_{\boldsymbol \theta_N}(\boldsymbol x_{min})]^{\epsilon}
+\end{align*}
+Then,
+\begin{align*}
+\frac{1}{N}\log\left[\frac{P_{\boldsymbol \theta_N}(M_{\epsilon, \boldsymbol \theta_N})}{1-P_{\boldsymbol \theta_N}(M_{\epsilon, \boldsymbol \theta_N})}\right] & \ge \frac{1}{N} \log\left[\frac{P_{\boldsymbol\theta_N}(\boldsymbol x_{max})}{(2^V)[P_{\boldsymbol \theta_N}(\boldsymbol x_{max})]^{1-\epsilon}[P_{\boldsymbol \theta_N}(\boldsymbol x_{min})]^{\epsilon}}\right] \\
+&= \frac{\epsilon}{N} \log\left[\frac{P_{\boldsymbol \theta_N}(\boldsymbol x_{max})}{P_{\boldsymbol \theta_N}(\boldsymbol x_{min})}\right] - \log 2 \rightarrow \infty
+\end{align*}
+as $N \rightarrow \infty$ by the definition of an unstable DEF model.$\Box$
+
+Note this somewhat general result can be applied to many model families. In Section \ref{examples-of-def-models}, we present two specific examples of DEF models, including models with deep architectures.
+
+# Examples of DEF models
+
+## Discrete exponential family models
+
+## Restricted Boltzmann machines
+
+## Deep learning
+
+# Implications
+
+# References
