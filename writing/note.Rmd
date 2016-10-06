@@ -13,13 +13,23 @@ bibliography: references/refs.bib
 abstract: |
 ---
 
-# Discrete Expanding Finite space models and notions of instability
+# Discrete Expanding Finite space models 
 
 Consider $(X_1, \dots X_N)$, a set of discrete random variables with a finite sample space, $\mathcal{X}^N$. Let $P_{\boldsymbol \theta_N}(x_1, \dots, x_N)$ denote the probability of the data outcome $(x_1, \dots, x_N) \in \mathcal{X}^N$, which is a sequence of expanding models that potentially grow size as the dimension of the data become larger (i.e. $\boldsymbol \theta_N \in \mathbb{R}^{q(N)}$, where $q(N)$ is a function of $N$). Further, the model support of $P_{\boldsymbol \theta_N}(x_1, \dots, x_N)$ is equal to the sample space $\mathcal{X}^N$. We will call this class of models *Discrete Expanding Finite space*, or DEF models.
 
+Note many model families can fall under the umbrella of DEF models. In Sections \ref{discrete-exponential-family-models}-\ref{deep-learning}, we present three specific examples of DEF models, including models with deep architectures.
+
+## Discrete exponential family models
+
+## Restricted Boltzmann machines
+
+## Deep learning
+
+# Instability and degeneracy results
+
 To quantify "instability" in a model with discrete outcomes, it is useful to imagine how a data model might be expanded to incorporate more and more observations. A relevant quantity to this end is a (scaled) extremal log-probability ratio given by 
 \begin{align}
-\frac{1}{N} \log \left[\frac{\max\limits_{(x_1, \dots, x_N) \in \mathcal{X}^N}P_{\boldsymbol \theta_N}(x_1, \dots, x_N)}{\min\limits_{(x_1, \dots, x_N) \in \mathcal{X}^N}P_{\boldsymbol \theta}(x_1, \dots, x_N)}\right] \equiv \frac{1}{V} \text{ELPR}_N(\boldsymbol \theta_N) \label{eqn:elpr}
+\frac{1}{N} \log \left[\frac{\max\limits_{(x_1, \dots, x_N) \in \mathcal{X}^N}P_{\boldsymbol \theta_N}(x_1, \dots, x_N)}{\min\limits_{(x_1, \dots, x_N) \in \mathcal{X}^N}P_{\boldsymbol \theta}(x_1, \dots, x_N)}\right] \equiv \frac{1}{N} \text{ELPR}_N(\boldsymbol \theta_N) \label{eqn:elpr}
 \end{align}
 
 
@@ -81,16 +91,6 @@ Then,
 &= \frac{\epsilon}{N} \log\left[\frac{P_{\boldsymbol \theta_N}(\boldsymbol x_{max})}{P_{\boldsymbol \theta_N}(\boldsymbol x_{min})}\right] - \log 2 \rightarrow \infty
 \end{align*}
 as $N \rightarrow \infty$ by the definition of an unstable DEF model.$\Box$
-
-Note this somewhat general result can be applied to many model families. In Section \ref{examples-of-def-models}, we present two specific examples of DEF models, including models with deep architectures.
-
-# Examples of DEF models
-
-## Discrete exponential family models
-
-## Restricted Boltzmann machines
-
-## Deep learning
 
 # Implications
 
