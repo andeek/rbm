@@ -2,7 +2,7 @@
 title: "A note on the instability and degeneracy of deep learning models"
 author: "Andee Kaplan, Daniel Nordman, Stephen Vardeman"
 date: "October, 2016"
-linestretch: 2
+linestretch: 1.5
 output: 
   pdf_document:
     fig_caption: yes
@@ -21,7 +21,36 @@ Note many model families can fall under the umbrella of DEF models. In Sections 
 
 ## Discrete exponential family models
 
+Let $X_1, \dots, X_N$ be discrete random variables with sample space $\mathcal{X}^N$, where $|\mathcal{X}| < \infty$. Consider discrete exponential family model with probability mass function of the form
+$$
+p_{\boldsymbol \lambda}(\boldsymbol x) = \exp\left[\boldsymbol\eta^T(\boldsymbol \lambda) \boldsymbol g(\boldsymbol x) - \psi(\boldsymbol \lambda)\right], \qquad \boldsymbol x \in \mathcal{X}^N.
+$$ 
+where $\boldsymbol \lambda \in \Lambda \subset \mathbb{R}^{q(N)}$, $\boldsymbol \eta : \mathbb{R}^q \mapsto \mathbb{R}^L$ is a vector of natural parameters, $\boldsymbol g : \mathcal{X}^N \mapsto \mathbb{R}^L$ is a vector of sufficient statistics, 
+$$
+\psi(\boldsymbol \lambda) = \log \sum\limits_{\boldsymbol x \in \mathcal{X}^N}\exp\left[\boldsymbol \eta^T(\boldsymbol \lambda) \boldsymbol g(\boldsymbol x) \right], \qquad \boldsymbol \lambda \in \Lambda
+$$
+is the normalizing function, and $\Lambda = \{\boldsymbol \lambda \in \mathbb{R}^k : \psi(\boldsymbol \lambda) < \infty, k \le q(N) \}$ is the parameter space. 
+
+By above definition, $X_1, \dots, X_N$ are discrete with a finite sample space. Let $\boldsymbol \theta = (\lambda_1, \dots, \lambda_k, 0, \dots, 0)$, where the first $k$ elements are equal to the $k$ elements of $\boldsymbol \lambda$ and for $i = k + 1, \dots, q(N)$, $\theta_i = 0$. Further, because $p_{\boldsymbol \lambda}(\boldsymbol x) > 0$ for all $\boldsymbol x \in \mathcal{X}^N$ by properties of the exponential function, the discrete exponential family models defined in this section are a special case of the DEF model.
+
 ## Restricted Boltzmann machines
+
+A restricted Boltzmann machine (RBM) is an undirected graphical model specified for discrete or continuous random variables, binary variables being most common [@smolensky1986information]. Consider the binary case of an RBM only. A RBM architecture has two layers, hidden ($\mathcal{H}$) and visible ($\mathcal{V}$), with conditional independence within each layer. Let $\boldsymbol X = \{H_1, \dots, H_H, V_1,\dots, V_V\}$ be random variables corresponding to the hidden and visible variables in an RBM. We will consider the sample space $\mathcal{X} = \{-1,1\}$. The RBM is then has the joint probability mass function
+$$
+p_{\boldsymbol \theta} (\boldsymbol x) = \exp\left[ \boldsymbol \alpha^T \boldsymbol h + \boldsymbol \beta^T \boldsymbol v + \boldsymbol h^T \Gamma \boldsymbol v - \psi(\boldsymbol \theta)\right], \qquad \boldsymbol x = (\boldsymbol h, \boldsymbol v) \in \mathcal{X}^{H+V}
+$$
+where 
+$$
+\psi(\boldsymbol \theta) = \log \sum_{\boldsymbol x \in \mathcal{X}^{H + V}} \exp\left[ \boldsymbol \alpha^T \boldsymbol h + \boldsymbol \beta^T \boldsymbol v + \boldsymbol h^T \Gamma \boldsymbol v\right], \qquad \boldsymbol \theta \in \Theta
+$$ 
+is the normalizing function, $\boldsymbol \alpha \in \mathbb{R}^H$, $\boldsymbol \beta \in \mathbb{R}^V$, and $\Gamma$ is a matrix with dimension $H \times V$ are the parameters in the model. Let $\boldsymbol \theta = (\boldsymbol \alpha, \boldsymbol \beta,\Gamma) \in \Theta \subset \mathbb{R}^{H + V + H*V}$ denote the combined vector of parameters.
+
+The probability mass function for the visible random variables $V_1, \dots, V_V$ follows from this joint specification:
+$$
+p_{\boldsymbol \theta} (\boldsymbol v) = \sum\limits_{\boldsymbol h \in \mathcal{X}^H} p_{\boldsymbol \theta} (\boldsymbol x), \qquad \boldsymbol v \in \mathcal{X}^V
+$$
+
+By definition, $V_1, \dots, V_V$ are discrete with a finite sample space. The vector of model parameters $\boldsymbol \theta$, of size $q(V) \equiv V + H + H*V$, is expanding in size as a function of the dimension of $V_1, \dots, V_V$. Additionally, $p_{\boldsymbol \theta}(\boldsymbol v) > 0$ for all $\boldsymbol v \in \mathcal{X}^V$ by properties of the exponential function. Thus, the visible RBM model specification is an example of a DEF model.
 
 ## Deep learning
 
