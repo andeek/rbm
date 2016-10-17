@@ -54,6 +54,27 @@ By definition, $V_1, \dots, V_V$ are discrete with a finite sample space. The ve
 
 ## Deep learning
 
+Consider two models with "deep architechture" that contain multiple hidden (or latent) layers in addition to a visible layer of data, a deep Boltzmann machine [@salakhutdinov2009deep] and a deep belief network [@hinton2006fast]. Let $M$ denote the number of hidden layers included in the model and $H_1, \dots, H_M$ the number of hidden variables within each hidden layer. Then let $\boldsymbol X = \{H^{(1)}_1, \dots, H^{(1)}_{H_1}, \dots, H^{(M)}_1, \dots, H^{(M)}_{H_M}, V_1,\dots, V_V\}$ be random variables corresponding to the hidden and visible variables in a deep probabilitic model. We will consider the sample space $\mathcal{X} = \{-1,1\}$.
+
+**Deep Boltzmann machine (DBM).** The DBM class of models maintains conditional independence within all layers in the model by stacking RBM models and maintaining the restriction of only allowing conditional dependence between layers. The joint probability mass function for a DBM is
+$$
+p_{\boldsymbol \theta} (\boldsymbol x) = \exp\left[ \sum\limits_{i = 1}^M\boldsymbol \alpha^{(i)T} \boldsymbol h^{(i)} + \boldsymbol \beta^T \boldsymbol v + \boldsymbol h^{(1)T} \Gamma^{(0)} \boldsymbol v + \sum\limits_{i = 1}^{M - 1} \boldsymbol h^{(i)T} \Gamma^{(i)} \boldsymbol h^{(i + 1)} - \psi(\boldsymbol \theta) \right], 
+$$
+where $\boldsymbol x = (\boldsymbol h^{(1)}, \dots, \boldsymbol h^{(M)}, \boldsymbol v) \in \mathcal{X}^{H_1 + \cdots + H_M +V}$ and
+$$
+\psi(\boldsymbol \theta) = \log \sum_{\boldsymbol x \in \mathcal{X}^{H_1 + \cdots + H_M + V}} \exp\left[ \sum\limits_{i = 1}^M\boldsymbol \alpha^{(i)T} \boldsymbol h^{(i)} + \boldsymbol \beta^T \boldsymbol v + \boldsymbol h^{(1)T} \Gamma^{(0)} \boldsymbol v + \sum\limits_{i = 1}^{M - 1} \boldsymbol h^{(i)T} \Gamma^{(i)} \boldsymbol h^{(i + 1)}\right], \qquad \boldsymbol \theta \in \Theta
+$$ 
+is the normalizing function, $\boldsymbol \beta \in \mathbb{R}^V$, $\boldsymbol \alpha^{(i)} \in \mathbb{R}^{H_i}$ for $i = 1, \dots, M$, $\Gamma^{(0)}$ is a matrix with dimension $H_1 \times V$, and $\Gamma^{(i)}$ is a matrix with dimension $H_i \times H_{i + 1}$ for $i = 1, \dots, M-1$ are the parameters in the model. Let $\boldsymbol \theta = (\boldsymbol \alpha^{(1)}, \dots, \boldsymbol \alpha^{(M)}, \boldsymbol \beta,\Gamma^{(0)}, \dots, \Gamma^{(M - 1)}) \in \Theta \subset \mathbb{R}^{H_1 + \cdots + H_M + V + H_1*V + H_1 *H_{2} + \cdots + H_{M-1}*H_M}$ denote the combined vector of parameters.
+
+The probability mass function for the visible random variables $V_1, \dots, V_V$ follows from this joint specification:
+$$
+p_{\boldsymbol \theta} (\boldsymbol v) = \sum\limits_{(\boldsymbol h^{(1)}, \dots, \boldsymbol h^{(M)}) \in \mathcal{X}^{H_1 + \cdots + H_M}} p_{\boldsymbol \theta} (\boldsymbol x), \qquad \boldsymbol v \in \mathcal{X}^V
+$$
+
+By definition, $V_1, \dots, V_V$ are discrete with a finite sample space. The vector of model parameters $\boldsymbol \theta$, of size $q(V) \equiv H_1 + \cdots + H_M + V + H_1*V + H_1 *H_{2} + \cdots + H_{M-1}*H_M$, is expanding in size as a function of the dimension of $V_1, \dots, V_V$. Additionally, $p_{\boldsymbol \theta}(\boldsymbol v) > 0$ for all $\boldsymbol v \in \mathcal{X}^V$ by properties of the exponential function. Thus, the visible RBM model specification is an example of a DEF model.
+
+**Deep belief network (DBN).** A DBN is similar to a DBM in that there are multiple layers of latent random variables stacked in a deep architecture with no conditional dependence between layers. The difference between the two models is that all but the last stacked model are Bayesian networks, rather than RBMs. Thus for $V_1, \dots, V_V$ discrete with finite sample space and support equal to the sample space $\mathcal{X}^V$, a DBN is also a DEF model if the number of components in the parameter vector is dependent on the dimension of the data, $V$. Commonly, as in a logistic belief net [@neal1992connectionist], a "weight" parameter is placed on each interaction between visibles, $V_1, \dots, V_V$ and the first layer of latent variables, $H^{(1)}_1, \dots, H^{(1)}_{H_1}$, satisfying the definition of a DEF model.
+
 # Instability and degeneracy results
 
 To quantify "instability" in a model with discrete outcomes, it is useful to imagine how a data model might be expanded to incorporate more and more observations. A relevant quantity to this end is a (scaled) extremal log-probability ratio given by 
@@ -122,5 +143,8 @@ Then,
 as $N \rightarrow \infty$ by the definition of an unstable DEF model.$\Box$
 
 # Implications
+
+For a large class of models that cover a broad range of applications (including "deep learning"), we have developed a formal definition and elucidated multiple consequences of instability. We have shown for DEF models that instability manifests through small changes in data leading to overly-sensitive changes in probability as well as the potential to place all probability on a small pieace of the sample space.
+Models that fall within the definition of a DEF model should be used with caution to ensure that the effects of instability are not experienced.
 
 # References
