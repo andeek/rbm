@@ -71,13 +71,13 @@ RBMs have risen to prominence in recent years due to their connection to deep le
 The highly flexible nature of a RBM (having as it does $H + V + H V$ parameters) creates three kinds of potential model impropriety of concern: *degeneracy, instability, and uninterpretability*. In this section we define these characteristics, consider how to detect them in a RBM, and point out their relationships to one another.
 
 ### Near-degeneracy
-In Random Graph Model theory, *model degeneracy* means there is a disproportionate amount of probability placed on only a few elements of the sample space, $\mathcal{X}$, by the model. In the scenario of random graph models, $\mathcal{X}$ denotes all possible graphs that can be constructed from a set of nodes. An exponentially parameterized random graph model has a distribution of the form 
+In Random Graph Model theory, *model degeneracy* means there is a disproportionate amount of probability placed on only a few elements of the sample space, $\mathcal{X}$, by the model [@handcock2003assessing]. In the scenario of random graph models, $\mathcal{X}$ denotes all possible graphs that can be constructed from a set of nodes. An exponentially parameterized random graph model has a distribution of the form 
 \begin{align*}
 f_{\boldsymbol \theta} (\boldsymbol x) = \frac{\exp\left(\boldsymbol \theta^T t(\boldsymbol x)\right)}{\gamma(\boldsymbol \theta)}
 \end{align*}
-where $\boldsymbol \theta \in \Theta \subset \mathbb{R}^q$ is the model parameter, and $t: \mathcal{X} \rightarrow \mathbb{R}^q$ are statistics based on the adjacency matrix of a graph. Again, $\gamma(\boldsymbol \theta)$ is the normalizing function that guarantees the distribution is valid, $\gamma(\boldsymbol \theta) = \sum_{\boldsymbol x \in \mathcal{X}} \exp\left(\boldsymbol \theta^T t(\boldsymbol x)\right)$. Let $C$ be the convex hull of $\{t(\boldsymbol x): \boldsymbol x \in \mathcal{X}\}$. @handcock2003assessing classify an exponentially parametrized random graph model as *near-degenerate* if $\mu(\boldsymbol \theta) = \text{E}_{\boldsymbol \theta}t(X)$ is close to the boundary of the $C$. 
+where $\boldsymbol \theta \in \Theta \subset \mathbb{R}^q$ is the model parameter, and $t: \mathcal{X} \rightarrow \mathbb{R}^q$ are statistics based on the adjacency matrix of a graph. Again, $\gamma(\boldsymbol \theta)$ is the normalizing function that guarantees the distribution is valid, e.g. $\gamma(\boldsymbol \theta) = \sum_{\boldsymbol x \in \mathcal{X}} \exp\left(\boldsymbol \theta^T t(\boldsymbol x)\right)$. Let $C$ denote the convex hull spanned by the potential outcomes of sufficient statistics, $\{t(\boldsymbol x): \boldsymbol x \in \mathcal{X}\}$. @handcock2003assessing classify an exponentially parametrized random graph model at $\boldsymbol \theta$ as *near-degenerate* if the mean value of sufficient statistics under $\boldsymbol \theta$, $\mu(\boldsymbol \theta) = \text{E}_{\boldsymbol \theta}t(X)$, is close to the boundary of $C$. 
 
-The RBM class of models can be thought to exhibit an analogous occurrence of *near-degeneracy* when random variables in the neg-potential function $Q(\cdot)$, $t(\boldsymbol x)$, have a mean vector $\mu(\boldsymbol \theta)$ close to the boundary of the convex hull of $\mathcal{X}$, where $t(\boldsymbol x) = \{v_1, \dots, v_V, h_1, \dots, h_H, v_1 h_1, \dots, v_V h_H \} \in \mathcal{X}$ and the mean parameterization on the model parameters, $\mu(\boldsymbol \theta)$ is
+The RBM class of models can be thought to exhibit an analogous occurrence of *near-degeneracy* as follows. When random variables $t(\boldsymbol x) = \{v_1, \dots, v_V, h_1, \dots, h_H, v_1 h_1, \dots, v_V h_H \} \in \mathcal{X}$ in the neg-potential function $Q_{\boldsymbol \theta}(\cdot)$, have a mean vector $\mu(\boldsymbol \theta)$ close to the boundary of the convex hull of $\mathcal{X}$, then the RBM model is near-degenerate at $\boldsymbol \theta \in \mathbb{R}^{V + H + H*V}$. Here the mean of $t(\boldsymbol x)$ isgiven as
 \begin{align*}
 \mu(\boldsymbol \theta) &= \text{E}_{\boldsymbol \theta} t(\boldsymbol X)  \\
 &= \sum\limits_{x \in \mathcal{X}} \left\{ t(\boldsymbol x) f_{\boldsymbol \theta} (\boldsymbol x) \right\} \\
@@ -86,61 +86,61 @@ The RBM class of models can be thought to exhibit an analogous occurrence of *ne
 
 ### Instability
 
-Considering a class of exponential families of distributions, @schweinberger2011instability introduced a concept of model defficiency related to *instability*. Instability is characterized by excessive sensitivity in the model, where small changes in the components of potential data outcomes, $\boldsymbol x$, may lead to substantial changes in the probability mass function. To quantify "instability", it is useful to imagine how a data model (the RBM in particular) might be expanded to incorporate more and more observations. To increase the size of a RBM model to handle more "visible variables", it becomes necessary to expand the number of model parameters (and in the process of increasing the model size in visibles, one may also arbitrarily expand the number of hidden variables to be included). A relevant quantity to this end is a (scaled) extremal log-probability ratio given by 
+Considering a class of exponential families of distributions, @schweinberger2011instability introduced a concept of model defficiency related to *instability*. Instability can be roughly characterized by excessive sensitivity in the model, where small changes in the components of potential data outcomes, $\boldsymbol x$, may lead to substantial changes in the probability mass function. To quantify "instability" more rigorously (particularly beyond the definition given by @schweinberger2011instability), it is useful to imagine how a data model (the RBM in particular) might be expanded to incorporate more and more observations. When increasing the size of a RBM model to handle more visible variables, it becomes necessary to expand the number of model parameters (and in this process one may also arbitrarily expand the number of hidden variables to be included). To this end, let $\boldsymbol \theta_{V} \equiv (\theta_{v_1}, \dots, \theta_{v_V}, \theta_{h_1}, \dots, \theta_{h_H}, \theta_{11}, \theta_{VH}), V \ge 1$, denote a sequence of RBM parameters indexed by the number $V$ of visibles $(V_1, \dots, V_V)$ and define a (scaled) extremal log-probability ratio of the RBM model at $\boldsymbol \theta_{V}$ $(V \ge 1)$ as
 \begin{align}
-\frac{1}{V} \log \left[\frac{\max\limits_{(v_1, \dots, v_V) \in \{-1,1\}^V}P_{\boldsymbol \theta}(v_1, \dots, v_V)}{\min\limits_{(v_1, \dots, v_V) \in \{-1,1\}^V}P_{\boldsymbol \theta}(v_1, \dots, v_V)}\right] \equiv \frac{1}{V} \text{ELPR}_V(\boldsymbol \theta) \label{eqn:elpr}
+\frac{1}{V} \log \left[\frac{\max\limits_{(v_1, \dots, v_V) \in \{-1,1\}^V}P_{\boldsymbol \theta_V}(v_1, \dots, v_V)}{\min\limits_{(v_1, \dots, v_V) \in \{-1,1\}^V}P_{\boldsymbol \theta_V}(v_1, \dots, v_V)}\right] \equiv \frac{1}{V} \text{ELPR}(\boldsymbol \theta_V) \label{eqn:elpr}
 \end{align}
-where $P_{\boldsymbol \theta}(v_1, \dots, v_V) \propto \sum_{\{h_j\}\in \{-1,1\}}\exp\left(\sum_{i = 1}^V \theta_{v_i} v_i + \sum_{j = 1}^H \theta_{h_j} h_j + \sum_{i = 1}^V \sum_{j = 1}^H \theta_{ij} v_i h_j\right)$ is the RBM probability of observing outcome $(v_1, \dots, v_V)$ for the visible variables for parameters $\boldsymbol \theta = (\theta_{v_1}, \dots, \theta_{HV})$.
+where $P_{\boldsymbol \theta_V}(v_1, \dots, v_V) \propto \sum_{\{h_j\}\in \{-1,1\}}\exp\left(\sum_{i = 1}^V \theta_{v_i} v_i + \sum_{j = 1}^H \theta_{h_j} h_j + \sum_{i = 1}^V \sum_{j = 1}^H \theta_{ij} v_i h_j\right)$ is the RBM probability of observing outcome $(v_1, \dots, v_V)$ for the visible variables $(V_1, \dots, V_V)$ under parameters $\boldsymbol \theta_V$.
 
-Essentially, in the process of developing a model to handle increasing numbers of visibles (i.e., $V \rightarrow \infty$), we want (\ref{eqn:elpr}) to stay bounded, meaning that the largest probability under this model should maintain a magnitude within the smallest probability allowed under the model. This leads to the following definition:
+Essentially, in formulating a RBM model for a potentially large number of visibles (i.e., $V \rightarrow \infty$),the ratio (\ref{eqn:elpr}) should stay bounded, meaning that the largest probability under this model at parameter $\boldsymbol \theta_V$ should maintain a magnitude within the smallest probability allowed under the same model. This leads to the following definition:
 
 \begin{defn}[unstable RBM]
-A RBM model formulation is \emph{unstable} if, as the number of visible variables increase ($V \rightarrow \infty$), it holds that 
+Let $\boldsymbol \theta_V \in \mathbb{R}^{V + H +  H*V}, v \ge 1$, be a sequence of RBM parameters where the number of hiddens, $H \equiv H(V) \ge 1$, can be an arbitrary function of the number $V$ of visibles. A RBM model formulation is \emph{Scheinberger-unstable} or \emph{S-unstable} if, as the number of visible variables increase ($V \rightarrow \infty$), it holds that 
 \begin{align*}
-\lim\limits_{V \rightarrow \infty} \frac{1}{V} \log \left[\frac{\max\limits_{(v_1, \dots, v_V) \in \{-1,1\}^V}P_{\boldsymbol \theta}(v_1, \dots, v_V)}{\min\limits_{(v_1, \dots, v_V) \in \{-1,1\}^V}P_{\boldsymbol \theta}(v_1, \dots, v_V)}\right] = \infty.
+\lim\limits_{V \rightarrow \infty} \frac{1}{V} \text{ELPR}(\boldsymbol \theta_V) \equiv \lim\limits_{V \rightarrow \infty} \frac{1}{V} \log \left[\frac{\max\limits_{(v_1, \dots, v_V) \in \{-1,1\}^V}P_{\boldsymbol \theta}(v_1, \dots, v_V)}{\min\limits_{(v_1, \dots, v_V) \in \{-1,1\}^V}P_{\boldsymbol \theta}(v_1, \dots, v_V)}\right] = \infty.
 \end{align*}
 \end{defn}
-In other words, given any $C > 0$, there exists an integer $V_C > 0$ so that $\frac{1}{V}\text{ELPR}_V(\boldsymbol \theta) > C$ for all $V \ge V_C$.
+In other words, given any $C > 0$, there exists an integer $V_C > 0$ so that $\frac{1}{V}\text{ELPR}(\boldsymbol \theta_V) > C$ for all $V \ge V_C$.
 
-Note that this definition of *unstable* is a generalization of that in @schweinberger2011instability allowing nonexponential family models and an increasing number of parameters (while this definition appears different, it does match that in @schweinberger2011instability for the special exponential models considered there).
+Note that this definition of *S-unstable* is a generalization or re-interpretation of "unstable" used in @schweinberger2011instability allowing nonexponential family models for visibles $(v_1, \dots, v_V)$ and an increasing number of parameters. While this definition appears different, it matchs that of @schweinberger2011instability for the special exponential models considered there.
 
-Unstable RBM models are undesirable for several reasons. One is that, as mentioned above, small changes in data can lead to overly-sensitive changes in probability. Consider, for example, 
+S-Unstable RBM models are undesirable for several reasons. One is that, as mentioned above, small changes in data can lead to overly-sensitive changes in probability. Consider, for example, 
 $$
-\Delta_V(\boldsymbol \theta) \equiv \max \left\{\log \frac{P_{\boldsymbol \theta}(v_1, \dots, v_V)}{P_{\boldsymbol \theta}(v_1^*, \dots, v_V^*)} : (v_1, \dots, v_V) \& (v_1^*, \dots, v_V^*) \in \{-1,1\}^V \text{ differ by exactly one component}\right\},
+\Delta(\boldsymbol \theta_V) \equiv \max \left\{\log \frac{P_{\boldsymbol \theta_V}(v_1, \dots, v_V)}{P_{\boldsymbol \theta_V}(v_1^*, \dots, v_V^*)} : (v_1, \dots, v_V) \& (v_1^*, \dots, v_V^*) \in \{-1,1\}^V \text{ differ by exactly one component}\right\},
 $$
-the biggest log-probability ratio for a one-pixel (one component) change in data outcomes (visibles). We then have the following result.
+the biggest log-probability ratio for a one-pixel (one component) change in data outcomes (visibles) at a RBM parameter $\boldsymbol \theta_V$. We then have the following result.
 
 \begin{prop}
 \label{prop:instab}
-If $\frac{1}{V}\text{ELPR}_V(\boldsymbol \theta) > C$, then $\Delta_V(\boldsymbol \theta) > C$.
+Let $C > 0$ and let $\text{ELPR}(\boldsymbol \theta_V)$ be as in (\ref{eqn:elpr}) for an integer $V \ge 1$. If $\frac{1}{V}\text{ELPR}_V(\boldsymbol \theta) > C$, then $\Delta_V(\boldsymbol \theta) > C$.
 \end{prop}
 
-In other words, if the quantity (\ref{eqn:elpr}) is too large, then the RBM model will exhibit large probability shifts for very small changes in the data configuration (i.e. instability mentioned earlier).
+In other words, if the probability ratio (\ref{eqn:elpr}) is too large, then the RBM model will exhibit large probability shifts for very small changes in the data configuration (i.e., instability).
 
-Additionally, unstable RBM models are connected to degenerate models (placing all probability on a small pieace of the sample space). Define a model set 
+Additionally, S-unstable RBM models are connected to degenerate models  placing all probability on a small portion of the sample space. To see this, define a modal set 
 $$
-M_{\epsilon, \boldsymbol \theta} \equiv \left\{(v_1, \dots, v_V) \in \{-1,1\}^V: \log P_{\boldsymbol \theta}(v_1, \dots, v_V) > (1-\epsilon)\max\limits_{(v_1^*, \dots, v_V^*)}P_{\boldsymbol \theta}(v_1^*, \dots, v_V^*) + \epsilon\min\limits_{(v_1^*, \dots, v_V^*)}P_{\boldsymbol \theta}(v_1^*, \dots, v_V^*) \right\}
+M_{\epsilon, \boldsymbol \theta_V} \equiv \left\{(v_1, \dots, v_V) \in \{-1,1\}^V: \log P_{\boldsymbol \theta_V}(v_1, \dots, v_V) > (1-\epsilon)\max\limits_{(v_1^*, \dots, v_V^*)}P_{\boldsymbol \theta_V}(v_1^*, \dots, v_V^*) + \epsilon\min\limits_{(v_1^*, \dots, v_V^*)}P_{\boldsymbol \theta_V}(v_1^*, \dots, v_V^*) \right\}
 $$
-of possible outcomes, for a given $0 < \epsilon < 1$.
+of possible outcomes, for a given $0 < \epsilon < 1$, and along a sequence $\boldsymbol \theta_V, V \ge 1$, of RBM parameters.
 
 \begin{prop}
 \label{prop:degen}
-For an unstable RBM model, and for any given $0 < \epsilon < 1$, $P_{\boldsymbol \theta}\left((v_1, \dots, v_V) \in M_{\epsilon, \boldsymbol \theta}\right) \rightarrow 1$ holds as $V \rightarrow \infty$.
+For an S-unstable RBM model, and for any given $0 < \epsilon < 1$, $P_{\boldsymbol \theta_V}\left((v_1, \dots, v_V) \in M_{\epsilon, \boldsymbol \theta_V}\right) \rightarrow 1$ holds as $V \rightarrow \infty$.
 \end{prop}
 
-In other words, as a consequence of unstable models, all probability will stack up on mode sets or potentially those few outcomes with the highest probability. Proofs of both proposition \ref{prop:instab} and proposition \ref{prop:degen} are provided in appendix \ref{instability-proofs}. Propositions \ref{prop:instab}-\ref{prop:degen} have counterpart results in @schweinberger2011instability, but, unlike results there, we do not consider exponential family forms with a fixednumber of parameters (i.e. our results are broader for a more complicated model form for the visibles). Essentially, with our generalized definition of *unstable* models, one can establish instability results as in @schweinberger2011instability under assumptions that the sample space is finite and all model outcomes have a non-zero probability.
+In other words, as a consequence of S-unstable models, all probability in the RBM model formulation with a lerge number of visible variables will stack up on mode sets or simply those outcomes for visibles with with the highest probability. Proofs of Propositions \ref{prop:instab}-\ref{prop:degen} appear in @kaplan2016note. These findings also have counterparts to results in @schweinberger2011instability, but, unlike results there, we do not consider exponential family forms with a fixed number of parameters (i.e. our results are broader for a more complicated model form for the visible variables).
 
-To later numerically investigate unstable RBM models, it is useful to define a computationally tractable lower bound on (\ref{eqn:elpr}) given by
+To later numerically investigate S-unstable RBM models, it is useful to define a computationally tractable lower bound on (\ref{eqn:elpr}) given by
 $$
-\frac{1}{V}R(\boldsymbol \theta) \text{ for } R(\boldsymbol \theta) \equiv \max_{\boldsymbol v} \max_{\boldsymbol h}Q(\boldsymbol x) - \min_{\boldsymbol v}\max_{\boldsymbol h}Q(\boldsymbol x) - H\log 2.
+\frac{1}{V}R(\boldsymbol \theta_V) \text{ for } R(\boldsymbol \theta_V) \equiv \max_{\boldsymbol v} \max_{\boldsymbol h}Q_{\boldsymbol \theta_V}(\boldsymbol x) - \min_{\boldsymbol v}\max_{\boldsymbol h}Q_{\boldsymbol \theta_V}(\boldsymbol x) - H\log 2.
 $$
 That is, it holds that, in (\ref{eqn:elpr}),
 \begin{align}
-\frac{1}{V} \text{ELPR}_V(\boldsymbol \theta) \equiv \frac{1}{V} \log \left[\frac{\max\limits_{(v_1, \dots, v_V) \in \{-1,1\}^V}P_{\boldsymbol \theta}(v_1, \dots, v_V)}{\min\limits_{(v_1, \dots, v_V) \in \{-1,1\}^V}P_{\boldsymbol \theta}(v_1, \dots, v_V)}\right] \ge \frac{1}{V}R(\boldsymbol \theta). \label{eqn:lowerbnd}
+\frac{1}{V} \text{ELPR}(\boldsymbol \theta_V) \equiv \frac{1}{V} \log \left[\frac{\max\limits_{(v_1, \dots, v_V) \in \{-1,1\}^V}P_{\boldsymbol \theta}(v_1, \dots, v_V)}{\min\limits_{(v_1, \dots, v_V) \in \{-1,1\}^V}P_{\boldsymbol \theta}(v_1, \dots, v_V)}\right] \ge \frac{1}{V}R(\boldsymbol \theta_V); \label{eqn:lowerbnd}
 \end{align}
-(A proof of (\ref{eqn:lowerbnd}) appears in appendix \ref{instability-proofs}.)
+the appendix provides a proof of (\ref{eqn:lowerbnd}).
 
-The benefit of (\ref{eqn:lowerbnd}) is that $R(\boldsymbol \theta)/V$ is simple to compute (i.e. compared to (\ref{eqn:elpr}), $R(\boldsymbol \theta)$ requires no summation over hidden variables) and that propositions \ref{prop:instab}-\ref{prop:degen} would continue to hold upon replcing (\ref{eqn:elpr}) with $R(\boldsymbol \theta)/V$, due to (\ref{eqn:lowerbnd}). Hence, larger values of $R(\boldsymbol \theta)/V$ indicate unstable RBM models.
+The benefit of $R(\boldsymbol \theta_V)$ is that $R(\boldsymbol \theta_V)/V$ is simple to compute (i.e. requiring no summation over hidden variables, unlike (\ref{eqn:elpr})) and that Propositions \ref{prop:instab}-\ref{prop:degen} continue to hold upon replacing (\ref{eqn:elpr}) with $R(\boldsymbol \theta_V)/V$ due to (\ref{eqn:lowerbnd}). Hence, large values of $R(\boldsymbol \theta_V)/V$ indicate S-unstable RBM models.
 
 ### Uninterpretability
 @kaiser2007statistical defines a measure of model impropriety he calls *uninterpretability*, which is characterized by marginal mean-structure not being maintained in the model. A measure of this is the magnitude of the difference between model expectations, E$\left[\boldsymbol X | \boldsymbol \theta\right]$, and expectations given independence, E$\left[\boldsymbol X | \boldsymbol \theta^* \right]$, where $\boldsymbol \theta^*$ is defined to equal $\boldsymbol \theta$ with all $\theta_{ij} = 0$ for $i = 1, \dots, V, j = 1, \dots, H$. Using this concept it is possible to investigate what conditions lead to uninterpretability in a model versus those that guarantee interpretable models. A model is considered without uninterpretability if its expected value is not very different from the same model with assumed independence. The quantities to compare in the RBM case are
