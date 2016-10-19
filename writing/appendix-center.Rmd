@@ -18,10 +18,11 @@ for $\bm{\theta}\in \mathbb{R}^{m+n+mn}$; above $\mathcal{I} \equiv \{\bm{g}(\bm
 
 We have the following properties:
 
-
-1. The function $\bm{g}: \mathbb{R}^{m+n+mn} \rightarrow \mathcal{I}$ is one-to-one; see Theorem \ref{thm:one} below. Hence, these moments uniquely characterize the parameters in the RBM$(m,n,\bm{\theta})$ model. (Additionally, two RBM models have the same parameters if and only if the models have the same probability functions.)
-1. The image $\mathcal{I}$ is a symmetric set (i.e., $\bm{g}(\bm{\theta})=-\bm{g}(-\bm{\theta})$) and must be a connected (not necessarily convex) region in $\mathbb{R}^{m+n+mn}$, without any voids in it (by the continuity of $\bm{g}(\bm{\theta})$).
-1. The center of the image $\mathcal{I}$ (the zero vector in $\mathbb{R}^{m+n+mn}$) is given only by $\bm{\theta}=\bm{0}$ (the zero vector in the parameter space).  This corresponds to the case where all the random vectors $V_1,\ldots,V_m,H_1,\ldots,H_n$ are iid with a symmetric Bernoulli$(1/2)$ distribution; see Theorem \ref{thm:two}.
+\begin{itemize}
+\item The function $\bm{g}: \mathbb{R}^{m+n+mn} \rightarrow \mathcal{I}$ is one-to-one; see Theorem \ref{thm:one} below. Hence, these moments uniquely characterize the parameters in the RBM$(m,n,\bm{\theta})$ model.
+\item The image $\mathcal{I}$ is a symmetric set (i.e., $\bm{g}(\bm{\theta})=-\bm{g}(-\bm{\theta})$) and must be a connected (not necessarily convex) region in $\mathbb{R}^{m+n+mn}$, without any voids in it (by the continuity of $\bm{g}(\bm{\theta})$).
+\item The center of the image $\mathcal{I}$ (the zero vector in $\mathbb{R}^{m+n+mn}$) is given only by $\bm{\theta}=\bm{0}$ (the zero vector in the parameter space).  This corresponds to the case where all the random vectors $V_1,\ldots,V_m,H_1,\ldots,H_n$ are iid with a symmetric Bernoulli$(1/2)$ distribution; see Theorem \ref{thm:two}.
+\end{itemize}
 
 \begin{apptheorem} 
 \label{thm:one}
@@ -42,20 +43,20 @@ let $P_i$ and $\E$ denote probability and expectation under $\bm{\theta}_i$, $i=
 &= \frac{P_2\left(\{V_\ell = 1\} \cap \bigcap_{i=1 \atop i \neq \ell}^m \{V_i=v_i\} \cap \bigcap_{j=1}^n \{H_j=h_j\}\right)}
 {P_2\left(\{V_\ell = -1\} \cap \bigcap_{i=1 \atop i \neq \ell}^m \{V_i=v_i\} \cap \bigcap_{j=1}^n \{H_j=h_j\}\right)}\exp\left[ 2\tilde{\theta}_{v_\ell} +2 \sum_{j=1}^n  h_j \tilde{\theta}_{\ell j} \right]
 \end{align*}
-for any $\{v_i\}_{i=1,i\neq \ell}^m,\{h_j\}_{j=1}^n \subset\{\pm 1\}$. Equating exponents, we have $\theta_{v_\ell} - \tilde{\theta}_{v_\ell} = \sum_{j=1}^n  h_j (  \tilde{\theta}_{\ell j} -\theta_{\ell j})$ for any $\{h_j\}_{j=1}^n \subset \{\pm 1\}$. Taking all $h_j=1$ or all $h_j=-1$ for $1 \leq j \leq n$ yields $\theta_{v_\ell} = \tilde{\theta}_{v_\ell}$. This result further implies $\tilde{\theta}_{\ell 1} -\theta{\ell 1} = -  \sum_{j=2}^n  h_j (  \tilde{\theta}_{\ell j} -\theta_{\ell j})$ for
-any given $\{h_j\}_{j=2}^n \subset \{\pm 1\}$, so that $\theta_{\ell 1}=\tilde{\theta}_{\ell 1}$ must hold. Iterating this argument, sequentially for each $j=2,\ldots,m$, shows $\theta_{\ell j}=\tilde{\theta}_{\ell j}$ for any $1 \leq j \leq n$ in addition to $\theta_{v_\ell}=\tilde{\theta}_{v_\ell}$.  As $\ell\in\{1,\ldots,m\}$ was arbitrary, we have $\theta_{v_i}=\tilde{\theta}_{v_i}$ and $\theta{i j}=\tilde{\theta}_{i j}$ for any $1 \leq i \leq m$, $1 \leq j \leq n$.
+for any $\{v_i\}_{i=1,i\neq \ell}^m,\{h_j\}_{j=1}^n \subset\{\pm 1\}$. Equating exponents, we have $\theta_{v_\ell} - \tilde{\theta}_{v_\ell} = \sum_{j=1}^n  h_j (  \tilde{\theta}_{\ell j} -\theta_{\ell j})$ for any $\{h_j\}_{j=1}^n \subset \{\pm 1\}$. Taking all $h_j=1$ or all $h_j=-1$ for $1 \leq j \leq n$ yields $\theta_{v_\ell} = \tilde{\theta}_{v_\ell}$. This result further implies $\tilde{\theta}_{\ell 1} -\theta_{\ell 1} = -  \sum_{j=2}^n  h_j (  \tilde{\theta}_{\ell j} -\theta_{\ell j})$ for
+any given $\{h_j\}_{j=2}^n \subset \{\pm 1\}$, so that $\theta_{\ell 1}=\tilde{\theta}_{\ell 1}$ must hold. Iterating this argument, sequentially for each $j=2,\ldots,m$, shows $\theta_{\ell j}=\tilde{\theta}_{\ell j}$ for any $1 \leq j \leq n$ in addition to $\theta_{v_\ell}=\tilde{\theta}_{v_\ell}$.  As $\ell\in\{1,\ldots,m\}$ was arbitrary, we have $\theta_{v_i}=\tilde{\theta}_{v_i}$ and $\theta_{i j}=\tilde{\theta}_{i j}$ for any $1 \leq i \leq m$, $1 \leq j \leq n$.
 
 Now pick $k \in \{1,\ldots,n\}$ so that, by the RBM$(m,n,\bm{\theta})$ probability structure as above, we have analogously that
 $$
 \theta_{h_k} + \sum_{i=1}^m  v_i \theta_{i k} =  \tilde{\theta}_{h_k} + \sum_{i=1}^m  v_i \tilde{\theta}_{i k}
 $$
-fsor any $\{v_i\}_{i=1}^m \subset \{\pm 1\}$, so that $\theta_{h_k}  =  \tilde{\theta}_{h_k}$. As $k \in \{1,\ldots,n\}$ was arbitrary, we have now established claim 2 from claim 3. 
+for any $\{v_i\}_{i=1}^m \subset \{\pm 1\}$, so that $\theta_{h_k}  =  \tilde{\theta}_{h_k}$. As $k \in \{1,\ldots,n\}$ was arbitrary, we have now established claim 2 from claim 3. 
 
-To establish the equivalence of claims 1 and 3 in Theorem \ref{thm:one} under the RBM$(m,n,\bm{\theta})$ model, we note that claim 3 easily implies claim 1. Hence, it suffices now to establish claim 3 from claim 1. This follows immediately from Lemma \ref{lemma:one} below and the fact that the variables $V_1,\ldots,V_m$ are independent given $H_1,\ldots,H_n$ in the RBM$(m,n,\bm{\theta})$ model (and likewise $H_1,\ldots,H_n$ are independent given $V_1,\ldots,V_m$).
+To establish the equivalence of claims 1 and 3 in Theorem \ref{thm:one} under the RBM$(m,n,\bm{\theta})$ model, we note that claim 3 easily implies claim 1. Hence, it suffices now to establish claim 3 from claim 1. This follows immediately from Lemma \ref{lemma:one} below and the fact that the variables $V_1,\ldots,V_m$ are conditionally independent given $H_1,\ldots,H_n$ in the RBM$(m,n,\bm{\theta})$ model (and likewise $H_1,\ldots,H_n$ are independent given $V_1,\ldots,V_m$).
 
 \begin{applemma} 
 \label{lemma:one}
-Let $m,n\geq 1$.  Let $P_1,P_2$ denote two probability distributions for a random vector $(\bm{V}_m,\bm{H}_n) = (V_1,\ldots,V_m, H_1,\ldots,H_n)$ supported on $\{a,b\}^{m+n}$, for some real constants $a\neq b \in\mathbb{R}$, such that $P_i( \bm{V}_m=\bm{v}_m, \bm{H}_n=\bm{h}_n)>0$, $i=1,2$, for any $\bm{v}_m \in \{a,b\}^{m}$, $\bm{h}_n \in \{a,b\}^{n}$. Suppose additionally that, under $P_1$ or $P_2$,  the variables $V_1,\ldots,V_m$ are independent given $\bm{H}_n=\bm{h}_n \in \{a,b\}^{n}$ and that the variables $H_1,\ldots,H_n$ are independent given $\bm{V}_m=\bm{v}_m \in \{a,b\}^{m}$.
+Let $m,n\geq 1$.  Let $P_1,P_2$ denote two probability distributions for a random vector $(\bm{V}_m,\bm{H}_n) = (V_1,\ldots,V_m, H_1,\ldots,H_n)$ supported on $\{a,b\}^{m+n}$, for some real constants $a\neq b \in\mathbb{R}$, such that $P_i( \bm{V}_m=\bm{v}_m, \bm{H}_n=\bm{h}_n)>0$, $i=1,2$, for any $\bm{v}_m \in \{a,b\}^{m}$, $\bm{h}_n \in \{a,b\}^{n}$. Suppose additionally that, under $P_1$ or $P_2$,  the variables $V_1,\ldots,V_m$ are conditionally independent given $\bm{H}_n=\bm{h}_n \in \{a,b\}^{n}$ and that the variables $H_1,\ldots,H_n$ are conditionally independent given $\bm{V}_m=\bm{v}_m \in \{a,b\}^{m}$.
 
 Let $\E_i$ denote expectation under the distribution $P_i$, $i=1,2$. Then, for any $\bm{v}_m \in \{a,b\}^{m}, \bm{h}_n \in \{a,b\}^{n}$,
 $$
