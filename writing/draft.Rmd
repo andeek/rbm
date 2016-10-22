@@ -945,6 +945,11 @@ p.models
 
 # Discussion
 
+RBM models are an interesting class of undirected graphical models that have shown to be useful for supervised learning tasks. However, when viewed as a statistical model, RBMs very easily fall prey to instances of model impropriety such as near-degeneracy, S-instability, and uninterpretability. Additionally, these models are difficult to fit using a rigorous methodology due to size of the model space.
+
+In this paper, we have presented three honest Bayes MCMC-based methods for fitting RBMs. Common practice is to use MCMC to overcome fitting complexities, however because of the size of the space to be spanned ($H$ hidden variables for each visible observation) convergence and mixing of these methods will be slow. Marginalization of the latent variables in the model can improve mixing, but is numerically intractible due to repeated calculation of the normalizing constant.
+
+Ultimately, it is not clear RBM models are useful as generative models. Due to the extreme flexibility in these models, a rigorous likelihood-based method for fitting an RBM will merely return the (discrete) empirical distribution for visibles. Meaning, even if a rigorous likelihood-based fitting method is able to overcome the inherent difficulties of mixing and convergence in a large space, we know the answer before we even begin. For these reasons, we are thus skeptical of the generative claims made about RBMs.
 
 \begin{appendix}
 \section{Appendices}
