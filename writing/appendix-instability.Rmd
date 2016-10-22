@@ -10,4 +10,4 @@
 & \qquad \qquad \min\limits_{(v_1, \dots, v_V)}\max\limits_{\boldsymbol h \in \{-1,1\}^H}\left\{\sum\limits_{i = 1}^V \theta_{v_i}v_i + \sum\limits_{j = 1}^H \theta_{h_j}h_j + \sum\limits_{i = 1}^V\sum\limits_{j = 1}^H \theta_{ij}v_i h_j\right\} -H\log2 \\
 & \qquad \equiv R(\boldsymbol \theta_V)
 \end{align*}
-using above the monotonicity of $\log(\cdot)$.
+using above the monotonicity of $\log(\cdot)$ and the positivity of $\exp(\cdot)$.
