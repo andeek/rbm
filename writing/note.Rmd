@@ -11,13 +11,18 @@ output:
     number_sections: yes
 bibliography: references/refs.bib
 abstract: |
+  We introduce a broad class of discrete space models that are defined in relation to how a probability model is built to incorporate more variables. We will call this class of models *Discrete Expanding Finite space*, or DEF models. They are defined as models in discrete finite space with a sequence of expanding model parameter vectors that potentially grow size as the dimension of the data become larger and model support equal the sample space. In this paper, we present results that define the notion of model instability as well as near-degeneracy within the framework of DEF models in addition to demonstrating example models of the DEF class.
 ---
 
-# Discrete Expanding Finite space models 
+# Introduction
 
-Consider $(X_1, \dots X_N)$, a set of discrete random variables with a finite sample space, $\mathcal{X}^N$. Let $P_{\boldsymbol \theta_N}(x_1, \dots, x_N)$ denote the probability of the data outcome $(x_1, \dots, x_N) \in \mathcal{X}^N$, which is a sequence of expanding models that potentially grow size as the dimension of the data become larger (i.e. $\boldsymbol \theta_N \in \mathbb{R}^{q(N)}$, where $q(N)$ is a function of $N$). Further, the model support of $P_{\boldsymbol \theta_N}(x_1, \dots, x_N)$ is equal to the sample space $\mathcal{X}^N$. We will call this class of models *Discrete Expanding Finite space*, or DEF models.
+In this paper, we introduce a broad class of discrete space models that are defined in relation to how a probability model is built to incorporate more variables. Consider $(X_1, \dots X_N)$, a set of discrete random variables with a finite sample space, $\mathcal{X}^N$. Let $P_{\boldsymbol \theta_N}(x_1, \dots, x_N)$ denote the probability of the data outcome $(x_1, \dots, x_N) \in \mathcal{X}^N$, which is a sequence of expanding models that potentially grow size as the dimension of the data become larger (i.e. $\boldsymbol \theta_N \in \mathbb{R}^{q(N)}$, where $q(N)$ is a function of $N$). Further, the model support of $P_{\boldsymbol \theta_N}(x_1, \dots, x_N)$ is equal to the sample space $\mathcal{X}^N$. We will call this class of models *Discrete Expanding Finite space*, or DEF models.
 
-Note many model families can fall under the umbrella of DEF models. In Sections \ref{discrete-exponential-family-models}-\ref{deep-learning}, we present three specific examples of DEF models, including models with deep architectures.
+This paper is structured as follows. First, in Section \ref{examples}, we present specific examples of DEF models and discuss how they fit in this framework (including deep learning models). Section \ref{instability-and-degeneracy-results} establishes some formal results regarding the model propriety of DEF models. Lastly, Section \ref{implications} emphasizes the implications of our model prepriety results.
+
+# Examples
+
+Note many model families can fall under the umbrella of DEF models. In this section, we present three specific examples of DEF models, including models with deep architectures.
 
 ## Discrete exponential family models
 
@@ -154,7 +159,6 @@ Meaning, the definition of an S-unstable DEF model is invariant to replication.
 
 # Implications
 
-For a large class of models that cover a broad range of applications (including "deep learning"), we have developed a formal definition and elucidated multiple consequences of instability. We have shown for DEF models that instability manifests through small changes in data leading to overly-sensitive changes in probability as well as the potential to place all probability on a small pieace of the sample space.
-Models that fall within the definition of a DEF model should be used with caution to ensure that the effects of instability are not experienced.
+For a large class of models that cover a broad range of applications (including "deep learning"), we have developed a formal definition and elucidated multiple consequences of instability. We have shown for DEF models that instability manifests through small changes in data leading to overly-sensitive changes in probability as well as the potential to place all probability on a small pieace of the sample space. Models that fall within the definition of a DEF model should be used with caution to ensure that the effects of instability are not experienced.
 
 # References
