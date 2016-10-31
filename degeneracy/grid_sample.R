@@ -80,10 +80,11 @@ grid_sample %>%
 
 grid <- inner_join(grid, grid_sample)
 
-grid %>%
+grid %>% 
   ungroup() %>%
   group_by(H, V, N, r1, r2) %>%
-  do(outside = find_prop(.$g_theta[[1]] %>% data.frame() %>% select(starts_with("exp")), .$stat[[1]], r_exp)) -> tmp
+  mutate(epsilon = (1-(1-2*r_exp)^(3/(H + V + H*V)))/2) %>%
+  do(outside = find_prop(.$g_theta[[1]] %>% data.frame() %>% select(starts_with("exp")), .$stat[[1]], .$epsilon)) -> tmp
 
 res <- inner_join(tmp, grid)
 save(res, file = "written/results_grid.RData")

@@ -56,18 +56,18 @@ A restricted Boltzmann machine (RBM) is an undirected graphical model specified 
 A common use for RBMs is to create features for use in classification. For example, binary images could be classified where the pixel values would be treated as the visible variables $v_i$ [@hinton2006fast].
 
 ### Joint distribution
-Let $\boldsymbol x = (h_1, \dots, h_H, v_1,\dots,v_V)$ represent the states of the visible and hidden nodes in an RBM for some integers $V, H \ge 1$. Each single "binary" random variable, visible or hidden, will take its values in a common coding set $\mathcal{C}$, where we allow one of two possibilities for the coding set $\mathcal{C}=\{0,1\}$ or $\mathcal{C}=\{-1,1\}$ with "$1$" always indicating the "high" value of the variable. While $\mathcal{C}=\{0,1\}$ may be a natural or na{\"i}ve starting point, we show later that the coding $\mathcal{C}=\{-1,1\}$ induces better model properties for the RBM. We posit a parametric form for probabilities corresponding to a potential vector of states, $X = (H_1, \dots, H_H, V_1,\dots,V_V)$, for the nodes as
+Let $\boldsymbol x = (h_1, \dots, h_\nh, v_1,\dots,v_\nv)$ represent the states of the visible and hidden nodes in an RBM for some integers $\nv, \nh \ge 1$. Each single "binary" random variable, visible or hidden, will take its values in a common coding set $\mathcal{C}$, where we allow one of two possibilities for the coding set $\mathcal{C}=\{0,1\}$ or $\mathcal{C}=\{-1,1\}$ with "$1$" always indicating the "high" value of the variable. While $\mathcal{C}=\{0,1\}$ may be a natural or na{\"i}ve starting point, we show later that the coding $\mathcal{C}=\{-1,1\}$ induces better model properties for the RBM. We posit a parametric form for probabilities corresponding to a potential vector of states, $X = (H_1, \dots, H_\nh, V_1,\dots,V_\nv)$, for the nodes as
 
 \begin{align}
 \label{eqn:pmf}
-f_{\boldsymbol \theta} (\boldsymbol x)\equiv P_{\boldsymbol \theta}(\boldsymbol X = \boldsymbol x) = \frac{\exp\left(\sum\limits_{i = 1}^V \sum\limits_{j=1}^H \theta_{ij} v_i h_j + \sum\limits_{i = 1}^V\theta_{v_i} v_i + \sum\limits_{j = 1}^H\theta_{h_j} h_j\right)}{\gamma(\boldsymbol \theta)}, \quad \boldsymbol x \in \mathcal{X} 
+f_{\boldsymbol \theta} (\boldsymbol x)\equiv P_{\boldsymbol \theta}(\boldsymbol X = \boldsymbol x) = \frac{\exp\left(\sum\limits_{i = 1}^\nv \sum\limits_{j=1}^\nh \theta_{ij} v_i h_j + \sum\limits_{i = 1}^V\theta_{v_i} v_i + \sum\limits_{j = 1}^\nh\theta_{h_j} h_j\right)}{\gamma(\boldsymbol \theta)}, \quad \boldsymbol x \in \mathcal{C}^{\nh + \nv} 
 \end{align}
 
-where $\boldsymbol \theta \equiv (\theta_{11}, \dots, \theta_{1H}, \dots, \theta_{V1}, \dots, \theta_{VH}, \theta_{v_1}, \dots, \theta_{v_V}, \theta_{h_1}, \dots, \theta_{h_H}) \in \mathbb{R}^{V + H + V*H}$ denotes the vector of model parameters and the denominator $\gamma(\boldsymbol \theta) = \sum\limits_{\boldsymbol x \in \mathcal{C}^{H+V}}\exp\left(\sum\limits_{i = 1}^V \sum\limits_{j=1}^H \theta_{ij} v_i h_j + \sum\limits_{i = 1}^V\theta_{v_i} v_i + \sum\limits_{j = 1}^H\theta_{h_j} h_j\right)$ is the normalizing function that ensures the probabilities (\ref{eqn:pmf}) sum to one. For 
+where $\boldsymbol \theta \equiv (\theta_{11}, \dots, \theta_{1\nh}, \dots, \theta_{\nv 1}, \dots, \theta_{\nv \nh}, \theta_{v_1}, \dots, \theta_{v_\nv}, \theta_{h_1}, \dots, \theta_{h_\nh}) \in \mathbb{R}^{\nv + \nh + \nv*\nh}$ denotes the vector of model parameters and the denominator $\gamma(\boldsymbol \theta) = \sum\limits_{\boldsymbol x \in \mathcal{C}^{\nh+\nv}}\exp\left(\sum\limits_{i = 1}^\nv \sum\limits_{j=1}^\nh \theta_{ij} v_i h_j + \sum\limits_{i = 1}^\nv\theta_{v_i} v_i + \sum\limits_{j = 1}^\nh\theta_{h_j} h_j\right)$ is the normalizing function that ensures the probabilities (\ref{eqn:pmf}) sum to one. For 
 \begin{align}
-\boldsymbol t(\boldsymbol x) = (h_1, \dots, h_H, v_1, \dots, v_V, v_1 h_1, \dots, v_V h_H) \in \mathcal{C}^{H + V + H*V}, \boldsymbol x = (h_1, \dots, h_H, v_1, \dots, v_V) \in \mathcal{C}^{V + H}, \label{eqn:t}
+\boldsymbol t(\boldsymbol x) = (h_1, \dots, h_\nh, v_1, \dots, v_\nv, v_1 h_1, \dots, v_\nv h_\nh) \in \mathcal{C}^{\nh + \nv + \nh*\nv}, \boldsymbol x = (h_1, \dots, h_\nh, v_1, \dots, v_\nh) \in \mathcal{C}^{\nv + \nh}, \label{eqn:t}
 \end{align}
-let $\mathcal{T} = \{\boldsymbol t(\boldsymbol x): \boldsymbol x \in \mathcal{X}\}$ be the vector of variables needed to compute probabilities (\ref{eqn:pmf}) in the model and write $Q_{\boldsymbol \theta}(\boldsymbol x) = \sum\limits_{i = 1}^H\sum\limits_{j=1}^V \theta_{ij} h_i v_j + \sum\limits_{i = 1}^H\theta_{hi} h_i + \sum\limits_{j = 1}^V\theta_{vj} v_j$ for the neg-potential function. Note that the RBM model is parameterized by $\boldsymbol \theta$ containing two types of parameters, main effects and interaction effects. The main effects parameters ($\{\theta_{v_i}, \theta_{h_j}\}_{\substack{i = 1, \dots, V,\\j = 1, \dots, H}}$) weight the values of the visible $v_i$ and hidden $h_j$ nodes in probabilities (\ref{eqn:pmf}) and the interaction effects parameters ($\theta_{ij}$) weight the values of the connections $v_i h_j$, or dependencies, between hidden and visible layers.
+let $\mathcal{T} = \{\boldsymbol t(\boldsymbol x): \boldsymbol x \in \mathcal{C}^{\nv + \nh}\}$ be the vector of variables needed to compute probabilities (\ref{eqn:pmf}) in the model and write $Q_{\boldsymbol \theta}(\boldsymbol x) = \sum\limits_{i = 1}^\nh\sum\limits_{j=1}^\nv \theta_{ij} h_i v_j + \sum\limits_{i = 1}^\nh\theta_{hi} h_i + \sum\limits_{j = 1}^\nv\theta_{vj} v_j$ for the neg-potential function. Note that the RBM model is parameterized by $\boldsymbol \theta$ containing two types of parameters, main effects and interaction effects. The main effects parameters ($\{\theta_{v_i}, \theta_{h_j}\}_{\substack{i = 1, \dots, \nv,\\j = 1, \dots, \nh}}$) weight the values of the visible $v_i$ and hidden $h_j$ nodes in probabilities (\ref{eqn:pmf}) and the interaction effects parameters ($\theta_{ij}$) weight the values of the connections $v_i h_j$, or dependencies, between hidden and visible layers.
 
 Due to the potential size of the model, the normalizing constant $\gamma(\boldsymbol \theta)$ can be practically impossible to calculate, making it impossible to estimate the model parameter vector in an obvious fashion. A kind of Gibbs sampling can be tried, which is natural due to conditional independence architecture of the RBM (i.e. visibles given hiddens or vice versa). Specifically, the conditional independence of nodes in each layer, given those nodes in the other layer allows for stepwise simulation of both the visible and hidden layers.
 
@@ -76,7 +76,7 @@ Due to the potential size of the model, the normalizing constant $\gamma(\boldsy
 RBMs have risen to prominence in recent years due to their connection to deep learning [see @hinton2006fast, @salakhutdinov2012efficient, or @srivastava2013modeling for examples]. By stacking multiple layers of RBMs in a deep architecture, proponents of the models claim to produce the ability to learn "internal representations that become increasingly complex, which is considered to be a promising way of solving object and speech recognition problems" [@salakhutdinov2009deep, pp. 450]. The stacking is achieved by treating a hidden layer of one RBM as the visible layer in a second RBM, and so on until the desired multi-layer architecture is created. 
 
 ## Degeneracy, instability, and uninterpretability... Oh my!
-The highly flexible nature of a RBM (having as it does $H + V + H V$ parameters) creates at least three kinds of potential model impropriety of concern that we will call *degeneracy, instability, and uninterpretability*. In this section we define these characteristics, consider how to detect them in a RBM, and point out relationships among them.
+The highly flexible nature of a RBM (having as it does $\nh + \nv + \nh*\nv$ parameters) creates at least three kinds of potential model impropriety of concern that we will call *degeneracy, instability, and uninterpretability*. In this section we define these characteristics, consider how to detect them in a RBM, and point out relationships among them.
 
 ### Near-degeneracy
 In Random Graph Model theory, *model degeneracy* means there is a disproportionate amount of probability placed on only a few elements of the sample space, $\mathcal{X}$, by the model [@handcock2003assessing]. For random graph models, $\mathcal{X}$ denotes all possible graphs that can be constructed from a set of nodes and an exponentially parameterized random graph model has a distribution of the form 
@@ -85,7 +85,7 @@ f_{\boldsymbol \theta} (\boldsymbol x) = \frac{\exp\left(\boldsymbol \theta^T \b
 \end{align*}
 where $\boldsymbol \theta \in \Theta \subset \mathbb{R}^q$ is the model parameter, and $t: \mathcal{X} \rightarrow \mathbb{R}^q$ are statistics based on the adjacency matrix of a graph. Again, $\gamma(\boldsymbol \theta) = \sum_{\boldsymbol x \in \mathcal{X}} \exp\left(\boldsymbol \theta^T \boldsymbol t(\boldsymbol x)\right)$ is the normalizing function. Let $C$ denote the convex hull spanned by the potential outcomes of sufficient statistics, $\{\boldsymbol t(\boldsymbol x): \boldsymbol x \in \mathcal{X}\}$. @handcock2003assessing classify an exponentially parametrized random graph model at $\boldsymbol \theta$ as *near-degenerate* if the mean value of sufficient statistics under $\boldsymbol \theta$, $\boldsymbol \mu(\boldsymbol \theta) = \text{E}_{\boldsymbol \theta}\boldsymbol t(X)$, is close to the boundary of $C$. 
 
-The RBM class of models can be thought to exhibit an analogous occurrence of *near-degeneracy* as follows. When random variables $\boldsymbol t(\boldsymbol x) = (v_1, \dots, v_V, h_1, \dots, h_H, v_1 h_1, \dots, v_V h_H ) \in \mathcal{T} \equiv \{\boldsymbol t(\boldsymbol x): \boldsymbol x \in \mathcal{C}^{H + V} \}$ in the neg-potential function $Q_{\boldsymbol \theta}(\cdot)$ have a mean vector $\boldsymbol \mu(\boldsymbol \theta)$ close to the boundary of the convex hull of $\mathcal{T}$, then the RBM model can be said to be near-degenerate at $\boldsymbol \theta \in \mathbb{R}^{V + H + H*V}$. Here the mean of $\boldsymbol t(\boldsymbol x)$ is
+The RBM class of models can be thought to exhibit an analogous occurrence of *near-degeneracy* as follows. When random variables $\boldsymbol t(\boldsymbol x) = (v_1, \dots, v_\nv, h_1, \dots, h_\nh, v_1 h_1, \dots, v_V h_\nh ) \in \mathcal{T} \equiv \{\boldsymbol t(\boldsymbol x): \boldsymbol x \in \mathcal{C}^{\nh + \nv} \}$ in the neg-potential function $Q_{\boldsymbol \theta}(\cdot)$ have a mean vector $\boldsymbol \mu(\boldsymbol \theta)$ close to the boundary of the convex hull of $\mathcal{T}$, then the RBM model can be said to be near-degenerate at $\boldsymbol \theta \in \mathbb{R}^{V + H + H*V}$. Here the mean of $\boldsymbol t(\boldsymbol x)$ is
 $$
 \boldsymbol \mu(\boldsymbol \theta) = \text{E}_{\boldsymbol \theta} \boldsymbol t(\boldsymbol X)  = \sum\limits_{x \in \mathcal{X}} \left\{ \boldsymbol t(\boldsymbol x) f_{\boldsymbol \theta} (\boldsymbol x) \right\} = \sum\limits_{x \in \mathcal{X}} \left\{ \boldsymbol t(\boldsymbol x)\dfrac{\exp\left(\sum\limits_{i = 1}^V \sum\limits_{j=1}^H \theta_{ij} v_i h_j + \sum\limits_{i = 1}^V\theta_{v_i} v_i + \sum\limits_{j = 1}^H\theta_{h_j} h_j\right)}{\sum\limits_{\boldsymbol x \in \mathcal{X}}\exp\left(\sum\limits_{i = 1}^V \sum\limits_{j=1}^H \theta_{ij} v_i h_j + \sum\limits_{i = 1}^V\theta_{v_i} v_i + \sum\limits_{j = 1}^H\theta_{h_j} h_j\right)}\right\}.
 $$
@@ -465,7 +465,26 @@ min_max_Q <- function(theta, stats) {
     data.matrix() %>%
     t()
 }
-
+elpr <- function(theta, stats) {
+  require(dplyr)
+  exp(tcrossprod(stats, theta)) %>% data.frame() %>%
+    cbind(stats) %>%
+    group_by_(.dots = colnames(stats)[grepl("v", colnames(stats)) & !grepl("theta", colnames(stats))]) %>%
+    summarise_each(funs(sum), contains("X")) %>%
+    ungroup() -> marginalized
+  
+  marginalized %>%
+    summarise_each(funs(max), contains("X")) %>%
+    select(contains("X")) %>%
+    data.matrix() -> max_marg
+  
+  marginalized %>%
+    summarise_each(funs(min), contains("X")) %>%
+    select(contains("X")) %>%
+    data.matrix() -> min_marg
+  
+  t(log(max_marg/min_marg))
+}
 
 #grid data
 load("data/results_grid.RData")
@@ -500,13 +519,21 @@ res %>%
                 min_max = min_max_Q(.$samp[[1]], .$stat[[1]]))) %>%
   ungroup() %>% 
   group_by(H, V, N, r1, r2) %>%
-  mutate(LHS1 = (max - min)/N,
-         LHS2 = (max - min_max - H*log(2))/N) %>%
+  mutate(LHS1 = (max - min)/V,
+         LHS2 = (max - min_max - H*log(2))/V) %>%
   summarise_each(funs(mean), LHS1, LHS2) -> max_q_summary
+
+res %>%
+  group_by(H, V, N, r1, r2) %>%
+  do(data.frame(elpr = elpr(.$samp[[1]], .$stat[[1]]))) %>%
+  ungroup() %>%
+  group_by(H, V, N, r1, r2) %>% 
+  summarise(mean_elpr = mean(elpr)) %>%
+  mutate(scaled_mean_elpr = mean_elpr/V) -> elpr_summary
 
 
 convex_hull_summary %>%
-  left_join(max_q_summary) %>%
+  left_join(elpr_summary) %>%
   left_join(exp_vals_summary) -> three_ways
   
 
@@ -563,15 +590,15 @@ three_ways %>%
 three_ways %>%
   mutate(r1 = round(r1/(H + V), 8), r2 = round(r2/(H * V), 8)) %>% 
   ggplot() +
-  geom_tile(aes(x = r1, y = r2, fill = LHS2)) +
-  geom_contour(aes(x = r1, y = r2, z = LHS2), colour = "black", bins = 8) +
+  geom_tile(aes(x = r1, y = r2, fill = scaled_mean_elpr)) +
+  geom_contour(aes(x = r1, y = r2, z = scaled_mean_elpr), colour = "black", bins = 8) +
   #geom_contour(aes(x = r1, y = r2, z = mean_max_q), colour = "black", breaks = .05, size = 1.5) +
   geom_abline(aes(intercept = 0, slope = 1), alpha = .5, lty = 2) +
-  scale_fill_gradient(expression(frac(bar(R(theta)), V)), low = "yellow", high = "red") +
+  scale_fill_gradient(expression(frac(bar(ELPR(theta)), V)), low = "yellow", high = "red") +
   facet_grid(Visibles~Hiddens) +
   xlab(expression(paste(paste("||", theta[main], "||", "/(H + V)")))) +
   ylab(expression(paste(paste("||", theta[interaction], "||", "/(H*V)")))) +
-  theme(aspect.ratio = 1) -> p.min_max_q
+  theme(aspect.ratio = 1) -> p.elpr
 
 
 p.degen
@@ -579,7 +606,7 @@ p.degen
 
 
 ```{r instab_plots_2, fig.cap="\\label{fig:instab_plots}Results from the experiment, here looking at the sample mean value of $R(\\boldsymbol \\theta)/V$ at each grid point for each combination of magnitude of $\\boldsymbol \\theta$ and model size. As the magnitude of $\\boldsymbol \\theta$ grows, so does the value of this metric, indicating typical instability in the model.", fig.height=4}
-p.min_max_q
+p.elpr
 ```
 
 
