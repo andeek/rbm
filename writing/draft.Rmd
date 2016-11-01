@@ -11,7 +11,7 @@ output:
     number_sections: yes
 bibliography: references/refs.bib
 abstract: |
-  A restricted Boltzmann machine (RBM) is an undirected graphical model constructed for discrete or continuous random variables, with two layers, one hidden and one visible, and no conditional dependency within a layer. In recent years, RBMs have risen to prominence due to their connection to deep learning. By treating a hidden layer of one RBM as the visible layer in a second RBM, a deep architecture can be created. RBMs are thereby thought to have the ability to encode very complex and rich structures in data, making them attractive for supervised learning. However, the generative behavior of RBMs has been largely unexplored. In this paper, we discuss the relationship between RBM parameter specification in the binary case and the prevalence of undesirable model behaviors such as degeneracy, instability and/or uninterpretability. We also describe the difficulties that arise in likelihood-based fitting and Bayes of such (highly flexible) models, especially as Gibbs sampling (quasi-Bayes) methods are often advocated for the RBM model structure.
+  A restricted Boltzmann machine (RBM) is an undirected graphical model constructed for discrete or continuous random variables, with two layers, one hidden and one visible, and no conditional dependency within a layer. In recent years, RBMs have risen to prominence due to their connection to deep learning. By treating a hidden layer of one RBM as the visible layer in a second RBM, a deep architecture can be created. RBMs are thereby thought to have the ability to encode very complex and rich structures in data, making them attractive for supervised learning. However, the generative behavior of RBMs has been largely unexplored. In this paper, we discuss the relationship between RBM parameter specification in the binary case and the prevalence of undesirable model behaviors such as degeneracy, instability and/or uninterpretability. We also describe the difficulties that arise in likelihood-based and Bayes fitting  of such (highly flexible) models, especially as Gibbs sampling (quasi-Bayes) methods are often advocated for the RBM model structure.
 ---
 
 ```{r libraries_options, echo=FALSE, message=FALSE, warnings=FALSE}
@@ -32,13 +32,13 @@ The data mining and machine learning communities have recently shown a great int
 
 First, the models are often unsatisfactory as a conceptualization of how data are generated. According to Fisher, the aim of a statistical model is to represent data in a compact way [@fisher1922mathematical]. Neyman and Box agree with this assessment and go further to state that a model should "provide an explanation of the mechanism underlying the observed phenomena" [@lehmann1990model, @box1967discrimination]. At issue, RBMs  often produce data lacking realistic variability and may thereby fail to provide a satisfactory conceptualization of the data generation process. In addition to such degeneracy, we find that RBMs can easily exhibit types of instability. In practice, this may seen when a single pixel change in an image results in a wildly different classification in an image classification problem. Such model impropriety issues have recently been documented in RBMs [@li2014biclustering], as well as other deep architectures [@szegedy2013intriguing, @nguyen2014deep]. We investigate and these phenomena for RBMs in Section \ref{explorations} through simulations of small, manageable examples.
 
-Secondly, the fitting of these models is problematic. As the size of these models grows, both maximum likelihood and Bayesian methods of fitting quickly become intractable. The literature often suggests Markov chain Monte Carlo (MCMC) approximations to posteriors to fit these models (e.g., Gibbs sampling to exploit conditional structure in the hidden and visible variables), but little is said about acheiving convergence [@hinton2010practical, @hinton2006fast]. Related to this, these MCMC algorithms require updating potentially many latent variables (hiddens) per observation (visibles) which can critically influence convergence in MCMC-based likelihood methods. 
+Secondly, the fitting of these models is problematic. As the size of these models grows, both maximum likelihood and Bayesian methods of fitting quickly become intractable. The literature often suggests Markov chain Monte Carlo (MCMC) approximations to posteriors to fit these models (e.g., Gibbs sampling to exploit conditional structure in the hidden and visible variables), but little is said about acheiving convergence [@hinton2010practical, @hinton2006fast]. Related to this, these MCMC algorithms require updating potentially many latent variables (hiddens) which can critically influence convergence in MCMC-based likelihood methods. 
 
-In Section \ref{bayesian-model-fitting}, we compare three Bayesian modeling techniques (involving MCMC approximations that are computationally more accessible than direct maximum likelihood), each proposed with the goal of avoiding parts of the RBM parameter space that yield improper models. As might be expected, with greater computational complexity comes an increase in fitting accuracy, but at the cost of practical feasibility. 
+In Section \ref{bayesian-model-fitting}, we compare three Bayesian modeling techniques (involving MCMC approximations that are computationally more accessible than direct maximum likelihood), each proposed with the goal of avoiding parts of the RBM parameter space that yield unattractive models. As might be expected, with greater computational complexity comes an increase in fitting accuracy, but at the cost of practical feasibility. 
 
-Additionally, because RBM models are highly overparametrized, any fully principled fitting method based on the likelihood will simply reproduce the (discrete) empirical distribution of most realistic training sets. That is, there is no "smoothed distribution" achieved in fitting a RBM model with a rigorous likelihood-based method. We are therefore led to be skeptical that any model built using these structures, like a deep Boltzmann machine, can achieve prediction or inference in a principled way.
+Additionally, because RBM models are highly overparametrized, any fully principled fitting method based on the likelihood will simply reproduce the (discrete) empirical distribution of most realistic training sets. That is, there is no "smoothed distribution" achieved in fitting a RBM model with a rigorous likelihood-based method. We are therefore led to be skeptical that any model built using these structures (like a deep Boltzmann machine) can achieve prediction or inference in a principled way.
 
-This paper is structured as follows. Section \ref{background} formally definesthe RBM including the joint distribution of hidden and visible variables and explains the model's connection to deep learning. Additionally, measures of model impropriety and methods of detecting it are defined. Section \ref{explorations} details our explorations into the model behavior and propriety (or lack thereof) of the RBM class. We discuss three Bayesian fitting techniques intended to avoid fitted model impropriety in Section \ref{model-fitting} and conclude with a discussion in Section \ref{discussion}. Additionally, there is an accompanying appendix with proofs of main results.
+This paper is structured as follows. Section \ref{background} formally defines the RBM including the joint distribution of hidden and visible variables and explains the model's connection to deep learning. Additionally, measures of model impropriety and methods of detecting it are defined. Section \ref{explorations} details our explorations into the model behavior and propriety (or lack thereof) of the RBM class. We discuss three Bayesian fitting techniques intended to avoid fitted model impropriety in Section \ref{model-fitting} and conclude with a discussion in Section \ref{discussion}. Additionally, there is an accompanying appendix with proofs of main results.
 
 # Background
 
@@ -56,11 +56,11 @@ A restricted Boltzmann machine (RBM) is an undirected graphical model specified 
 A common use for RBMs is to create features for use in classification. For example, binary images could be classified where the pixel values would be treated as the visible variables $v_i$ [@hinton2006fast].
 
 ### Joint distribution
-Let $\boldsymbol x = (h_1, \dots, h_\nh, v_1,\dots,v_\nv)$ represent the states of the visible and hidden nodes in an RBM for some integers $\nv, \nh \ge 1$. Each single "binary" random variable, visible or hidden, will take its values in a common coding set $\mathcal{C}$, where we allow one of two possibilities for the coding set $\mathcal{C}=\{0,1\}$ or $\mathcal{C}=\{-1,1\}$ with "$1$" always indicating the "high" value of the variable. While $\mathcal{C}=\{0,1\}$ may be a natural or na{\"i}ve starting point, we show later that the coding $\mathcal{C}=\{-1,1\}$ induces better model properties for the RBM. We posit a parametric form for probabilities corresponding to a potential vector of states, $X = (H_1, \dots, H_\nh, V_1,\dots,V_\nv)$, for the nodes as
+Let $\boldsymbol x = (h_1, \dots, h_\nh, v_1,\dots,v_\nv)$ represent the states of the visible and hidden nodes in an RBM for some integers $\nv, \nh \ge 1$. Each single "binary" random variable, visible or hidden, will take its values in a common coding set $\mathcal{C}$, where we allow one of two possibilities for the coding set $\mathcal{C}=\{0,1\}$ or $\mathcal{C}=\{-1,1\}$ with "$1$" always indicating the "high" value of the variable. While $\mathcal{C}=\{0,1\}$ may be a natural or naive starting point, we show later that the coding $\mathcal{C}=\{-1,1\}$ induces better model properties for the RBM. We posit a parametric form for probabilities corresponding to a potential vector of states, $X = (H_1, \dots, H_\nh, V_1,\dots,V_\nv)$, for the nodes as
 
 \begin{align}
 \label{eqn:pmf}
-f_{\boldsymbol \theta} (\boldsymbol x)\equiv P_{\boldsymbol \theta}(\boldsymbol X = \boldsymbol x) = \frac{\exp\left(\sum\limits_{i = 1}^\nv \sum\limits_{j=1}^\nh \theta_{ij} v_i h_j + \sum\limits_{i = 1}^V\theta_{v_i} v_i + \sum\limits_{j = 1}^\nh\theta_{h_j} h_j\right)}{\gamma(\boldsymbol \theta)}, \quad \boldsymbol x \in \mathcal{C}^{\nh + \nv} 
+f_{\boldsymbol \theta} (\boldsymbol x)\equiv P_{\boldsymbol \theta}(\boldsymbol X = \boldsymbol x) = \frac{\exp\left(\sum\limits_{i = 1}^\nv \sum\limits_{j=1}^\nh \theta_{ij} v_i h_j + \sum\limits_{i = 1}^\nv\theta_{v_i} v_i + \sum\limits_{j = 1}^\nh\theta_{h_j} h_j\right)}{\gamma(\boldsymbol \theta)}, \quad \boldsymbol x \in \mathcal{C}^{\nh + \nv} 
 \end{align}
 
 where $\boldsymbol \theta \equiv (\theta_{11}, \dots, \theta_{1\nh}, \dots, \theta_{\nv 1}, \dots, \theta_{\nv \nh}, \theta_{v_1}, \dots, \theta_{v_\nv}, \theta_{h_1}, \dots, \theta_{h_\nh}) \in \mathbb{R}^{\nv + \nh + \nv*\nh}$ denotes the vector of model parameters and the denominator $\gamma(\boldsymbol \theta) = \sum\limits_{\boldsymbol x \in \mathcal{C}^{\nh+\nv}}\exp\left(\sum\limits_{i = 1}^\nv \sum\limits_{j=1}^\nh \theta_{ij} v_i h_j + \sum\limits_{i = 1}^\nv\theta_{v_i} v_i + \sum\limits_{j = 1}^\nh\theta_{h_j} h_j\right)$ is the normalizing function that ensures the probabilities (\ref{eqn:pmf}) sum to one. For 
@@ -69,96 +69,83 @@ where $\boldsymbol \theta \equiv (\theta_{11}, \dots, \theta_{1\nh}, \dots, \the
 \end{align}
 let $\mathcal{T} = \{\boldsymbol t(\boldsymbol x): \boldsymbol x \in \mathcal{C}^{\nv + \nh}\}$ be the vector of variables needed to compute probabilities (\ref{eqn:pmf}) in the model and write $Q_{\boldsymbol \theta}(\boldsymbol x) = \sum\limits_{i = 1}^\nh\sum\limits_{j=1}^\nv \theta_{ij} h_i v_j + \sum\limits_{i = 1}^\nh\theta_{hi} h_i + \sum\limits_{j = 1}^\nv\theta_{vj} v_j$ for the neg-potential function. Note that the RBM model is parameterized by $\boldsymbol \theta$ containing two types of parameters, main effects and interaction effects. The main effects parameters ($\{\theta_{v_i}, \theta_{h_j}\}_{\substack{i = 1, \dots, \nv,\\j = 1, \dots, \nh}}$) weight the values of the visible $v_i$ and hidden $h_j$ nodes in probabilities (\ref{eqn:pmf}) and the interaction effects parameters ($\theta_{ij}$) weight the values of the connections $v_i h_j$, or dependencies, between hidden and visible layers.
 
-Due to the potential size of the model, the normalizing constant $\gamma(\boldsymbol \theta)$ can be practically impossible to calculate, making it impossible to estimate the model parameter vector in an obvious fashion. A kind of Gibbs sampling can be tried, which is natural due to conditional independence architecture of the RBM (i.e. visibles given hiddens or vice versa). Specifically, the conditional independence of nodes in each layer, given those nodes in the other layer allows for stepwise simulation of both the visible and hidden layers.
+Due to the potential size of the model, the normalizing constant $\gamma(\boldsymbol \theta)$ can be practically impossible to calculate, making simple estimation of the model parameter vector problematic. A kind of Gibbs sampling can be tried (which is natural due to conditional independence architecture of the RBM, i.e. visibles given hiddens or vice versa). Specifically, the conditional independence of nodes in each layer, given those nodes in the other layer allows for stepwise simulation of both hidden layers and model parameters possible.
 
 ### Connection to Deep Learning
 
 RBMs have risen to prominence in recent years due to their connection to deep learning [see @hinton2006fast, @salakhutdinov2012efficient, or @srivastava2013modeling for examples]. By stacking multiple layers of RBMs in a deep architecture, proponents of the models claim to produce the ability to learn "internal representations that become increasingly complex, which is considered to be a promising way of solving object and speech recognition problems" [@salakhutdinov2009deep, pp. 450]. The stacking is achieved by treating a hidden layer of one RBM as the visible layer in a second RBM, and so on until the desired multi-layer architecture is created. 
 
 ## Degeneracy, instability, and uninterpretability... Oh my!
-The highly flexible nature of a RBM (having as it does $\nh + \nv + \nh*\nv$ parameters) creates at least three kinds of potential model impropriety of concern that we will call *degeneracy, instability, and uninterpretability*. In this section we define these characteristics, consider how to detect them in a RBM, and point out relationships among them.
+The highly flexible nature of a RBM (having as it does $\nh + \nv + \nh*\nv$ parameters) creates at least three kinds of potential model impropriety of concern that we will call *degeneracy*, *instability*, and *uninterpretability*. In this section we define these characteristics, consider how to detect them in a RBM, and point out relationships among them.
 
 ### Near-degeneracy
 In Random Graph Model theory, *model degeneracy* means there is a disproportionate amount of probability placed on only a few elements of the sample space, $\mathcal{X}$, by the model [@handcock2003assessing]. For random graph models, $\mathcal{X}$ denotes all possible graphs that can be constructed from a set of nodes and an exponentially parameterized random graph model has a distribution of the form 
 \begin{align*}
 f_{\boldsymbol \theta} (\boldsymbol x) = \frac{\exp\left(\boldsymbol \theta^T \boldsymbol t(\boldsymbol x)\right)}{\gamma(\boldsymbol \theta)}, \boldsymbol x \in \mathcal{X},
 \end{align*}
-where $\boldsymbol \theta \in \Theta \subset \mathbb{R}^q$ is the model parameter, and $t: \mathcal{X} \rightarrow \mathbb{R}^q$ are statistics based on the adjacency matrix of a graph. Again, $\gamma(\boldsymbol \theta) = \sum_{\boldsymbol x \in \mathcal{X}} \exp\left(\boldsymbol \theta^T \boldsymbol t(\boldsymbol x)\right)$ is the normalizing function. Let $C$ denote the convex hull spanned by the potential outcomes of sufficient statistics, $\{\boldsymbol t(\boldsymbol x): \boldsymbol x \in \mathcal{X}\}$. @handcock2003assessing classify an exponentially parametrized random graph model at $\boldsymbol \theta$ as *near-degenerate* if the mean value of sufficient statistics under $\boldsymbol \theta$, $\boldsymbol \mu(\boldsymbol \theta) = \text{E}_{\boldsymbol \theta}\boldsymbol t(X)$, is close to the boundary of $C$. 
+where $\boldsymbol \theta \in \Theta \subset \mathbb{R}^q$ is the model parameter, and $t: \mathcal{X} \rightarrow \mathbb{R}^q$ are statistics based on the adjacency matrix of a graph. Here, as earlier, $\gamma(\boldsymbol \theta) = \sum_{\boldsymbol x \in \mathcal{X}} \exp\left(\boldsymbol \theta^T \boldsymbol t(\boldsymbol x)\right)$ is the normalizing function. Let $C$ denote the convex hull spanned by the potential outcomes of sufficient statistics, $\{\boldsymbol t(\boldsymbol x): \boldsymbol x \in \mathcal{X}\}$. @handcock2003assessing classify an exponentially parametrized random graph model at $\boldsymbol \theta$ as *near-degenerate* if the mean value of sufficient statistics under $\boldsymbol \theta$, $\boldsymbol \mu(\boldsymbol \theta) = \text{E}_{\boldsymbol \theta}\boldsymbol t( \boldsymbol X)$, is close to the boundary of $C$. 
 
-The RBM class of models can be thought to exhibit an analogous occurrence of *near-degeneracy* as follows. When random variables $\boldsymbol t(\boldsymbol x) = (v_1, \dots, v_\nv, h_1, \dots, h_\nh, v_1 h_1, \dots, v_V h_\nh ) \in \mathcal{T} \equiv \{\boldsymbol t(\boldsymbol x): \boldsymbol x \in \mathcal{C}^{\nh + \nv} \}$ in the neg-potential function $Q_{\boldsymbol \theta}(\cdot)$ have a mean vector $\boldsymbol \mu(\boldsymbol \theta)$ close to the boundary of the convex hull of $\mathcal{T}$, then the RBM model can be said to be near-degenerate at $\boldsymbol \theta \in \mathbb{R}^{V + H + H*V}$. Here the mean of $\boldsymbol t(\boldsymbol x)$ is
+The RBM class of models can be thought to exhibit an analogous form of *near-degeneracy* as follows. When random variables $\boldsymbol t(\boldsymbol x) = (v_1, \dots, v_\nv, h_1, \dots, h_\nh, v_1 h_1, \dots, v_V h_\nh ) \in \mathcal{T} \equiv \{\boldsymbol t(\boldsymbol x): \boldsymbol x \in \mathcal{C}^{\nh + \nv} \}$ in the neg-potential function $Q_{\boldsymbol \theta}(\cdot)$ have a mean vector $\boldsymbol \mu(\boldsymbol \theta)$ close to the boundary of the convex hull of $\mathcal{T}$, then the RBM model can be said to be near-degenerate at $\boldsymbol \theta \in \mathbb{R}^{\nv + \nh + \nh*\nv}$. Here the mean of $\boldsymbol t(\boldsymbol x)$ is
 $$
-\boldsymbol \mu(\boldsymbol \theta) = \text{E}_{\boldsymbol \theta} \boldsymbol t(\boldsymbol X)  = \sum\limits_{x \in \mathcal{X}} \left\{ \boldsymbol t(\boldsymbol x) f_{\boldsymbol \theta} (\boldsymbol x) \right\} = \sum\limits_{x \in \mathcal{X}} \left\{ \boldsymbol t(\boldsymbol x)\dfrac{\exp\left(\sum\limits_{i = 1}^V \sum\limits_{j=1}^H \theta_{ij} v_i h_j + \sum\limits_{i = 1}^V\theta_{v_i} v_i + \sum\limits_{j = 1}^H\theta_{h_j} h_j\right)}{\sum\limits_{\boldsymbol x \in \mathcal{X}}\exp\left(\sum\limits_{i = 1}^V \sum\limits_{j=1}^H \theta_{ij} v_i h_j + \sum\limits_{i = 1}^V\theta_{v_i} v_i + \sum\limits_{j = 1}^H\theta_{h_j} h_j\right)}\right\}.
+\boldsymbol \mu(\boldsymbol \theta) = \text{E}_{\boldsymbol \theta} \boldsymbol t(\boldsymbol X)  = \sum\limits_{x \in \mathcal{C}^{\nv + \nh}} \left\{ \boldsymbol t(\boldsymbol x) f_{\boldsymbol \theta} (\boldsymbol x) \right\} = \sum\limits_{x \in \mathcal{C}^{\nv + \nh}} \left\{ \boldsymbol t(\boldsymbol x)\dfrac{\exp\left(\sum\limits_{i = 1}^\nv \sum\limits_{j=1}^\nh \theta_{ij} v_i h_j + \sum\limits_{i = 1}^\nv\theta_{v_i} v_i + \sum\limits_{j = 1}^\nh\theta_{h_j} h_j\right)}{\sum\limits_{\boldsymbol x \in \mathcal{C}^{\nh + \nv}}\exp\left(\sum\limits_{i = 1}^\nv \sum\limits_{j=1}^\nh \theta_{ij} v_i h_j + \sum\limits_{i = 1}^\nv\theta_{v_i} v_i + \sum\limits_{j = 1}^\nh\theta_{h_j} h_j\right)}\right\}.
 $$
 
 ### Instability
 
-Considering a class of exponential families of distributions, @schweinberger2011instability introduced a concept of model defficiency related to *instability*. Instability can be roughly characterized as excessive sensitivity in the model, where small changes in the components of potential data outcomes, $\boldsymbol x$, may lead to substantial changes in the probability function $f_{\boldsymbol \theta}(\boldsymbol x)$. To quantify "instability" more rigorously (particularly beyond the definition given by @schweinberger2011instability) it is useful to consider how the RBM model might be expanded to incorporate more and more visibles When increasing the size of a RBM model, it becomes necessary to grow the number of model parameters (and in this process one may also arbitrarily expand the number of hidden variables used). To this end, let $\boldsymbol \theta_{V} \equiv (\theta_{v_1}, \dots, \theta_{v_V}, \theta_{h_1}, \dots, \theta_{h_H}, \theta_{11}, \dots, \theta_{VH}), V \ge 1$, denote an element of a sequence of RBM parameters indexed by the number $V$ of visibles $(V_1, \dots, V_V)$ and define a (scaled) extremal log-probability ratio of the RBM model at $\boldsymbol \theta_{V}$ as
+Considering a class of exponential families of distributions, @schweinberger2011instability introduced a concept of model defficiency related to *instability*. Instability can be roughly characterized as excessive sensitivity in the model, where small changes in the components of potential data outcomes, $\boldsymbol x$, may lead to substantial changes in the probability function $f_{\boldsymbol \theta}(\boldsymbol x)$. To quantify "instability" more rigorously (particularly beyond the definition given by @schweinberger2011instability) it is useful to consider how the RBM model might be expanded to incorporate more and more visibles. When increasing the size of a RBM model, it becomes necessary to grow the number of model parameters (and in this process one may also arbitrarily expand the number of hidden variables used). To this end, let $\boldsymbol \theta_{\nv} \equiv (\theta_{v_1}, \dots, \theta_{v_\nv}, \theta_{h_1}, \dots, \theta_{h_\nh}, \theta_{11}, \dots, \theta_{\nv \nh}), \nv \ge 1$, denote an element of a sequence of RBM parameters indexed by the number $V$ of visibles $(V_1, \dots, V_V)$ and define a (scaled) extremal log-probability ratio of the RBM model at $\boldsymbol \theta_{V}$ as
 \begin{align}
-\frac{1}{V} \log \left[\frac{\max\limits_{(v_1, \dots, v_V) \in \mathcal{C}^V}P_{\boldsymbol \theta_V}(v_1, \dots, v_V)}{\min\limits_{(v_1, \dots, v_V) \in \mathcal{C}^V}P_{\boldsymbol \theta_V}(v_1, \dots, v_V)}\right] \equiv \frac{1}{V} \text{ELPR}(\boldsymbol \theta_V) \label{eqn:elpr}
+\frac{1}{\nv} \log \left[\frac{\max\limits_{(v_1, \dots, v_\nv) \in \mathcal{C}^\nv}P_{\boldsymbol \theta_\nv}(v_1, \dots, v_\nv)}{\min\limits_{(v_1, \dots, v_\nv) \in \mathcal{C}^\nv}P_{\boldsymbol \theta_\nv}(v_1, \dots, v_\nv)}\right] \equiv \frac{1}{\nv} \text{ELPR}(\boldsymbol \theta_\nv) \label{eqn:elpr}
 \end{align}
-where $P_{\boldsymbol \theta_V}(v_1, \dots, v_V) \propto \sum_{\{h_j\}\in \mathcal{C}}\exp\left(\sum_{i = 1}^V \theta_{v_i} v_i + \sum_{j = 1}^H \theta_{h_j} h_j + \sum_{i = 1}^V \sum_{j = 1}^H \theta_{ij} v_i h_j\right)$ is the RBM probability of observing outcome $(v_1, \dots, v_V)$ for the visible variables $(V_1, \dots, V_V)$ under parameters $\boldsymbol \theta_V$.
+where $P_{\boldsymbol \theta_\nv}(v_1, \dots, v_\nv) \propto \sum_{\{h_j\}\in \mathcal{C}}\exp\left(\sum_{i = 1}^\nv \theta_{v_i} v_i + \sum_{j = 1}^\nh \theta_{h_j} h_j + \sum_{i = 1}^\nv \sum_{j = 1}^\nh \theta_{ij} v_i h_j\right)$ is the RBM probability of observing outcome $(v_1, \dots, v_\nv)$ for the visible variables $(V_1, \dots, V_\nv)$ under parameters $\boldsymbol \theta_\nv$.
 
-In formulating a RBM model for a potentially large number of visibles (i.e., $V \rightarrow \infty$), we will say that the ratio (\ref{eqn:elpr}) needs to stay bounded for the sequence of RBM models to be stable. That is, we make the following convention
+In formulating a RBM model for a potentially large number of visibles (i.e., as $\nv \rightarrow \infty$), we will say that the ratio (\ref{eqn:elpr}) needs to stay bounded for the sequence of RBM models to be stable. That is, we make the following convention
 
 \begin{defn}[S-unstable RBM]
-Let $\boldsymbol \theta_V \in \mathbb{R}^{V + H +  H*V}, v \ge 1$, be an element of a sequence of RBM parameters where the number of hiddens, $H \equiv H(V) \ge 1$, can be an arbitrary function of the number $V$ of visibles. A RBM model formulation is \emph{Scheinberger-unstable} or \emph{S-unstable} if
+Let $\boldsymbol \theta_\nv \in \mathbb{R}^{\nv + \nh +  \nh*\nv}, \nv \ge 1$, be an element of a sequence of RBM parameters where the number of hiddens, $\nh \equiv \nh(\nv) \ge 1$, can be an arbitrary function of the number $\nv$ of visibles. A RBM model formulation is \emph{Scheinberger-unstable} or \emph{S-unstable} if
 \begin{align*}
-\lim\limits_{V \rightarrow \infty} \frac{1}{V} \text{ELPR}(\boldsymbol \theta_V) \equiv \lim\limits_{V \rightarrow \infty} \frac{1}{V} \log \left[\frac{\max\limits_{(v_1, \dots, v_V) \in \mathcal{C}^V}P_{\boldsymbol \theta}(v_1, \dots, v_V)}{\min\limits_{(v_1, \dots, v_V) \in \mathcal{C}^V}P_{\boldsymbol \theta}(v_1, \dots, v_V)}\right] = \infty.
+\lim\limits_{\nv \rightarrow \infty} \frac{1}{\nv} \text{ELPR}(\boldsymbol \theta_\nv) \equiv \lim\limits_{\nv \rightarrow \infty} \frac{1}{\nv} \log \left[\frac{\max\limits_{(v_1, \dots, v_\nv) \in \mathcal{C}^\nv}P_{\boldsymbol \theta}(v_1, \dots, v_\nv)}{\min\limits_{(v_1, \dots, v_\nv) \in \mathcal{C}^\nv}P_{\boldsymbol \theta}(v_1, \dots, v_\nv)}\right] = \infty.
 \end{align*}
 \end{defn}
-In other words, given any $C > 0$, there exists an integer $V_C > 0$ so that $\frac{1}{V}\text{ELPR}(\boldsymbol \theta_V) > C$ for all $V \ge V_C$.
+In other words, given any $C > 0$, there exists an integer $n_C > 0$ so that $\frac{1}{\nv}\text{ELPR}(\boldsymbol \theta_\nv) > C$ for all $\nv \ge n_C$.
 
-This definition of *S-unstable* is a generalization or re-interpretation of the "unstable" concept of @schweinberger2011instability in that here RBM models for visibles $(v_1, \dots, v_V)$ do not form an exponential family and the dimensionality of $\boldsymbol \theta_V$ is not fixed, but rather grows with $V$.
+This definition of *S-unstable* is a generalization or re-interpretation of the "unstable" concept of @schweinberger2011instability in that here RBM models for visibles $(v_1, \dots, v_\nv)$ do not form an exponential family and the dimensionality of $\boldsymbol \theta_\nv$ is not fixed, but rather grows with $\nv$.
 
 S-unstable RBM model sequences are undesirable for several reasons. One is that, as mentioned above, small changes in data can lead to overly-sensitive changes in probability. Consider, for example, 
 $$
-\Delta(\boldsymbol \theta_V) \equiv \max \left\{\log \frac{P_{\boldsymbol \theta_V}(v_1, \dots, v_V)}{P_{\boldsymbol \theta_V}(v_1^*, \dots, v_V^*)} : (v_1, \dots, v_V) \& (v_1^*, \dots, v_V^*) \in \mathcal{C}^V \text{ differ by exactly one component}\right\},
+\Delta(\boldsymbol \theta_\nv) \equiv \max \left\{\log \frac{P_{\boldsymbol \theta_\nv}(v_1, \dots, v_\nv)}{P_{\boldsymbol \theta_\nv}(v_1^*, \dots, v_\nv^*)} : (v_1, \dots, v_\nv) \& (v_1^*, \dots, v_\nv^*) \in \mathcal{C}^\nv \text{ differ by exactly one component}\right\},
 $$
-denoting the biggest log-probability ratio for a one-pixel (one component) change in data outcomes (visibles) at a RBM parameter $\boldsymbol \theta_V$. We then have the following result.
+denoting the biggest log-probability ratio for a one-pixel (one component) change in data outcomes (visibles) at a RBM parameter $\boldsymbol \theta_\nv$. We then have the following result.
 
 \begin{prop}
 \label{prop:instab}
-Let $C > 0$ and let $\text{ELPR}(\boldsymbol \theta_V)$ be as in (\ref{eqn:elpr}) for an integer $V \ge 1$. If $\frac{1}{V}\text{ELPR}_V(\boldsymbol \theta) > C$, then $\Delta_V(\boldsymbol \theta) > C$.
+Let $C > 0$ and let $\text{ELPR}(\boldsymbol \theta_\nv)$ be as in (\ref{eqn:elpr}) for an integer $\nv \ge 1$. If $\frac{1}{\nv}\text{ELPR}(\boldsymbol \theta_\nv) > C$, then $\Delta(\boldsymbol \theta_\nv) > C$.
 \end{prop}
 
 In other words, if the probability ratio (\ref{eqn:elpr}) is too large, then a RBM model sequence will exhibit large probability shifts for very small changes in data configurations (i.e., instability).
 
-Additionally, S-unstable RBM model sequences are connected to degenerate model sequences placing all probability on a small portion of their sample spaces. To see this, define a modal set of possible outcomes (i.e. set of highest probability outcomes) in RBM models with parameters $\boldsymbol \theta_V, V \ge 1$ as
+Additionally, S-unstable RBM model sequences are connected to degenerate model sequences placing all probability on a small portion of their sample spaces. To see this, define a modal set of possible outcomes (i.e. set of highest probability outcomes) in RBM models with parameters $\boldsymbol \theta_\nv, \nv \ge 1$ as
 $$
-M_{\epsilon, \boldsymbol \theta_V} \equiv \left\{(v_1, \dots, v_V) \in \mathcal{C}^V: \log P_{\boldsymbol \theta_V}(v_1, \dots, v_V) > (1-\epsilon)\max\limits_{(v_1^*, \dots, v_V^*)}P_{\boldsymbol \theta_V}(v_1^*, \dots, v_V^*) + \epsilon\min\limits_{(v_1^*, \dots, v_V^*)}P_{\boldsymbol \theta_V}(v_1^*, \dots, v_V^*) \right\}
+M_{\epsilon, \boldsymbol \theta_\nv} \equiv \left\{\boldsymbol v \in \mathcal{C}^\nv: \log P_{\boldsymbol \theta_\nv}(\boldsymbol v) > (1-\epsilon)\max\limits_{\boldsymbol v^*}P_{\boldsymbol \theta_\nv}(\boldsymbol v^*) + \epsilon\min\limits_{\boldsymbol v^*}P_{\boldsymbol \theta_\nv}(\boldsymbol v^*) \right\}
 $$
 for a given $0 < \epsilon < 1$. Then S-unstable model sequences are guaranteed to be degenerate, as the following result shows.
 
 \begin{prop}
 \label{prop:degen}
-For an S-unstable RBM model and any given $0 < \epsilon < 1$, $P_{\boldsymbol \theta_V}\left((v_1, \dots, v_V) \in M_{\epsilon, \boldsymbol \theta_V}\right) \rightarrow 1$ holds as $V \rightarrow \infty$.
+For an S-unstable RBM model sequence and any given $0 < \epsilon < 1$, $P_{\boldsymbol \theta_\nv}\left((v_1, \dots, v_\nv) \in M_{\epsilon, \boldsymbol \theta_\nv}\right) \rightarrow 1$ as $\nv \rightarrow \infty$.
 \end{prop}
 
 In other words, in S-unstable RBM model sequences with a large number of visible variables, all probability in the RBM model formulation  will stack up on those outcomes for visibles with with the highest probability. Proofs of Propositions \ref{prop:instab}-\ref{prop:degen} appear in @kaplan2016note. These findings also have counterparts to results in @schweinberger2011instability, but, unlike results there, we do not limit consideration to exponential family forms with a fixed number of parameters.
 
-\begin{remark}
-\label{remark:bnd}
-To later numerically investigate S-unstable RBM model sequences, it is useful to define a computationally tractable lower bound on (\ref{eqn:elpr}) given by
-\begin{align}
-\frac{1}{V}R(\boldsymbol \theta_V) \text{ for } R(\boldsymbol \theta_V) \equiv \max_{\boldsymbol v} \max_{\boldsymbol h}Q_{\boldsymbol \theta_V}(\boldsymbol x) - \min_{\boldsymbol v}\max_{\boldsymbol h}Q_{\boldsymbol \theta_V}(\boldsymbol x) - H\log 2. \label{eqn:r}
-\end{align}
-That is, in (\ref{eqn:elpr}),
-\begin{align}
-\frac{1}{V} \text{ELPR}(\boldsymbol \theta_V) \equiv \frac{1}{V} \log \left[\frac{\max\limits_{(v_1, \dots, v_V) \in \mathcal{C}^V}P_{\boldsymbol \theta}(v_1, \dots, v_V)}{\min\limits_{(v_1, \dots, v_V) \in \mathcal{C}^V}P_{\boldsymbol \theta}(v_1, \dots, v_V)}\right] \ge \frac{1}{V}R(\boldsymbol \theta_V). \label{eqn:lowerbnd}
-\end{align}
-\end{remark}
-The appendix provides a proof of (\ref{eqn:lowerbnd}). The benefit of $R(\boldsymbol \theta_V)$ is that $R(\boldsymbol \theta_V)/V$ is simple to compute (i.e. unlike (\ref{eqn:elpr}), requiring no summation over hidden variables) and that Propositions \ref{prop:instab}-\ref{prop:degen} continue to hold upon replacing $\text{ELPR}(\boldsymbol \theta_V)/V$ with $R(\boldsymbol \theta_V)/V$ due to (\ref{eqn:lowerbnd}). Hence, large values of $R(\boldsymbol \theta_V)/V$ also indicate S-unstable RBM model sequences.
-
 ### Uninterpretability
-For spatial Markov models, @kaiser2007statistical defines a measure of model impropriety he calls *uninterpretability*, which is characterized by dependence parameters in a model being so extreme that marginal mean-structures fail to hold as anticipated by the model statement. We adapt this notion to RBM models as follows. Note that, in a RBM, the parameters $\theta_{v_1}, \dots, \theta_{v_V}$ and $\theta_{h_1}, \dots, \theta_{h_H}$ are naturally associated with main effects of visible and hidden variables and can be interpreted as (logit functions of) means for variables $V_1, \dots, V_V, H_1, \dots, H_V$ in a model with no interaction parameters, $\theta_{ij} = 0, i = 1, \dots, V, j = 1, \dots, H$. Hence, these main effect parameters have a clear interpretation under an independence model ($\theta_{ij} = 0$) but this interpretation (as well as an understanding of the nature of dependence) can break down as interaction parameters increase in magnitude relative to the size of the main effects. In such case, the main effect parameters $\theta_{v_1}$ and $\theta_{h_j}$ are no longer interpretable as originally intended in the modes (statements of marginal means) and the dependence parameters are so large as to dominate the entire model probability structure (destroying the model interpretation of dependence as local, conditional modifications of all overall marginal mean structure). To assess which parameter values $\boldsymbol \theta$ may cause difficulties in interpretation, we use the difference $\text{E}\left[\boldsymbol X | \boldsymbol \theta\right] - \text{E}\left[\boldsymbol X | \boldsymbol \theta^* \right]$ between two model expectations: E$\left[\boldsymbol X | \boldsymbol \theta\right]$ at $\boldsymbol \theta$ and expectations E$\left[\boldsymbol X | \boldsymbol \theta^* \right]$ given independence where $\boldsymbol \theta^*$ matches $\boldsymbol \theta$ for all main effects but otherwise has $\theta_{ij} = 0$ for $i = 1, \dots, V, j = 1, \dots, H$. Hence, $\boldsymbol \theta^*$ and $\boldsymbol \theta$ have the same main effects but $\boldsymbol \theta^*$ has $0$ dependence parameters. Uninterpretability is then avoided at a parametric specification $\boldsymbol \theta$ if the model expected value at $\boldsymbol \theta$ is not very different from the corresponding model expectation under independence. Using this, it is possible to investigate what parametric conditions lead to uninterpretability in a model versus those that guarantee interpretable models. If $||\text{E}\left[\boldsymbol X | \boldsymbol \theta\right] - \text{E}\left[\boldsymbol X | \boldsymbol \theta^*\right]||$ is large, then the RBM model with parameter vector $\boldsymbol \theta$ is said to be uninterpetable. The quantities to compare in the RBM case are
+For spatial Markov models, @kaiser2007statistical defines a measure of model impropriety he calls *uninterpretability*, which is characterized by dependence parameters in a model being so extreme that marginal mean-structures fail to hold as anticipated by the model statement. We adapt this notion to RBM models as follows. Note that, in a RBM, the parameters $\theta_{v_1}, \dots, \theta_{v_\nv}$ and $\theta_{h_1}, \dots, \theta_{h_\nh}$ are naturally associated with main effects of visible and hidden variables and can be interpreted as (logit functions of) means for variables $V_1, \dots, V_\nv, H_1, \dots, H_\nh$ in a model with no interaction parameters, $\theta_{ij} = 0, i = 1, \dots, \nv, j = 1, \dots, \nh$. Hence, these main effect parameters have a clear interpretation under an independence model (one with $\theta_{ij} = 0$) but this interpretation (as well as an understanding of the nature of dependence) can break down as interaction parameters increase in magnitude relative to the size of the main effects. In such case, the main effect parameters $\theta_{v_1}$ and $\theta_{h_j}$ are no longer interpretable as originally intended in the modes (statements of marginal means) and the dependence parameters are so large as to dominate the entire model probability structure (destroying the model interpretation of dependence as local conditional modifications of all overall marginal mean structure). To assess which parameter values $\boldsymbol \theta$ may cause difficulties in interpretation, we use the difference $\text{E}\left[\boldsymbol X | \boldsymbol \theta\right] - \text{E}\left[\boldsymbol X | \boldsymbol \theta^* \right]$ between two model expectations: E$\left[\boldsymbol X | \boldsymbol \theta\right]$ at $\boldsymbol \theta$ and expectations E$\left[\boldsymbol X | \boldsymbol \theta^* \right]$ given independence where $\boldsymbol \theta^*$ matches $\boldsymbol \theta$ for all main effects but otherwise has $\theta_{ij} = 0$ for $i = 1, \dots, \nv, j = 1, \dots, \nh$. Hence, $\boldsymbol \theta^*$ and $\boldsymbol \theta$ have the same main effects but $\boldsymbol \theta^*$ has $0$ dependence parameters. Uninterpretability is then avoided at a parametric specification $\boldsymbol \theta$ if the model expected value at $\boldsymbol \theta$ is not very different from the corresponding model expectation under independence. Using this, it is possible to investigate what parametric conditions lead to uninterpretability in a model versus those that guarantee interpretable models. If $||\text{E}\left[\boldsymbol X | \boldsymbol \theta\right] - \text{E}\left[\boldsymbol X | \boldsymbol \theta^*\right]||$ is large, then the RBM model with parameter vector $\boldsymbol \theta$ is said to be uninterpetable. The quantities to compare in the RBM case are
 
 $$
-\text{E}\left[\boldsymbol X | \boldsymbol \theta\right] = \sum\limits_{\boldsymbol x \in \mathcal{X}} \boldsymbol x f_{\boldsymbol \theta}(\boldsymbol x) = \sum\limits_{\boldsymbol x \in \mathcal{X}} \boldsymbol x \frac{\exp\left(\sum\limits_{i = 1}^V \sum\limits_{j=1}^H \theta_{ij} v_i h_j + \sum\limits_{i = 1}^V\theta_{v_i} v_i + \sum\limits_{j = 1}^H\theta_{h_j} h_j\right)}{\sum\limits_{\boldsymbol x \in \mathcal{X}}\exp\left(\sum\limits_{i = 1}^V \sum\limits_{j=1}^H \theta_{ij} v_i h_j + \sum\limits_{i = 1}^V\theta_{v_i} v_i + \sum\limits_{j = 1}^H\theta_{h_j} h_j\right)}
+\text{E}\left[\boldsymbol X | \boldsymbol \theta\right] = \sum\limits_{\boldsymbol x \in \mathcal{C}^{\nv + \nh}} \boldsymbol x f_{\boldsymbol \theta}(\boldsymbol x) = \sum\limits_{\boldsymbol x \in \mathcal{C}^{\nv + \nh}} \boldsymbol x \frac{\exp\left(\sum\limits_{i = 1}^\nv \sum\limits_{j=1}^\nh \theta_{ij} v_i h_j + \sum\limits_{i = 1}^\nv\theta_{v_i} v_i + \sum\limits_{j = 1}^\nh\theta_{h_j} h_j\right)}{\sum\limits_{\boldsymbol x \in \mathcal{C}^{\nv + \nh}}\exp\left(\sum\limits_{i = 1}^\nv \sum\limits_{j=1}^\nh \theta_{ij} v_i h_j + \sum\limits_{i = 1}^\nv\theta_{v_i} v_i + \sum\limits_{j = 1}^\nh\theta_{h_j} h_j\right)}
 $$
 and
 \begin{align*}
 \text{E}\left[\boldsymbol X | \boldsymbol 
-\theta^*\right] &= \sum\limits_{\boldsymbol x \in \mathcal{X}} \boldsymbol x \frac{\exp\left(\sum\limits_{i = 1}^V \theta_{v_i} v_i + \sum\limits_{j = 1}^H\theta_{h_j} h_j\right)}{\sum\limits_{\boldsymbol x \in \mathcal{X}}\exp\left(\sum\limits_{i = 1}^V\theta_{v_i} v_i + \sum\limits_{j = 1}^H\theta_{h_j} h_j\right)} \\
+\theta^*\right] &= \sum\limits_{\boldsymbol x \in \mathcal{C}^{\nv + \nh}} \boldsymbol x \frac{\exp\left(\sum\limits_{i = 1}^\nv \theta_{v_i} v_i + \sum\limits_{j = 1}^\nh\theta_{h_j} h_j\right)}{\sum\limits_{\boldsymbol x \in \mathcal{C}^{\nv + \nh}}\exp\left(\sum\limits_{i = 1}^\nv\theta_{v_i} v_i + \sum\limits_{j = 1}^\nh\theta_{h_j} h_j\right)} \\
 \end{align*}
 
 # Explorations
@@ -166,7 +153,7 @@ and
 We next explore and numerically explain the relationship between values of $\boldsymbol \theta$ and the three measures of model impropriety, near-degeneracy, instability, and uninterpretability, for RBM models of varying size.
 
 ## Tiny example
-To illustrate the ideas of model near-degeneracy, instability, and uninterpretability in a RBM, we consider first the smallest possible (toy) example that consists of one visible node $v_1$ and one hidden node $h_1$ that are both binary. A schematic of this model can be found in figure \ref{fig:toymodel}. Because it seems most common, we shall begin by employing $0/1$ encoding of binary variables (both $h_1$ and $v_1$ taking values in $\mathcal{C} = \{0,1\}$). Eventually we'll note in Section \ref{data-coding-to-mitigate-degeneracy} that $-1/1$ coding has substantial advantages.
+To illustrate the ideas of model near-degeneracy, instability, and uninterpretability in a RBM, we consider first the smallest possible (toy) example that consists of one visible node $v_1$ and one hidden node $h_1$ that are both binary. A schematic of this model can be found in figure \ref{fig:toymodel}. Because it seems most common, we shall begin by employing $0/1$ encoding of binary variables (both $h_1$ and $v_1$ taking values in $\mathcal{C} = \{0,1\}$). (Eventually we'll argue in Section \ref{data-coding-to-mitigate-apparent-degeneracy} that $-1/1$ coding has substantial advantages.)
 
 \begin{figure}[ht]
   \centering
@@ -177,7 +164,9 @@ To illustrate the ideas of model near-degeneracy, instability, and uninterpretab
 
 ### Impropriety three ways
 
-For this small model, we are able to investigate the symptoms of model impropriety, beginning with near-degeneracy. To this end, recall that one characterization requires the convex hull of statistics $\mathcal{T} = \{\boldsymbol t(\boldsymbol x): \boldsymbol x = (v_1, h_1) \in \{0,1\}^2\} \equiv \{(v_1, h_1, v_1 h_1): v_1, h_1 \in \{0,1\}\}$ appearing in the RBM probabilities for this model. As this set is in three dimensions, we are able to explicitly illustrate the shape of boundary of the convex hull of $\mathcal{T}$ and explore the behavior of the mean parameterization of the parameters. Figure \ref{fig:toyhull} shows the convex hull of our "statistic space", $\mathcal{T} \subset \{0,1\}^3$, for this toy problem from multiple perspectives enclosed by the unit cube, representing the convex hull of $\{0,1\}^3$ space. In this small model, note that the convex hull of $\mathcal{T}$ does not fill the unrestricted hull of $\{0,1\}^3$ because of the relationship between the elements of $\mathcal{T} = \{(v_1, h_1, v_1 h_1 : v_1, h_1 \in \{0, 1\} \}$ (i.1. $v_1 h_1 = 1$ only if $v_1 = h_1 = 1$).
+For this small model, we are able to investigate the symptoms of model impropriety, beginning with near-degeneracy. To this end, recall that one characterization requires the convex hull of statistics 
+$$\mathcal{T} = \{\boldsymbol t(\boldsymbol x): \boldsymbol x = (v_1, h_1) \in \{0,1\}^2\} \equiv \{(v_1, h_1, v_1 h_1): v_1, h_1 \in \{0,1\}\}$$ 
+appearing in the RBM probabilities for this model. As this set is in three dimensions, we are able to explicitly illustrate the shape of boundary of the convex hull of $\mathcal{T}$ and explore the behavior of the mean parameterization of the parameters. Figure \ref{fig:toyhull} shows the convex hull of our "statistic space," $\mathcal{T} \subset \{0,1\}^3$, for this toy problem from two perspectives (enclosed by the unit cube, representing the convex hull of $\{0,1\}^3$ space). In this small model, note that the convex hull of $\mathcal{T}$ does not fill the unrestricted hull of $\{0,1\}^3$ because of the relationship between the elements of $\mathcal{T} = \{(v_1, h_1, v_1 h_1 : v_1, h_1 \in \{0, 1\} \}$ (i.1. $v_1 h_1 = 1$ only if $v_1 = h_1 = 1$).
 
 ```{r models}
 m1_bin <- calc_hull(1, 1)
@@ -207,7 +196,7 @@ m1_neg <- calc_hull(1, 1, type = "negative")
     \end{tikzpicture}
   }
   \end{minipage}
-  \caption{The convex hull of the "statistic space"" in three dimensions for the toy RBM with one visible and one hidden node. The convex hull of $\mathcal{T} = \{\boldsymbol t(\boldsymbol x) : \boldsymbol x \in \mathcal{X}\}$ does not fill the unit cube because of the relationship between the elements of $\mathcal{T}$.}
+  \caption{The convex hull of the "statistic space"" in three dimensions for the toy RBM with one visible and one hidden node. The convex hull of $\mathcal{T} = \{\boldsymbol t(\boldsymbol x) : \boldsymbol x \in \mathcal{C}^{\nv + \nh}\}$ does not fill the unit cube because of the relationship between the elements of $\mathcal{T}$.}
 \label{fig:toyhull}
 \end{figure}
 
@@ -221,9 +210,9 @@ Additionally, we can compute the mean vector for $\boldsymbol t(\boldsymbol x)$ 
 \frac{\exp\left(\theta_{11} + \theta_{v_1} + \theta_{h_1}\right)}{\gamma(\boldsymbol \theta)} \\
 \end{matrix} \right]
 \end{align}
-where $\gamma(\boldsymbol \theta) = \sum\limits_{h_1 = 0}^1\sum\limits_{v_1 = 0}^1 \exp(\theta_{11} h_1 v_1 + \theta_{h_1}h_1 + \theta_{v_1}v_1)$. The three parametric functions giving $\boldsymbol \mu(\boldsymbol \theta)$ can be visualized in Figure \ref{fig:degen_toy}. In examining these, we see that as values of coordinates of $\boldsymbol \theta$ grow larger in magnitude, at least one mean function for the entries of $\boldsymbol t(\boldsymbol x)$ is approaching a value 0 or 1, indicating a potential for $\boldsymbol \mu(\boldsymbol \theta) = \text{E}_{\boldsymbol \theta} \boldsymbol t(\boldsymbol x)$ to be near to the boundary of the convex hull of $\mathcal{T}$, as a sign of model near-degeneracy. Thus, for a very small example we can see the relationship between values of $\boldsymbol \theta$ and model degeneracy.
+where $\gamma(\boldsymbol \theta) = \sum\limits_{h_1 = 0}^1\sum\limits_{v_1 = 0}^1 \exp(\theta_{11} h_1 v_1 + \theta_{h_1}h_1 + \theta_{v_1}v_1)$. The three parametric coordinate functions of $\boldsymbol \mu(\boldsymbol \theta)$ can be visualized in Figure \ref{fig:degen_toy}. (Contour plots for three coordinate functions are shown in columns for various values of $\theta_{11}$.) In examining these, we see that as values of coordinates of $\boldsymbol \theta$ grow larger in magnitude, at least one mean function for the entries of $\boldsymbol t(\boldsymbol x)$ is approaching a value 0 or 1, forcing $\boldsymbol \mu(\boldsymbol \theta) = \text{E}_{\boldsymbol \theta} \boldsymbol t(\boldsymbol x)$ to be near to the boundary of the convex hull of $\mathcal{T}$, as a sign of model near-degeneracy. Thus, for a very small example we can see the relationship between values of $\boldsymbol \theta$ and model degeneracy.
 
-```{r near_dependency, fig.cap="\\label{fig:degen_toy}The three parametric mean functions of sufficient statistics for a RBM with one visible and one hidden node.", fig.height = 4, fig.align='center', message=FALSE, cache=TRUE}
+```{r near_dependency, fig.cap="\\label{fig:degen_toy}Contour plots for the three parametric mean functions of sufficient statistics for a RBM with one visible and one hidden node.", fig.height = 4, fig.align='center', message=FALSE, cache=TRUE}
 possibles <- stats(1, 1, type = "binary")
 
 expand.grid(theta_h1 = seq(-5, 5, length.out = 21),
@@ -253,18 +242,16 @@ expand.grid(theta_h1 = seq(-5, 5, length.out = 21),
   theme(aspect.ratio = 1)
 ```
 
-Secondly, we can look at $R(\boldsymbol \theta)$ from (\ref{eqn:r}) for this tiny model in order to consider model instability as a function of RBM parameters. Recall that larger values of $R(\boldsymbol \theta)$ imply an extreme sensitivity of the model probabilities $f_{\boldsymbol \theta}(\boldsymbol x)$ to small changes in $\boldsymbol x$ (see Remark \ref{remark:bnd} and Proposition \ref{prop:instab}). The quantity $R(\boldsymbol \theta)$ is computed for this small RBM as 
+Secondly, we can look at $\text{ELPR}(\boldsymbol \theta)$ from (\ref{eqn:elpr}) for this tiny model in order to consider model instability as a function of RBM parameters. Recall that large values of $\text{ELPR}(\boldsymbol \theta)$ are associated with an extreme sensitivity of the model probabilities $f_{\boldsymbol \theta}(\boldsymbol x)$ to small changes in $\boldsymbol x$ (see Proposition \ref{prop:instab}). The quantity $\text{ELPR}(\boldsymbol \theta)$ for this small RBM is 
 
 \begin{align*}
-R(\boldsymbol \theta) &= \max_{\boldsymbol v} \max_{\boldsymbol h}Q_{\boldsymbol \theta}(\boldsymbol x) - \min_{\boldsymbol v}\max_{\boldsymbol h}Q_{\boldsymbol \theta}(\boldsymbol x) - H\log 2\\
-&= \max_{\boldsymbol v} \max_{\boldsymbol h}\left[ \theta_{11} h_1 v_1 + \theta_{h_1}h_1 + \theta_{v_1} v_1 \right] -  \min_{\boldsymbol v}\max_{\boldsymbol h}\left[ \theta_{11} h_1 v_1 + \theta_{h_1}h_1 + \theta_{v_1} v_1 \right] -\log 2\\
-&=\max\left\{ \theta_{11} + \theta_{h_1} + \theta_{v_1}, \theta_{h_1}, \theta_{v_1}, 0  \right\} \\
-&\qquad - \min\left\{\theta_{v_1} + \max\left\{\theta_{11} + \theta_{h1}, -\theta_{11} - \theta_{h1}\right\}, -\theta_{v_1} + \max\left\{-\theta_{11} + \theta_{h1}, \theta_{11} - \theta_{h1}\right\}\right\} - \log2.\\
+\text{ELPR}(\boldsymbol \theta) &= \log \left[\frac{\max\limits_{(v_1, \dots, v_\nv) \in \mathcal{C}^\nv}P_{\boldsymbol \theta_\nv}(v_1, \dots, v_\nv)}{\min\limits_{(v_1, \dots, v_\nv) \in \mathcal{C}^\nv}P_{\boldsymbol \theta_\nv}(v_1, \dots, v_\nv)}\right]\\
+&= \log \left[\frac{\max\limits_{v_1 \in \mathcal{C}}\sum\limits_{h_1 \in \mathcal{C}}\exp\left\{\theta_{11} h_1 v_1 + \theta_{h_1}h_1 + \theta_{v_1} v_1 \right\}}{\min\limits_{v_1 \in \mathcal{C}}\sum\limits_{h_1 \in \mathcal{C}}\exp\left\{\theta_{11} h_1 v_1 + \theta_{h_1}h_1 + \theta_{v_1} v_1 \right\}}\right]. \\
 \end{align*}
 
-Figure \ref{fig:instab} shows $R(\boldsymbol \theta)/V$ for various values of $\boldsymbol \theta$ in this model with $V = 1$. We can see that this quantity is increasing for larger magnitudes of $\boldsymbol \theta$, especially for large values of the dependence/interaction parameter $\theta_{11}$. This suggests instability as $|\boldsymbol \theta|$ becomes large, agreeing also with the concerns about near-degeneracy produced by consideration of $\boldsymbol \mu(\boldsymbol \theta)$.
+Figure \ref{fig:instab} shows contour plots of $\text{ELPR}(\boldsymbol \theta)/\nv$ for various values of $\boldsymbol \theta$ in this model with $\nv = 1$. We can see that this quantity is large for large magnitudes of $\boldsymbol \theta$, especially for large values of the dependence/interaction parameter $\theta_{11}$. This suggests instability as $|\boldsymbol \theta|$ becomes large, agreeing also with the concerns about near-degeneracy produced by consideration of $\boldsymbol \mu(\boldsymbol \theta)$.
 
-```{r instab, fig.cap="\\label{fig:instab}$R(\\boldsymbol \\theta)/V$ for various values of $\\boldsymbol \\theta$ for the tiny example model. (Recall that here $V$ is the number of visible nodes and here is $1$. This quantity is increasing for larger magnitudes of $\\boldsymbol \\theta$.", fig.height = 4, fig.align='center'}
+```{r instab, fig.cap="\\label{fig:instab}$\\text{ELPR}(\\boldsymbol \\theta)/\\nv$ for various values of $\\boldsymbol \\theta$ for the tiny example model. (Recall that here $\\nv$ is the number of visible nodes and here is $1$. This quantity is large for large magnitudes of $\\boldsymbol \\theta$.", fig.height = 4, fig.align='center'}
 expand.grid(theta_h1 = seq(-5, 5, length.out = 21),
             theta_v1 = seq(-5, 5, length.out = 21),
             theta_11 = seq(-5, 5, length.out = 5)) %>%
@@ -272,22 +259,24 @@ expand.grid(theta_h1 = seq(-5, 5, length.out = 21),
   group_by(theta_v1, theta_h1, theta_11) %>%
   do(data.frame(Q = cbind(possibles, possibles %*% t(data.matrix(.))))) %>%
   group_by(theta_v1, theta_h1, theta_11, Q.v1) %>%
-  do(data.frame(maxq = max(.$Q.V4))) %>%
+  do(data.frame(marginal = sum(exp(.$Q.V4)))) %>%
   group_by(theta_v1, theta_h1, theta_11) %>%
-  do(data.frame(q_max = max(.$maxq) - min(.$maxq) - log(2))) %>%
+  do(data.frame(max_marg = max(.$marginal),
+                min_marg = min(.$marginal))) %>%
+  mutate(elpr = log(max_marg/min_marg)) %>%
   ungroup() %>%
   mutate(theta_11 = factor(theta_11, labels = paste0("theta[11]==", unique(theta_11)))) %>%
   ggplot() +
-  geom_tile(aes(theta_v1, theta_h1, fill = q_max)) +
-  geom_contour(aes(theta_v1, theta_h1, z = q_max), colour = "black") +
+  geom_tile(aes(theta_v1, theta_h1, fill = elpr)) +
+  geom_contour(aes(theta_v1, theta_h1, z = elpr), colour = "black") +
   facet_grid(. ~ theta_11, labeller = label_parsed) +
   xlab(expression(theta[v1])) +
   ylab(expression(theta[h1])) +
-  scale_fill_gradient(expression(frac(R(theta), V)), low = "yellow", high = "red") +
+  scale_fill_gradient(expression(frac(ELPR(theta), V)), low = "yellow", high = "red") +
   theme(aspect.ratio = 1)
 ```
 
-Finally to consider the effect of $\boldsymbol \theta$ on potential model uninterpretability, we can look at the difference between model expectations, E$\left[\boldsymbol X | \boldsymbol \theta\right]$, and expectations given independence, E$\left[\boldsymbol X | \boldsymbol \theta^*\right ]$ for the tiny toy RBM model where $\boldsymbol X = (V_1, H_1, V_1 H_1)$; this is given by
+Finally to consider the effect of $\boldsymbol \theta$ on potential model uninterpretability, we can look at the difference between model expectations, E$\left[\boldsymbol X | \boldsymbol \theta\right]$, and expectations given independence, E$\left[\boldsymbol X | \boldsymbol \theta^*\right ]$ for the tiny toy RBM model where $\boldsymbol X = (V_1, H_1, V_1 H_1)$. This is given by
 
 \begin{align*}
 \text{E}\left[\boldsymbol X | \boldsymbol \theta\right] -   \text{E}\left[\boldsymbol X | \boldsymbol \theta^* \right] 
@@ -307,7 +296,7 @@ Finally to consider the effect of $\boldsymbol \theta$ on potential model uninte
 \end{matrix}\right].
 \end{align*}
 
-Again, we can inspect these coordinate functions of $\boldsymbol \theta$ to look for a relationship between parameter values and large values of $||\text{E}[\boldsymbol X|\boldsymbol \theta] - \text{E}[\boldsymbol X| \boldsymbol \theta^*]||$ as a signal of uninterpretability for the toy RBM.
+Again, we can inspect these coordinate functions of this vector difference to look for a relationship between parameter values and large values of $||\text{E}[\boldsymbol X|\boldsymbol \theta] - \text{E}[\boldsymbol X| \boldsymbol \theta^*]||$ as a signal of uninterpretability for the toy RBM.
 
 ```{r uninterp, fig.cap="\\label{fig:uninterp}The difference between coordinates of model expectations, E$\\left[\\boldsymbol X | \\boldsymbol \\theta\\right]$, and expectations given independence, E$\\left[\\boldsymbol X | \\boldsymbol \\theta^* \\right ]$ for a RBM with one visible and one hidden node.", fig.height = 4, fig.align='center', message=FALSE, cache=TRUE, warning=FALSE}
 expand.grid(theta_h1 = seq(-5, 5, length.out = 21),
@@ -350,12 +339,12 @@ exp_dep %>%
   theme(aspect.ratio = 1)
 ```
 
-Figure \ref{fig:uninterp} shows that the absolute difference between coordinates of the vector of model expectations, E$\left[\boldsymbol X | \boldsymbol \theta\right]$, and corresponding expectations E$\left[\boldsymbol X | \boldsymbol \theta^*\right ]$ given independence grow for the toy RBM as the values of $\boldsymbol \theta$ are farther from zero, especially for large magnitudes of $\theta_{11}$. This is a third indication supporting that parameter vectors of large magnitude could lead to model impropriety in a RBM.
+Figure \ref{fig:uninterp} shows that the absolute difference between coordinates of the vector of model expectations, E$\left[\boldsymbol X | \boldsymbol \theta\right]$ and corresponding expectations E$\left[\boldsymbol X | \boldsymbol \theta^*\right ]$ given independence grow for the toy RBM as the values of $\boldsymbol \theta$ are farther from zero, especially for large magnitudes of $\theta_{11}$. This is a third indication supporting that parameter vectors of large magnitude lead to model impropriety in a RBM.
 
-### Data coding to mitigate degeneracy
-Multiple encodings of the binary variables are possible. For example, we could allow hiddens $(H_1, \dots, H_H) \in \{0,1\}^H$ and visibles $(V_1, \dots, V_V) \in \{0,1\}^V$, as in the previous sections or we could instead encode the state of the variables as $\{-1,1\}^H$ and $\{-1,1\}^V$. This will result in variables $\boldsymbol t(\boldsymbol X)$ from (\ref{eqn:t}) satisfying $\boldsymbol t(\boldsymbol x) \in \{0,1\}^{H + V + HV}$ or $\boldsymbol t(\boldsymbol x) \in \{-1,1\}^{H + V + HV}$ depending on how we encode "on" and "off" states in the nodes. To explore the effect of this encoding on the potential for apparent near-degeneracy of an RBM, we can consider the ratio of the volume of the hypercube with corners at elements of $\mathcal{T}$ to the volume of the convex hull of $\mathcal{T}$ under both possible encodings (i.e., compare convex hull of $\mathcal{T}$ to either $[0,1]^3$ or $[-1,1]^3$ under the respective encodings).
+### Data coding to mitigate apparent degeneracy
+Multiple encodings of the binary variables are possible. For example, we could allow hiddens $(H_1, \dots, H_\nh) \in \{0,1\}^\nh$ and visibles $(V_1, \dots, V_\nv) \in \{0,1\}^\nv$, as in the previous sections or we could instead encode the state of the variables as $\{-1,1\}^\nh$ and $\{-1,1\}^\nv$. This will result in variables $\boldsymbol t(\boldsymbol X)$ from (\ref{eqn:t}) satisfying $\boldsymbol t(\boldsymbol x) \in \{0,1\}^{\nh + \nv + \nh*\nv}$ or $\boldsymbol t(\boldsymbol x) \in \{-1,1\}^{\nh + \nv + \nh*\nv}$ depending on how we encode "on" and "off" states in the nodes. To explore the effect of this encoding on the potential for apparent near-degeneracy of an RBM, we can consider the ratio of the volume of the hypercube with corners at elements of $\mathcal{T}$ to the volume of the convex hull of $\mathcal{T}$ under both possible encodings (i.e., compare convex hull of $\mathcal{T}$ to either $[0,1]^3$ or $[-1,1]^3$ under the respective encodings).
 
-For the small two node example, the $0/1$ encoding loses `r round((1-m1_bin$c_hull$vol)*100,2)`% of the volume of $[0,1]^3$ and the $-1/1$ encoding loses `r round((1-m1_neg$c_hull$vol/(2^3))*100,2)`% of the volume of $[-1,1]^3$. While there is clearly a one-to-one mapping of models for these two possible codings, this notion of lost volume can be helpful to conceptualize how difficult it will be for the mean vector $\boldsymbol \mu(\boldsymbol \theta)$ to avoid the boundary of $\mathcal{T}$, and thus avoid near-degeneracy. In fact, if we look at the ratio of volume within the convex hull defined by $\mathcal{T}$ and the corresponding hypercube, we can see a relationship emerge as the number of nodes (and thus parameters) increases. In Figure \ref{fig:volume_plot}, it is evident that as the number of parameters increases, this ratio is decreasing at an increasing rate, meaning it gets more and more difficult to avoid the boundary of the convex hull and thus near degeneracy. Additionally, it appears that the $-1/1$ encoding suffers slightly less from this problem. This suggests that if intuition about models is to be formed in terms of a data encoding that encourages of "non-pathological" means $\boldsymbol \mu(\boldsymbol \theta) = \text{E}_{\boldsymbol \theta}(\boldsymbol t(\boldsymbol x))$ for $\boldsymbol t(\boldsymbol x)$, then the $-1/1$ encoding is preferable to $0/1$ coding.
+For the small two node example, the $0/1$ encoding loses `r round((1-m1_bin$c_hull$vol)*100,2)`% of the volume of $[0,1]^3$ and the $-1/1$ encoding loses `r round((1-m1_neg$c_hull$vol/(2^3))*100,2)`% of the volume of $[-1,1]^3$. While there is clearly a one-to-one mapping of models for these two possible codings, this notion of lost volume can be helpful to conceptualize how difficult it will be for the mean vector $\boldsymbol \mu(\boldsymbol \theta)$ to avoid the boundary of $\mathcal{T}$, and thus avoid apparent near-degeneracy. In fact, if we look at the ratio of volume within the convex hull defined by $\mathcal{T}$ and the corresponding hypercube, we can see a relationship emerge as the number of nodes (and thus parameters) increases. In Figure \ref{fig:volume_plot}, it is evident that as the number of parameters increases, this ratio is decreasing at an increasing rate, meaning it gets more and more difficult to avoid the boundary of the convex hull and thus appearance of near degeneracy. Additionally, it appears that the $-1/1$ encoding suffers slightly less from this problem. This suggests that if intuition about models is to be formed in terms of a data encoding that encourages of "non-pathological" means $\boldsymbol \mu(\boldsymbol \theta) = \text{E}_{\boldsymbol \theta}(\boldsymbol t(\boldsymbol x))$ for $\boldsymbol t(\boldsymbol x)$, then the $-1/1$ encoding is preferable to $0/1$ coding.
 
 ```{r volume_plot, echo=FALSE, fig.cap="\\label{fig:volume_plot}The relationship between volume of the convex hull of possible values of the RBM sufficient statistics and the cube containing it for different configurations of nodes.", out.height = "3in", fig.align='center'}
 test_cases <- expand.grid(data.frame(1:4)[,rep(1,2)]) %>% 
@@ -385,7 +374,7 @@ plyr::ldply(bin_res, function(x) x$c_hull$vol) %>%
   scale_colour_discrete("Encoding", labels=c("Binary (1,0)", "Negative (1,-1)"))
 ```
 
-In addition to the argument that the $-1/1$ data encoding mitigates some perceived prevalence of near-degeneracy it also has the benefit of providing a guaranteed non-degenerate model at $\boldsymbol \theta = \boldsymbol 0 \in \mathbb{R}^{H + V + H*V}$, where the zero vector that serves as the natural center of the parameter space and induces model properties for the RBM (i.e., at $\boldsymbol \theta = \boldsymbol 0$, all variables are independent and visible variables are independent and uniformly distributed on $\{-1,1\}^V$. The proof of this is included in appendix \ref{center-of-universe}. Hence while from some computing perspectives $0/1$ coding might seem most natural, the $-1/1$ coding is far more convenient and interpretable from the point of view of statistical modeling, where it makes parameters simply interpreted in terms of symmetrically defined main effects and interactions. In light of all of these matters we will henceforth employ the $-1/1$ coding.
+In addition to the argument that the $-1/1$ data encoding mitigates some perceived prevalence of near-degeneracy it also has the benefit of providing a guaranteed-to-be non-degenerate model at $\boldsymbol \theta = \boldsymbol 0 \in \mathbb{R}^{\nh + \nv + \nh*\nv}$, where the zero vector that serves as the natural center of the parameter space and induces the simplest possible model properties for the RBM (i.e., at $\boldsymbol \theta = \boldsymbol 0$, all variables are independent and visible variables are independent and uniformly distributed on $\{-1,1\}^\nv$). The proof of this is included in appendix \ref{center-of-universe}. Hence while from some computing perspectives $0/1$ coding might seem most natural, the $-1/1$ coding is far more convenient and interpretable from the point of view of statistical modeling, where it makes parameters simply interpreted in terms of symmetrically defined main effects and interactions. In light of all of these matters we will henceforth employ the $-1/1$ coding.
 
 ## Exploring manageable examples
 ```{r degen-data, message=FALSE, warning=FALSE, cache=TRUE}
@@ -496,7 +485,7 @@ plot_dat_grid %>%
   group_by(r1, r2, H, V) %>%
   summarise(frac_degen = sum(near_hull)/n(), count = n()) %>% 
   ungroup() %>% 
-  mutate(Hiddens = paste0("H = ", H), Visibles = paste0("V = ", V)) -> convex_hull_summary
+  mutate(Hiddens = paste0("paste(n[h], '= ", H, "')"), Visibles = paste0("paste(n[v], '= ", V, "')")) -> convex_hull_summary
 
 #uninterpretability
 res %>%
@@ -509,7 +498,7 @@ exp_vals %>%
   do(data.frame(max_abs_diff = apply(abs(.$indep_exp[[1]] - .$marg_exp[[1]]), 1, max))) %>%
   group_by(H, V, N, r1, r2) %>%
   summarise(max_abs_diff = mean(max_abs_diff)) %>%
-  mutate(Hiddens = paste0("H = ", H), Visibles = paste0("V = ", V)) -> exp_vals_summary
+  mutate(Hiddens = paste0("paste(n[h], '= ", H, "')"), Visibles = paste0("paste(n[v], '= ", V, "')")) -> exp_vals_summary
 
 #instability
 res %>%
@@ -540,11 +529,11 @@ convex_hull_summary %>%
 ```
 
 
-To explore the behavior of the RBM parameters $\boldsymbol \theta$ as it relates to near-degeneracy, instability, and uninterpretability. we consider models of small size. For $H, V \in \{1, \dots, 4\}$, we sample `r dim(res$samp[[1]])[1]` values of $\boldsymbol \theta$ with various magnitudes (details to follow). For each set of parameters we then calculate the three metrics of model impropriety introduced in Section \ref{degeneracy-instability-and-uninterpretability-oh-my}, $\boldsymbol \mu(\boldsymbol \theta)$, $R(\boldsymbol x)/V$, and the coordinates of $\left|\text{E}\left[\boldsymbol X | \boldsymbol \theta\right] -   \text{E}\left[\boldsymbol X | \boldsymbol \theta^* \right] \right|$. In the case of near-degeneracy, we can go further and classify each model as near-degenerate or "viable" based on the distance of $\boldsymbol \mu(\boldsymbol \theta)$ from the boundary of the convex hull of $\mathcal{T}$ and look at the fraction of models that are "near-degenerate", meaning they are within a small distance to the boundary of the convex hull.
+To explore the effects of the RBM parameter vector $\boldsymbol \theta$ as it relates to near-degeneracy, instability, and uninterpretability, we consider models of small size. For $\nh, \nv \in \{1, \dots, 4\}$, we sample `r dim(res$samp[[1]])[1]` values of $\boldsymbol \theta$ with various magnitudes (details to follow). For each set of parameters we then calculate the three metrics of model impropriety introduced in Section \ref{degeneracy-instability-and-uninterpretability-oh-my}, $\boldsymbol \mu(\boldsymbol \theta)$, $\text{ELPR}(\boldsymbol \theta)/\nv$, and the coordinates of $\left|\text{E}\left[\boldsymbol X | \boldsymbol \theta\right] -   \text{E}\left[\boldsymbol X | \boldsymbol \theta^* \right] \right|$. In the case of near-degeneracy, we can go further and classify each model as near-degenerate or "viable" based on the distance of $\boldsymbol \mu(\boldsymbol \theta)$ from the boundary of the convex hull of $\mathcal{T}$ and look at the fraction of models that are "near-degenerate," meaning they are within a small distance to the boundary of the convex hull. We define a "small" through a rough estimation to the volume of the hull for each model size. We pick $\epsilon_0 = 0.05$ for $\nh=\nv=1$ and then, for every other $\nh$ and $\nv$, set $m=\nh+\nv+\nv*\nh$ and pick $\epsilon$ so that $1-(1-2\epsilon_0)^3 = 1 - (1-2\epsilon)^m$. In this way, we roughly scale the volume of the small distance to the boundary of the convex hull to be equivalent in all dimensions.
 
-In this numerical experiment, we split $\boldsymbol \theta$ into $\boldsymbol \theta_{interaction}$ and $\boldsymbol \theta_{main}$, in reference to which variables in the probability function the parameters correspond to (whether they multiply a $v_i$ or a $h_j$ or they multiply a $v_i h_j$), and allow the two types of terms to have varying average magnitudes, $||\boldsymbol \theta_{main} || /(H+V)$ and $||\boldsymbol \theta_{interaction} || /(H*V)$. These average magnitudes vary on a grid between `r min(plot_dat_grid$r1/(plot_dat_grid$H + plot_dat_grid$V))` and `r max(plot_dat_grid$r1/(plot_dat_grid$H + plot_dat_grid$V))` with `r length(unique(plot_dat_grid$r1/(plot_dat_grid$H + plot_dat_grid$V)))` breaks, yielding `r length(unique(plot_dat_grid$r1/(plot_dat_grid$H + plot_dat_grid$V)))^2` grid points. (By looking at the average magnitudes, we are able to later consider the potential benefit of shrinking each parameter value $\theta_i$ towards zero in a Bayesian fitting technique.) At each point in the grid, `r dim(res$samp[[1]])[1]` vectors are uniformly sampled on a sphere with radius corresponding to the first coordinate in the grid ($\boldsymbol \theta_{main}$) and `r dim(res$samp[[1]])[1]` vectors are uniformly sampled on a sphere with radius corresponding to the second coordinate in the grid ($\boldsymbol \theta_{main}$) via sums of squared and scaled iid Normal$(0, 1)$ variables. These vectors are then paired to create `r dim(res$samp[[1]])[1]` values of $\boldsymbol \theta$ with magnitudes at each point in the grid.
+In this numerical experiment, we split $\boldsymbol \theta$ into $\boldsymbol \theta_{main}$ and $\boldsymbol \theta_{interaction}$, in reference to which variables in the probability function the parameters correspond to (whether they multiply a $v_i$ or a $h_j$ or they multiply a $v_i h_j$), and allow the two types of terms to have varying average magnitudes, $||\boldsymbol \theta_{main} || /(\nh+\nv)$ and $||\boldsymbol \theta_{interaction} || /(\nh*\nv)$. These average magnitudes vary on a grid between `r min(plot_dat_grid$r1/(plot_dat_grid$H + plot_dat_grid$V))` and `r max(plot_dat_grid$r1/(plot_dat_grid$H + plot_dat_grid$V))` with `r length(unique(plot_dat_grid$r1/(plot_dat_grid$H + plot_dat_grid$V)))` breaks, yielding `r length(unique(plot_dat_grid$r1/(plot_dat_grid$H + plot_dat_grid$V)))^2` grid points. (By looking at the average magnitudes, we are able to later consider the potential benefit of shrinking each parameter value $\theta_i$ towards zero in a Bayesian fitting technique.) At each point in the grid, `r dim(res$samp[[1]])[1]` vectors are uniformly sampled on a sphere with radius corresponding to the first coordinate in the grid ($\boldsymbol \theta_{main}$) and `r dim(res$samp[[1]])[1]` vectors are uniformly sampled on a sphere with radius corresponding to the second coordinate in the grid ($\boldsymbol \theta_{main}$) via sums of squared and scaled iid Normal$(0, 1)$ variables. These vectors are then paired to create `r dim(res$samp[[1]])[1]` values of $\boldsymbol \theta$ with magnitudes at each point in the grid.
 
-The results of this numerical study are summarized in Figures \ref{fig:degen_plots}, \ref{fig:instab_plots}, and \ref{fig:uninterp_plots}. From these three figures, it is clear to see that all three measures of model impropriety show higher values for larger magnitudes of the parameter vectors. Additionally, since there are $H*V$ interaction terms in $\boldsymbol \theta$ versus only $H + V$ main effects terms, for large models there are many more interaction parameters than main effects in the model. And so, severely limiting the magnitude of the individual interactions may well help prevent model impropriety. 
+The results of this numerical study are summarized in Figures \ref{fig:degen_plots}, \ref{fig:instab_plots}, and \ref{fig:uninterp_plots}. From these three figures, it is clear that all three measures of model impropriety show higher values for larger magnitudes of the parameter vectors. Additionally, since there are $\nh*\nv$ interaction terms in $\boldsymbol \theta$ versus only $\nh + \nv$ main effect terms, for large models there are many more interaction parameters than main effects in the model. And so, severely limiting the magnitude of the individual interactions may well help prevent model impropriety. 
 
 ```{r degen_plots, fig.cap="\\label{fig:degen_plots}Results from the numerical experiment, here looking at the fraction of models that were near-degenerate for each combination of magnitude of $\\boldsymbol \\theta$ and model size. Black lines show the contour levels for fraction of near-degenerace, while the thick black line shows the level where the fraction of near-degenerate models is .05.", fig.height=4}
 three_ways %>%
@@ -555,9 +544,9 @@ three_ways %>%
   geom_contour(aes(x = r1, y = r2, z = frac_degen), colour = "black", breaks = .05, size = 1.5) +
   geom_abline(aes(intercept = 0, slope = 1), alpha = .5, lty = 2) +
   scale_fill_gradient("Fraction near-degenerate", low = "yellow", high = "red") +
-  facet_grid(Visibles~Hiddens) +
-  xlab(expression(paste(paste("||", theta[main], "||", "/(H + V)")))) +
-  ylab(expression(paste(paste("||", theta[interaction], "||", "/(H*V)")))) +
+  facet_grid(Visibles~Hiddens, labeller = label_parsed) +
+  xlab(expression(paste(paste("||", theta[main], "||", "/(", n[h]," + ", n[v], ")")))) +
+  ylab(expression(paste(paste("||", theta[interaction], "||", "/(", n[h], "*", n[v], ")")))) +
   theme(aspect.ratio = 1) -> p.degen
 
 three_ways %>%
@@ -568,9 +557,9 @@ three_ways %>%
   #geom_contour(aes(x = r1, y = r2, z = mean_abs_diff), colour = "black", breaks = .05, size = 1.5) +
   geom_abline(aes(intercept = 0, slope = 1), alpha = .5, lty = 2) +
   scale_fill_gradient("Mean max absolute difference", low = "yellow", high = "red", limits = c(0,2)) +
-  facet_grid(Visibles~Hiddens) +
-  xlab(expression(paste(paste("||", theta[main], "||", "/(H + V)")))) +
-  ylab(expression(paste(paste("||", theta[interaction], "||", "/(H*V)")))) +
+  facet_grid(Visibles~Hiddens, labeller = label_parsed) +
+  xlab(expression(paste(paste("||", theta[main], "||", "/(", n[h]," + ", n[v], ")")))) +
+  ylab(expression(paste(paste("||", theta[interaction], "||", "/(", n[h], "*", n[v], ")")))) +
   theme(aspect.ratio = 1) -> p.exp_diff
 
 three_ways %>%
@@ -581,9 +570,9 @@ three_ways %>%
   #geom_contour(aes(x = r1, y = r2, z = mean_max_q), colour = "black", breaks = .05, size = 1.5) +
   geom_abline(aes(intercept = 0, slope = 1), alpha = .5, lty = 2) +
   scale_fill_gradient(expression(frac(max(Q) - min(Q), H + V)), low = "yellow", high = "red") +
-  facet_grid(Visibles~Hiddens) +
-  xlab(expression(paste(paste("||", theta[main], "||", "/(H + V)")))) +
-  ylab(expression(paste(paste("||", theta[interaction], "||", "/(H*V)")))) +
+  facet_grid(Visibles~Hiddens, labeller = label_parsed) +
+  xlab(expression(paste(paste("||", theta[main], "||", "/(", n[h]," + ", n[v], ")")))) +
+  ylab(expression(paste(paste("||", theta[interaction], "||", "/(", n[h], "*", n[v], ")")))) +
   theme(aspect.ratio = 1) -> p.max_q
 
 
@@ -595,9 +584,9 @@ three_ways %>%
   #geom_contour(aes(x = r1, y = r2, z = mean_max_q), colour = "black", breaks = .05, size = 1.5) +
   geom_abline(aes(intercept = 0, slope = 1), alpha = .5, lty = 2) +
   scale_fill_gradient(expression(frac(bar(ELPR(theta)), V)), low = "yellow", high = "red") +
-  facet_grid(Visibles~Hiddens) +
-  xlab(expression(paste(paste("||", theta[main], "||", "/(H + V)")))) +
-  ylab(expression(paste(paste("||", theta[interaction], "||", "/(H*V)")))) +
+  facet_grid(Visibles~Hiddens, labeller = label_parsed) +
+  xlab(expression(paste(paste("||", theta[main], "||", "/(", n[h]," + ", n[v], ")")))) +
+  ylab(expression(paste(paste("||", theta[interaction], "||", "/(", n[h], "*", n[v], ")")))) +
   theme(aspect.ratio = 1) -> p.elpr
 
 
@@ -605,7 +594,7 @@ p.degen
 ```
 
 
-```{r instab_plots_2, fig.cap="\\label{fig:instab_plots}Results from the experiment, here looking at the sample mean value of $R(\\boldsymbol \\theta)/V$ at each grid point for each combination of magnitude of $\\boldsymbol \\theta$ and model size. As the magnitude of $\\boldsymbol \\theta$ grows, so does the value of this metric, indicating typical instability in the model.", fig.height=4}
+```{r instab_plots_2, fig.cap="\\label{fig:instab_plots}Results from the experiment, here looking at the sample mean value of $\\text{ELPR}(\\boldsymbol \\theta)/V$ at each grid point for each combination of magnitude of $\\boldsymbol \\theta$ and model size. As the magnitude of $\\boldsymbol \\theta$ grows, so does the value of this metric, indicating typical instability in the model.", fig.height=4}
 p.elpr
 ```
 
@@ -614,22 +603,22 @@ p.elpr
 p.exp_diff
 ```
 
-Figure \ref{fig:split_plots_dist} shows the fraction near-degenerate for each magnitude of $\boldsymbol \theta$ for each model architecture. For each number of visibles in the model, the fraction near-degenerate becomes greater than zero at larger values of $||\boldsymbol \theta||$ as $H$ increases and the slope becomes steeper as $H$ increases also. This shows that as model size gets larger, the risk of degeneracy starts at a slightly larger magnitude of parameters, but very quickly increases until reaching close to 1. 
+Figure \ref{fig:split_plots_dist} shows the fraction of near-degenerate models for each magnitude of $\boldsymbol \theta$ for each model architecture. For each number of visibles in the model, the fraction near-degenerate becomes greater than zero at larger values of $||\boldsymbol \theta||$ as $\nh$ increases and the slope becomes steeper as $\nh$ increases also. This shows that as model size gets larger, the risk of degeneracy starts at a slightly larger magnitude of parameters, but very quickly increases until reaching close to 1. 
 
-```{r split_plots2, warning=FALSE, fig.cap="\\label{fig:split_plots_dist}The fraction near-degenerate for each magnitude of $\\boldsymbol \\theta$. For each number of visibles in the model, the fraction near-degenerate becomes greater than zero at larger values of $||\\boldsymbol \\theta||$ as $H$ increases and the slope becomes steeper as $H$ increases also.", fig.height=5}
+```{r split_plots2, warning=FALSE, fig.cap="\\label{fig:split_plots_dist}The fraction of near-degenerate models for each magnitude of $\\boldsymbol \\theta$. For each number of visibles in the model, the fraction near-degenerate becomes greater than zero at larger values of $||\\boldsymbol \\theta||$ as $\\nh$ increases and the slope becomes steeper as $\\nh$ increases also.", fig.height=5}
 plot_dat_grid %>% 
   mutate(dist = sqrt(r1^2 + r2^2)/(H + V + H*V)) %>%
   group_by(dist, H, V) %>%
   summarise(frac_degen = sum(near_hull)/n()) %>%
-  mutate(Hiddens = as.character(H), Visibles = paste0("V = ", V)) %>%
+  mutate(Hiddens = as.character(H), Visibles = paste0("paste(n[v], '= ", V, "')")) %>%
   ggplot() +
   geom_point(aes(dist, frac_degen, colour = Hiddens), size = .5) +
   #geom_smooth(aes(dist, frac_degen, colour = Hiddens, group = Hiddens)) +
-  facet_wrap(~Visibles) +
+  facet_wrap(~Visibles, labeller = label_parsed) +
   ylim(c(0,1)) +
-  xlab(expression(paste("||", theta, "||", "/(H + V + H*V), Average distance from the origin"))) +
+  xlab(expression(paste("||", theta, "||", "/(", n[h], " + ", n[v], " + ", n[h], "*", n[v], "), Average distance from the origin"))) +
   ylab("Fraction Near-degenerate") +
-  scale_colour_discrete("H")
+  scale_colour_discrete(expression(n[h]))
 ```
 
 ```{r, frac-degen, include=FALSE}
@@ -660,13 +649,13 @@ left_join(tmp %>%
 
   
 ```
-These manageable examples indicate that RBMs are near-degenerate, unstable, and uninterpretable for large portions of the parameter space. This, however, is not the only potential problem to be faced when using these models. There is the matter of pricipled/rigorous fitting of RBM models.
+These manageable examples indicate that RBMs are near-degenerate, unstable, and uninterpretable for large portions of the parameter space. This, however, is not the only potential problem to be faced when using these models. There is the matter of principled/rigorous fitting of RBM models.
 
 # Model Fitting
 
-Typically, fitting a RBM via maximum likelihood (ML) methods will be infeasible mainly due to the intractibility of the normalizing term $\gamma(\boldsymbol \theta)$ in a model of any realistic size. Ad hoc methods are used instead, which aim to avoid this problem by using stochastic ML that employ a small number of MCMC draws. 
+Typically, fitting a RBM via maximum likelihood (ML) methods will be infeasible due mainly to the intractibility of the normalizing term $\gamma(\boldsymbol \theta)$ in a model of any realistic size. Ad hoc methods are used instead, which aim to avoid this problem by using stochastic ML that employ a small number of MCMC draws. 
 
-However, computational concerns are not the only issues with fitting an RBM using ML. In addition, the RBM model, with the appropriate choice of parameters, has the potential to re-create any distribution for the data (i.e., reproduce any specification of cell probabilities for the -1/1 valued data outcomes). To see this, we provide a small example.
+However, computational concerns are not the only issues with fitting an RBM using ML. In addition, the RBM model, with the appropriate choice of parameters, has the potential to re-create any distribution for the data (i.e., reproduce any specification of cell probabilities for the $-1/1$ valued data outcomes). To see this, we provide a small example.
 
 For simplicity, consider a model with two visible variables $(V_1,V_2)$ and one hidden $H_1$.  In this case,
 there are four possible data realizations for $(V_1,V_2)$  given by $(\pm 1, \pm 1)$ and we may express the model probabilities
@@ -708,14 +697,14 @@ Alternatively, if exactly one specified cell probability in (\ref{eqn:0}) is zer
 \end{equation}  
 If exactly two specified probabilities in (\ref{eqn:0}) are zero, say  $p_{(1,1)}$ and $p_{(-1,1)}$ (without loss of generality), then a limit approximation as in (\ref{eqn:2}) follows by picking $\theta_{v_1}$ as above based on any choices of $(\theta_{h_1}, \Delta_1,\Delta_2)$ and choosing  a sequence of $\theta_{v_2}\equiv \theta_{v_2}^{(m)}$ values for which $\theta_{v_2}^{({m})} \rightarrow -\infty$.
 
-The previous discussion intends to indicate that the RBM model suffers from parameter identifiability issues that go beyond mere symmetries in the parametrization. Quite different parameter settings can induce the same essential RBM model. However, this  is not the most disastrous implication of the RBM parameterization. A far worse consequence is that, when fitting the RBM model by likelihood-based methods, we already know what the answer must be before we begin: namely, such  fitting will simply aim to reproduce the empirical distribution from the data. That is, based on a random sample of visible variables, the model for the cell probabilities that has the highest likelihood over  *all possible model classes* (i.e., RBM-based or not) is the empirical distribution, and the parametrization of the RBM model itself ensures that this empirical distribution can be arbitrarily well approximated.
+The previous discussion intends to indicate that the RBM model class suffers from parameter identifiability issues that go beyond mere symmetries in the parametrization. Quite different parameter settings can induce the same essential RBM model. However, this  is not the most disastrous implication of the RBM parameterization. A far worse consequence is that, when fitting the RBM model by likelihood-based methods, we already know what the answer must be before we begin: namely, such  fitting will simply aim to reproduce the empirical distribution from the data. That is, based on a random sample of visible variables, the model for the cell probabilities that has the highest likelihood over  *all possible model classes* (i.e., RBM-based or not) is the empirical distribution, and the parametrization of the RBM model itself ensures that this empirical distribution can be arbitrarily well approximated.
 
-For illustration, continue the simple example from above with $n$ iid observations, each consisting of two realized visibles $(V_1,V_2)$.  In which case, when the specified cell probabilities $p_{(-1,-1)},p_{(1,-1)}, p_{(-1,1)},p_{(1,1)}$ in (\ref{eqn:0}) are taken as the empirical cell frequencies from the sample, there is no better model based on maximum likelihood and the discussion above (c.f. (\ref{eqn:2})) shows that RBM model parameters can be chosen to re-create this empirical distribution to an arbitrarily close degree. Hence, RBM model fitting based on ML will often simply seek to reproduce the empirical distribution (i.e., as an extreme type of over-fitting). What's more, whenever this empirical distribution contains empty cells, fitting steps for the RBM model will necessarily aim to chase parameters that necessarily diverge in magnitude in order to zero out the corresponding RBM cell probabilities. In a data application with a large sample space it is unlikely that the training set will include one of each possible image, thus there will be possible images that are not realized in the training set, unlike this small example. As we have already discussed in secion \ref{explorations}, large magnitudes of $\boldsymbol \theta$ lead to model impropriety in the RBM. 
+For illustration, continue the simple example from above with $n$ iid observations, each consisting of two realized visibles $(V_1,V_2)$.  In which case, when the specified cell probabilities $p_{(-1,-1)},p_{(1,-1)}, p_{(-1,1)},p_{(1,1)}$ in (\ref{eqn:0}) are taken as the empirical cell frequencies from the sample, there is no better model based on maximum likelihood and the discussion above (c.f. (\ref{eqn:2})) shows that RBM model parameters can be chosen to re-create this empirical distribution to an arbitrarily close degree. Hence, RBM model fitting based on ML will often simply seek to reproduce the empirical distribution (i.e., as an extreme type of over-fitting). What's more, whenever this empirical distribution contains empty cells, fitting steps for the RBM model will necessarily aim to choose parameters that necessarily diverge in magnitude in order to zero out the corresponding RBM cell probabilities. In a data application with a large sample space, it is unlikely that the training set will include one of each possible outcome, unlike this small example. As we have already discussed in secion \ref{explorations}, large magnitudes of $\boldsymbol \theta$ lead to model impropriety in the RBM. 
 
-Here we consider what might be done in a principled manner, testing on a $V = H = 4$ case that already stretched the limits of what is computable - in particular we consider Bayes methods. 
+Here we consider what might be done in a principled manner, testing on a $\nv = \nh = 4$ case that already stretches the limits of what is computable - in particular we consider Bayes methods. 
 
 ## Bayesian model fitting
-To avoid model impropriety for a fitted RBM, we want to avoid parts of the parameter space $\mathbb{R}^{V + H + VH}$ that lead to near-degeneracy, instability, and uninterpretability. Motivated by the insights in Section \ref{exploring-manageable-examples}, one idea is to shrink $\boldsymbol \theta$ toward $\boldsymbol 0$ by specifying priors that place low probability on large values of $||\boldsymbol \theta||$, specifically focusing on shrinking $\boldsymbol \theta_{interaction}$ more than $\boldsymbol \theta_{main}$.
+To avoid model impropriety for a fitted RBM, we want to avoid parts of the parameter space $\mathbb{R}^{\nv + \nh + \nv*\nh}$ that lead to near-degeneracy, instability, and uninterpretability. Motivated by the insights in Section \ref{exploring-manageable-examples}, one idea is to shrink $\boldsymbol \theta$ toward $\boldsymbol 0$ by specifying priors that place low probability on large values of $||\boldsymbol \theta||$, specifically focusing on shrinking $\boldsymbol \theta_{interaction}$ more than $\boldsymbol \theta_{main}$.
 
 ```{r param-table}
 load("data/params_theta.Rdata")
@@ -751,15 +740,16 @@ sample.params %>%
          `$\\theta_{42}$` = theta42,
          `$\\theta_{43}$` = theta43,
          `$\\theta_{44}$` = theta44) %>%
-  gather("Parameter", "Value") -> tbl
+  gather("Parameter", "Value") %>%
+  mutate(Value = paste0("$", Value, "$")) -> tbl
 
 cbind(tbl[1:8,], tbl[9:16,], tbl[17:24,]) %>%
-  kable(caption = "\\label{tab:theta}Parameters used to fit a test case with $V = H = 4$. This parameter vector was chosen as a sampled value of $\\boldsymbol \\theta$ that was not near the convex hull of the sufficient statistics for a grid point in figure \\ref{fig:degen_plots} with $< 5$\\% near-degeneracy.")
+  kable(caption = "\\label{tab:theta}Parameters used to fit a test case with $V = H = 4$. This parameter vector was chosen as a sampled value of $\\boldsymbol \\theta$ that was not near the convex hull of the sufficient statistics for a grid point in Figure \\ref{fig:degen_plots} with $< 5$\\% near-degeneracy.")
 ```
 
-We considered a test case with $V = H = 4$ and parameters given in Table \ref{tab:theta}. This parameter vector was chosen as a sampled value of $\boldsymbol \theta$ that was not near the convex hull of the sufficient statistics for a grid point in figure \ref{fig:degen_plots} with $< 5$\% near-degeneracy. We simulated $n = 5,000$ as a training set and fit the RBM using three Bayes methodologies. These involved the following:
+We considered a test case with $\nv = \nh = 4$ and parameters given in Table \ref{tab:theta}. This parameter vector was chosen as a sampled value of $\boldsymbol \theta$ that was not near the convex hull of the sufficient statistics for a grid point in figure \ref{fig:degen_plots} with $< 5$\% near-degeneracy. We simulated $n = 5,000$ realizations as visibles as a training set and fit the RBM using three Bayes methodologies. These involved the following:
 
-1. *A trick prior.* Here we cancel out normalizing term in the likelihood so that resulting full conditionals of $\boldsymbol \theta$ are multivariate Normal. The $h_j$ are carried allong in the MCMC sampling from the posterior as latent variables.
+1. *A "trick" prior.* Here we cancel out normalizing term in the likelihood so that resulting full conditionals of $\boldsymbol \theta$ are multivariate Normal. The $h_j$ are carried allong in the MCMC sampling from the posterior as latent variables.
     \begin{align*}
     \pi(\boldsymbol \theta) \propto \gamma(\boldsymbol \theta)^n \exp\left(-\frac{1}{2C_{1}}\boldsymbol \theta_{main}'\boldsymbol \theta_{main} -\frac{1}{2C_{2}}\boldsymbol \theta_{interaction}'\boldsymbol \theta_{interaction}\right), \vspace{-.75cm}
     \end{align*}
@@ -767,16 +757,16 @@ We considered a test case with $V = H = 4$ and parameters given in Table \ref{ta
     where 
     
     \begin{align*}
-    \gamma(\boldsymbol \theta) = \sum\limits_{\boldsymbol x \in \mathcal{X}}\exp\left(\sum\limits_{i = 1}^V\sum\limits_{j=1}^H \theta_{ij} v_i h_j + \sum\limits_{i = 1}^V\theta_{v_i} v_i + \sum\limits_{j = 1}^H\theta_{h_j} h_j\right) \text{ and } C_{2} < C_{1}
+    \gamma(\boldsymbol \theta) = \sum\limits_{\boldsymbol x \in \mathcal{C}^{\nh + \nv}}\exp\left(\sum\limits_{i = 1}^\nv\sum\limits_{j=1}^\nh \theta_{ij} v_i h_j + \sum\limits_{i = 1}^V\theta_{v_i} v_i + \sum\limits_{j = 1}^\nh\theta_{h_j} h_j\right) \text{ and } C_{2} < C_{1}
     \end{align*}
     This is the method of @li2014biclustering.
 2. *A truncated Normal prior.* Here we use independent truncated spherical normal distributions as priors for $\boldsymbol \theta_{main}$ and $\boldsymbol \theta_{interaction}$ with $\sigma_{interaction} < \sigma_{main}$. Full conditional distributions are not conjugate, and simulation from the posterior was accomplished using a geometric adaptive Metropolis Hastings step [@zhou2014some] and calculation of likelihood normalizing constant. (This computation is barely feasible for a problem of this size.) Here the $h_j$ are carried along in the MCMC implementation as latent variables.
 3. *A truncated Normal prior and marginalized likelihood.* Here we marginalize out $\boldsymbol h$ in $f_{\boldsymbol \theta}(\boldsymbol x)$, and use the truncated Normal priors applied to the marginal probabilities for visible variables given by
     \begin{align*}
-    g_{\boldsymbol \theta}(\boldsymbol v) \propto \sum\limits_{\boldsymbol h \in \{-1,1\}^H} \exp\left(\sum\limits_{i = 1}^V \sum\limits_{j=1}^H \theta_{ij} v_i h_j + \sum\limits_{i = 1}^V\theta_{v_i} v_i + \sum\limits_{j = 1}^H\theta_{h_j} h_j\right), \boldsymbol v \in \{-1,1\}^V.
+    g_{\boldsymbol \theta}(\boldsymbol v) \propto \sum\limits_{\boldsymbol h \in \mathcal{C}^\nh} \exp\left(\sum\limits_{i = 1}^\nv \sum\limits_{j=1}^\nh \theta_{ij} v_i h_j + \sum\limits_{i = 1}^\nv\theta_{v_i} v_i + \sum\limits_{j = 1}^\nh\theta_{h_j} h_j\right), \boldsymbol v \in \mathcal{C}^\nv.
     \end{align*}
     
-The three fitting methods are ordered by computational feasibility in a real-data situation, with the trick prior being the most feasible due to conjugacy and the marginalized likelihood method the least feasible due to the marginalization and need for an adaptive Metropolis Hastings step. All three methods require choosing the values of hyperparameters. In each case, we have chosen the values based on a rule of thumb that shrinks $\boldsymbol \theta_{interaction}$ more than $\boldsymbol \theta_{main}$. Additionally, the trick prior requires additional tuning to choose $C_1$ and $C_2$, reducing its appeal. The values used for the hyperparameters in our simulation are presented in Table \ref{tab:hyperparam}.
+The three fitting methods are ordered by computational feasibility in a real-data situation, with the trick prior being the most computationally feasible due to conjugacy and the marginalized likelihood method the least feasible due to the marginalization and need for an adaptive Metropolis Hastings step. All three methods require choosing the values of hyperparameters. In each case, we have chosen the values based on a rule of thumb that shrinks $\boldsymbol \theta_{interaction}$ more than $\boldsymbol \theta_{main}$. Additionally, the trick prior requires additional tuning to choose $C_1$ and $C_2$, reducing its appeal. The values used for the hyperparameters in our simulation are presented in Table \ref{tab:hyperparam}.
 
 \begin{table}[ht]
 \centering
@@ -786,19 +776,19 @@ The three fitting methods are ordered by computational feasibility in a real-dat
 \hline 
 Method & Hyperparameter & Value \\ 
 \hline \hline
-\multirow{2}{*}{Trick Prior} & $C_1$ & $\frac{C}{N}\frac{1}{H + V}$ \\
- & $C_2$ & $\frac{C}{N}\frac{1}{H*V}$ \\
+\multirow{2}{*}{Trick Prior} & $C_1$ & $\frac{C}{n}\frac{1}{\nh + \nv}$ \\
+ & $C_2$ & $\frac{C}{n}\frac{1}{\nh*\nv}$ \\
 \hline
-\multirow{2}{*}{Truncated Normal} & $\sigma^2_{main}$ & $\frac{1}{H + V}$ \\
- & $\sigma^2_{interaction}$ & $\frac{1}{H*V}$ \\
+\multirow{2}{*}{Truncated Normal} & $\sigma^2_{main}$ & $\frac{1}{\nh + \nv}$ \\
+ & $\sigma^2_{interaction}$ & $\frac{1}{\nh*\nv}$ \\
 \hline
-\multirow{2}{*}{Marginalized Likelihood} & $\sigma^2_{main}$ & $\frac{1}{H + V}$ \\
- & $\sigma^2_{interaction}$ & $\frac{1}{H*V}$ \\
+\multirow{2}{*}{Marginalized Likelihood} & $\sigma^2_{main}$ & $\frac{1}{\nh + \nv}$ \\
+ & $\sigma^2_{interaction}$ & $\frac{1}{\nh*\nv}$ \\
 \hline
 \end{tabular}
 \end{table}
 
-It should be noted that the truncated Normal method (2) and the marginalized likelihood method (3) are drawing from the same stationary posterior distribution for images. The difference between these two methods is in how well the chains mix and how quickly they arrive at the target distribution. After a burn-in period of 50 iterations selected by inspecting the trace plots, we assess the issue of mixing in two ways. First, the autocorrelation functions (ACF) for each image are assessed at multiple lags for each method and plotted in figure \ref{fig:acf} with the truncated Normal method in black and the marginalized likelihood method in red. As expected, ACF corresponding to the method that marginalizes out the hidden variables from the likelihood decreases to zero at a much faster rate, indicating better mixing for the chain. 
+It should be noted that the truncated Normal method (2) and the marginalized likelihood method (3) are drawing from the same stationary posterior distribution for vectors of visibles. The difference between these two methods is in how well the chains mix and how quickly they arrive at the target distribution. After a burn-in period of 50 iterations selected by inspecting the trace plots, we assess the issue of mixing in two ways. First, the autocorrelation functions (ACF) for each possible vector of visibles are assessed at multiple lags for each method and plotted in Figure \ref{fig:acf} with the truncated Normal method in black and the marginalized likelihood method in red. As expected, ACF corresponding to the method that marginalizes out the hidden variables from the likelihood decreases to zero at a much faster rate, indicating better mixing for the chain. 
 
 ```{r models-load}
 load("data/sample_images.Rdata")
@@ -853,7 +843,7 @@ trick_sample_good <- reshape_sample_distn(trick_good)
 trunc_sample_good <- reshape_sample_distn(trunc_good)
 ```
 
-```{r acf, fig.cap="\\label{fig:acf}The autocorrelation functions (ACF) for each image assessed at multiple lags for each method with the truncated Normal method in black and the marginalized likelihood method in red. As expected, ACF corresponding to the method that marginalizes out the hidden variables from the likelihood decreases to zero at a much faster rate, indicating better mixing for the chain."}
+```{r acf, fig.cap="\\label{fig:acf}The autocorrelation functions (ACF) for all $2^4 - 16$ possibles vectors of visibles assessed at multiple lags for each method with the truncated Normal method in black and the marginalized likelihood method in red. As expected, ACF corresponding to the method that marginalizes out the hidden variables from the likelihood decreases to zero at a much faster rate, indicating better mixing for the chain."}
 marginal_sample_good %>% 
   filter(iter > 50) %>%
   group_by(v1, v2, v3, v4, image_id) %>% 
@@ -924,7 +914,7 @@ marginal_means %>%
 M_eff_ratio <- M_eff_table[1,-1]/M_eff_table[2,-1]
 ```
 
-Secondly, we can assess the mixing of our chain using an idea of effective sample size. If the MCMC chain were truly iid draws from the target distribution, then the estimate of the posterior mean probability of image $i$, $\bar{p}^{(i)}$ would be distributed approximately Normal with mean the true posterior marginal probability of image $i$, $p^{(i)}$, and variance $\sigma^2_i/M$, where $\sigma^2_i$ is the true posterior variance of image $i$ and $M$ is the length of the chain. However, with the presence of correlation in our chain, the aysmptotic variance of $\bar{p}^{(i)}$ is instead approximately some $C_i/M$, where $C_i$ is some positive constant such that $C_i > \sigma^2_i$. We can use an overlapping block-means approach [@gelman2011inference] to get a crude estimate for $C_i$, $\hat{C}_i = b S^2(\overline{p_i})$ where $b$ is the block length and $S^2(\overline{p_i})$ denotes the sample variance of the blockmeans $\overline{p}_i$ for image $i$. We compare it to an estimate of $\sigma^2_i$ using sample variance of the raw chain, $\hat{\sigma}^2_i$. Formally, we approximate the effective sample size of the length $M$ MCMC chain as 
+Secondly, we can assess the mixing of our chain using an idea of effective sample size. If the MCMC chain were truly iid draws from the target distribution, then the estimate of the posterior mean probability of visibles vector $i$, $\bar{p}^{(i)}$ would be distributed approximately Normal with mean the true posterior marginal probability of visibles vector $i$, $p^{(i)}$, and variance $\sigma^2_i/M$, where $\sigma^2_i$ is the true posterior variance of visibles vector $i$ and $M$ is the length of the chain. However, with the presence of correlation in our chain, the aysmptotic variance of $\bar{p}^{(i)}$ is instead approximately some $C_i/M$, where $C_i$ is some positive constant such that $C_i > \sigma^2_i$. We can use an overlapping block-means approach [@gelman2011inference] to get a crude estimate for $C_i$, $\hat{C}_i = b S^2(\overline{p_i})$ where $b$ is the block length and $S^2(\overline{p_i})$ denotes the sample variance of the blockmeans $\overline{p}_i$ for visibles vector $i$. We compare it to an estimate of $\sigma^2_i$ using sample variance of the raw chain, $\hat{\sigma}^2_i$. Formally, we approximate the effective sample size of the length $M$ MCMC chain as 
 
 $$
 M_{eff}^{(i)} = M\frac{\hat{\sigma}^2_i}{\hat{C}_i}.
@@ -938,12 +928,12 @@ M_eff_table %>%
   arrange(Image) -> M_eff_tmp
 
 cbind(M_eff_tmp[1:8,], M_eff_tmp[9:16,]) %>%
-  kable(digits = 2, caption = paste0("\\label{tab:m_eff}The effective sample sizes for a chain of length $M = 1000$ of all $16$ images. The truncated likelihood would require at least $", round(min(M_eff_table[1, -1])/min(M_eff_table[2, -1]), 1), "$ times more iterations to be run of the MCMC chain in order to achieve the same amount of effective information about the posterior distribution."))
+  kable(digits = 2, caption = paste0("\\label{tab:m_eff}The effective sample sizes for a chain of length $M = 1000$ of all $16$ images. The truncated likelihood would require at least $", round(min(M_eff_table[1, -1])/min(M_eff_table[2, -1]), 1), "$ times as many MCMC iterations to be run in order to achieve the same amount of effective information about the posterior distribution."))
 ```
 
-The effective sample sizes for a chain of length $M = 1000$ of all $16$ images are presented in table \ref{tab:m_eff}. These range from  $`r round(min(M_eff_table[1, -1]), 2)`$ to $`r round(max(M_eff_table[1, -1]), 2)`$ for the marginalized likelihood method, while the truncated Normal method only yields between $`r round(min(M_eff_table[2, -1]), 2)`$ and $`r round(max(M_eff_table[2, -1]), 2)`$ effective draws. Thus, the truncated likelihood would require at least $`r round(min(M_eff_table[1, -1])/min(M_eff_table[2, -1]), 1)`$ times more iterations to be run of the MCMC chain in order to achieve the same amount of effective information about the posterior distribution. For this reason, in conjuction with the ACF results in Figure \ref{fig:acf}, the truncated Normal method is not an effective method for fitting the RBM.
+The effective sample sizes for a chain of length $M = 1000$ of all $2^4 = 16$ possible vectors of visibles are presented in table \ref{tab:m_eff}. These range from  $`r round(min(M_eff_table[1, -1]), 2)`$ to $`r round(max(M_eff_table[1, -1]), 2)`$ for the marginalized likelihood method, while the truncated Normal method only yields between $`r round(min(M_eff_table[2, -1]), 2)`$ and $`r round(max(M_eff_table[2, -1]), 2)`$ effective draws. Thus, the truncated likelihood would require at least $`r round(min(M_eff_table[1, -1])/min(M_eff_table[2, -1]), 1)`$ times more iterations to be run of the MCMC chain in order to achieve the same amount of effective information about the posterior distribution. For this reason, consistent with the ACF results in Figure \ref{fig:acf}, the truncated Normal method does not seem to be an effective method for fitting the RBM.
 
-Figure \ref{fig:fitting_plot} shows the posterior probability of each possible $\boldsymbol v \in \{-1,1\}^4$ after fitting the RBM model in the two ways detailed in this section, excluding the truncated Normal method. The black vertical lines show the true probabilities of each image based on the parameters used to simulate the training set while the red vertical lines show the empirical distribution. From these posterior predictive checks, it is evident that the marginalized likelihood method produces the closest fit to the actual data. However, this method requires a marginalization step to obtain the probability function of visible observations alone, which is infeasible for a model with $H$ of any real size.
+Figure \ref{fig:fitting_plot} shows the posterior probability of each possible $\boldsymbol v \in \{-1,1\}^4$ after fitting the RBM model in the two ways detailed in this section, excluding the truncated Normal method. The black vertical lines show the true probabilities of each image based on the parameters used to simulate the training set while the red vertical lines show the empirical distribution. From these posterior predictive checks, it is evident that the marginalized likelihood method produces the closest fit to the actual data. However, this method requires a marginalization step to obtain the probability function of visible observations alone, which is infeasible for a model with $\nh$ of any real size.
     
 ```{r posterior-dsn}
 marginal_sample_good %>% rename(marginal = prob) %>% filter(iter > 50) %>%
@@ -976,9 +966,9 @@ p.models
 
 # Discussion
 
-RBM models are an interesting class of undirected graphical models that have shown to be useful for supervised learning tasks. However, when viewed as a statistical model, RBMs very easily fall prey to instances of model impropriety such as near-degeneracy, S-instability, and uninterpretability. Additionally, these models are difficult to fit using a rigorous methodology due to size of the model space.
+RBM models are an interesting class of undirected graphical models that have shown to be useful for supervised learning tasks. However, when viewed as generative statistical models, RBMs very easily fall prey to instances of model impropriety such as near-degeneracy, S-instability, and uninterpretability. Additionally, these models are difficult to fit using a rigorous methodology due to size of the model space.
 
-In this paper, we have presented three honest Bayes MCMC-based methods for fitting RBMs. Common practice is to use MCMC to overcome fitting complexities, however because of the size of the space to be spanned ($H$ hidden variables for each visible observation) convergence and mixing of these methods will be slow. Marginalization of the latent variables in the model can improve mixing, but is numerically intractible due to repeated calculation of the normalizing constant.
+In this paper, we have presented three honest Bayes MCMC-based methods for fitting RBMs. Common practice is to use MCMC to overcome fitting complexities, however because of the size of the space to be spanned ($\nh$ hidden variables for each visible observation) convergence and mixing of these methods will be slow. Marginalization of the latent variables in the model can improve mixing, but is numerically intractible due to repeated calculation of the normalizing constant.
 
 Ultimately, it is not clear RBM models are useful as generative models. Due to the extreme flexibility in these models, a rigorous likelihood-based method for fitting an RBM will merely return the (discrete) empirical distribution for visibles. Meaning, even if a rigorous likelihood-based fitting method is able to overcome the inherent difficulties of mixing and convergence in a large space, we know the answer before we even begin. For these reasons, we are thus skeptical of the generative claims made about RBMs.
 
@@ -994,11 +984,6 @@ Ultimately, it is not clear RBM models are useful as generative models. Due to t
 ```{r child='appendix-center.Rmd'}
 ```
 
-\subsection{Instability proofs}
-\label{instability-proofs}
-
-```{r child='appendix-instability.Rmd'}
-```
 
 \end{appendix}
 
