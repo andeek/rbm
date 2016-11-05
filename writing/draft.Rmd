@@ -1,13 +1,13 @@
 ---
 title: "On the propriety of restricted Boltzmann machines"
-author: "Andee Kaplan, Daniel Nordman, Stephen Vardeman"
-date: "September, 2016"
+author: "Andee Kaplan, Daniel Nordman, and Stephen Vardeman"
+date: "November, 2016"
 linestretch: 2 
 output: 
   pdf_document:
     fig_caption: yes
     includes:
-      in_header: header.tex
+      in_header: latex/header.tex
     number_sections: yes
 bibliography: references/refs.bib
 abstract: |
@@ -36,7 +36,7 @@ Secondly, the fitting of these models is problematic. As the size of these model
 
 In Section \ref{bayesian-model-fitting}, we compare three Bayesian modeling techniques (involving MCMC approximations that are computationally more accessible than direct maximum likelihood), each proposed with the goal of avoiding parts of the RBM parameter space that yield unattractive models. As might be expected, with greater computational complexity comes an increase in fitting accuracy, but at the cost of practical feasibility. 
 
-Additionally, because RBM models are highly overparametrized, any fully principled fitting method based on the likelihood will simply reproduce the (discrete) empirical distribution of most realistic training sets. That is, there is no "smoothed distribution" achieved in fitting a RBM model with a rigorous likelihood-based method. We are therefore led to be skeptical that any model built using these structures (like a deep Boltzmann machine) can achieve prediction or inference in a principled way.
+For a RBM model with sufficient hidden variables, it has been shown that any distribution on the data can be approximated arbitrarily well [@le2008representational, @montufar2011refinements, and @montufar2011expressive]. The empirical distribution is the best fitting model to the observed cell data and so the RBM will seek to achieve this when possible. Thus, any fully principled fitting method based on the likelihood of a RBM with enough hidden variables will simply reproduce the (discrete) empirical distribution of most realistic training sets. That is, there is no "smoothed distribution" achieved in fitting a RBM model of sufficient size with a rigorous likelihood-based method. We are therefore led to be skeptical that any model built using these structures (like a deep Boltzmann machine) can achieve prediction or inference in a principled way without intentially limiting the flexibility of the model.
 
 This paper is structured as follows. Section \ref{background} formally defines the RBM including the joint distribution of hidden and visible variables and explains the model's connection to deep learning. Additionally, measures of model impropriety and methods of detecting it are defined. Section \ref{explorations} details our explorations into the model behavior and propriety (or lack thereof) of the RBM class. We discuss three Bayesian fitting techniques intended to avoid fitted model impropriety in Section \ref{model-fitting} and conclude with a discussion in Section \ref{discussion}. Additionally, there is an accompanying appendix with proofs of main results.
 
@@ -655,7 +655,7 @@ These manageable examples indicate that RBMs are near-degenerate, unstable, and 
 
 Typically, fitting a RBM via maximum likelihood (ML) methods will be infeasible due mainly to the intractibility of the normalizing term $\gamma(\boldsymbol \theta)$ in a model of any realistic size. Ad hoc methods are used instead, which aim to avoid this problem by using stochastic ML that employ a small number of MCMC draws. 
 
-However, computational concerns are not the only issues with fitting an RBM using ML. In addition, the RBM model, with the appropriate choice of parameters, has the potential to re-create any distribution for the data (i.e., reproduce any specification of cell probabilities for the $-1/1$ valued data outcomes). To see this, we provide a small example.
+However, computational concerns are not the only issues with fitting an RBM using ML. In addition, the RBM model, with the appropriate choice of parameters and number of hiddens, has the potential to re-create any distribution for the data (i.e., reproduce any specification of cell probabilities for the $-1/1$ valued data outcomes). @montufar2011refinements show that any distribution on $\{0, 1\}^{\nv}$ can be approximated arbitrarily well by a RBM with $2^{\nv}/2 - 1$ hidden units. To see this, we provide a small example.
 
 For simplicity, consider a model with two visible variables $(V_1,V_2)$ and one hidden $H_1$.  In this case,
 there are four possible data realizations for $(V_1,V_2)$  given by $(\pm 1, \pm 1)$ and we may express the model probabilities
@@ -668,17 +668,15 @@ for $(v_1,v_2)\in \{-1, 1\}^2$, in terms of real-valued parameters $\theta_{v_1}
 \label{eqn:0}
 0\leq p_{(-1,-1)},\;p_{(1,-1)}, \;p_{(-1,1)},\;p_{(1,1)},
 \end{equation} 
-for the outcomes $(\pm 1, \pm 1)$,  values for parameters $(\theta_{v_1}, \theta_{v_2}, \theta_{h_1}, \theta_{11},\theta_{21})$ may be chosen to mimic such  cell probabilities with arbitrary closeness.  In fact, when the cell probabilities (\ref{eqn:0}) are all strictly positive, parameters in the RBM model can be specified to reflect these probabilities exactly. And, when one or more of the cell probabilities (\ref{eqn:0}) are zero, the corresponding RBM  probabilities $P(V_1=v_1,V_2=_v2| \theta_{v_1}, \theta_{v_2}, \theta_{h_1}, \theta_{11},\theta_{21})$ may never be identically zero (due to exponential terms in the model) but
- parameters can be still selected to make the appropriate RBM cell probabilities arbitrarily small.
+for the outcomes $(\pm 1, \pm 1)$,  values for parameters $(\theta_{v_1}, \theta_{v_2}, \theta_{h_1}, \theta_{11},\theta_{21})$ may be chosen to mimic such  cell probabilities with arbitrary closeness.  In fact, when the cell probabilities (\ref{eqn:0}) are all strictly positive, parameters in the RBM model can be specified to reflect these probabilities exactly. And, when one or more of the cell probabilities (\ref{eqn:0}) are zero, the corresponding RBM  probabilities $P(V_1=v_1,V_2=_v2| \theta_{v_1}, \theta_{v_2}, \theta_{h_1}, \theta_{11},\theta_{21})$ may never be identically zero (due to exponential terms in the model) but parameters can be still selected to make the appropriate RBM cell probabilities arbitrarily small.
 
 To demonstrate such model approximations,  we  assume $p_{(-1,-1)}>0$ (without loss of generality) in the specified cell probabilities (\ref{eqn:0}) and replace parameters $\theta_{11},\theta_{21}$ with $\Delta_1 \equiv \theta_{11} +\theta_{21}$ and $\Delta_2 \equiv \theta_{11} -\theta_{21}$.  We may then prescribe values of $\theta_{v_1}, \theta_{v_2}, \theta_{h_1}, \Delta_1,\Delta_2$  so that the model probability ratio
 $$
 P(V_1=v_1,V_2=v_2|\theta_{v_1}, \theta_{v_2}, \theta_{h_1}, \Delta_1,\Delta_2)/  P(V_1=-1,V_2=-1| \theta_{v_1}, \theta_{v_2}, \theta_{h_1}, \Delta_1,\Delta_2)
 $$
-matches the corresponding  ratio $p_{(v_1,v_2)}/p_{(-1,-1)}$  over three values of $(v_1,v_2) = (1,-1),(-1,1),(1,1)$.
+matches the corresponding ratio $p_{(v_1,v_2)}/p_{(-1,-1)}$ over three values of $(v_1,v_2) = (1,-1),(-1,1),(1,1)$.
 
-For instance, assuming the cell probabilities from (\ref{eqn:0}) are all positive, these probabilities
- can be exactly reproduced by choosing
+For instance, assuming the cell probabilities from (\ref{eqn:0}) are all positive, these probabilities can be exactly reproduced by choosing
  \begin{eqnarray*}
  \theta_{v_1} &=& \frac{1}{2} \log\left( \frac{p_{(1,-1)}}{p_{(-1,-1)}} \frac{\exp(\theta_{h_1}-\Delta_1) + \exp(-\theta_{h_1}+\Delta_1)}{\exp(\theta_{h_1}+\Delta_2) + \exp(-\theta_{h_1}-\Delta_2)}  \right),\\ 
  \theta_{v_2}&= &\frac{1}{2} \log\left( \frac{p_{(-1,1)}}{p_{(-1,-1)}} \frac{\exp(\theta_{h_1}-\Delta_1) + \exp(-\theta_{h_1}+\Delta_1)}{\exp(\theta_{h_1}-\Delta_2) + \exp(-\theta_{h_1}+\Delta_2)}  \right)
@@ -697,7 +695,7 @@ Alternatively, if exactly one specified cell probability in (\ref{eqn:0}) is zer
 \end{equation}  
 If exactly two specified probabilities in (\ref{eqn:0}) are zero, say  $p_{(1,1)}$ and $p_{(-1,1)}$ (without loss of generality), then a limit approximation as in (\ref{eqn:2}) follows by picking $\theta_{v_1}$ as above based on any choices of $(\theta_{h_1}, \Delta_1,\Delta_2)$ and choosing  a sequence of $\theta_{v_2}\equiv \theta_{v_2}^{(m)}$ values for which $\theta_{v_2}^{({m})} \rightarrow -\infty$.
 
-The previous discussion intends to indicate that the RBM model class suffers from parameter identifiability issues that go beyond mere symmetries in the parametrization. Quite different parameter settings can induce the same essential RBM model. However, this  is not the most disastrous implication of the RBM parameterization. A far worse consequence is that, when fitting the RBM model by likelihood-based methods, we already know what the answer must be before we begin: namely, such  fitting will simply aim to reproduce the empirical distribution from the data. That is, based on a random sample of visible variables, the model for the cell probabilities that has the highest likelihood over  *all possible model classes* (i.e., RBM-based or not) is the empirical distribution, and the parametrization of the RBM model itself ensures that this empirical distribution can be arbitrarily well approximated.
+The previous discussion intends to indicate that the RBM model class suffers from parameter identifiability issues that go beyond mere symmetries in the parametrization. Quite different parameter settings can induce the same essential RBM model. However, this is not the most disastrous implication of the RBM parameterization. A far worse consequence is that, when fitting the RBM model by likelihood-based methods, we already know what the answer must be before we begin: namely, such  fitting will simply aim to reproduce the empirical distribution from the data if sufficiently many hiddens are in the model. That is, based on a random sample of visible variables, the model for the cell probabilities that has the highest likelihood over  *all possible model classes* (i.e., RBM-based or not) is the empirical distribution, and the parametrization of the RBM model itself ensures that this empirical distribution can be arbitrarily well approximated.
 
 For illustration, continue the simple example from above with $n$ iid observations, each consisting of two realized visibles $(V_1,V_2)$.  In which case, when the specified cell probabilities $p_{(-1,-1)},p_{(1,-1)}, p_{(-1,1)},p_{(1,1)}$ in (\ref{eqn:0}) are taken as the empirical cell frequencies from the sample, there is no better model based on maximum likelihood and the discussion above (c.f. (\ref{eqn:2})) shows that RBM model parameters can be chosen to re-create this empirical distribution to an arbitrarily close degree. Hence, RBM model fitting based on ML will often simply seek to reproduce the empirical distribution (i.e., as an extreme type of over-fitting). What's more, whenever this empirical distribution contains empty cells, fitting steps for the RBM model will necessarily aim to choose parameters that necessarily diverge in magnitude in order to zero out the corresponding RBM cell probabilities. In a data application with a large sample space, it is unlikely that the training set will include one of each possible outcome, unlike this small example. As we have already discussed in secion \ref{explorations}, large magnitudes of $\boldsymbol \theta$ lead to model impropriety in the RBM. 
 
@@ -981,7 +979,7 @@ Ultimately, it is not clear RBM models are useful as generative models. Due to t
 \subsection{On the one-to-one correspondence between parameters and moments in the RBM distribution}
 \label{center-of-universe}
 
-```{r child='appendix-center.Rmd'}
+```{r child='appendix/appendix-center.Rmd'}
 ```
 
 
