@@ -1,4 +1,4 @@
-For integers $m,n \geq 1$, consider random vectors $\bm{V}_m \equiv(V_1,\ldots,V_m)$ and $\bm{H}_n\equiv (H_1,\ldots,H_n)$, where the random variables $V_i$ and $H_j$ assume values in $\{1,-1\}$, $i=1,\ldots,m$, $j=1,\ldots,n$. We suppose the vector $(\bm{V}_m,\bm{H}_n)$ follows a restricted Boltzmann machine (RBM) distribution
+For integers $m,n \geq 1$, consider random vectors $\bm{V}_m \equiv(V_1,\ldots,V_m)$ and $\bm{H}_n\equiv (H_1,\ldots,H_n)$, where the random variables $V_i$ and $H_j$ assume values in $\{1,-1\}$, $i=1,\ldots,m$, $j=1,\ldots,n$. We suppose the vector $(\bm{V}_m,\bm{H}_n)$ follows a restricted Boltzmann machine (RBM) distribution, i.e. has probability mass function
 \begin{align*}
 &P(V_1= v_1,\ldots,V_m= v_m, H_1= h_1,\ldots,H_n=h_n|\bm{\theta}) \propto \exp\left[ \sum_{i=1}^m v_i \theta_{v_j} + \sum_{j=1}^n h_j \theta_{h_j} + \sum_{i=1}^m  \sum_{j=1}^n v_i  h_j \theta_{ij} \right], \\
 & \quad \{v_i\}_{i=1}^m,\{h_j\}_{j=1}^n \subset\{\pm 1\},
@@ -7,8 +7,8 @@ with $m+n+mn$ real parameters $\theta_{v_1},\ldots,\theta_{v_m},\theta_{h_1},\ld
 $\theta_{ij}$, $i=1,\ldots,m$, $j=1,\ldots,n$ collected in a parameter vector denoted as $\bm{\theta}\in \mathbb{R}^{m+n+mn}$.
 Denote the distribution of $(\bm{V}_m,\bm{H}_n)$ as RBM$(m,n,\bm{\theta})$. In the following, for convenience, we say a symmetric random variable $X$ has a Bernoulli$(1/2)$ distribution if $P(X=1)=1/2=P(X=-1)$.
 
-Denote the random vector $\bm{V}_m*\bm{H}_n = (V_1 H_1,\ldots,V_1 H_n, V_2 H_1,\ldots,V_2 H_n,\ldots, V_m H_1,\ldots,V_m H_n)$.
-For the RBM$(m,n,\bm{\theta})$ model, we are interested in the function $\bm{g}: \mathbb{R}^{m+n+mn} \rightarrow   \mathcal{I} \subset \mathbb{R}^{m+n+mn}$ given by
+Use the notation $\bm{V}_m*\bm{H}_n = (V_1 H_1,\ldots,V_1 H_n, V_2 H_1,\ldots,V_2 H_n,\ldots, V_m H_1,\ldots,V_m H_n)$.
+For the RBM$(m,n,\bm{\theta})$ model, consider in the function $\bm{g}: \mathbb{R}^{m+n+mn} \rightarrow   \mathcal{I} \subset \mathbb{R}^{m+n+mn}$ given by
 \begin{align*}
 \bm{g}(\bm{\theta}) &= \E_{\bm{\theta}}(\bm{V}_m,\bm{H}_n,\bm{V}_m*\bm{H}_n)\\
 &= \sum_{\bm{v}_m \in \{\pm 1\}^m, \bm{h}_n \in \{\pm 1\}^n} (\bm{v}_m,\bm{h}_n,\bm{v}_m*\bm{h}_n)P(\bm{V}_m=\bm{v}_m,\bm{H}_n=\bm{h}_n|\bm{\theta})
