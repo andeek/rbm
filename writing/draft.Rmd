@@ -745,14 +745,15 @@ We considered a test case with $\nv = \nh = 4$ and parameters given in Table \re
     \begin{align*}
     \gamma(\boldsymbol \theta) = \sum\limits_{\boldsymbol x \in \mathcal{C}^{\nh + \nv}}\exp\left(\sum\limits_{i = 1}^\nv\sum\limits_{j=1}^\nh \theta_{ij} v_i h_j + \sum\limits_{i = 1}^V\theta_{v_i} v_i + \sum\limits_{j = 1}^\nh\theta_{h_j} h_j\right) \text{ and } C_{2} < C_{1}
     \end{align*}
-    This is the method of @li2014biclustering.
-2. *A truncated Normal prior.* Here we use independent truncated spherical normal distributions as priors for $\boldsymbol \theta_{main}$ and $\boldsymbol \theta_{interaction}$ with $\sigma_{interaction} < \sigma_{main}$. Full conditional distributions are not conjugate, and simulation from the posterior was accomplished using a geometric adaptive Metropolis Hastings step [@zhou2014some] and calculation of likelihood normalizing constant. (This computation is barely feasible for a problem of this size and would be infeasible for larger problems.) Here the $h_j$ are carried along in the MCMC implementation as latent variables.
+    This is the method of @li2014biclustering. We will refer to this method as Bayes with Trick Prior and Latent Variables (BwTPLV).
+2. *A truncated Normal prior.* Here we use independent truncated spherical normal distributions as priors for $\boldsymbol \theta_{main}$ and $\boldsymbol \theta_{interaction}$ with $\sigma_{interaction} < \sigma_{main}$. Full conditional distributions are not conjugate, and simulation from the posterior was accomplished using a geometric adaptive Metropolis Hastings step [@zhou2014some] and calculation of likelihood normalizing constant. (This computation is barely feasible for a problem of this size and would be infeasible for larger problems.) Here the $h_j$ are carried along in the MCMC implementation as latent variables. We will refer to this method as Bayes with Truncated Normal prior and Latent Variables (BwTNLV).
 3. *A truncated Normal prior and marginalized likelihood.* Here we marginalize out $\boldsymbol h$ in $f_{\boldsymbol \theta}(\boldsymbol x)$, and use the truncated Normal priors applied to the marginal probabilities for visible variables given by
     \begin{align*}
     g_{\boldsymbol \theta}(\boldsymbol v) \propto \sum\limits_{\boldsymbol h \in \mathcal{C}^\nh} \exp\left(\sum\limits_{i = 1}^\nv \sum\limits_{j=1}^\nh \theta_{ij} v_i h_j + \sum\limits_{i = 1}^\nv\theta_{v_i} v_i + \sum\limits_{j = 1}^\nh\theta_{h_j} h_j\right), \boldsymbol v \in \mathcal{C}^\nv.
     \end{align*}
+    We will refer to this method as Bayes with Truncated Normal prior and Marginalized Likelihood (BwTNML).
     
-The three fitting methods are ordered by computational feasibility in a real-data situation, with the trick prior being the most computationally feasible due to conjugacy and the marginalized likelihood method the least feasible due to the marginalization and need for an adaptive Metropolis Hastings step. All three methods require choosing the values of hyperparameters. In each case, we have chosen the values based on a rule of thumb that shrinks $\boldsymbol \theta_{interaction}$ more than $\boldsymbol \theta_{main}$. Additionally, the trick prior requires additional tuning to choose $C_1$ and $C_2$, reducing its appeal. The values used for the hyperparameters in our simulation are presented in Table \ref{tab:hyperparam}.
+The three fitting methods are ordered by computational feasibility in a real-data situation, with BwTPLV being the most computationally feasible due to conjugacy and BwTNML the least feasible due to the marginalization and need for an adaptive Metropolis Hastings step. All three methods require choosing the values of hyperparameters. In each case, we have chosen the values based on a rule of thumb that shrinks $\boldsymbol \theta_{interaction}$ more than $\boldsymbol \theta_{main}$. Additionally, BwTPLV requires additional tuning to choose $C_1$ and $C_2$, reducing its appeal. The values used for the hyperparameters in our simulation are presented in Table \ref{tab:hyperparam}.
 
 \begin{table}[ht]
 \centering
@@ -762,19 +763,19 @@ The three fitting methods are ordered by computational feasibility in a real-dat
 \hline 
 Method & Hyperparameter & Value \\ 
 \hline \hline
-\multirow{2}{*}{Trick Prior} & $C_1$ & $\frac{C}{n}\frac{1}{\nh + \nv}$ \\
+\multirow{2}{*}{BwTPLV} & $C_1$ & $\frac{C}{n}\frac{1}{\nh + \nv}$ \\
  & $C_2$ & $\frac{C}{n}\frac{1}{\nh*\nv}$ \\
 \hline
-\multirow{2}{*}{Truncated Normal} & $\sigma^2_{main}$ & $\frac{1}{\nh + \nv}$ \\
+\multirow{2}{*}{BwTNLV} & $\sigma^2_{main}$ & $\frac{1}{\nh + \nv}$ \\
  & $\sigma^2_{interaction}$ & $\frac{1}{\nh*\nv}$ \\
 \hline
-\multirow{2}{*}{Marginalized Likelihood} & $\sigma^2_{main}$ & $\frac{1}{\nh + \nv}$ \\
+\multirow{2}{*}{BwTNML} & $\sigma^2_{main}$ & $\frac{1}{\nh + \nv}$ \\
  & $\sigma^2_{interaction}$ & $\frac{1}{\nh*\nv}$ \\
 \hline
 \end{tabular}
 \end{table}
 
-It should be noted that the truncated Normal method (2) and the marginalized likelihood method (3) are drawing from the same stationary posterior distribution for vectors of visibles. The difference between these two methods is in how well the chains mix and how quickly they arrive at the target distribution. After a burn-in period of 50 iterations selected by inspecting the trace plots, we assess the issue of mixing in two ways. First, the autocorrelation functions (ACF) for each possible vector of visibles are assessed and plotted in Figure \ref{fig:acf} with the truncated Normal method in black and the marginalized likelihood method in red. As expected, ACF corresponding to the method that marginalizes out the hidden variables from the likelihood decreases to zero at a much faster rate, indicating better mixing for the chain. 
+It should be noted that BwTNLV (2) and BwTNML (3) are drawing from the same stationary posterior distribution for vectors of visibles. The difference between these two methods is in how well the chains mix and how quickly they arrive at the target distribution. After a burn-in period of 50 iterations selected by inspecting the trace plots, we assess the issue of mixing in two ways. First, the autocorrelation functions (ACF) for each possible vector of visibles are assessed and plotted in Figure \ref{fig:acf} with BwTNLV in black and BwTNML in red. As expected, ACF corresponding to the method that marginalizes out the hidden variables from the likelihood decreases to zero at a much faster rate, indicating better mixing for the chain. 
 
 ```{r models-load}
 load("data/sample_images.Rdata")
@@ -829,7 +830,7 @@ trick_sample_good <- reshape_sample_distn(trick_good)
 trunc_sample_good <- reshape_sample_distn(trunc_good)
 ```
 
-```{r acf, fig.cap="\\label{fig:acf}The autocorrelation functions (ACF) for all $2^4 = 16$ possibles vectors of visibles assessed at multiple lags for each method with the truncated Normal method in black and the marginalized likelihood method in red. As expected, ACF corresponding to the method that marginalizes out the hidden variables from the likelihood decreases to zero at a much faster rate, indicating better mixing for the chain."}
+```{r acf, fig.cap="\\label{fig:acf}The autocorrelation functions (ACF) for all $2^4 = 16$ possibles vectors of visibles assessed at multiple lags for each method with BwTNLV in black and BwTNML in red. As expected, ACF corresponding to the method that marginalizes out the hidden variables from the likelihood decreases to zero at a much faster rate, indicating better mixing for the chain."}
 marginal_sample_good %>% 
   filter(iter > 50) %>%
   group_by(v1, v2, v3, v4, image_id) %>% 
@@ -914,12 +915,12 @@ M_eff_table %>%
   arrange(Vector) -> M_eff_tmp
 
 cbind(M_eff_tmp[1:8,], M_eff_tmp[9:16,]) %>%
-  kable(digits = 2, caption = paste0("\\label{tab:m_eff}The effective sample sizes for a chain of length $M = 1000$ of all $16$ possible vectors of visibles. The truncated likelihood would require at least $", round(min(M_eff_table[1, -1])/min(M_eff_table[2, -1]), 1), "$ times as many MCMC iterations to achieve the same amount of effective information about the posterior distribution."))
+  kable(digits = 2, caption = paste0("\\label{tab:m_eff}The effective sample sizes for a chain of length $M = 1000$ of all $16$ possible vectors of visibles. BwTNLV would require at least $", round(min(M_eff_table[1, -1])/min(M_eff_table[2, -1]), 1), "$ times as many MCMC iterations to achieve the same amount of effective information about the posterior distribution."))
 ```
 
-The effective sample sizes for a chain of length $M = 1000$ of all $2^4 = 16$ possible vectors of visibles are presented in Table \ref{tab:m_eff}. These range from  $`r round(min(M_eff_table[1, -1]), 2)`$ to $`r round(max(M_eff_table[1, -1]), 2)`$ for the marginalized likelihood method, while the truncated Normal method only yields between $`r round(min(M_eff_table[2, -1]), 2)`$ and $`r round(max(M_eff_table[2, -1]), 2)`$ effective draws. Thus, the truncated likelihood would require at least $`r round(min(M_eff_table[1, -1])/min(M_eff_table[2, -1]), 1)`$ times more iterations to be run of the MCMC chain in order to achieve the same amount of effective information about the posterior distribution. For this reason, consistent with the ACF results in Figure \ref{fig:acf}, the truncated Normal method does not seem to be an effective method for fitting the RBM of computing resources are at all limited.
+The effective sample sizes for a chain of length $M = 1000$ of all $2^4 = 16$ possible vectors of visibles are presented in Table \ref{tab:m_eff}. These range from  $`r round(min(M_eff_table[1, -1]), 2)`$ to $`r round(max(M_eff_table[1, -1]), 2)`$ for BwTNML, while BwTNLV only yields between $`r round(min(M_eff_table[2, -1]), 2)`$ and $`r round(max(M_eff_table[2, -1]), 2)`$ effective draws. Thus, BwTNLV would require at least $`r round(min(M_eff_table[1, -1])/min(M_eff_table[2, -1]), 1)`$ times more iterations to be run of the MCMC chain in order to achieve the same amount of effective information about the posterior distribution. For this reason, consistent with the ACF results in Figure \ref{fig:acf}, BeTNLV does not seem to be an effective method for fitting the RBM of computing resources are at all limited.
 
-Figure \ref{fig:fitting_plot} shows the posterior probability of each possible $\boldsymbol v \in \{-1,1\}^4$ after fitting the RBM model in the two ways detailed in this section, excluding the truncated Normal method. The black vertical lines show the true probabilities of each image based on the parameters used to simulate the training set while the red vertical lines show the empirical distribution for the training set of $5,000$ vectors. From these posterior predictive checks, it is evident that the marginalized likelihood method produces the best fit to the data. However, this method requires a marginalization step to obtain the probability function of visible observations alone, which is infeasible for a model with $\nh$ of any real size.
+Figure \ref{fig:fitting_plot} shows the posterior probability of each possible $\boldsymbol v \in \{-1,1\}^4$ after fitting the RBM model in the two ways detailed in this section, excluding BwTNLV. The black vertical lines show the true probabilities of each image based on the parameters used to simulate the training set while the red vertical lines show the empirical distribution for the training set of $5,000$ vectors. From these posterior predictive checks, it is evident that BwTNML produces the best fit to the data. However, this method requires a marginalization step to obtain the probability function of visible observations alone, which is infeasible for a model with $\nh$ of any real size.
     
 ```{r posterior-dsn}
 marginal_sample_good %>% rename(marginal = prob) %>% filter(iter > 50) %>%
@@ -941,12 +942,12 @@ all_statistics %>%
   geom_vline(aes(xintercept = prob_emp), colour = "red") +
   facet_wrap(~statistic, scales = "free_x") + 
   ylab("Scaled Posterior Density") + xlab("Probability of Vector of Visibles") +
-  scale_colour_discrete("Method", labels = c("Marginalized likelihood", "Trick prior")) +
-  scale_fill_discrete("Method", labels = c("Marginalized likelihood", "Trick prior")) +
+  scale_colour_discrete("Method", labels = c("BwTNML", "BwTPLV")) +
+  scale_fill_discrete("Method", labels = c("BwTNML", "BwTPLV")) +
   theme(legend.position = "bottom") -> p.models
 ```
 
-```{r fitting_plot, fig.cap="\\label{fig:fitting_plot}Posterior probabilities of $16 = 2^4$ possible realizations of $4$ visibles using two of the three Bayesian fitting techniques, trick prior and marginalized likelihood. The black vertical lines show the true probabilities of each vector of visibles based on the parameters used to simulate the training data while the red vertical lines show the empirical distribution. The marginalized likelihood method produces the best fit for the data, however is also the most computationally intensive and least feasible with a real dataset.", fig.height=6}
+```{r fitting_plot, fig.cap="\\label{fig:fitting_plot}Posterior probabilities of $16 = 2^4$ possible realizations of $4$ visibles using two of the three Bayesian fitting techniques, BwTPLV and BwTNML. The black vertical lines show the true probabilities of each vector of visibles based on the parameters used to simulate the training data while the red vertical lines show the empirical distribution. BwTNML produces the best fit for the data, however is also the most computationally intensive and least feasible with a real dataset.", fig.height=6}
 p.models
 ```
 
