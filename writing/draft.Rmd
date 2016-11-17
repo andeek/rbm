@@ -538,7 +538,7 @@ In our numerical experiment, we split $\boldsymbol \theta$ into $\boldsymbol \th
 
 The results of this numerical study are summarized in Figures \ref{fig:degen_plots}, \ref{fig:instab_plots}, and \ref{fig:uninterp_plots}. From these three figures, it is clear that all three measures of model impropriety show higher values for larger magnitudes of the parameter vectors. Additionally, since there are $\nh*\nv$ interaction terms in $\boldsymbol \theta$ versus only $\nh + \nv$ main effect terms, for large models there are many more interaction parameters than main effects in the models. And so, severely limiting the magnitude of the individual interactions may well help prevent model impropriety. 
 
-```{r degen_plots, fig.cap="\\label{fig:degen_plots}Results from the numerical experiment, here looking at the fraction of models that were near-degenerate for each combination of magnitude of $\\boldsymbol \\theta$ and model size. Black lines show the contour levels for fraction of near-degeneracy, while the thick black line shows the level where the fraction of near-degenerate models is .05.", fig.height=4}
+```{r degen_plots, fig.cap="\\label{fig:degen_plots}Results from the numerical experiment, here looking at the fraction of models that were near-degenerate for each combination of magnitude of $\\boldsymbol \\theta$ and model size. Black lines show the contour levels for fraction of near-degeneracy, while the thick black line shows the level where the fraction of near-degenerate models is .05.", fig.height=3.5, fig.align="ht!"}
 three_ways %>%
   mutate(r1 = round(r1/(H + V), 8), r2 = round(r2/(H * V), 8)) %>% 
   ggplot() +
@@ -583,18 +583,18 @@ p.degen
 ```
 
 
-```{r instab_plots_2, fig.cap="\\label{fig:instab_plots}Results from the experiment, here looking at the sample mean value of $\\text{ELPR}(\\boldsymbol \\theta)/V$ at each grid point for each combination of magnitude of $\\boldsymbol \\theta$ and model size. As the magnitude of $\\boldsymbol \\theta$ grows, so does the value of this metric, indicating typical instability in the model.", fig.height=4}
+```{r instab_plots_2, fig.cap="\\label{fig:instab_plots}Results from the experiment, here looking at the sample mean value of $\\text{ELPR}(\\boldsymbol \\theta)/V$ at each grid point for each combination of magnitude of $\\boldsymbol \\theta$ and model size. As the magnitude of $\\boldsymbol \\theta$ grows, so does the value of this metric, indicating typical instability in the model.", fig.height=3.5, fig.align="ht!"}
 p.elpr
 ```
 
 
-```{r uninterp_plots, fig.cap="\\label{fig:uninterp_plots}The sample mean of the maximum component of the absolute difference between the model expectation vector, E$\\left[\\boldsymbol X | \\boldsymbol \\theta\\right]$, and the expectation vector given independence, E$\\left[\\boldsymbol X | \\boldsymbol \\theta^* \\right ]$. Larger magnitudes of $\\boldsymbol \\theta$ correspond to larger differences, thus indicating reduced interpretability.", fig.height=4}
+```{r uninterp_plots, fig.cap="\\label{fig:uninterp_plots}The sample mean of the maximum component of the absolute difference between the model expectation vector, E$\\left[\\boldsymbol X | \\boldsymbol \\theta\\right]$, and the expectation vector given independence, E$\\left[\\boldsymbol X | \\boldsymbol \\theta^* \\right ]$. Larger magnitudes of $\\boldsymbol \\theta$ correspond to larger differences, thus indicating reduced interpretability.", fig.height=3.5, fig.align="ht!"}
 p.exp_diff
 ```
 
 Figure \ref{fig:split_plots_dist} shows the fraction of near-degenerate models for each magnitude of $\boldsymbol \theta$ for each model architecture. For each number of visibles in the model, the fraction near-degenerate becomes greater than zero at larger values of $||\boldsymbol \theta||$ as $\nh$ increases and the slope becomes steeper as $\nh$ increases also. This shows that as model size gets larger, the risk of degeneracy starts at a slightly larger magnitude of parameters, but very quickly increases until reaching close to 1. 
 
-```{r split_plots2, warning=FALSE, fig.cap="\\label{fig:split_plots_dist}The fraction of near-degenerate models for each magnitude of $\\boldsymbol \\theta$. For each number of visibles in the model, the fraction near-degenerate becomes greater than zero at larger values of $||\\boldsymbol \\theta||$ as $\\nh$ increases and the slope becomes steeper as $\\nh$ increases also.", fig.height=5}
+```{r split_plots2, warning=FALSE, fig.cap="\\label{fig:split_plots_dist}The fraction of near-degenerate models for each magnitude of $\\boldsymbol \\theta$. For each number of visibles in the model, the fraction near-degenerate becomes greater than zero at larger values of $||\\boldsymbol \\theta||$ as $\\nh$ increases and the slope becomes steeper as $\\nh$ increases also.", fig.height=4, fig.align="ht!"}
 plot_dat_grid %>% 
   mutate(dist = sqrt(r1^2 + r2^2)/(H + V + H*V)) %>%
   group_by(dist, H, V) %>%
@@ -699,6 +699,8 @@ params_good <- list(main_hidden = sample.params %>% ungroup() %>% filter(!near_h
                     main_visible = sample.params %>% ungroup() %>% filter(!near_hull) %>% select(starts_with("v"), -V) %>% data.matrix(),
                     interaction = sample.params %>% ungroup() %>% filter(!near_hull) %>% select(starts_with("theta")) %>% data.matrix() %>% matrix(4))
 
+old_pen <- options()$scipen
+options("scipen" = 100)
 sample.params %>% 
   ungroup %>% 
   filter(!near_hull) %>% select(starts_with("v"), starts_with("h"), starts_with("theta"), -H, -V) %>%
@@ -727,10 +729,11 @@ sample.params %>%
          `$\\theta_{43}$` = theta43,
          `$\\theta_{44}$` = theta44) %>%
   gather("Parameter", "Value") %>%
-  mutate(Value = paste0("$", Value, "$")) -> tbl
+  mutate(Value = paste0("$", round(Value, 10), "$")) -> tbl
+options("scipen" = old_pen)
 
 cbind(tbl[1:8,], tbl[9:16,], tbl[17:24,]) %>%
-  kable(caption = "\\label{tab:theta}Parameters used to fit a test case with $V = H = 4$. This parameter vector was chosen as a sampled value of $\\boldsymbol \\theta$ that was not near the convex hull of the sufficient statistics for a grid point in Figure \\ref{fig:degen_plots} with $< 5$\\% near-degeneracy.", digits = 10)
+  kable(caption = "\\label{tab:theta}Parameters used to fit a test case with $V = H = 4$. This parameter vector was chosen as a sampled value of $\\boldsymbol \\theta$ that was not near the convex hull of the sufficient statistics for a grid point in Figure \\ref{fig:degen_plots} with $< 5$\\% near-degeneracy.", align = rep(c("l", "r"), times = 3))
 ```
 
 We considered a test case with $\nv = \nh = 4$ and parameters given in Table \ref{tab:theta}. This parameter vector was chosen as a sampled value of $\boldsymbol \theta$ that was not near the convex hull of the sufficient statistics for a grid point in Figure \ref{fig:degen_plots} with $< 5$\% near-degeneracy. We simulated $n = 5,000$ realizations as visibles as a training set and fit the RBM using three Bayes methodologies. These involved the following:
@@ -883,13 +886,13 @@ marginal_means %>%
   do(data.frame(C = 2000^(1/3)*var(.$means[[1]]))) %>%
   left_join(marginal_sample_good %>% group_by(v1, v2, v3, v4) %>% summarise(sigma2 = var(prob))) %>%
   mutate(M_eff = sigma2/C,
-         model = "Marginal Likelihood") %>%
+         model = "BwTNML") %>%
   bind_rows(trunc_means %>%
     group_by(v1, v2, v3, v4, image_id) %>%
     do(data.frame(C = 5000^(1/3)*var(.$means[[1]]))) %>%
     left_join(trunc_sample_good %>% group_by(v1, v2, v3, v4) %>% summarise(sigma2 = var(prob))) %>%
     mutate(M_eff = sigma2/C,
-           model = "Truncated Normal Prior")) %>%
+           model = "BwTNLV")) %>%
   select(-C, -sigma2) %>%
   spread(model, M_eff) %>%
   ungroup() %>%
@@ -912,13 +915,14 @@ M_eff_table %>%
   gather(Image, M_eff, -Model) %>%
   spread(Model, M_eff) %>%
   mutate(Vector = as.numeric(Image)) %>%
+  select(Vector, BwTNML, BwTNLV) %>%
   arrange(Vector) -> M_eff_tmp
 
 cbind(M_eff_tmp[1:8,], M_eff_tmp[9:16,]) %>%
   kable(digits = 2, caption = paste0("\\label{tab:m_eff}The effective sample sizes for a chain of length $M = 1000$ of all $16$ possible vectors of visibles. BwTNLV would require at least $", round(min(M_eff_table[1, -1])/min(M_eff_table[2, -1]), 1), "$ times as many MCMC iterations to achieve the same amount of effective information about the posterior distribution."))
 ```
 
-The effective sample sizes for a chain of length $M = 1000$ of all $2^4 = 16$ possible vectors of visibles are presented in Table \ref{tab:m_eff}. These range from  $`r round(min(M_eff_table[1, -1]), 2)`$ to $`r round(max(M_eff_table[1, -1]), 2)`$ for BwTNML, while BwTNLV only yields between $`r round(min(M_eff_table[2, -1]), 2)`$ and $`r round(max(M_eff_table[2, -1]), 2)`$ effective draws. Thus, BwTNLV would require at least $`r round(min(M_eff_table[1, -1])/min(M_eff_table[2, -1]), 1)`$ times more iterations to be run of the MCMC chain in order to achieve the same amount of effective information about the posterior distribution. For this reason, consistent with the ACF results in Figure \ref{fig:acf}, BeTNLV does not seem to be an effective method for fitting the RBM of computing resources are at all limited.
+The effective sample sizes for a chain of length $M = 1000$ of all $2^4 = 16$ possible vectors of visibles are presented in Table \ref{tab:m_eff}. These range from  $`r round(min(M_eff_table[1, -1]), 2)`$ to $`r round(max(M_eff_table[1, -1]), 2)`$ for BwTNML, while BwTNLV only yields between $`r round(min(M_eff_table[2, -1]), 2)`$ and $`r round(max(M_eff_table[2, -1]), 2)`$ effective draws. Thus, BwTNLV would require at least $`r round(min(M_eff_table[1, -1])/min(M_eff_table[2, -1]), 1)`$ times more iterations to be run of the MCMC chain in order to achieve the same amount of effective information about the posterior distribution. For this reason, consistent with the ACF results in Figure \ref{fig:acf}, BwTNLV does not seem to be an effective method for fitting the RBM of computing resources are at all limited.
 
 Figure \ref{fig:fitting_plot} shows the posterior probability of each possible $\boldsymbol v \in \{-1,1\}^4$ after fitting the RBM model in the two ways detailed in this section, excluding BwTNLV. The black vertical lines show the true probabilities of each image based on the parameters used to simulate the training set while the red vertical lines show the empirical distribution for the training set of $5,000$ vectors. From these posterior predictive checks, it is evident that BwTNML produces the best fit to the data. However, this method requires a marginalization step to obtain the probability function of visible observations alone, which is infeasible for a model with $\nh$ of any real size.
     
@@ -945,10 +949,13 @@ all_statistics %>%
   scale_colour_discrete("Method", labels = c("BwTNML", "BwTPLV")) +
   scale_fill_discrete("Method", labels = c("BwTNML", "BwTPLV")) +
   theme(legend.position = "bottom") -> p.models
+
+sx <- scale_x_continuous()
+sx$trans$breaks <- function(range) pretty(range, n = 3)
 ```
 
 ```{r fitting_plot, fig.cap="\\label{fig:fitting_plot}Posterior probabilities of $16 = 2^4$ possible realizations of $4$ visibles using two of the three Bayesian fitting techniques, BwTPLV and BwTNML. The black vertical lines show the true probabilities of each vector of visibles based on the parameters used to simulate the training data while the red vertical lines show the empirical distribution. BwTNML produces the best fit for the data, however is also the most computationally intensive and least feasible with a real dataset.", fig.height=6}
-p.models
+p.models + sx
 ```
 
 # Discussion
