@@ -1,5 +1,5 @@
 ---
-title: "Supplement to: On the propriety of restricted Boltzmann machines"
+title: "Supplementary Material to:  On the propriety of restricted Boltzmann machines"
 author: "Andee Kaplan, Daniel Nordman, and Stephen Vardeman"
 date: "November, 2016"
 linestretch: 2 
@@ -10,6 +10,8 @@ output:
       in_header: ../latex/header.tex
     number_sections: yes
 ---    
+
+Supplement material to follow consists of Section \ref{on-the-one-to-one-correspondence-between-parameters-and-moments-in-the-rbm-distribution}, providing proofs and discussion of results relating to the data coding in restricted Boltzmann machine models (RBMs).
 
 # On the one-to-one correspondence between parameters and moments in the RBM distribution
 
