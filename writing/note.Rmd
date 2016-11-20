@@ -5,6 +5,7 @@ date: "November, 2016"
 linestretch: 2
 output: 
   pdf_document:
+    keep_tex: true
     fig_caption: yes
     includes:
       in_header: latex/header.tex
@@ -47,7 +48,7 @@ Setting $\boldsymbol \theta_N=\lambda_N$ to a subsequence of $\mathbb{R}^k$ and 
 
 ## Restricted Boltzmann machines
 
-A restricted Boltzmann machine (RBM) is an undirected graphical model specified for discrete or continuous random variables, binary variables being most common [@smolensky1986information]. A RBM architecture has two layers, hidden ($\mathcal{H}$) and visible ($\mathcal{V}$), with conditional independence within each layer. Let $\boldsymbol X=(X_1,\ldots,X_N)$ denote the $N$ random variables for visibles with support $\mathcal{X}^N$ and $\boldsymbol H=(H_1,\ldots,H_{N_H})$ denote the $N_H$ random variables for hiddens with support $\mathcal{X}^{N_H}$ where  $\mathcal{X} = \{-1,1\}$. The RBM for $\tilde{\boldsymbol X}=(\boldsymbol X,\boldsymbol H})$ then has the joint probability mass function
+A restricted Boltzmann machine (RBM) is an undirected graphical model specified for discrete or continuous random variables, binary variables being most common [@smolensky1986information]. A RBM architecture has two layers, hidden ($\mathcal{H}$) and visible ($\mathcal{V}$), with conditional independence within each layer. Let $\boldsymbol X=(X_1,\ldots,X_N)$ denote the $N$ random variables for visibles with support $\mathcal{X}^N$ and $\boldsymbol H=(H_1,\ldots,H_{N_H})$ denote the $N_H$ random variables for hiddens with support $\mathcal{X}^{N_H}$ where  $\mathcal{X} = \{-1,1\}$. The RBM for $\tilde{\boldsymbol X}=(\boldsymbol X,\boldsymbol H)$ then has the joint probability mass function
 $$
 p_{\boldsymbol \theta} (\tilde{\boldsymbol x}) = \exp\left[ \boldsymbol \alpha^T \boldsymbol h + \boldsymbol \beta^T \boldsymbol x + \boldsymbol h^T \Gamma \boldsymbol x - \psi(\boldsymbol \theta)\right], \qquad \tilde{\boldsymbol x} = (\boldsymbol h, \boldsymbol x) \in \mathcal{X}^{N+N_H}
 $$
@@ -59,7 +60,7 @@ is the normalizing function, $\boldsymbol \alpha \in \mathbb{R}^{N_H}$, $\boldsy
 
 The probability mass function for the visible variables $X_1, \dots, X_N$ follows from marginalizing this joint specification:
 $$
-p_{\boldsymbol \theta} (\boldsymbol x) = \sum\limits_{\boldsymbol h \in \mathcal{X}^{N_H} p_{\boldsymbol \theta} (\boldsymbol x, \boldsymbol h), \qquad \boldsymbol x \in \mathcal{X}^N
+p_{\boldsymbol \theta} (\boldsymbol x) = \sum\limits_{\boldsymbol h \in \mathcal{X}^{N_H}} p_{\boldsymbol \theta} (\boldsymbol x, \boldsymbol h), \qquad \boldsymbol x \in \mathcal{X}^N
 $$
 
 Note that the vector of model parameters $\boldsymbol \theta_N$, of size $q(N)$, is expanding in size as a function of the visible variable dimension $N$, and one may choose the number $N_H$ of hidden variables as an arbitrary function of $N$ as well (which may also potentially increase with $N$). Additionally, $p_{\boldsymbol \theta}(\boldsymbol x) > 0$ for all $\boldsymbol x \in \mathcal{X}^N$ by properties of the exponential function so that the visible RBM model specification is an example of a FSFS model. This example also indicates that models formed by marginalizing a base FSFS model (e.g., exponential family) is again a FSFS model class.
@@ -105,13 +106,13 @@ Let $\boldsymbol \theta_N \in \mathbb{R}^{q(N)}$ be a sequence of FSFS model par
 \end{defn}
 In other words, given any $C > 0$, there exists an integer $N_C > 0$ so that $\frac{1}{N}\text{ELPR}_N(\boldsymbol \theta_N) > C$ for all $N \ge N_C$.
 
-Note that this definition of *S-unstable* is a generalization or reinterpretation of "unstable" used in @schweinberger2011instability by allowing nonexponential family models and an increasing number of parameters. While this definition appears different, it does match that in @schweinberger2011instability for the special exponential models considered there, see Section \ref{discrete-exponential-family-models} for details.
+Note that this definition of *S-unstable* is a generalization or reinterpretation of "unstable" used in @schweinberger2011instability by allowing nonexponential family models (e.g. RBM and DBM models in Sections \ref{restricted-boltzmann-machines}-\ref{deep-learning}) and an increasing number of parameters. While this definition differs in form, it does match that in @schweinberger2011instability for the special exponential models (cf. Section \ref{discrete-exponential-family-models}) considered there.
 
 S-unstable FSFS models are undesirable for several reasons. One is that small changes in data can lead to overly-sensitive changes in probability. Consider, for example, 
 $$
 \Delta(\boldsymbol \theta_N) \equiv \max \left\{\log \frac{P_{\boldsymbol \theta_N}(x_1, \dots, x_N)}{P_{\boldsymbol \theta_N}(x_1^*, \dots, x_N^*)} : (x_1, \dots, x_N) \& (x_1^*, \dots, x_N^*) \in \mathcal{X}^N \text{ differ by exactly one component}\right\},
 $$
-the biggest log-probability ratio for a one component change in data outcomes at a FSFS parameter $\boldsymbol \theta_N$. We then have the following result.
+the biggest log-probability ratio for a one component change in data outcomes at a FSFS parameter $\boldsymbol \theta_N$. We then have the following non-asymptotic result.
 
 \begin{prop}
 \label{prop:instab}
@@ -120,54 +121,44 @@ then
 $$\Delta_N(\boldsymbol \theta_N) > C.$$
 \end{prop}
 
-Again, if the probability ratio (\ref{eqn:elpr}) is too large, then the FSFS model will exhibit large probability shifts for very small changes in the data configuration, which exemplifies the intuitive notation of instability..
+Again, if the probability ratio (\ref{eqn:elpr}) is too large, then the FSFS model will exhibit large changes in probability for very small differences in the data configuration, which exemplifies the intuitive notation of instability.
 
-Additionally, S-unstable FSFS models are connected to degenerate models, where *degeneracy* implies placing all probability on a small portion of the sample space. That is, instability in FSFS models, as measured by (\ref{eqn:elpr}), is a spectrum and Proposition \ref{prop:instab} indicates increasing levels of one undesirable type of model behavior as (\ref{eqn:elpr}) increases. Furthermore, as (\ref{eqn:elpr}) increases, FSFS models will slide into full degeneracy as Proposition \ref{prop:degen} next shows. Define a modal set 
+Additionally, S-unstable FSFS models are connected to degenerate models, where *degeneracy* implies placing all probability on a small portion of the sample space. For perspective, note that instability in FSFS models, as measured by (\ref{eqn:elpr}), is a spectrum and Proposition \ref{prop:instab} indicates increasing and undesirable sensitivity to model probabilities (i.e., in one component changes to outcomes) as (\ref{eqn:elpr}) increases. Furthermore, as the instability measure (\ref{eqn:elpr}) grows, FSFS models are guaranteed to slide into full degeneracy as Proposition \ref{prop:degen} next shows. Define a $\epsilon$-modal set 
 $$
 M_{\epsilon, \boldsymbol \theta_N} \equiv \left\{\boldsymbol x \in \mathcal{X}^N: \log P_{\boldsymbol \theta_N}(\boldsymbol x) > (1-\epsilon)\max\limits_{\boldsymbol x^* \in \mathcal{X}^N}P_{\boldsymbol \theta_N}(\boldsymbol x^*) + \epsilon\min\limits_{\boldsymbol x^* \in \mathcal{X}^N}P_{\boldsymbol \theta_N}(\boldsymbol x^*) \right\}
 $$
-of possible outcomes, for a given $0 < \epsilon < 1$ and along a sequence $\boldsymbol \theta_N$, $N \ge 1$, of FSFS parameters.
+of possible outcomes, for a given $0 < \epsilon < 1$, and along a sequence $\boldsymbol \theta_N$, $N \ge 1$, of FSFS parameters.
 
 \begin{prop}
 \label{prop:degen}
 For an unstable FSFS model, and for any given $0 < \epsilon < 1$, $P_{\boldsymbol \theta_N}\left((x_1, \dots, x_N) \in M_{\epsilon, \boldsymbol \theta_N}\right) \rightarrow 1$ holds as $N \rightarrow \infty$.
 \end{prop}
 
-In other words, as a consequence of S-unstable models, all probability in the FSFS model formulation with a large number of random variables will stack up on mode sets or simply those few outcomes with the highest probability.
+In other words, in S-unstable FSFS models, all probability in the FSFS model formulation with a large number of random variables will mass on mode sets of arbitrarily small size, or simply those few outcomes with the highest probability.
 
-**Proof of Proposition \ref{prop:instab}.** We prove the contrapositive. Suppose that $\Delta(\boldsymbol \theta_N) \le C$ holds for some $C > 0$. Under the FSFS model, $P_{\boldsymbol \theta_N}(\boldsymbol x) > 0$ holds for each outcome $\boldsymbol x \in \mathcal{X}^N$. Let $\boldsymbol x_{min} \equiv \argmin\limits_{\boldsymbol x \in \mathcal{X}^N}P_{\boldsymbol \theta_N}(\boldsymbol x)$ and $\boldsymbol x_{max} \equiv \argmax\limits_{\boldsymbol x \in \mathcal{X}^N}P_{\boldsymbol \theta_N}(\boldsymbol x)$. Note there exists a sequence $\boldsymbol x_{min} \equiv \boldsymbol x_0, \boldsymbol x_1, \dots, \boldsymbol x_k \equiv \boldsymbol x_{max}$ in $\mathcal{X}^N$ of component-wise switches to move from $\boldsymbol x_{min}$ to $\boldsymbol x_{max}$ in the sample space (i.e. $\boldsymbol x_i, \boldsymbol x_{i + 1} \in \mathcal{X}^N$ differ by exactly $1$ component for $i = 0, \dots, k$) for some integer $k \in \{0, 1, \dots, N\}$. Then, if $k > 0$, it follows that
-\begin{align*}
-\log\left[\frac{P_{\boldsymbol \theta_N}(\boldsymbol x_{max})}{P_{\boldsymbol \theta_N}(\boldsymbol x_{min})}\right] &= \left|\sum\limits_{i = 1}^k\log\left(\frac{P_{\boldsymbol \theta_N}(\boldsymbol x_i)}{P_{\boldsymbol \theta_N}(\boldsymbol x_{i-1})}\right)\right| \\
-& \le \sum\limits_{i = 1}^k\left|\log\left(\frac{P_{\boldsymbol \theta_N}(\boldsymbol x_i)}{P_{\boldsymbol \theta}(\boldsymbol x_{i-1})}\right)\right| \\
-& \le k \Delta_N(\boldsymbol \theta_N) \le NC
-\end{align*}
-using $k \le N$ and $\Delta(\boldsymbol \theta_N) \le C$. If $k = 0$, then $\boldsymbol x_{max} = \boldsymbol x_{min}$ and the same bound above holds.$\Box$
-
-**Proof of Proposition \ref{prop:degen}.** Define $\boldsymbol x_{max}$ and $\boldsymbol x_{min}$ as in the proof of Proposition \ref{prop:instab}. Fix $0 < \epsilon < 1$ Then, $\boldsymbol x_{max} \in M_{\epsilon, \boldsymbol \theta_N}$, so $P_{\boldsymbol \theta_N}(M_{\epsilon, \boldsymbol \theta_N}) \ge P_{\boldsymbol \theta_N}(\boldsymbol x_{max})$. If $\boldsymbol x \in \mathcal{X}^N \setminus M_{\epsilon, \boldsymbol \theta_N}$, then by definition $P_{\boldsymbol \theta_N}(\boldsymbol x) \le [P_{\boldsymbol \theta_N}(\boldsymbol x_{max})]^{1-\epsilon}[P_{\boldsymbol \theta_N}(\boldsymbol x_{min})]^{\epsilon}$ holds so that
-\begin{align*}
-1-P_{\boldsymbol \theta_N}(M_{\epsilon, \boldsymbol \theta_N})
-& = \sum\limits_{\boldsymbol x \in \mathcal{X}^N \setminus M_{\epsilon, \boldsymbol \theta_N}}P_{\boldsymbol \theta_N}(\boldsymbol x) \\
-& \le (2^N)[P_{\boldsymbol \theta_N}(\boldsymbol x_{max})]^{1-\epsilon}[P_{\boldsymbol \theta_N}(\boldsymbol x_{min})]^{\epsilon}
-\end{align*}
-Then, it follows that
-\begin{align*}
-\frac{1}{N}\log\left[\frac{P_{\boldsymbol \theta_N}(M_{\epsilon, \boldsymbol \theta_N})}{1-P_{\boldsymbol \theta_N}(M_{\epsilon, \boldsymbol \theta_N})}\right] & \ge \frac{1}{N} \log\left[\frac{P_{\boldsymbol\theta_N}(\boldsymbol x_{max})}{(2^V)[P_{\boldsymbol \theta_N}(\boldsymbol x_{max})]^{1-\epsilon}[P_{\boldsymbol \theta_N}(\boldsymbol x_{min})]^{\epsilon}}\right] \\
-&= \frac{\epsilon}{N} \log\left[\frac{P_{\boldsymbol \theta_N}(\boldsymbol x_{max})}{P_{\boldsymbol \theta_N}(\boldsymbol x_{min})}\right] - \log 2 \rightarrow \infty
-\end{align*}
-as $N \rightarrow \infty$ by the definition of an unstable FSFS model. Consequently, $P_{\boldsymbol \theta_N}(M_{\epsilon, \boldsymbol \theta_N}) \rightarrow 1$ as $N \rightarrow \infty$ as claimed.$\Box$
 
 \begin{remark}
-There is a further generalization to the notion of "unstable" used in Schweinberger (2011) that deals with replication. One can conceivably imagine replications of the data $\boldsymbol X_1, \dots, \boldsymbol X_n$, where $X_i \in \mathbb{R}^N, i = 1, \dots, n$ such that there are now $n*N$ random variables in the model. However, the definition of S-unstable and propositions \ref{prop:instab}-\ref{prop:degen} still hold if the replications are independent and identically distributed. The reason for this is that for $n$ observations, $\left(\max\limits_{\boldsymbol x \in \mathcal{X}^N}P_{\boldsymbol \theta_N}(\boldsymbol x)\right)^n$ is the largest probability possible under the model and similarly $\left(\min\limits_{\boldsymbol x \in \mathcal{X}}P_{\boldsymbol \theta_N}(\boldsymbol x)\right)^n$ is the smallest. Thus, 
+There is a further generalization to the notion of "unstable" used in Schweinberger (2011) that deals with replication. One can conceivably imagine $n$ independent and identically distributed (iid) replications $\boldsymbol X_1, \dots, \boldsymbol X_n$, where each $\boldsymbol X_i=(X_{i,1},\ldots,X_{i,N}) \in \mathcal{X}^N$ follows a common FSFS model with probabilities $P_{\theta_N}(\boldsymbol x)>0$,  $\boldsymbol x\in\mathcal{X}^N$ and $|\mathcal{X}<\infty|$, for $i=1,\ldots,n$.  This leads to a total of $n*N$ random variables in the joint FSFS model. However, the definition of S-unstable and Propositions \ref{prop:instab}-\ref{prop:degen} still hold for such iid replications. The reason for this is that $\left(\max\limits_{\boldsymbol x \in \mathcal{X}^N}P_{\boldsymbol \theta_N}(\boldsymbol x)\right)^n$ is the largest probability possible under the joint model for the $n$ replications while $\left(\min\limits_{\boldsymbol x \in \mathcal{X}}P_{\boldsymbol \theta_N}(\boldsymbol x)\right)^n$ is the smallest probability. Thus, 
 \begin{align*}
 \frac{\text{extremal log-probability ratio}}{\text{\# random variables in the model}} &\equiv \frac{1}{n*N}\log \left[\frac{\left\{\max\limits_{\boldsymbol x \in \mathcal{X}^N}P_{\boldsymbol \theta_N}(\boldsymbol x)\right\}^n}{\left\{\min\limits_{\boldsymbol x \in \mathcal{X}^N}P_{\boldsymbol \theta}(\boldsymbol x)\right\}^n}\right] \\
 &= \frac{1}{N} \log \left[\frac{\max\limits_{\boldsymbol x \in \mathcal{X}^N}P_{\boldsymbol \theta_N}(\boldsymbol x)}{\min\limits_{\boldsymbol x \in \mathcal{X}^N}P_{\boldsymbol \theta}(\boldsymbol x)}\right]\\
-&= \frac{1}{N} \text{ELPR}(\boldsymbol \theta_N).
+&= \frac{1}{N} \text{ELPR}(\boldsymbol \theta_N),
 \end{align*}
-Meaning, the definition of an S-unstable FSFS model is invariant to replication.
+implying that the definition of an S-unstable FSFS model is invariant to the level $n$ of independent replication.
 \end{remark}
 
 # Implications
 
 For a large class of models that cover a broad range of applications (including "deep learning"), we have developed a formal definition and elucidated multiple consequences of instability. We have shown for FSFS models that instability manifests through small changes in data leading to overly-sensitive changes in probability as well as the potential to place all probability on a small pieace of the sample space. Models that fall within the definition of a FSFS model should be used with caution to ensure that the effects of instability are not experienced.
+
+\begin{appendix}
+\section{Appendices}
+\label{appendix}
+\subsection{Proofs of main results}
+\label{proofs}
+
+```{r child='appendix/appendix-note.Rmd'}
+```
+\end{appendix}
 
 # References
