@@ -1,6 +1,9 @@
 ---
 title: "A note on the instability and degeneracy of deep learning models"
-author: "Andee Kaplan, Daniel Nordman, and Stephen Vardeman"
+author: | 
+  | Andee Kaplan, Daniel Nordman, and Stephen Vardeman
+  | Iowa State University
+  | ajkaplan@iastate.edu, dnordman@iastate.edu, vardeman@iastate.edu
 date: "November, 2016"
 linestretch: 2
 output: 
@@ -18,13 +21,9 @@ abstract: |
 
 # Introduction
 
-As data structures become larger and more complex, there is increasing interest in identifying instability in potential model specifications for such data (e.g., models for random graphs or networks). We consider the problem of quantifying instability for general probability models defined on sequences of observations, where each sequence of a given length $N$ has a finite number of possible outcomes. As the number of available observations increases, a sequence of probability models results to accommodate the data of expanding dimension.
-  
-Model instability is formally shown to occur when a certain log-probability ratio under such models grows faster than the length $N$ of the data sequence. In this case, a one component change in the data sequence can provably shift probability by orders of magnitude. Also, as the measure of instability becomes more extreme, the resulting probability models are shown to slip into degeneracy, thereby placing all probability on arbitrarily small portions of the sample space.
+We consider the behavior, and the potential impropriety, of probability models built to incorporate a sequence of discrete observations with an arbitrarily specified length $N$. Let $(X_1, \dots X_N)$ denote a set of sequence of discrete random variables with a finite sample space, $\mathcal{X}^N$. That is, $\mathcal{X}$ with $|\mathcal{X}| < \infty$ represents a finite set of potential outcomes for the variable $X_i$, and the data sequence $(X_1,\ldots,X_N)$ assumes values in the $N$-fold product space $\mathcal{X}^N$. For any $N$, let $P_{\boldsymbol \theta_N}$ denote a probability model on $\mathcal{X}^N$, under which $P_{\boldsymbol \theta_N}(x_1, \dots, x_N) > 0$ is the probability of the data outcome $(x_1, \dots, x_N) \in \mathcal{X}^N$. We assume that the model support of $P_{\boldsymbol \theta_N}$ is equal to the sample space $\mathcal{X}^N$. This framework produces a series $P_{\boldsymbol \theta_N}$ of probability models, indexed by a generic sequence of parameters $\boldsymbol \theta_N$, to describe data of any given length $N \geq 1$. The size and structure of such parameters may be generally specified, and one may intuitvely consider Euclidean $\boldsymbol \theta_N \in \mathbb{R}^{q(N)}$ for some arbitrary integer-valued function $q(\cdot) \geq 1$. We will call this class *Finitely Supported Finite Sequence (FSFS) models*.
 
-We consider the behavior, and the potential impropriety, of probability models built to incorporate a sequence of discrete observations with an arbitrarily specified length $N$. Let $(X_1, \dots X_N)$ denote a set of sequence of discrete random variables with a finite sample space, $\mathcal{X}^N$. That is, $\mathcal{X}$ represents a finite set of potential outcomes for the variable $X_i$, and the data sequence $(X_1,\ldots,X_N)$ assumes values in the $N$-fold product space $\mathcal{X}^N$. For any $N$, let $P_{\boldsymbol \theta_N}$ denote a probability model on $\mathcal{X}^N$, under which $P_{\boldsymbol \theta_N}(x_1, \dots, x_N) > 0$ is the probability of the data outcome $(x_1, \dots, x_N) \in \mathcal{X}^N$. We assume that the model support of $P_{\boldsymbol \theta_N}$ is equal to the sample space $\mathcal{X}^N$. This framework produces a series $P_{\boldsymbol \theta_N}$ of probability models, indexed by a generic sequence of parameters $\boldsymbol \theta_N$, to describe data of any given length $N \geq 1$. The size and structure of such parameters may be generally specified, and one may intuitvely consider Euclidean $\boldsymbol \theta_N \in \mathbb{R}^{q(N)}$ for some arbitrary integer-valued function $q(\cdot) \geq 1$. We will call this class *Finitely Supported Finite Sequence (FSFS) models*.
-
-Section \ref{examples} provides several examples of FSFS models commonly used in graph/network analysis and machine learning (i.e., deep learning models). Section \ref{instability-results} establishes formal results regarding the model propriety of FSFS models with regard to stability. A FSFS probability model intuitively exhibits instability if small changes in the components of a data outcome $(x_1,\ldots,x_N)$ may result in large in probability $P_{\theta_N}(x_1,\ldots,x_N)$. The concept of instability, introduced in the field statistical physics by @ruelle1999statistical, was extended to include a notion of detection and quantification for certain exponential 
+Section \ref{examples} provides several examples of FSFS models commonly used in graph/network analysis and machine learning (i.e., deep learning models). Section \ref{instability-results} establishes formal results regarding the model propriety of FSFS models with regard to stability. A FSFS probability model intuitively exhibits instability if small changes in the components of a data outcome $(x_1,\ldots,x_N)$ may result in large changes in probability $P_{\theta_N}(x_1,\ldots,x_N)$. The concept of instability, introduced in the field statistical physics by @ruelle1999statistical, was extended to include a notion of detection and quantification for certain exponential 
 family models by @schweinberger2011instability. For similar exponential models, particularly in connection to random graphs/networks, @handcock2003assessing considered (mean-based) characterizations for so-called model degeneracy, whereby a probability model places all mass on a small subset of the sample space and produces undesirably low variability in model outcomes. As described by @schweinberger2011instability, model instability and model degeneracy are related by viewing degeneracy as an extreme or limiting form of instability. However, the instability results of @schweinberger2011instability are only intended for a special parametric case of exponential family models. In considering the broad framework of FSFS models, the main results here develop a more general measure of model instability, which is defined to arise when certain maximal probabilities in FSFS models are too extreme relative to the length $N$ of the data sample. In this case, a one component change in the data sequence
 may provably shift probability by orders of magnitude, and FSFS models are rigorously shown to become degenerate as the measure of instability increases. Lastly, Section \ref{implications} emphasizes the implications of our model propriety results and proofs of the main results appear in the Appendix.
 
@@ -36,61 +35,61 @@ Many model families can fall under the umbrella of FSFS models. For illustration
 
 For $X_1, \dots, X_N$ discrete random variables with sample space $\mathcal{X}^N$, $|\mathcal{X}| < \infty$, consider an exponential family model with probability mass function of the form
 $$
-p_{\boldsymbol \lambda}(\boldsymbol x) = \exp\left[\boldsymbol\eta^T(\boldsymbol \lambda) \boldsymbol g(\boldsymbol x) - \psi(\boldsymbol \lambda)\right], \qquad \boldsymbol x \in \mathcal{X}^N.
+p_{\boldsymbol \lambda}(\boldsymbol x) = \exp\left[\boldsymbol\eta^T(\boldsymbol \lambda) \boldsymbol g(\boldsymbol x) - \psi(\boldsymbol \lambda)\right], \qquad \boldsymbol x \in \mathcal{X}^N,
 $$ 
 where $\boldsymbol \lambda \in \Lambda \subset \mathbb{R}^{k}$, $\boldsymbol \eta : \mathbb{R}^k \mapsto \mathbb{R}^L$ is a vector of natural parameters, $\boldsymbol g : \mathcal{X}^N \mapsto \mathbb{R}^L$ is a vector of sufficient statistics, positive integers $k$ and $L$ denote the dimensions of the parameter and natural parameters spaces, respectfully, 
 $$
-\psi(\boldsymbol \lambda) = \log \sum\limits_{\boldsymbol x \in \mathcal{X}^N}\exp\left[\boldsymbol \eta^T(\boldsymbol \lambda) \boldsymbol g(\boldsymbol x) \right], \qquad \boldsymbol \lambda \in \Lambda
+\psi(\boldsymbol \lambda) = \log \sum\limits_{\boldsymbol x \in \mathcal{X}^N}\exp\left[\boldsymbol \eta^T(\boldsymbol \lambda) \boldsymbol g(\boldsymbol x) \right], \qquad \boldsymbol \lambda \in \Lambda,
 $$
 is the normalizing function, and $\Lambda = \{\boldsymbol \lambda \in \mathbb{R}^k : \psi(\boldsymbol \lambda) < \infty, k \le q(N) \}$ is the parameter space. 
 
-Setting $\boldsymbol \theta_N=\lambda_N$ to a subsequence of $\mathbb{R}^k$ and noting that $p_{\boldsymbol \lambda}(\boldsymbol x) > 0$ for all $\boldsymbol x \in \mathcal{X}^N$ by properties of the exponential function, the discrete exponential family models defined in this section are a special case of the FSFS model. Such exponential models arise in spatial data on a lattice [@besag1974spatial], network data [@wasserman1994social, @handcock2003assessing], and even in binomial sampling with $N$ iid Bernoulli random variables. @schweinberger2011instability considered instability in such exponential models (e.g., for random graphs) for fixed parameter sequences $\theta_N=\lambda\in\mathbb{R}^k$. 
+Defining $\boldsymbol \theta_N=\lambda_N$ to a subsequence of $\Lambda \subset \mathbb{R}^k$ and noting that $p_{\boldsymbol \lambda}(\boldsymbol x) > 0$ for all $\boldsymbol x \in \mathcal{X}^N$ by properties of the exponential function, the discrete exponential family models defined in this section are a special case of the FSFS model. Such exponential models arise with spatial data on a lattice [@besag1974spatial], network data [@wasserman1994social; @handcock2003assessing], and even binomial sampling with $N$ iid Bernoulli random variables. For these exponential models, the length of the parameter sequence $\boldsymbol \theta_N$ is the same for each $N$ (i.e., $\boldsymbol \theta_N$ lies in a parameter space of fixed Euclidean dimension $k$).  This aspect may not be true for other types of FSFS models considered in Sections \ref{restricted-boltzmann-machines}-\ref{deep-learning}.  We also note that @schweinberger2011instability considered instability in such exponential models (e.g., for random graphs) for but with fixed parameter sequences $\theta_N=\lambda\in\mathbb{R}^k$, $N \geq 1$, of non-varying length $k$. 
 
 ## Restricted Boltzmann machines
 
-A restricted Boltzmann machine (RBM) is an undirected graphical model specified for discrete or continuous random variables, binary variables being most common [@smolensky1986information]. A RBM architecture has two layers, hidden ($\mathcal{H}$) and visible ($\mathcal{V}$), with conditional independence within each layer. Let $\boldsymbol X=(X_1,\ldots,X_N)$ denote the $N$ random variables for visibles with support $\mathcal{X}^N$ and $\boldsymbol H=(H_1,\ldots,H_{N_H})$ denote the $N_H$ random variables for hiddens with support $\mathcal{X}^{N_H}$ where  $\mathcal{X} = \{-1,1\}$. The RBM for $\tilde{\boldsymbol X}=(\boldsymbol X,\boldsymbol H)$ then has the joint probability mass function
+A restricted Boltzmann machine (RBM) is an undirected graphical model specified for discrete or continuous random variables, binary variables being most common [cf. @smolensky1986information]. A RBM architecture has two layers, hidden ($\mathcal{H}$) and visible ($\mathcal{V}$), with conditional independence within each layer. Let $\boldsymbol X=(X_1,\ldots,X_N)$ denote the $N$ random variables for visibles with support $\mathcal{X}^N$ and $\boldsymbol H=(H_1,\ldots,H_{N_H})$ denote the $N_H$ random variables for hiddens with support $\mathcal{X}^{N_H}$ where  $\mathcal{X} = \{-1,1\}$. The RBM for $\tilde{\boldsymbol X}=(\boldsymbol X,\boldsymbol H)$ then has the joint probability mass function
 $$
-p_{\boldsymbol \theta} (\tilde{\boldsymbol x}) = \exp\left[ \boldsymbol \alpha^T \boldsymbol h + \boldsymbol \beta^T \boldsymbol x + \boldsymbol h^T \Gamma \boldsymbol x - \psi(\boldsymbol \theta)\right], \qquad \tilde{\boldsymbol x} = (\boldsymbol h, \boldsymbol x) \in \mathcal{X}^{N+N_H}
+p_{\boldsymbol \theta} (\tilde{\boldsymbol x}) = \exp\left[ \boldsymbol \alpha^T \boldsymbol h + \boldsymbol \beta^T \boldsymbol x + \boldsymbol h^T \Gamma \boldsymbol x - \psi(\boldsymbol \theta)\right], \qquad \tilde{\boldsymbol x} = (\boldsymbol h, \boldsymbol x) \in \mathcal{X}^{N+N_H},
 $$
 where 
 $$
-\psi(\boldsymbol \theta) = \log \sum_{\tilde{\boldsymbol x} \in \mathcal{X}^{N + N_H}} \exp\left[ \boldsymbol \alpha^T \boldsymbol h + \boldsymbol \beta^T \boldsymbol x + \boldsymbol h^T \Gamma \boldsymbol x\right], \qquad \boldsymbol \theta \in \Theta
+\psi(\boldsymbol \theta) = \log \sum_{\tilde{\boldsymbol x} \in \mathcal{X}^{N + N_H}} \exp\left[ \boldsymbol \alpha^T \boldsymbol h + \boldsymbol \beta^T \boldsymbol x + \boldsymbol h^T \Gamma \boldsymbol x\right], \qquad \boldsymbol \theta \in \Theta,
 $$ 
 is the normalizing function, $\boldsymbol \alpha \in \mathbb{R}^{N_H}$, $\boldsymbol \beta \in \mathbb{R}^N$, and $\Gamma$ is a matrix with dimension $N_H \times N$ are the parameters in the model. Let $\boldsymbol \theta_N = (\boldsymbol \alpha, \boldsymbol \beta,\Gamma) \in \Theta \subset \mathbb{R}^{q(N)}$ with $q(N) = N + N_H + N*N_H$ denote the vector of parameters.
 
 The probability mass function for the visible variables $X_1, \dots, X_N$ follows from marginalizing this joint specification:
 $$
-p_{\boldsymbol \theta} (\boldsymbol x) = \sum\limits_{\boldsymbol h \in \mathcal{X}^{N_H}} p_{\boldsymbol \theta} (\boldsymbol x, \boldsymbol h), \qquad \boldsymbol x \in \mathcal{X}^N
+p_{\boldsymbol \theta} (\boldsymbol x) = \sum\limits_{\boldsymbol h \in \mathcal{X}^{N_H}} p_{\boldsymbol \theta} (\boldsymbol x, \boldsymbol h), \qquad \boldsymbol x \in \mathcal{X}^N.
 $$
 
-Note that the vector of model parameters $\boldsymbol \theta_N$, of size $q(N)$, is expanding in size as a function of the visible variable dimension $N$, and one may choose the number $N_H$ of hidden variables as an arbitrary function of $N$ as well (which may also potentially increase with $N$). Additionally, $p_{\boldsymbol \theta}(\boldsymbol x) > 0$ for all $\boldsymbol x \in \mathcal{X}^N$ by properties of the exponential function so that the visible RBM model specification is an example of a FSFS model. This example also indicates that models formed by marginalizing a base FSFS model (e.g., exponential family) is again a FSFS model class.
+Note that the vector of model parameters $\boldsymbol \theta_N$, of size $q(N)$, is expanding in size as a function of sample dimension $N$ to accomodate the dimension of visible variables $X_1, \dots, X_N$, and one may further choose the number $N_H$ of hidden variables to vary as an arbitrary function of $N$ as well; in particular, the number $N_H$ of hideen may also potentially increase with $N$. Additionally, as $|\mathcal{X}| = 2$ and $p_{\boldsymbol \theta}(\boldsymbol x) > 0$ for all $\boldsymbol x \in \mathcal{X}^N$ by properties of the exponential function, the visible RBM model specification is a FSFS model. This example also indicates that models formed by marginalizing a base FSFS model (e.g., a type of exponential family) is again a FSFS model class.
 
 ## Deep learning
 
-Consider two models with "deep architechture" that contain multiple hidden (or latent) layers in addition to a visible layer of data, a deep Boltzmann machine [@salakhutdinov2009deep] and a deep belief network [@hinton2006fast]. Let $M$ denote the number of hidden layers included in the model and $N_{H,1}, \dots, N_{H, M}$ the number of hidden variables within each hidden layer. Then let $\tilde{\boldsymbol X} = \{H^{(1)}_1, \dots, H^{(1)}_{N_{H,1}}, \dots, H^{(M)}_1, \dots, H^{(M)}_{N_{H,M}}, \boldsymbol X\}$ be random variables corresponding to the hidden and visible $\boldsymbol X =(X_1,\ldots,X_N)$ variables in a deep probabilitic model. We will consider the sample space $\mathcal{X} = \{-1,1\}$.
+Consider two models with "deep architechture" that contain multiple hidden (or latent) layers in addition to a visible layer of data, a deep Boltzmann machine [@salakhutdinov2009deep] and a deep belief network [@hinton2006fast]. Let $M$ denote the number of hidden layers included in the model and $N_{(H,1)}, \dots, N_{((H,M))}$ the number of hidden variables within each hidden layer. Then let $\tilde{\boldsymbol X} = \{H^{(1)}_1, \dots, H^{(1)}_{N_{(H,1)}}, \dots, H^{(M)}_1, \dots, H^{(M)}_{N_{(H,M)}}, \boldsymbol X\}$ be random variables corresponding to the hidden variables $\{ H_{i}^{(j)} : i=1,\ldots, N_{(H,j)}, j=1,\ldots,M\}$ and visible variables $\boldsymbol X =(X_1,\ldots,X_N)$ in a deep probabilitic model. Each variable outcome will again lie in $\mathcal{X} = \{-1,1\}$.
 
 **Deep Boltzmann machine (DBM).** The DBM class of models maintains conditional independence within all layers in the model by stacking RBM models and maintaining the restriction of only allowing conditional dependence between layers. The joint probability mass function for a DBM is
 $$
 p_{\boldsymbol \theta} (\tilde{\boldsymbol x}) = \exp\left[ \sum\limits_{i = 1}^M\boldsymbol \alpha^{(i)T} \boldsymbol h^{(i)} + \boldsymbol \beta^T \boldsymbol x + \boldsymbol h^{(1)T} \Gamma^{(0)} \boldsymbol x + \sum\limits_{i = 1}^{M - 1} \boldsymbol h^{(i)T} \Gamma^{(i)} \boldsymbol h^{(i + 1)} - \psi(\boldsymbol \theta) \right], 
 $$
-where $\tilde{\boldsymbol x} = (\boldsymbol h^{(1)}, \dots, \boldsymbol h^{(M)}, \boldsymbol x) \in \mathcal{X}^{N_{H,1} + \cdots + N_{H,M} +N}$ and
+for $\tilde{\boldsymbol x} = (\boldsymbol h^{(1)}, \dots, \boldsymbol h^{(M)}, \boldsymbol x) \in \mathcal{X}^{N_{(H,1)} + \cdots + N_{(H,M)} +N}$ where
 $$
-\psi(\boldsymbol \theta) = \log \sum\limits_{\tilde{\boldsymbol x} \in \mathcal{X}^{N_{H,1} + \cdots + N_{H,M} +N}} \exp\left[ \sum\limits_{i = 1}^M\boldsymbol \alpha^{(i)T} \boldsymbol h^{(i)} + \boldsymbol \beta^T \boldsymbol x + \boldsymbol h^{(1)T} \Gamma^{(0)} \boldsymbol x + \sum\limits_{i = 1}^{M - 1} \boldsymbol h^{(i)T} \Gamma^{(i)} \boldsymbol h^{(i + 1)}\right], \qquad \boldsymbol \theta \in \Theta
+\psi(\boldsymbol \theta) = \log \sum\limits_{\tilde{\boldsymbol x} \in \mathcal{X}^{N_{(H,1)} + \cdots + N_{(H,M)} +N}} \exp\left[ \sum\limits_{i = 1}^M\boldsymbol \alpha^{(i)T} \boldsymbol h^{(i)} + \boldsymbol \beta^T \boldsymbol x + \boldsymbol h^{(1)T} \Gamma^{(0)} \boldsymbol x + \sum\limits_{i = 1}^{M - 1} \boldsymbol h^{(i)T} \Gamma^{(i)} \boldsymbol h^{(i + 1)}\right], \qquad \boldsymbol \theta \in \Theta
 $$ 
-is the normalizing function, $\boldsymbol \beta \in \mathbb{R}^V$, $\boldsymbol \alpha^{(i)} \in \mathbb{R}^{N_{H,i}}$ for $i = 1, \dots, M$, $\Gamma^{(0)}$ is a matrix with dimension $N_{H,1} \times N$, and $\Gamma^{(i)}$ is a matrix with dimension $N_{H,i} \times N_{H,i+1}$ for $i = 1, \dots, M-1$ are the parameters in the model. Let $\boldsymbol \theta = (\boldsymbol \alpha^{(1)}, \dots, \boldsymbol \alpha^{(M)}, \boldsymbol \beta,\Gamma^{(0)}, \dots, \Gamma^{(M - 1)}) \in \Theta \subset \mathbb{R}^{q(N)}$ denote the combined vector of parameters with $q(N)= N_{H,1}+\cdots N_{M,H} + N + N_{H,1}*N+N_{H,2}*H_{H,1}+\cdots +N_{H,M}*H_{H,M-1}$.
+is the normalizing functionand parameters in the model are given by $\boldsymbol \beta \in \mathbb{R}^V$, $\boldsymbol \alpha^{(i)} \in \mathbb{R}^{N_{(H,i)}}$ for $i = 1, \dots, M$, along with a matrix $\Gamma^{(0)}$ of dimension $N_{(H,1)} \times N$, and matrices $\Gamma^{(i)}$ of dimension $N_{(H,i)} \times N_{(H,i+1)}$ for $i = 1, \dots, M-1$. Let $\boldsymbol \theta = (\boldsymbol \alpha^{(1)}, \dots, \boldsymbol \alpha^{(M)}, \boldsymbol \beta,\Gamma^{(0)}, \dots, \Gamma^{(M - 1)}) \in \Theta \subset \mathbb{R}^{q(N)}$ denote the combined vector of parameters with total length $q(N)= N_{(H,1)}+\cdots N_{(H,M)} + N + N_{(H,1)}*N+N_{H,2}*H_{(H,1)}+\cdots +N_{(H,M)}*H_{(H,M)-1}$.
 
 The probability mass function for the visible random variables $X_1, \dots, X_N$ follows from this joint specification:
 $$
-p_{\boldsymbol \theta} (\boldsymbol x) = \sum\limits_{(\boldsymbol h^{(1)}, \dots, \boldsymbol h^{(M)}) \in \mathcal{X}^{N_{H,1} + \cdots + N_{H,M}}} p_{\boldsymbol \theta} (\tilde{\boldsymbol x}), \qquad \boldsymbol x \in \mathcal{X}^N
+p_{\boldsymbol \theta} (\boldsymbol x) = \sum\limits_{(\boldsymbol h^{(1)}, \dots, \boldsymbol h^{(M)}) \in \mathcal{X}^{N_{(H,1)} + \cdots + N_{(H,M)}}} p_{\boldsymbol \theta} (\tilde{\boldsymbol x}), \qquad \boldsymbol x \in \mathcal{X}^N
 $$
 
 Again similar to the RBM case, the visible DBM model specification is an example of a FSFS model.
 
-**Deep belief network (DBN).** A DBN is similar to a DBM in that there are multiple layers of latent random variables stacked in a deep architecture with no conditional dependence between layers. The difference between the two models is that all but the last stacked model are Bayesian networks, rather than RBMs. Thus for visibles $X_1, \dots, X_N$ with support equal to the sample space $\mathcal{X}^V$, a DBN is also a FSFS model if the number $q(N)$ of components in the parameter vector is dependent on the dimension of the visibles. Commonly, as in a logistic belief net [@neal1992connectionist], a "weight" parameter is placed on each interaction between visibles, $X_1, \dots, X_N$ and the first layer of latent variables, $H^{(1)}_1, \dots, H^{(1)}_{N_{H,1}}$, satisfying the definition of a FSFS model.
+**Deep belief network (DBN).** A DBN resembles a DBM in that there are multiple layers of latent random variables stacked in a deep architecture with no conditional dependence between layers. The difference between the two models is that all but the last stacked model are Bayesian networks, rather than RBMs. Thus for visibles $X_1, \dots, X_N$ with support equal to the sample space $\mathcal{X}^N$, a DBN is also a FSFS model if the number $q(N)$ of components in the parameter vector is dependent on the dimension of the visibles. Commonly, as in a logistic belief net [@neal1992connectionist], a "weight" parameter is placed on each interaction between visibles, $X_1, \dots, X_N$ and the first layer of latent variables, $H^{(1)}_1, \dots, H^{(1)}_{N_{(H,1)}}$, satisfying the definition of a FSFS model.
 
 # Instability results
 
-To measure "instability" in a FSFS model, it is useful to imagine the behavior of a data model sequence $P_{\theta_N}$ specified to incorporate more and more observations. A relevant quantity to this end is a (scaled) extremal log-probability ratio given by 
+To define or measure instability in a FSFS model, it is useful to imagine the behavior of a data model sequence $P_{\theta_N}$ specified to incorporate more and more observations to reach a sample length $N$. A relevant quantity to this end is a (scaled) extremal log-probability ratio (ELPR) given by 
 \begin{align}
 \frac{1}{N} \log \left[\frac{\max\limits_{(x_1, \dots, x_N) \in \mathcal{X}^N}P_{\boldsymbol \theta_N}(x_1, \dots, x_N)}{\min\limits_{(x_1, \dots, x_N) \in \mathcal{X}^N}P_{\boldsymbol \theta}(x_1, \dots, x_N)}\right] \equiv \frac{1}{N} \text{ELPR}_N(\boldsymbol \theta_N). \label{eqn:elpr}
 \end{align}
@@ -101,12 +100,13 @@ The main idea is that, in formulating a FSFS model for potentially increasing nu
 \begin{defn}[S-unstable FSFS]
 Let $\boldsymbol \theta_N \in \mathbb{R}^{q(N)}$ be a sequence of FSFS model parameters where the size of the model $q(N)$ is a function of the number of random variables $N$. A FSFS model formulation is \emph{Schweinberger-unstable} or \emph{S-unstable} if, as the number of variables increase ($N \rightarrow \infty$), it holds that 
 \begin{align*}
+\label{defn:instab}
 \lim\limits_{N \rightarrow \infty} \frac{1}{N} \text{ELPR}(\boldsymbol \theta_N) \equiv \lim\limits_{N \rightarrow \infty} \frac{1}{N} \log \left[\frac{\max\limits_{(x_1, \dots, x_N) \in \mathcal{X}^N}P_{\boldsymbol \theta_N}(x_1, \dots, x_N)}{\min\limits_{(x_1, \dots, x_N) \in \mathcal{X}^N}P_{\boldsymbol \theta}(x_1, \dots, x_N)}\right] = \infty.
 \end{align*}
 \end{defn}
 In other words, given any $C > 0$, there exists an integer $N_C > 0$ so that $\frac{1}{N}\text{ELPR}_N(\boldsymbol \theta_N) > C$ for all $N \ge N_C$.
 
-Note that this definition of *S-unstable* is a generalization or reinterpretation of "unstable" used in @schweinberger2011instability by allowing nonexponential family models (e.g. RBM and DBM models in Sections \ref{restricted-boltzmann-machines}-\ref{deep-learning}) and an increasing number of parameters. While this definition differs in form, it does match that in @schweinberger2011instability for the special exponential models (cf. Section \ref{discrete-exponential-family-models}) considered there.
+Note that this definition of *S-unstable* is a generalization or reinterpretation of "unstable" used in @schweinberger2011instability by allowing nonexponential family models (e.g. RBM and DBM models in Sections \ref{restricted-boltzmann-machines}-\ref{deep-learning}) and an increasing number of parameters. While this definition differs in form and scope, it does match that in @schweinberger2011instability for the special exponential models (cf. Section \ref{discrete-exponential-family-models}) considered there.
 
 S-unstable FSFS models are undesirable for several reasons. One is that small changes in data can lead to overly-sensitive changes in probability. Consider, for example, 
 $$
@@ -123,28 +123,29 @@ $$\Delta_N(\boldsymbol \theta_N) > C.$$
 
 Again, if the probability ratio (\ref{eqn:elpr}) is too large, then the FSFS model will exhibit large changes in probability for very small differences in the data configuration, which exemplifies the intuitive notation of instability.
 
-Additionally, S-unstable FSFS models are connected to degenerate models, where *degeneracy* implies placing all probability on a small portion of the sample space. For perspective, note that instability in FSFS models, as measured by (\ref{eqn:elpr}), is a spectrum and Proposition \ref{prop:instab} indicates increasing and undesirable sensitivity to model probabilities (i.e., in one component changes to outcomes) as (\ref{eqn:elpr}) increases. Furthermore, as the instability measure (\ref{eqn:elpr}) grows, FSFS models are guaranteed to slide into full degeneracy as Proposition \ref{prop:degen} next shows. Define a $\epsilon$-modal set 
+Additionally, S-unstable FSFS models are connected to degenerate models, where *degeneracy* implies placing all probability on a small portion of the sample space. For perspective, note that instability in FSFS models, as measured by ELPR in (\ref{eqn:elpr}), is a spectrum and Proposition \ref{prop:instab} indicates increasing and undesirable sensitivity of model probabilities (i.e., for one component changes in outcomes) as (\ref{eqn:elpr}) increases. Furthermore, as the instability measure (\ref{eqn:elpr}) grows, FSFS models are guaranteed to slide into full degeneracy as Proposition \ref{prop:degen} next shows. Define a $\epsilon$-modal set 
 $$
 M_{\epsilon, \boldsymbol \theta_N} \equiv \left\{\boldsymbol x \in \mathcal{X}^N: \log P_{\boldsymbol \theta_N}(\boldsymbol x) > (1-\epsilon)\max\limits_{\boldsymbol x^* \in \mathcal{X}^N}P_{\boldsymbol \theta_N}(\boldsymbol x^*) + \epsilon\min\limits_{\boldsymbol x^* \in \mathcal{X}^N}P_{\boldsymbol \theta_N}(\boldsymbol x^*) \right\}
 $$
-of possible outcomes, for a given $0 < \epsilon < 1$, and along a sequence $\boldsymbol \theta_N$, $N \ge 1$, of FSFS parameters.
+of possible outcomes, for a given $0 < \epsilon < 1$, along a sequence $\boldsymbol \theta_N$, $N \ge 1$, of FSFS parameters.
 
 \begin{prop}
 \label{prop:degen}
-For an unstable FSFS model, and for any given $0 < \epsilon < 1$, $P_{\boldsymbol \theta_N}\left((x_1, \dots, x_N) \in M_{\epsilon, \boldsymbol \theta_N}\right) \rightarrow 1$ holds as $N \rightarrow \infty$.
+For an unstable FSFS model in Definition \ref{defn:instab}, and for any given $0 < \epsilon < 1$, 
+$$
+P_{\boldsymbol \theta_N}\left((x_1, \dots, x_N) \in M_{\epsilon, \boldsymbol \theta_N}\right) \rightarrow 1 \text{ as } N \rightarrow \infty.
+$$
 \end{prop}
 
-In other words, in S-unstable FSFS models, all probability in the FSFS model formulation with a large number of random variables will mass on mode sets of arbitrarily small size, or simply those few outcomes with the highest probability.
+In other words, in S-unstable FSFS models, all probability in the model formulation with a large number of random variables will mass on mode sets of arbitrarily small size or simply on those few outcomes with the highest probability.
 
 
 \begin{remark}
-There is a further generalization to the notion of "unstable" used in Schweinberger (2011) that deals with replication. One can conceivably imagine $n$ independent and identically distributed (iid) replications $\boldsymbol X_1, \dots, \boldsymbol X_n$, where each $\boldsymbol X_i=(X_{i,1},\ldots,X_{i,N}) \in \mathcal{X}^N$ follows a common FSFS model with probabilities $P_{\theta_N}(\boldsymbol x)>0$,  $\boldsymbol x\in\mathcal{X}^N$ and $|\mathcal{X}<\infty|$, for $i=1,\ldots,n$.  This leads to a total of $n*N$ random variables in the joint FSFS model. However, the definition of S-unstable and Propositions \ref{prop:instab}-\ref{prop:degen} still hold for such iid replications. The reason for this is that $\left(\max\limits_{\boldsymbol x \in \mathcal{X}^N}P_{\boldsymbol \theta_N}(\boldsymbol x)\right)^n$ is the largest probability possible under the joint model for the $n$ replications while $\left(\min\limits_{\boldsymbol x \in \mathcal{X}}P_{\boldsymbol \theta_N}(\boldsymbol x)\right)^n$ is the smallest probability. Thus, 
-\begin{align*}
-\frac{\text{extremal log-probability ratio}}{\text{\# random variables in the model}} &\equiv \frac{1}{n*N}\log \left[\frac{\left\{\max\limits_{\boldsymbol x \in \mathcal{X}^N}P_{\boldsymbol \theta_N}(\boldsymbol x)\right\}^n}{\left\{\min\limits_{\boldsymbol x \in \mathcal{X}^N}P_{\boldsymbol \theta}(\boldsymbol x)\right\}^n}\right] \\
-&= \frac{1}{N} \log \left[\frac{\max\limits_{\boldsymbol x \in \mathcal{X}^N}P_{\boldsymbol \theta_N}(\boldsymbol x)}{\min\limits_{\boldsymbol x \in \mathcal{X}^N}P_{\boldsymbol \theta}(\boldsymbol x)}\right]\\
-&= \frac{1}{N} \text{ELPR}(\boldsymbol \theta_N),
-\end{align*}
-implying that the definition of an S-unstable FSFS model is invariant to the level $n$ of independent replication.
+There is a further generalization the notion of instability in Definition \ref{defn:instab} to address independent replications of data sequences. That is, one might consider data as $n$ independent and identically distributed replications $\boldsymbol X_1, \dots, \boldsymbol X_n$, where each $\boldsymbol X_i=(X_{i,1},\ldots,X_{i,N}) \in \mathcal{X}^N$ follows a common FSFS model with probabilities $P_{\theta_N}(\boldsymbol x)>0$,  $\boldsymbol x\in\mathcal{X}^N$ and $|\mathcal{X}|<\infty$, for $i=1,\ldots,n$.  This leads to a total of $n*N$ random variables in the joint model. However, the definition of S-unstable and Propositions \ref{prop:instab}-\ref{prop:degen} still hold for such iid replications. The reason for this is that $\left(\max\limits_{\boldsymbol x \in \mathcal{X}^N}P_{\boldsymbol \theta_N}(\boldsymbol x)\right)^n$ is the largest probability possible under the joint model for the $n$ replications while $\left(\min\limits_{\boldsymbol x \in \mathcal{X}}P_{\boldsymbol \theta_N}(\boldsymbol x)\right)^n$ is the smallest probability. Thus, 
+$$
+\frac{\text{extremal log-probability ratio}}{\text{\# random variables in the model}} \equiv \frac{1}{n*N}\log \left[\frac{\left(\max\limits_{\boldsymbol x \in \mathcal{X}^N}P_{\boldsymbol \theta_N}(\boldsymbol x)\right)^n}{\left(\min\limits_{\boldsymbol x \in \mathcal{X}^N}P_{\boldsymbol \theta}(\boldsymbol x)\right)^n}\right] = \frac{1}{N} \log \left[\frac{\max\limits_{\boldsymbol x \in \mathcal{X}^N}P_{\boldsymbol \theta_N}(\boldsymbol x)}{\min\limits_{\boldsymbol x \in \mathcal{X}^N}P_{\boldsymbol \theta}(\boldsymbol x)}\right] = \frac{1}{N} \text{ELPR}(\boldsymbol \theta_N),
+$$
+implying that the definition of an S-unstable FSFS model is invariant to the level $n$ of independent replication. Consequently, overall model instabilities may be characterized by those of one replication from the common FSFS model.   
 \end{remark}
 
 # Implications
@@ -152,9 +153,8 @@ implying that the definition of an S-unstable FSFS model is invariant to the lev
 For a large class of models that cover a broad range of applications (including "deep learning"), we have developed a formal definition and elucidated multiple consequences of instability. We have shown for FSFS models that instability manifests through small changes in data leading to overly-sensitive changes in probability as well as the potential to place all probability on a small pieace of the sample space. Models that fall within the definition of a FSFS model should be used with caution to ensure that the effects of instability are not experienced.
 
 \begin{appendix}
-\section{Appendices}
+\section{Appendix: Proofs of main results}
 \label{appendix}
-\subsection{Proofs of main results}
 \label{proofs}
 
 ```{r child='appendix/appendix-note.Rmd'}

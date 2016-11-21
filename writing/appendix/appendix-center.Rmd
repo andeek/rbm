@@ -1,6 +1,9 @@
 ---
-title: "Supplementary Material to:  On the propriety of restricted Boltzmann machines"
-author: "Andee Kaplan, Daniel Nordman, and Stephen Vardeman"
+title: "Supplementary material to:  On the propriety of restricted Boltzmann machines"
+author: | 
+  | Andee Kaplan, Daniel Nordman, and Stephen Vardeman
+  | Iowa State University
+  | ajkaplan@iastate.edu, dnordman@iastate.edu, vardeman@iastate.edu
 date: "November, 2016"
 linestretch: 2 
 output: 
