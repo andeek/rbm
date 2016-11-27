@@ -127,7 +127,7 @@ denoting the biggest log-probability ratio for a one component change in data ou
 Let $C > 0$ and let $\text{ELPR}(\boldsymbol \theta_\nv)$ be as in (\ref{eqn:elpr}) for an integer $\nv \ge 1$. If $\frac{1}{\nv}\text{ELPR}(\boldsymbol \theta_\nv) > C$, then $\Delta(\boldsymbol \theta_\nv) > C$.
 \end{prop}
 
-In other words, if the probability ratio (\ref{eqn:elpr}) is too large, then a RBM model sequence will exhibit large probability shifts for very small changes in data configurations (i.e., will exhibit instability).
+In other words, if the probability ratio (\ref{eqn:elpr}) is too large, then a RBM model sequence will exhibit large probability shifts for very small changes in data configurations (i.e., will exhibit instability). Recall the applied example of RBM models as a means to classify images. This instability result manifests itself as a one pixel change in an image (one component of the visible vector) resulting in a large shift in the probability, which in turn results in a vastly different classification of the image. Examples of this behavior have been presented in @szegedy2013intriguing for trained deep learning models, in which a one pixel change in a test image results in a wildly different classification.
 
 Additionally, S-unstable RBM model sequences are connected to the near-degeneracy of Section \ref{near-degeneracy} (in which model sequences place all probability on a small portion of their sample spaces). To see this, define an arbitrary modal set of possible outcomes (i.e. set of highest probability outcomes) in RBM models with parameters $\boldsymbol \theta_\nv, \nv \ge 1$ as
 $$
