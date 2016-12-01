@@ -8,13 +8,13 @@
 * The [presentations](https://github.com/andeek/rbm/tree/master/presentations) folder contains slide decks and posters that have been presented on this material.
 * The [writing](https://github.com/andeek/rbm/tree/master/writing) folder contains fully reproducible versions of both papers.
 
-## "On the propiety of restricted Boltzmann machines"
+## ["On the propiety of restricted Boltzmann machines"](https://github.com/andeek/rbm/blob/master/writing/draft.Rmd)
 
 **Authors:** [Andee Kaplan](mailto:ajkaplan@iastate.edu?subject=RBM paper), Daniel Nordman, and Stephen Vardeman  
 
 **Abstract:** A restricted Boltzmann machine (RBM) is an undirected graphical model constructed for discrete or continuous random variables, with two layers, one hidden and one visible, and no conditional dependency within a layer. In recent years, RBMs have risen to prominence due to their connection to deep learning. By treating a hidden layer of one RBM as the visible layer in a second RBM, a deep architecture can be created. RBMs are thought to thereby have the ability to encode very complex and rich structures in data, making them attractive for supervised learning. However, the generative behavior of RBMs is largely unexplored. In this paper, we discuss the relationship between RBM parameter specification in the binary case and the tendency to undesirable model properties such as degeneracy, instability and uninterpretability. We also describe the difficulties that arise in likelihood-based and Bayes fitting of such (highly flexible) models, especially as Gibbs sampling (quasi-Bayes) methods are often advocated for the RBM model structure.
 
-## "A note on the instability and degeneracy of deep learning models" 
+## ["A note on the instability and degeneracy of deep learning models"](https://github.com/andeek/rbm/blob/master/writing/note.Rmd)
 
 **Authors:** [Andee Kaplan](mailto:ajkaplan@iastate.edu?subject=Instability paper), Daniel Nordman, and Stephen Vardeman  
 
