@@ -4,7 +4,7 @@ author: |
   | Andee Kaplan, Daniel Nordman, and Stephen Vardeman
   | Iowa State University
   | ajkaplan@iastate.edu, dnordman@iastate.edu, vardeman@iastate.edu
-date: "November, 2016"
+date: "December, 2016"
 linestretch: 2 
 output: 
   pdf_document:
@@ -285,7 +285,7 @@ expand.grid(theta_h1 = seq(-5, 5, length.out = 21),
   theme(aspect.ratio = 1)
 ```
 
-Finally to consider the effect of $\boldsymbol \theta$ on potential model uninterpretability, we can look at the absolute difference between model expectations, E$\left[\boldsymbol X | \boldsymbol \theta\right]$, and expectations given independence, E$\left[\boldsymbol X | \boldsymbol \theta^*\right ]$ for the tiny toy RBM model where $\boldsymbol X = (V_1, H_1, V_1 H_1)$. This difference is given by
+Finally to consider the effect of $\boldsymbol \theta$ on potential model uninterpretability, we can look at the difference between model expectations, E$\left[\boldsymbol X | \boldsymbol \theta\right]$, and expectations given independence, E$\left[\boldsymbol X | \boldsymbol \theta^*\right ]$ for the tiny toy RBM model where $\boldsymbol X = (V_1, H_1, V_1 H_1)$. This difference is given by
 
 \begin{align*}
 \text{E}\left[\boldsymbol X | \boldsymbol \theta\right] -   \text{E}\left[\boldsymbol X | \boldsymbol \theta^* \right] 
@@ -296,7 +296,7 @@ Finally to consider the effect of $\boldsymbol \theta$ on potential model uninte
 \end{matrix}\right].
 \end{align*}
 
-Again, we can inspect these coordinate functions of this vector difference to look for a relationship between parameter values and large values of $||\text{E}[\boldsymbol X|\boldsymbol \theta] - \text{E}[\boldsymbol X| \boldsymbol \theta^*]||$ as a signal of uninterpretability for the toy RBM.
+Again, we can inspect these coordinate functions of this vector difference to look for a relationship between parameter values and large values of $\text{E}[\boldsymbol X|\boldsymbol \theta] - \text{E}[\boldsymbol X| \boldsymbol \theta^*]$ as a signal of uninterpretability for the toy RBM.
 
 ```{r uninterp, fig.cap="\\label{fig:uninterp}The absolute difference between coordinates of model expectations, E$\\left[\\boldsymbol X | \\boldsymbol \\theta\\right]$, and expectations given independence, E$\\left[\\boldsymbol X | \\boldsymbol \\theta^* \\right ]$ for a RBM with one visible and one hidden node. As an indicator of uninterpretability, note that differences in expectations increase as the dependence parameter $\\theta_{11}$ deviates from zero.", fig.height = 4, fig.align='center', message=FALSE, cache=TRUE, warning=FALSE}
 expand.grid(theta_h1 = seq(-5, 5, length.out = 21),

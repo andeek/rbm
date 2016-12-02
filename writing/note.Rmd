@@ -4,7 +4,7 @@ author: |
   | Andee Kaplan, Daniel Nordman, and Stephen Vardeman
   | Iowa State University
   | ajkaplan@iastate.edu, dnordman@iastate.edu, vardeman@iastate.edu
-date: "November, 2016"
+date: "December, 2016"
 linestretch: 2
 output: 
   pdf_document:
