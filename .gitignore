@@ -45,7 +45,6 @@ degeneracy/written/
 presentations/jsm2016/index_cache/
 
 writing/degeneracy/draft_cache
-writing/data/*.Rdata
 
 #presentation
 !presentations/coda2016/*.pdf
