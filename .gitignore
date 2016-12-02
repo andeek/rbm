@@ -19,7 +19,6 @@ degeneracy/apps/rsconnect/
 
 # compilation files
 *.bbl
-*.tex
 *.gz
 *.log
 *.xml

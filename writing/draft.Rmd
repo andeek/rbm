@@ -1,20 +1,28 @@
 ---
 title: "On the propriety of restricted Boltzmann machines"
-author: | 
-  | Andee Kaplan, Daniel Nordman, and Stephen Vardeman
-  | Iowa State University
-  | ajkaplan@iastate.edu, dnordman@iastate.edu, vardeman@iastate.edu
-date: "December, 2016"
-linestretch: 2 
+author: 
+  - name: Andee Kaplan
+    university: Iowa State University
+    department: Department of Statistics
+  - name: Daniel Nordman
+    university: Iowa State University
+    department: Department of Statistics
+  - name: Stephen Vardeman
+    university: Iowa State University
+    department: Department of Statistics
 output: 
   pdf_document:
     fig_caption: yes
     includes:
       in_header: latex/header.tex
     number_sections: yes
+    template: latex/technometrics_article.tex
+fontsize: 12pt
 bibliography: references/refs.bib
 abstract: |
   A restricted Boltzmann machine (RBM) is an undirected graphical model constructed for discrete or continuous random variables, with two layers, one hidden and one visible, and no conditional dependency within a layer. In recent years, RBMs have risen to prominence due to their connection to deep learning. By treating a hidden layer of one RBM as the visible layer in a second RBM, a deep architecture can be created. RBMs are thought to thereby have the ability to encode very complex and rich structures in data, making them attractive for supervised learning. However, the generative behavior of RBMs is largely unexplored. In this paper, we discuss the relationship between RBM parameter specification in the binary case and the tendency to undesirable model properties such as degeneracy, instability and uninterpretability. We also describe the difficulties that arise in likelihood-based and Bayes fitting of such (highly flexible) models, especially as Gibbs sampling (quasi-Bayes) methods are often advocated for the RBM model structure.
+keywords: Degeneracy, Instability, Classification, Deep Learning, Graphical Models
+blind: false
 ---
 
 ```{r libraries_options, echo=FALSE, message=FALSE, warnings=FALSE}
@@ -92,9 +100,10 @@ f_{\boldsymbol \theta} (\boldsymbol x) = \frac{\exp\left(\boldsymbol \theta^T \b
 where $\boldsymbol \theta \in \Theta \subset \mathbb{R}^q$ is the model parameter, and $\boldsymbol t: \mathcal{X} \rightarrow \mathbb{R}^q$ is a vector of statistics based on the adjacency matrix of a graph. Here, as earlier, $\gamma(\boldsymbol \theta) = \sum_{\boldsymbol x \in \mathcal{X}} \exp\left(\boldsymbol \theta^T \boldsymbol t(\boldsymbol x)\right)$ is the normalizing function. Let $C$ denote the convex hull of the potential outcomes of sufficient statistics, $\{\boldsymbol t(\boldsymbol x): \boldsymbol x \in \mathcal{X}\}$, under the model above. @handcock2003assessing classify an exponentially parametrized random graph model at $\boldsymbol \theta$ as *near-degenerate* if the mean value of the vector of sufficient statistics under $\boldsymbol \theta$, $\boldsymbol \mu(\boldsymbol \theta) = \text{E}_{\boldsymbol \theta}\boldsymbol t( \boldsymbol X)$, is close to the boundary of $C$. This makes sense because if a model is near-degenerate in the sense that only a small number of elements of the sample space $\mathcal{X}$ have positive probability, the expected value $\text{E}_{\boldsymbol \theta}\boldsymbol t( \boldsymbol X)$ is an average of that same small number of values of $t( \boldsymbol x)$ and can be expected to *not* be pulled deep into the interior of $C$.
 
 A RBM model can be thought to exhibit an analogous form of *near-degeneracy* when there is a disproportionate amount of probability placed on a small number of elements in the sample space of visibles and hiddens, $\mathcal{C}^{\nv + \nh}$. Using the idea of @handcock2003assessing, when the random vector $\boldsymbol t(\boldsymbol x) = (v_1, \dots, v_\nv, h_1, \dots, h_\nh, v_1 h_1, \dots, v_V h_\nh ) \in \mathcal{T} \equiv \{\boldsymbol t(\boldsymbol x): \boldsymbol x \in \mathcal{C}^{\nh + \nv} \}$ from (\ref{eqn:t}), appearing in the neg-potential function $Q_{\boldsymbol \theta}(\cdot)$, has a mean vector $\boldsymbol \mu(\boldsymbol \theta) \in \mathbb{R}^{\nv + \nh + \nv * \nh}$ close to the boundary of the convex hull of $\mathcal{T}$, then the RBM model can be said to exhibit near-degeneracy at $\boldsymbol \theta \in \mathbb{R}^{\nv + \nh + \nh*\nv}$. Here the mean of $\boldsymbol t(\boldsymbol x)$ is
-$$
-\boldsymbol \mu(\boldsymbol \theta) = \text{E}_{\boldsymbol \theta} \boldsymbol t(\boldsymbol X)  = \sum\limits_{x \in \mathcal{C}^{\nv + \nh}} \left\{ \boldsymbol t(\boldsymbol x) f_{\boldsymbol \theta} (\boldsymbol x) \right\} = \sum\limits_{x \in \mathcal{C}^{\nv + \nh}} \left\{ \boldsymbol t(\boldsymbol x)\dfrac{\exp\left(\sum\limits_{i = 1}^\nv \sum\limits_{j=1}^\nh \theta_{ij} v_i h_j + \sum\limits_{i = 1}^\nv\theta_{v_i} v_i + \sum\limits_{j = 1}^\nh\theta_{h_j} h_j\right)}{\sum\limits_{\boldsymbol x \in \mathcal{C}^{\nh + \nv}}\exp\left(\sum\limits_{i = 1}^\nv \sum\limits_{j=1}^\nh \theta_{ij} v_i h_j + \sum\limits_{i = 1}^\nv\theta_{v_i} v_i + \sum\limits_{j = 1}^\nh\theta_{h_j} h_j\right)}\right\}.
-$$
+\begin{align*}
+\boldsymbol \mu(\boldsymbol \theta) = \text{E}_{\boldsymbol \theta} \boldsymbol t(\boldsymbol X)  &= \sum\limits_{x \in \mathcal{C}^{\nv + \nh}} \left\{ \boldsymbol t(\boldsymbol x) f_{\boldsymbol \theta} (\boldsymbol x) \right\} \\
+&= \sum\limits_{x \in \mathcal{C}^{\nv + \nh}} \left\{ \boldsymbol t(\boldsymbol x)\dfrac{\exp\left(\sum\limits_{i = 1}^\nv \sum\limits_{j=1}^\nh \theta_{ij} v_i h_j + \sum\limits_{i = 1}^\nv\theta_{v_i} v_i + \sum\limits_{j = 1}^\nh\theta_{h_j} h_j\right)}{\sum\limits_{\boldsymbol x \in \mathcal{C}^{\nh + \nv}}\exp\left(\sum\limits_{i = 1}^\nv \sum\limits_{j=1}^\nh \theta_{ij} v_i h_j + \sum\limits_{i = 1}^\nv\theta_{v_i} v_i + \sum\limits_{j = 1}^\nh\theta_{h_j} h_j\right)}\right\}.
+\end{align*}
 
 ### Instability
 
@@ -118,7 +127,7 @@ This definition of *S-unstable* is a generalization or re-interpretation of the 
 
 S-unstable RBM model sequences are undesirable for several reasons. One is that, as mentioned above, small changes in data can lead to overly-sensitive changes in probability. Consider, for example, 
 $$
-\Delta(\boldsymbol \theta_\nv) \equiv \max \left\{\log \frac{P_{\boldsymbol \theta_\nv}(v_1, \dots, v_\nv)}{P_{\boldsymbol \theta_\nv}(v_1^*, \dots, v_\nv^*)} : (v_1, \dots, v_\nv) \& (v_1^*, \dots, v_\nv^*) \in \mathcal{C}^\nv \text{ differ in exactly one component}\right\},
+\Delta(\boldsymbol \theta_\nv) \equiv \max \left\{\log \frac{P_{\boldsymbol \theta_\nv}(\boldsymbol v)}{P_{\boldsymbol \theta_\nv}(\boldsymbol v^*)} : \boldsymbol v \text{ }\& \text{ } \boldsymbol v^* \in \mathcal{C}^\nv \text{ differ in exactly one component}\right\},
 $$
 denoting the biggest log-probability ratio for a one component change in data outcomes (visibles) at a RBM parameter $\boldsymbol \theta_\nv$. We then have the following result.
 
@@ -211,15 +220,14 @@ m1_neg <- calc_hull(1, 1, type = "negative")
 \end{figure}
 
 We can compute the mean vector for $\boldsymbol t(\boldsymbol x)$ as a function of the model parameters as 
-\begin{align}
-\boldsymbol \mu(\boldsymbol \theta) &= \text{E}_{\boldsymbol \theta}\left[ \boldsymbol t(\boldsymbol X) \right] =  \sum\limits_{\boldsymbol x = (v_1, h_1) \in \mathcal{X} = \{0,1\}^2} \left\{ t(x) \frac{\exp\left( \theta_{11} h_1 v_1 + \theta_{h1} h_1 + \theta_{v1} v_1\right)}{\gamma(\boldsymbol \theta)} \right\}
-= \left[
+\begin{align*}
+\boldsymbol \mu(\boldsymbol \theta) = \text{E}_{\boldsymbol \theta}\left[ \boldsymbol t(\boldsymbol X) \right] =  \sum\limits_{\boldsymbol x = (v_1, h_1) \in \{0,1\}^2} \left\{ t(x) \frac{\exp\left( \theta_{11} h_1 v_1 + \theta_{h1} h_1 + \theta_{v1} v_1\right)}{\gamma(\boldsymbol \theta)} \right\} = \left[
 \begin{matrix}
 \frac{\exp\left(\theta_{v_1}\right) + \exp\left(\theta_{11} + \theta_{v_1} + \theta_{h_1}\right)}{\gamma(\boldsymbol \theta)} \\
 \frac{\exp\left(\theta_{h_1}\right) + \exp\left(\theta_{11} + \theta_{v_1} + \theta_{h_1}\right)}{\gamma(\boldsymbol \theta)} \\
 \frac{\exp\left(\theta_{11} + \theta_{v_1} + \theta_{h_1}\right)}{\gamma(\boldsymbol \theta)} \\
 \end{matrix} \right]
-\end{align}
+\end{align*}
 where $\gamma(\boldsymbol \theta) = \sum\limits_{h_1 = 0}^1\sum\limits_{v_1 = 0}^1 \exp(\theta_{11} h_1 v_1 + \theta_{h_1}h_1 + \theta_{v_1}v_1)$. The three parametric coordinate functions of $\boldsymbol \mu(\boldsymbol \theta)$ can be represented as in Figure \ref{fig:degen_toy}. (Contour plots for three coordinate functions are shown in columns for various values of $\theta_{11}$.) In examining these, we see that as coordinates of $\boldsymbol \theta$ grow larger in magnitude, at least one mean function for the entries of $\boldsymbol t(\boldsymbol x)$ approaches a value 0 or 1, forcing $\boldsymbol \mu(\boldsymbol \theta) = \text{E}_{\boldsymbol \theta} \boldsymbol t(\boldsymbol x)$ to be near to the boundary of the convex hull of $\mathcal{T}$, as a sign of model near-degeneracy. Thus, for a very small example we can see the relationship between values of $\boldsymbol \theta$ and model degeneracy.
 
 ```{r near_dependency, fig.cap="\\label{fig:degen_toy}Contour plots for the three parametric mean functions of sufficient statistics for a RBM with one visible and one hidden node.", fig.height = 4, fig.align='center', message=FALSE, cache=TRUE}
@@ -850,6 +858,7 @@ marginal_acfs %>% ungroup() %>% select(-image_id) %>% rename(marginal = acf) %>%
   ggplot() +
   geom_segment(aes(x=lag, xend=lag, y=0, yend=truncated), colour = "black") +
   geom_segment(aes(x=lag, xend=lag, y=0, yend=marginal), colour = "red") +
+  geom_point(aes(x=lag, y=marginal), colour = "red", size = 0.5) +
   facet_wrap(~image_id) +
   xlab("Lag") +
   ylab("ACF")

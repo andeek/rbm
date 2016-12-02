@@ -1,11 +1,15 @@
 ---
 title: "A note on the instability and degeneracy of deep learning models"
-author: | 
-  | Andee Kaplan, Daniel Nordman, and Stephen Vardeman
-  | Iowa State University
-  | ajkaplan@iastate.edu, dnordman@iastate.edu, vardeman@iastate.edu
-date: "December, 2016"
-linestretch: 2
+author: 
+  - name: Andee Kaplan
+    affiliation: Iowa State University
+    department: Department of Statistics
+  - name: Daniel Nordman
+    affiliation: Iowa State University
+    department: Department of Statistics
+  - name: Stephen Vardeman
+    affiliation: Iowa State University
+    department: Department of Statistics
 output: 
   pdf_document:
     keep_tex: true
@@ -13,9 +17,13 @@ output:
     includes:
       in_header: latex/header.tex
     number_sections: yes
+    template: latex/technometrics_article.tex
+fontsize: 12pt
 bibliography: references/refs.bib
 abstract: |
   A probability model exhibits instability if small changes in a data outcome result in large, and often unanticipated, changes in probability. For correlated data structures found in several application areas, there is increasing interest in predicting/identifying instability. We consider the problem of quantifying instability for general probability models defined on sequences of observations, where each sequence of length $N$ has a finite number of possible outcomes. (A sequence of probability models results indexed by $N$ that accommodates data of expanding dimension.) Model instability is formally shown to occur when a certain log-probability ratio under such models grows faster than $N$. In this case, a one component change in the data sequence can shift probability by orders of magnitude. Also, as a measure of instability becomes more extreme, the resulting probability models are shown  to tend to degeneracy, placing all their probability on arbitrarily small portions of the sample space. These results on instability apply to large classes of models commonly used in random graphs, network analysis, and machine learning contexts.
+keywords: Degeneracy, Instability, Deep Learning, Graphical Models
+blind: false
 ---
 
 # Introduction
@@ -72,9 +80,9 @@ P_{\boldsymbol \theta_N} (\tilde{\boldsymbol x}) = \exp\left[ \sum\limits_{i = 1
 $$
 for $\tilde{\boldsymbol x} = (\boldsymbol h^{(1)}, \dots, \boldsymbol h^{(M)}, \boldsymbol x) \in \mathcal{X}^{N_{(H,1)} + \cdots + N_{(H,M)} +N}$ where
 $$
-\psi(\boldsymbol \theta_N) = \log \sum\limits_{\tilde{\boldsymbol x} \in \mathcal{X}^{N_{(H,1)} + \cdots + N_{(H,M)} +N}} \exp\left[ \sum\limits_{i = 1}^M\boldsymbol \alpha^{(i)T} \boldsymbol h^{(i)} + \boldsymbol \beta^T \boldsymbol x + \boldsymbol h^{(1)T} \Gamma^{(0)} \boldsymbol x + \sum\limits_{i = 1}^{M - 1} \boldsymbol h^{(i)T} \Gamma^{(i)} \boldsymbol h^{(i + 1)}\right], \qquad \boldsymbol \theta_N \in \Theta_N
+\psi(\boldsymbol \theta_N) = \log \sum\limits_{\tilde{\boldsymbol x} \in \mathcal{X}^{N_{(H,1)} + \cdots + N_{(H,M)} +N}} \exp\left[ \sum\limits_{i = 1}^M\boldsymbol \alpha^{(i)T} \boldsymbol h^{(i)} + \boldsymbol \beta^T \boldsymbol x + \boldsymbol h^{(1)T} \Gamma^{(0)} \boldsymbol x + \sum\limits_{i = 1}^{M - 1} \boldsymbol h^{(i)T} \Gamma^{(i)} \boldsymbol h^{(i + 1)}\right],
 $$ 
-is the normalizing function and parameters in the model are $\boldsymbol \beta \in \mathbb{R}^V$, $\boldsymbol \alpha^{(i)} \in \mathbb{R}^{N_{(H,i)}}$ for $i = 1, \dots, M$, along with a matrix $\Gamma^{(0)}$ of dimension $N_{(H,1)} \times N$, and matrices $\Gamma^{(i)}$ of dimension $N_{(H,i)} \times N_{(H,i+1)}$ for $i = 1, \dots, M-1$. Let $\boldsymbol \theta_N = (\boldsymbol \alpha^{(1)}, \dots, \boldsymbol \alpha^{(M)}, \boldsymbol \beta,\Gamma^{(0)}, \dots, \Gamma^{(M - 1)}) \in \Theta_N \subset \mathbb{R}^{q(N)}$ denote the combined vector of parameters with total length $q(N)= N_{(H,1)}+\cdots N_{(H,M)} + N + N_{(H,1)}*N+N_{H,2}*H_{(H,1)}+\cdots +N_{(H,M)}*H_{(H,M)-1}$.
+for $\boldsymbol \theta_N \in \Theta_N$ is the normalizing function and parameters in the model are $\boldsymbol \beta \in \mathbb{R}^V$, $\boldsymbol \alpha^{(i)} \in \mathbb{R}^{N_{(H,i)}}$ for $i = 1, \dots, M$, along with a matrix $\Gamma^{(0)}$ of dimension $N_{(H,1)} \times N$, and matrices $\Gamma^{(i)}$ of dimension $N_{(H,i)} \times N_{(H,i+1)}$ for $i = 1, \dots, M-1$. Let $\boldsymbol \theta_N = (\boldsymbol \alpha^{(1)}, \dots, \boldsymbol \alpha^{(M)}, \boldsymbol \beta,\Gamma^{(0)}, \dots, \Gamma^{(M - 1)}) \in \Theta_N \subset \mathbb{R}^{q(N)}$ denote the combined vector of parameters with total length $q(N)= N_{(H,1)}+\cdots N_{(H,M)} + N + N_{(H,1)}*N+N_{H,2}*H_{(H,1)}+\cdots +N_{(H,M)}*H_{(H,M)-1}$.
 
 The probability mass function for the visible random variables $X_1, \dots, X_N$ follows from this joint specification as
 $$
@@ -108,7 +116,7 @@ This definition of *S-unstable* is a generalization or reinterpretation of "unst
 
 S-unstable FSFS model sequences are undesirable for several reasons. One is that small changes in data can lead to overly-sensitive changes in probability. Consider, for example, 
 $$
-\Delta(\boldsymbol \theta_N) \equiv \max \left\{\log \frac{P_{\boldsymbol \theta_N}(x_1, \dots, x_N)}{P_{\boldsymbol \theta_N}(x_1^*, \dots, x_N^*)} : (x_1, \dots, x_N) \& (x_1^*, \dots, x_N^*) \in \mathcal{X}^N \text{ differ in exactly one component}\right\},
+\Delta(\boldsymbol \theta_N) \equiv \max \left\{\log \frac{P_{\boldsymbol \theta_N}(\boldsymbol x)}{P_{\boldsymbol \theta_N}(\boldsymbol x^*)} : \boldsymbol x \text{ }\& \text{ } \boldsymbol x^* \in \mathcal{X}^N \text{ differ in exactly one component}\right\},
 $$
 the biggest log-probability ratio for a one component change in data outcomes at a FSFS parameter $\boldsymbol \theta_N$. We then have the following (non-asymptotic) result.
 
@@ -140,9 +148,10 @@ In other words, in S-unstable FSFS models, all probability in the model formulat
 
 \begin{remark}
 There is a further generalization the notion of instability in Definition \ref{defn:instab} meant to address independent replications of data sequences. That is, one might consider data as $n$ independent and identically distributed replications $\boldsymbol X_1, \dots, \boldsymbol X_n$, where each $\boldsymbol X_i=(X_{i,1},\ldots,X_{i,N}) \in \mathcal{X}^N$ follows a common FSFS model with probabilities $P_{\theta_N}(\boldsymbol x)>0$,  $\boldsymbol x\in\mathcal{X}^N$ and $|\mathcal{X}|<\infty$, for $i=1,\ldots,n$.  This leads to a total of $n*N$ random variables in the joint model. However, the definition of S-unstable and Propositions \ref{prop:instab}-\ref{prop:degen} still hold for such iid replications. This is because $\left(\max\limits_{\boldsymbol x \in \mathcal{X}^N}P_{\boldsymbol \theta_N}(\boldsymbol x)\right)^n$ is the largest probability possible under the joint model for the $n$ replications while $\left(\min\limits_{\boldsymbol x \in \mathcal{X}}P_{\boldsymbol \theta_N}(\boldsymbol x)\right)^n$ is the smallest probability. Thus, for the combined replications $\boldsymbol X_1, \ldots, \boldsymbol X_n$, the analog definition of the extremal log-probability becomes
-$$
-\frac{\text{extremal log-probability ratio}}{\text{\# random variables in the model}} \equiv \frac{1}{n*N}\log \left[\frac{\left(\max\limits_{\boldsymbol x \in \mathcal{X}^N}P_{\boldsymbol \theta_N}(\boldsymbol x)\right)^n}{\left(\min\limits_{\boldsymbol x \in \mathcal{X}^N}P_{\boldsymbol \theta_N}(\boldsymbol x)\right)^n}\right] = \frac{1}{N} \log \left[\frac{\max\limits_{\boldsymbol x \in \mathcal{X}^N}P_{\boldsymbol \theta_N}(\boldsymbol x)}{\min\limits_{\boldsymbol x \in \mathcal{X}^N}P_{\boldsymbol \theta_N}(\boldsymbol x)}\right] = \frac{1}{N} \text{ELPR}(\boldsymbol \theta_N),
-$$
+\begin{align*}
+\frac{\text{extremal log-probability ratio}}{\text{\# random variables in the model}} &\equiv \frac{1}{n*N}\log \left[\frac{\left(\max\limits_{\boldsymbol x \in \mathcal{X}^N}P_{\boldsymbol \theta_N}(\boldsymbol x)\right)^n}{\left(\min\limits_{\boldsymbol x \in \mathcal{X}^N}P_{\boldsymbol \theta_N}(\boldsymbol x)\right)^n}\right] = \frac{1}{N} \log \left[\frac{\max\limits_{\boldsymbol x \in \mathcal{X}^N}P_{\boldsymbol \theta_N}(\boldsymbol x)}{\min\limits_{\boldsymbol x \in \mathcal{X}^N}P_{\boldsymbol \theta_N}(\boldsymbol x)}\right] \\
+&= \frac{1}{N} \text{ELPR}(\boldsymbol \theta_N),
+\end{align*}
 implying that the definition of an S-unstable FSFS model sequence is invariant to the level ($n$) of independent replication. Consequently, overall model instabilities may be characterized by those of one observation from the common FSFS model.   
 \end{remark}
 
