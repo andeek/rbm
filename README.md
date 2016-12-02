@@ -3,8 +3,9 @@
 #### Quick Links:
 
 * Shiny [Applets](https://andeek.shinyapps.io/rbms/) illustrating the degeneracy and instability results for small restricted Boltzmann machine models.
-* The [degeneracy](https://github.com/andeek/rbm/tree/master/degeneracy) folder contains code for creating the small model explorations in Section 4 of the RBM paper.
-* The [4x4 model](https://github.com/andeek/rbm/tree/master/4x4%20model) folder contains code for fitting the 4 visible, 4 hidden model in Section 5 of the RBM paper.
+* The [code](https://github.com/andeek/rbm/tree/master/code) folder contains all the code used to create and analyze simulations. There are two parts to the code folder:
+    * The [degeneracy](https://github.com/andeek/rbm/tree/master/degeneracy) folder contains code for creating the small model explorations in Section 4 of the RBM paper.
+    * The [4x4 model](https://github.com/andeek/rbm/tree/master/4x4%20model) folder contains code for fitting the 4 visible, 4 hidden model in Section 5 of the RBM paper.
 * The [presentations](https://github.com/andeek/rbm/tree/master/presentations) folder contains slide decks and posters that have been presented on this material.
 * The [writing](https://github.com/andeek/rbm/tree/master/writing) folder contains fully reproducible versions of both papers.
 
