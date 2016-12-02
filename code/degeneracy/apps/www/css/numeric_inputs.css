@@ -1,0 +1,3 @@
+input.shiny-bound-input[type="number"] {
+  max-width: 30px;
+}

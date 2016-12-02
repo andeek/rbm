@@ -1,0 +1,56 @@
+---
+title: "Exploring the restricted Boltzmann machine (RBM)"
+output: 
+  html_document: 
+    theme: readable
+---
+A selection of `Shiny` applications to accompany the paper "An exposition on the propriety of restricted Boltzmann machines" by <a href="http://andeekaplan.com">Andee Kaplan</a>, <a href="http://dnordman.public.iastate.edu/">Daniel Nordman</a>, and <a href="http://www.public.iastate.edu/~vardeman/">Stephen Vardeman</a>, all in the Department of Statistics at Iowa State University. All code is available on <a href="http://github.com/andeek/deep-learning">GitHub</a>.
+
+
+<div class="row">
+<div class="col-md-3">
+<a href="mu_parameterization.Rmd">
+<img src="images/icon_mu.png" class="img-responsive thumbnail">
+</a>
+</div>
+<div class="col-md-9">
+<h4>$\mu$-parameterization</h4>
+<p>Explore the behavior of the $\mu$-parametrized parameters for various dimensional RBMs.</p>
+</div>
+</div>
+
+<div class="row">
+<div class="col-md-3">
+<a href="mu_parameterization_3d.Rmd">
+<img src="images/icon_mu_3d.png" class="img-responsive thumbnail">
+</a>
+</div>
+<div class="col-md-9">
+<h4>$\mu$-parameterization in 3 dimensions</h4>
+<p>For one hidden and one visible node, sample points uniformly on a 3 dimensional sphere of radius `r` centered at `(0,0,0)` and view the resulting expected values in 3 dimensions.</p>
+</div>
+</div>
+
+<div class="row">
+<div class="col-md-3">
+<a href="degen_magnitude.Rmd">
+<img src="images/icon_perc_degen.png" class="img-responsive thumbnail">
+</a>
+</div>
+<div class="col-md-9">
+<h4>Degeneracy and parameter magnitude</h4>
+<p>What is the relationship between parameter magnitude and near-degeneracy?</p>
+</div>
+</div>
+
+<div class="row">
+<div class="col-md-3">
+<a href="degen_instab_uninterp.Rmd">
+<img src="images/icon_degeneracy.png" class="img-responsive thumbnail">
+</a>
+</div>
+<div class="col-md-9">
+<h4>Degeneracy, instability, and uninterpretability... Oh my!</h4>
+<p>The highly flexible nature of the RBM ($H + V + HV$ parameters) makes three characteristics of model impropriety of particular concern.</p>
+</div>
+</div>

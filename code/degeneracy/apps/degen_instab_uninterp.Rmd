@@ -1,0 +1,152 @@
+---
+output:
+  html_document:
+    theme: readable
+resource_files:
+- index.html
+runtime: shiny
+---
+
+#Degeneracy, instability, and uninterpretability... Oh my!
+
+```{r libraries, message=FALSE, warning=FALSE, echo=FALSE}
+library(knitr)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(shiny)
+library(gridExtra)
+
+opts_chunk$set(echo=FALSE, message=FALSE, warnings=FALSE)
+theme_set(theme_bw(base_family="serif"))
+
+source("functions.R")
+```
+
+```{r}
+load("grid_measures.RData")
+
+top_plots <- list(p1 = three_ways %>%
+    ggplot() +
+    geom_tile(aes(x = r1, y = r2, fill = frac_degen)) +
+    geom_contour(aes(x = r1, y = r2, z = frac_degen), colour = "black", bins = 8) +
+    geom_contour(aes(x = r1, y = r2, z = frac_degen), colour = "black", breaks = .05, size = 1.5) +
+    #geom_abline(aes(intercept = 0, slope = 1), alpha = .5, lty = 2) +
+    scale_fill_gradient("Fraction near-degenerate", low = "yellow", high = "red") +
+    facet_grid(Visibles~Hiddens) +
+    xlab(expression(group("||", theta[main], "||"))) +
+    ylab(expression(group("||", theta[interaction], "||"))) +
+    theme(aspect.ratio = 1) +
+    theme(legend.position = "bottom") +
+    ggtitle("Near-degeneracy"),
+    p2 =  three_ways %>%
+    ggplot() +
+    geom_tile(aes(x = r1, y = r2, fill = mean_abs_diff)) +
+    geom_contour(aes(x = r1, y = r2, z = mean_abs_diff), colour = "black", bins = 8) +
+    #geom_contour(aes(x = r1, y = r2, z = mean_abs_diff), colour = "black", breaks = .05, size = 1.5) +
+    #geom_abline(aes(intercept = 0, slope = 1), alpha = .5, lty = 2) +
+    scale_fill_gradient(expression(group("|", E(group("", bold(X), "|")*bold(theta)) - E(group("", bold(X), "|")*plain(independence)), "|")), low = "yellow", high = "red") +
+    facet_grid(Visibles~Hiddens) +
+    xlab(expression(group("||", theta[main], "||"))) +
+    ylab(expression(group("||", theta[interaction], "||"))) +
+    theme(aspect.ratio = 1) +
+    theme(legend.position = "bottom") +
+    ggtitle("Uninterpretability"),
+    p3 = three_ways %>%
+    ggplot() +
+    geom_tile(aes(x = r1, y = r2, fill = mean_max_q)) +
+    geom_contour(aes(x = r1, y = r2, z = mean_max_q), colour = "black", bins = 8) +
+    #geom_contour(aes(x = r1, y = r2, z = mean_max_q), colour = "black", breaks = .05, size = 1.5) +
+    #geom_abline(aes(intercept = 0, slope = 1), alpha = .5, lty = 2) +
+    scale_fill_gradient(expression(frac(max(Q), H + V)), low = "yellow", high = "red") +
+    facet_grid(Visibles~Hiddens) +
+    xlab(expression(group("||", theta[main], "||"))) +
+    ylab(expression(group("||", theta[interaction], "||"))) +
+    theme(aspect.ratio = 1) +
+    theme(legend.position = "bottom") +
+    ggtitle("Instability")
+)
+
+inputPanel(
+  selectizeInput("variable", "Select radius to fix:", 
+                 choices = list("Main effects" = "r1", "Interaction effects" = "r2"), 
+                 multiple = FALSE,
+                 selected = "r1"),
+  numericInput("slice", "Fix radius at:",
+               min = min(three_ways$r1), 
+               max = max(three_ways$r1), 
+               value = min(three_ways$r1), step = .1)
+)
+
+renderPlot({
+
+  if(input$variable == "r1") {
+    p1 <- top_plots$p1 + geom_vline(aes(xintercept = input$slice))
+    p2 <- top_plots$p2 + geom_vline(aes(xintercept = input$slice))
+    p3 <- top_plots$p3 + geom_vline(aes(xintercept = input$slice))
+  } else {
+    p1 <- top_plots$p1 + geom_hline(aes(yintercept = input$slice))
+    p2 <- top_plots$p2 + geom_hline(aes(yintercept = input$slice))
+    p3 <- top_plots$p3 + geom_hline(aes(yintercept = input$slice))
+  }
+  
+  grid.arrange(p1, p3, p2, nrow = 1)
+})
+
+filter_dat <- reactive({
+    slice <- unique(three_ways[which.min(abs(three_ways[, input$variable] %>% data.matrix() - input$slice)), input$variable])[1] %>% 
+    as.numeric()
+    
+    three_ways[three_ways[,input$variable] == slice, ]
+})
+
+renderPlot({
+  axes <- c("r1", "r2")
+  variable <- axes[axes != input$variable]
+  label <- ifelse(variable == "r1", 
+                  expression(group("||", theta[main], "||")), 
+                  expression(group("||", theta[interaction], "||")))
+  
+  dat <- filter_dat()
+  
+   dat %>%
+    ggplot() +
+    geom_line(aes_string(variable, "frac_degen")) +
+    facet_grid(Visibles~Hiddens) +
+    xlab(label) +
+    ylab("Fraction Near-degenerate") +
+    theme(aspect.ratio = 1) +
+    ggtitle("Near-degeneracy") -> p1
+  
+  dat %>%
+    ggplot() +
+    geom_line(aes_string(variable, "mean_abs_diff")) +
+    facet_grid(Visibles~Hiddens) +
+    xlab(label) +
+    ylab(expression(group("|", E(group("", bold(X), "|")*bold(theta)) - E(group("", bold(X), "|")*plain(independence)), "|"))) +
+    theme(aspect.ratio = 1) +
+    ggtitle("Uninterpretability") -> p2
+  
+  dat %>%
+    ggplot() +
+    geom_line(aes_string(variable, "mean_max_q")) +
+    facet_grid(Visibles~Hiddens) +
+    xlab(label) +
+    ylab(expression(frac(max(Q), H + V))) +
+    theme(aspect.ratio = 1) +
+    ggtitle("Instability") -> p3
+  
+  grid.arrange(p1, p3, p2, nrow = 1)
+})
+
+```
+
+The highly flexible nature of the RBM ($H + V + HV$ parameters) makes the following characteristics of model impropriety of particular concern. 
+
+ - **Near-degeneracy.** Occurs when there is a disproportionate amount of probability placed on only a few elements of the sample space by the model. If random variables in the neg-potential function $Q(\cdot)$, having support set $\mathcal{S}$, have a collective mean $\mu(\boldsymbol \theta)$ close to the boundary of the convex hull of $\mathcal{S}$.
+ - **Instability.** Small changes in natural parameters result in large changes in probability masses, excessive sensitivity. If for any $C > 0$ there exists $N_C > 0$ such that 
+$\max\limits_{\boldsymbol x_N \in \mathcal{X}_N}[Q(\boldsymbol x_N)] > CN$ for all $N > N_C$, where $Q(\cdot)$ is the neg-potential function of the model.
+ - **Uninterpretability.** Due to the existence of dependence, marginal mean-structure no longer maintained. If the magnitude of the difference between model expectations and expectations under independence (dependence parameters of zero), $\left|\text{E}(\boldsymbol X | \boldsymbol \theta) - \text{E}(\boldsymbol X | \emptyset ) \right|$, is large.
+ 
+ 
+ 

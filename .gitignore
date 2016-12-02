@@ -40,11 +40,10 @@ degeneracy/apps/rsconnect/
 
 
 #too much rdata
-4x4 model/written/*.Rdata
-degeneracy/written/
+code/4x4 model/written/*.Rdata
+code/degeneracy/written/
 presentations/jsm2016/index_cache/
 
-writing/degeneracy/draft_cache
 
 #presentation
 !presentations/coda2016/*.pdf
@@ -52,7 +51,7 @@ writing/degeneracy/draft_cache
 !presentations/coda2016/*.tex
 
 #big files
-degeneracy/apps/results_grid*
+code/degeneracy/apps/results_grid*
 
 #cache
 writing/draft_cache/*
