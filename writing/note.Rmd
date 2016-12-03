@@ -2,17 +2,19 @@
 title: "A note on the instability and degeneracy of deep learning models"
 author: 
   - name: Andee Kaplan
-    affiliation: Iowa State University
+    university: Iowa State University
     department: Department of Statistics
   - name: Daniel Nordman
-    affiliation: Iowa State University
+    university: Iowa State University
     department: Department of Statistics
   - name: Stephen Vardeman
-    affiliation: Iowa State University
-    department: Department of Statistics
+    university: Iowa State University
+    department: |
+      | Department of Statistics and Industrial Manufacturing 
+      | Systems Engineering Department
 output: 
   pdf_document:
-    keep_tex: true
+    keep_tex: false
     fig_caption: yes
     includes:
       in_header: latex/header.tex

@@ -9,7 +9,9 @@ author:
     department: Department of Statistics
   - name: Stephen Vardeman
     university: Iowa State University
-    department: Department of Statistics
+    department: |
+      | Department of Statistics and Industrial Manufacturing 
+      | Systems Engineering Department
 output: 
   pdf_document:
     fig_caption: yes
