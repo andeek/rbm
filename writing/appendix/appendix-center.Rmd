@@ -1,17 +1,26 @@
 ---
 title: "Supplementary material to:  On the propriety of restricted Boltzmann machines"
-author: | 
-  | Andee Kaplan, Daniel Nordman, and Stephen Vardeman
-  | Iowa State University
-  | ajkaplan@iastate.edu, dnordman@iastate.edu, vardeman@iastate.edu
-date: "November, 2016"
-linestretch: 2 
+author: 
+  - name: Andee Kaplan
+    university: Iowa State University
+    department: Department of Statistics
+  - name: Daniel Nordman
+    university: Iowa State University
+    department: Department of Statistics
+  - name: Stephen Vardeman
+    university: Iowa State University
+    department: |
+      | Department of Statistics and Industrial Manufacturing 
+      | Systems Engineering Department
 output: 
   pdf_document:
     fig_caption: yes
     includes:
       in_header: ../latex/header.tex
     number_sections: yes
+    template: ../latex/technometrics_article.tex
+fontsize: 12pt
+blind: true
 ---    
 
 Supplement material to follow consists of Section \ref{on-the-one-to-one-correspondence-between-parameters-and-moments-in-the-rbm-distribution}, providing proofs and discussion of results relating to the data coding in restricted Boltzmann machine models (RBMs).
