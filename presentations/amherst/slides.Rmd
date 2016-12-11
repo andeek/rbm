@@ -11,7 +11,7 @@ date: |
   | December 20, 2016
   | 
   |
-  | Slides available at <http://bitly.com/kaplan-amherst>
+  | Slides available at <http://bit.ly/kaplan-umass>
 shortdate: "December 20, 2016"
 output: 
   beamer_presentation:
@@ -704,7 +704,7 @@ We are skeptical that any model built using these structures (like a deep Boltzm
 
 # Thank you
 
-* Slides -- <http://bitly.com/kaplan-amherst>
+* Slides -- <http://bit.ly/kaplan-umass>
 
 * Contact
     * Email -- <ajkaplan@iastate.edu>
