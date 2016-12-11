@@ -20,7 +20,7 @@ output:
     number_sections: yes
     template: ../latex/technometrics_article.tex
 fontsize: 12pt
-blind: true
+blind: false
 ---    
 
 Supplement material to follow consists of Section \ref{on-the-one-to-one-correspondence-between-parameters-and-moments-in-the-rbm-distribution}, providing proofs and discussion of results relating to the data coding in restricted Boltzmann machine models (RBMs).

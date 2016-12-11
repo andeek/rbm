@@ -6,3 +6,10 @@ writing/data/fitted_models_trunc_thin.Rdata filter=lfs diff=lfs merge=lfs -text
 writing/data/params_theta.Rdata filter=lfs diff=lfs merge=lfs -text
 writing/data/sample_images.Rdata filter=lfs diff=lfs merge=lfs -text
 writing/data/results_grid.RData filter=lfs diff=lfs merge=lfs -text
+presentations/amherst/data filter=lfs diff=lfs merge=lfs -text
+presentations/amherst/data/fitted_models_jing_5.8.Rdata filter=lfs diff=lfs merge=lfs -text
+presentations/amherst/data/fitted_models_trunc_full.Rdata filter=lfs diff=lfs merge=lfs -text
+presentations/amherst/data/fitted_models_trunc_marginal_full.Rdata filter=lfs diff=lfs merge=lfs -text
+presentations/amherst/data/params_theta.Rdata filter=lfs diff=lfs merge=lfs -text
+presentations/amherst/data/sample_images.Rdata filter=lfs diff=lfs merge=lfs -text
+presentations/amherst/data/results_grid.RData filter=lfs diff=lfs merge=lfs -text

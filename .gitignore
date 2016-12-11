@@ -27,6 +27,9 @@ degeneracy/apps/rsconnect/
 *.aux
 *.bcf
 *.dvi
+*.snm
+*.nav
+
 # stupid files
 *.m~
 *.txt~
@@ -42,12 +45,16 @@ degeneracy/apps/rsconnect/
 code/4x4 model/written/*.Rdata
 code/degeneracy/written/
 presentations/jsm2016/index_cache/
-
+presentations/amherst/slides_cache/
 
 #presentation
-!presentations/coda2016/*.pdf
-!presentations/coda2016/images/*
-!presentations/coda2016/*.tex
+!presentations/jsm2016/*.pdf
+!presentations/jsm2016/images/
+!presentations/jsm2016/*.tex
+!presentations/amherst/*.pdf
+!presentations/amherst/images/
+!presentations/amherst/*.tex
+
 
 #big files
 code/degeneracy/apps/results_grid*
