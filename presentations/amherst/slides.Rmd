@@ -110,14 +110,7 @@ There is a disproportionate amount of probability placed on only a few elements 
 RBM models exhibit *near-degeneracy* when random variables in the neg-potential function 
 $$Q_{\boldsymbol \theta}(\boldsymbol x) = \sum\limits_{i = 1}^{\nv} \sum\limits_{j=1}^{\nh} \theta_{ij} v_i h_j + \sum\limits_{i = 1}^\nv\theta_{v_i} v_i + \sum\limits_{j = 1}^\nh\theta_{h_j} h_j,
 $$ 
-have a mean vector $\boldsymbol \mu(\boldsymbol \theta)$ close to the boundary of the convex hull of $\mathcal{T} = \{\boldsymbol t(x): x \in \mathcal{C}^{\nh + \nv}\}$ [@handcock2003assessing], where $\boldsymbol t(\boldsymbol x) = \{v_1, \dots, v_{\nv}, h_1, \dots, h_{\nh}, v_1 h_1, \dots, v_{\nv} h_{\nh} \}$ and the mean parameterization on the model parameters, $\boldsymbol \mu(\boldsymbol \theta)$ is
-
----
-
-\begin{align*}
-\boldsymbol \mu(\boldsymbol \theta) &= \text{E}_{\boldsymbol \theta} \boldsymbol t(\boldsymbol X)  \\
-&= \sum\limits_{\boldsymbol x \in \mathcal{C}^{\nh + \nv}} \left\{ \boldsymbol t(\boldsymbol x)\dfrac{\exp\left(\sum\limits_{i = 1}^{\nv} \sum\limits_{j=1}^{\nh} \theta_{ij} v_i h_j + \sum\limits_{i = 1}^{\nv}\theta_{v_i} v_i + \sum\limits_{j = 1}^{\nh}\theta_{h_j} h_j\right)}{\sum\limits_{\boldsymbol x \in \mathcal{C}^{\nh + \nv}}\exp\left(\sum\limits_{i = 1}^{\nv} \sum\limits_{j=1}^{\nh} \theta_{ij} v_i h_j + \sum\limits_{i = 1}^{\nv}\theta_{v_i} v_i + \sum\limits_{j = 1}^{\nh}\theta_{h_j} h_j\right)}\right\}. \\
-\end{align*}
+have a mean vector $\boldsymbol \mu(\boldsymbol \theta)$ close to the boundary of the convex hull of $\mathcal{T} = \{\boldsymbol t(x): x \in \mathcal{C}^{\nh + \nv}\}$ [@handcock2003assessing], where $\boldsymbol t(\boldsymbol x) = \{v_1, \dots, v_{\nv}, h_1, \dots, h_{\nh}, v_1 h_1, \dots, v_{\nv} h_{\nh} \}$ and the mean parameterization on the model parameters, $\boldsymbol \mu(\boldsymbol \theta) = \text{E}_{\boldsymbol \theta} \boldsymbol t(\boldsymbol X)$. 
 
 # Instability
 
