@@ -3,8 +3,16 @@ title: "Model matters with restricted Boltzmann machines"
 shorttitle: "Model matters with RBMs"
 author: Andee Kaplan, Daniel Nordman, and Stephen Vardeman
 shortname: Kaplan, et al.
-institute: ajkaplan@iastate.edu
-date: "December 20, 2016"
+institute: |
+    | Iowa State University
+    | ajkaplan@iastate.edu
+shortinstitute: ajkaplan@iastate.edu
+date: |
+  | December 20, 2016
+  | 
+  |
+  | Slides available at <http://bitly.com/kaplan-amherst>
+shortdate: "December 20, 2016"
 output: 
   beamer_presentation:
     template: latex/beamer.tex
@@ -684,7 +692,7 @@ p.models
 
 # Wrapping up
 
-- While RBMs are thought to be useful for classification, in the context of generative statistical models, RBMs are a poor fit due to *near-degeneracy*, *S-instability*, and w*uninterpretability*.
+- While RBMs are thought to be useful for classification, in the context of generative statistical models, RBMs are a poor fit due to *near-degeneracy*, *S-instability*, and *uninterpretability*.
 - Rigorous fitting methodology is difficult due to the dimension of the parameter space coupled with the size of the latent variable space.
 - For a RBM model with enough hidden variables, any distribution for the visibles can be approximated arbitrarily well [@le2008representational; @montufar2011refinements; and @montufar2011expressive]. 
     - The empirical distribution of a training set of vectors of visibles is the best fitting model for observed cell data. 
@@ -693,6 +701,17 @@ p.models
 We are skeptical that any model built using these structures (like a deep Boltzmann machine) can achieve useful prediction or inference in a principled way without limiting the flexibility of the fitted model.
 
 # Future work
+
+# Thank you
+
+* Slides -- <http://bitly.com/kaplan-amherst>
+
+* Contact
+    * Email -- <ajkaplan@iastate.edu>
+    * Twitter -- <http://twitter.com/andeekaplan>
+    * GitHub -- <http://github.com/andeek>
+
+
 
 
 ---- 
