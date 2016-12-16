@@ -51,7 +51,7 @@
     
     \node[hidden] (6) [right of=1] {$h_1$};
     \node(7)[below of=6, yshift=1.3cm] {$\vdotswide$};
-    \node[hidden] (8) [right of=5] {$h_H$};
+    \node[hidden] (8) [right of=5] {$h_{n_H}$};
     %\draw [decorate, decoration={brace,amplitude=10pt}, xshift=-4pt,yshift=0pt](6,-.3) -- (6,-4.8) node (16) [black, midway, right=20pt] {};
     \draw[decoration={brace, raise=0pt, amplitude=10pt},decorate](6,-.3) -- node[right=0.5pt, midway] (16) {} (6,-4.8) ;
     

@@ -42,7 +42,10 @@ source("helpers/functions.R")
 
 # What is this?
 
-A Restricted Boltzman Machine (RBM) is an undirected probabilistic graphical model (for discrete or continuous random variables) with two layers, one hidden and one visible, with conditional independence within a layer [@smolensky1986information].
+- A restricted Boltzman machine (RBM) is an undirected probabilistic graphical model with
+    1. Discrete or continuous random variables 
+    2. two layers - one hidden and one visible
+    3. conditional independence within a layer [@smolensky1986information]
 
 \begin{figure}
 \includegraphics[width=.6\linewidth]{images/rbm.png}
@@ -51,31 +54,36 @@ A Restricted Boltzman Machine (RBM) is an undirected probabilistic graphical mod
 
 # How is it used?
 
-Typically used for image classification. Each image pixel is a node in the visible layer. The output creates features, which are passed to a supervised learning algorithm.
+- Supervised learning, specifically image classification 
 
 \begin{figure}
-\includegraphics[width=\linewidth]{images/visibles_image.png}
+\includegraphics[width=\linewidth]{images/visibles_image.pdf}
 \caption{Image classification using a RBM. On the left, each image pixel comprises a node in the visible layer, $\mathcal{V}$. On the right, the output of the RBM is used to create features which are then passed to a supervised learning algorithm.}
 \end{figure}
 
 # Joint distribution
-Let $\boldsymbol x = (h_1, \dots, h_{\nh}, v_1,\dots,v_{\nv})$ represent the states of the visible and hidden nodes in an RBM. Each single "binary" random variable, visible or hidden, will take its values in a common coding set $\mathcal{C}$, with two possibilities for the coding set $\mathcal{C}=\{0,1\}$ or $\mathcal{C}=\{-1,1\}$. A parametric form for probabilities corresponding to a potential vector of states of each node
 
-\begin{align} 
-\label{eqn:pmf} 
-f_{\boldsymbol \theta} (\boldsymbol x) = \frac{\exp\left(\sum\limits_{i = 1}^{\nv} \sum\limits_{j=1}^{\nh} \theta_{ij} v_i h_j + \sum\limits_{i = 1}^{\nv}\theta_{v_i} v_i + \sum\limits_{j = 1}^{\nh}\theta_{h_j} h_j\right)}{\gamma(\boldsymbol \theta)} \end{align}
+- $\boldsymbol x = (h_1, \dots, h_{\nh}, v_1,\dots,v_{\nv})$ represents the states of the visible and hidden nodes in a RBM 
+- Each single "binary" random variable, visible or hidden, will take its values in a common coding set $\mathcal{C}$
+    - Two possibilities for the coding set $\mathcal{C}=\{0,1\}$ or $\mathcal{C}=\{-1,1\}$. 
+- A parametric form for probabilities
 
-where 
-
-$$\gamma(\boldsymbol \theta) = \sum\limits_{\boldsymbol x \in \mathcal{C}^{\nh + \nv}}\exp\left(\sum\limits_{i = 1}^{\nv} \sum\limits_{j=1}^{\nh} \theta_{ij} v_i h_j + \sum\limits_{i = 1}^{\nv}\theta_{v_i} v_i + \sum\limits_{j = 1}^{\nh}\theta_{h_j} h_j\right)$$.
+    \begin{align} 
+    \label{eqn:pmf} 
+    f_{\boldsymbol \theta} (\boldsymbol x) = \frac{\exp\left(\sum\limits_{i = 1}^{\nv} \sum\limits_{j=1}^{\nh} \theta_{ij} v_i h_j + \sum\limits_{i = 1}^{\nv}\theta_{v_i} v_i + \sum\limits_{j = 1}^{\nh}\theta_{h_j} h_j\right)}{\gamma(\boldsymbol \theta)} \end{align}
+    
+    where 
+    
+    $$\gamma(\boldsymbol \theta) = \sum\limits_{\boldsymbol x \in \mathcal{C}^{\nh + \nv}}\exp\left(\sum\limits_{i = 1}^{\nv} \sum\limits_{j=1}^{\nh} \theta_{ij} v_i h_j + \sum\limits_{i = 1}^{\nv}\theta_{v_i} v_i + \sum\limits_{j = 1}^{\nh}\theta_{h_j} h_j\right)$$
 
 # Deep learning
 
 \begin{columns}[T] % align columns
 \begin{column}{.48\textwidth}
 \begin{itemize}
-\item By stacking layers of RBMs in a deep architecture, proponents of the models claim the ability to learn "internal representations that become increasingly complex, which is considered to be a promising way of solving object and speech recognition problems" (Salakhutdinov and Hinton 2009, pp. 450).
-\item Stacking is achieved by treating a hidden layer of one RBM as the visible layer in a second RBM, etc.
+\item Stacking layers of RBMs in a deep architecture
+\item Proponents claim the ability to learn "internal representations that become increasingly complex, which is considered to be a promising way of solving object and speech recognition problems" (Salakhutdinov and Hinton 2009, pp. 450).
+\item Treating a hidden layer of one RBM as the visible layer in a second RBM, etc.
 \end{itemize}
 \end{column}
 \hfill
@@ -89,25 +97,28 @@ $$\gamma(\boldsymbol \theta) = \sum\limits_{\boldsymbol x \in \mathcal{C}^{\nh +
 
 # Why do I care?
 
-The model properties are largely unexplored in the literature and the commonly cited fitting methodology remains heuristic-based and abstruse [@hinton2006fast].
+1. The model properties are largely unexplored in the literature and 
+2. The commonly cited fitting methodology remains heuristic-based and abstruse [@hinton2006fast]
 
 We want to 
 
-1. provide steps toward a thorough understanding of the model class and its properties from the perspective of statistical theory, and 
-2. explore the possibility of a rigorous fitting methodology. 
+1. Provide steps toward a thorough understanding of the model class and its properties from the perspective of statistical theory, and 
+2. Explore the possibility of a rigorous fitting methodology 
 
 # Degeneracy, instability, and uninterpretability. Oh my!
 
-The highly flexible nature of a RBM (having as it does $\nh + \nv + \nh*\nv$ parameters) makes at least three kinds of potential model impropriety of concern, *degeneracy*, *instability*, and *uninterpretability*.
+The highly flexible nature of a RBM ($\nh + \nv + \nh*\nv$ parameters) makes at least three kinds of potential model impropriety of concern 
+
+1. *degeneracy*
+2. *instability*, and 
+3. *uninterpretability*
 
 > A model should "provide an explanation of the mechanism underlying the observed phenomena" [@lehmann1990model; @box1967discrimination]. 
 
 RBMs often 
 
-- fail to generate data with realistic variability and thus an unsatisfactory conceptualization of the data generation process. 
-- exhibit instability in the parameter space. 
-
-Such model impropriety issues have been documented in in RBMs [@li2014biclustering], as well as other deep architectures [@szegedy2013intriguing; @nguyen2014deep].
+- fail to generate data with realistic variability and thus an unsatisfactory conceptualization of the data generation process [@li2014biclustering] 
+- exhibit instability in the parameter space [@szegedy2013intriguing; @nguyen2014deep] 
 
 # Near-degeneracy
 
@@ -466,7 +477,7 @@ p.exp_diff
 
 - Typically, fitting a RBM via maximum likelihood (ML) methods will be infeasible mainly due to the intractibility of the normalizing term $\gamma(\boldsymbol \theta)$ in a model of any realistic size
     - Ad hoc methods are used instead, which aim to avoid this problem by using stochastic ML that employ a small number of MCMC draws. 
-- Computational concerns are not the only issues with fitting an RBM using ML, the RBM model, has the potential to re-create any distribution for the data.
+- Computational concerns are not the only issues with fitting a RBM using ML, the RBM model, has the potential to re-create any distribution for the data.
     - Based on a random sample of visible variables, the model for the cell probabilities that has the highest likelihood over  *all possible model classes* is the empirical distribution, and the parametrization of the RBM model itself ensures that this empirical distribution can be arbitrarily well approximated.
     - Whenever the empirical distribution contains empty cells, fitting steps for the RBM model will aim to chase parameters that necessarily diverge in magnitude in order to zero out the corresponding RBM cell probabilities.
 
