@@ -502,13 +502,26 @@ p.exp_diff
   
 # Fitting methodologies  
 
-1. *A "trick" prior (BwTPLV).* Cancel out normalizing term in the likelihood, resulting full conditionals of $\boldsymbol \theta$ are multivariate Normal, $h_j$ are carried along as latent variables
+1. *A "trick" prior (BwTPLV)* 
+    - Cancel out normalizing term in the likelihood
+    - Resulting full conditionals of $\boldsymbol \theta$ are multivariate Normal
+    - $h_j$ are carried along as latent variables
     \begin{align*}
     \pi(\boldsymbol \theta) \propto \gamma(\boldsymbol \theta)^n \exp\left(-\frac{1}{2C_{1}}\boldsymbol \theta_{main}'\boldsymbol \theta_{main} -\frac{1}{2C_{2}}\boldsymbol \theta_{interaction}'\boldsymbol \theta_{interaction}\right), \vspace{-.75cm}
     \end{align*}
     where $C_{2} < C_{1}$ [@li2014biclustering] 
-2. *A truncated Normal prior (BwTNLV).* Independent spherical normal distributions as priors for $\boldsymbol \theta_{main}$ and $\boldsymbol \theta_{interaction}$, with $\sigma_{interaction} < \sigma_{main}$, *truncated* at $3\sigma_{main}$ and $3\sigma_{interaction}$, respectively. Simulation from the posterior using a geometric adaptive MH step [@zhou2014some], $h_j$ are carried along in the MCMC implementation as latent variables 
-3. *A truncated Normal prior and marginalized likelihood (BwTNML).* Marginalize out $\boldsymbol h$ in $f_{\boldsymbol \theta}(\boldsymbol x)$, and use the truncated Normal priors applied to the marginal probabilities for visible variables
+    
+# Fitting methodologies (cont'd)
+
+2. *A truncated Normal prior (BwTNLV)* 
+    - Independent spherical normal distributions as priors for $\boldsymbol \theta_{main}$ and $\boldsymbol \theta_{interaction}$
+        - $\sigma_{interaction} < \sigma_{main}$ 
+        - *truncated* at $3\sigma_{main}$ and $3\sigma_{interaction}$, respectively
+    - Simulation from the posterior using a geometric adaptive MH step [@zhou2014some]
+    - $h_j$ are carried along in the MCMC implementation as latent variables 
+3. *A truncated Normal prior and marginalized likelihood (BwTNML)* 
+    - Marginalize out $\boldsymbol h$ in $f_{\boldsymbol \theta}(\boldsymbol x)$
+    - Use the truncated Normal priors applied to the marginal probabilities for visible variables
 
 # Hyperparameters
 
@@ -613,6 +626,7 @@ marginal_acfs %>% ungroup() %>% select(-image_id) %>% rename(marginal = acf) %>%
   ggplot() +
   geom_segment(aes(x=lag, xend=lag, y=0, yend=truncated), colour = "black") +
   geom_segment(aes(x=lag, xend=lag, y=0, yend=marginal), colour = "red") +
+  geom_point(aes(x=lag, y=marginal), colour = "red", size=.5) +
   facet_wrap(~image_id) +
   xlab("Lag") +
   ylab("ACF")
@@ -666,7 +680,9 @@ marginal_means %>%
 
 # Effective sample size
 
-We can use an overlapping blockmeans approach to get a crude estimate for the aysmptotic variance of the probability of each image and compare it to an estimate of the asymptotic variance assuming IID draws from the target distribution. 
+- Overlapping blockmeans approach [@gelman2011inference]
+    - Crude estimate for the aysmptotic variance of the probability of each image 
+    - Compare it to an estimate of the asymptotic variance assuming IID draws from the target distribution
 
 \tiny
 
@@ -714,15 +730,23 @@ p.models
 
 # Wrapping up
 
-- While RBMs are thought to be useful for classification, in the context of generative statistical models, RBMs are a poor fit due to *near-degeneracy*, *S-instability*, and *uninterpretability*.
-- Rigorous fitting methodology is difficult due to the dimension of the parameter space coupled with the size of the latent variable space.
-- For a RBM model with enough hidden variables, any distribution for the visibles can be approximated arbitrarily well [@le2008representational; @montufar2011refinements; and @montufar2011expressive]. 
-    - The empirical distribution of a training set of vectors of visibles is the best fitting model for observed cell data. 
-    - There can be no "smoothed distribution" achieved in fitting a RBM model of sufficient size with a rigorous likelihood-based method. 
+- RBMs are thought to be useful for classification, but in the context of generative statistical models, poor fit due to *near-degeneracy*, *S-instability*, and *uninterpretability*
+- Rigorous fitting methodology is difficult due to the dimension of the parameter space & size of the latent variable space
+- For a RBM model with enough hidden variables, any distribution for the visibles can be approximated arbitrarily well [@le2008representational; @montufar2011refinements; and @montufar2011expressive] 
+    - The empirical distribution of a training set is the best fitting model for observed cell data 
+    - There can be no "smoothed distribution" achieved in a RBM model of sufficient size with a rigorous likelihood-based method
 
-We are skeptical that any model built using these structures (like a deep Boltzmann machine) can achieve useful prediction or inference in a principled way without limiting the flexibility of the fitted model.
+Skeptical that any model built using RBMs (i.e. deep Boltzmann machine) can achieve useful **prediction** or **inference** in a principled way without limiting the flexibility of the fitted model
 
 # Future work
+
+1. Generalization of instability results [ongoing, see @kaplan2016note]
+2. Image classification
+    - Ensemble methods (super learners) using AdaBoost [@freund1995desicion] 
+    - Decision theoretic based approach to approximating the likelihood ratio test for classification
+3. Markov chain Monte Carlo methods for data with Markovian dependence
+    - Spatial data
+    - Network data
 
 # Thank you
 
