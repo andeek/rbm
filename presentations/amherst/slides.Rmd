@@ -140,7 +140,7 @@ Characterized by excessive sensitivity in the model, where small changes in the 
 - Concept of model deficiency related to *instability* for a class of exponential families of distributions [@schweinberger2011instability]
 - For the RBM, consider how model incorporates more visibles
     - Model parameters in a longer sequence $\boldsymbol \theta_{\nv} \in \mathbb{R}^{\nv + \nh + \nv*\nh}, \nv \ge 1$ 
-    - May also arbitrarily expand the number of hidden variables used.
+    - May also arbitrarily expand the number of hidden variables used
 
 # Unstable RBMs
 
@@ -160,7 +160,7 @@ S-unstable RBM models are undesirable for several reasons - small changes in dat
 
 # One-pixel change
 
-Consider the biggest log-probability ratio for a one-pixel (one component) change in data outcomes (visibles)
+Consider the biggest log-probability ratio for a one-pixel (one component) change in visibles (data outcomes)
 
 $$
 \Delta(\boldsymbol \theta_\nv) \equiv \max \left\{\log \frac{P_{\boldsymbol \theta_\nv}(v_1, \dots, v_\nv)}{P_{\boldsymbol \theta_\nv}(v_1^*, \dots, v_\nv^*)} \right\},
@@ -462,7 +462,7 @@ three_ways %>%
   geom_contour(aes(x = r1, y = r2, z = scaled_mean_elpr), colour = "black", bins = 8) +
   #geom_contour(aes(x = r1, y = r2, z = mean_max_q), colour = "black", breaks = .05, size = 1.5) +
   geom_abline(aes(intercept = 0, slope = 1), alpha = .5, lty = 2) +
-  scale_fill_gradient(expression(frac(bar(ELPR(theta)), V)), low = "yellow", high = "red") +
+  scale_fill_gradient(expression(frac(bar(ELPR(theta)), n[v])), low = "yellow", high = "red") +
   facet_grid(Visibles~Hiddens, labeller = label_parsed) +
   xlab(expression(paste(paste("||", theta[main], "||", "/(", n[h]," + ", n[v], ")")))) +
   ylab(expression(paste(paste("||", theta[interaction], "||", "/(", n[h], "*", n[v], ")")))) +
@@ -546,7 +546,7 @@ Method & Hyperparameter & Value \\
 
 # Mixing
 
-The truncated Normal method (2) and the marginalized likelihood method (3) are drawing from the same stationary posterior distribution for images. 
+The BwTNLV (2) and the BwTNML method (3) are drawing from the same stationary posterior distribution for images. 
 
 ```{r models-load}
 load("data/sample_images.Rdata")
