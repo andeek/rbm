@@ -46,6 +46,7 @@ code/4x4 model/written/*.Rdata
 code/degeneracy/written/
 presentations/jsm2016/index_cache/
 presentations/amherst/slides_cache/
+presentations/asu/slides_cache/
 
 #presentation
 !presentations/jsm2016/*.pdf
@@ -54,6 +55,9 @@ presentations/amherst/slides_cache/
 !presentations/amherst/*.pdf
 !presentations/amherst/images/
 !presentations/amherst/*.tex
+!presentations/asu/*.pdf
+!presentations/asu/images
+!presentations/asu/*.tex
 
 
 #big files
