@@ -8,12 +8,12 @@ institute: |
     | ajkaplan@iastate.edu
 shortinstitute: ajkaplan@iastate.edu
 date: |
-  | January 11, 2017
+  | January 19, 2017
   |
-  | Slides available at <http://bit.ly/kaplan-asu>
+  | Slides available at <http://bit.ly/kaplan-uva>
   | 
   | \footnotesize Joint work with D. Nordman and S. Vardeman
-shortdate: "January 11, 2017"
+shortdate: "January 19, 2017"
 output: 
   beamer_presentation:
     template: latex/beamer.tex
@@ -748,7 +748,7 @@ Skeptical that any model built using RBMs (i.e. deep Boltzmann machine) can achi
 
 # Thank you
 
-* Slides -- <http://bit.ly/kaplan-asu>
+* Slides -- <http://bit.ly/kaplan-uva>
 
 * Contact
     * Email -- <ajkaplan@iastate.edu>
