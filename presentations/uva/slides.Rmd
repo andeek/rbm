@@ -118,7 +118,7 @@ The highly flexible nature of a RBM ($\nh + \nv + \nh*\nv$ parameters) makes at 
 RBMs often 
 
 - fail to generate data with realistic variability and thus an unsatisfactory conceptualization of the data generation process [@li2014biclustering] 
-- exhibit instability in the parameter space [@szegedy2013intriguing; @nguyen2014deep] 
+- exhibit model instability (over-sensitivity) [@szegedy2013intriguing; @nguyen2014deep] 
 
 # Near-degeneracy
 
