@@ -25,3 +25,9 @@ presentations/uva/data/fitted_models_trunc_full.Rdata filter=lfs diff=lfs merge=
 presentations/uva/data/fitted_models_trunc_marginal_full.Rdata filter=lfs diff=lfs merge=lfs -text
 presentations/uva/data/params_theta.Rdata filter=lfs diff=lfs merge=lfs -text
 presentations/uva/data/sample_images.Rdata filter=lfs diff=lfs merge=lfs -text
+presentations/rice/data/results_grid.RData filter=lfs diff=lfs merge=lfs -text
+presentations/rice/data/fitted_models_jing_5.8.Rdata filter=lfs diff=lfs merge=lfs -text
+presentations/rice/data/fitted_models_trunc_full.Rdata filter=lfs diff=lfs merge=lfs -text
+presentations/rice/data/fitted_models_trunc_marginal_full.Rdata filter=lfs diff=lfs merge=lfs -text
+presentations/rice/data/params_theta.Rdata filter=lfs diff=lfs merge=lfs -text
+presentations/rice/data/sample_images.Rdata filter=lfs diff=lfs merge=lfs -text

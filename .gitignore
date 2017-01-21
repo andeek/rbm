@@ -48,6 +48,8 @@ presentations/jsm2016/index_cache/
 presentations/amherst/slides_cache/
 presentations/asu/slides_cache/
 presentations/uva/slides_cache/
+presentations/rice/slides_cache/
+
 #presentation
 !presentations/jsm2016/*.pdf
 !presentations/jsm2016/images/
@@ -61,6 +63,9 @@ presentations/uva/slides_cache/
 !presentations/uva/*.pdf
 !presentations/uva/images
 !presentations/uva/*.tex
+!presentations/rice/*.pdf
+!presentations/rice/images
+!presentations/rice/*.tex
 
 
 #big files
