@@ -49,6 +49,7 @@ presentations/amherst/slides_cache/
 presentations/asu/slides_cache/
 presentations/uva/slides_cache/
 presentations/rice/slides_cache/
+presentations/samsi/slides_cache/
 
 #presentation
 !presentations/jsm2016/*.pdf
@@ -66,7 +67,9 @@ presentations/rice/slides_cache/
 !presentations/rice/*.pdf
 !presentations/rice/images
 !presentations/rice/*.tex
-
+!presentations/samsi/*.pdf
+!presentations/samsi/images
+!presentations/samsi/*.tex
 
 #big files
 code/degeneracy/apps/results_grid*
