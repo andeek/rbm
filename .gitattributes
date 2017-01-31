@@ -37,3 +37,15 @@ presentations/samsi/data/fitted_models_trunc_marginal_full.Rdata filter=lfs diff
 presentations/samsi/data/params_theta.Rdata filter=lfs diff=lfs merge=lfs -text
 presentations/samsi/data/results_grid.RData filter=lfs diff=lfs merge=lfs -text
 presentations/samsi/data/sample_images.Rdata filter=lfs diff=lfs merge=lfs -text
+presentations/uiuc/data/fitted_models_jing_5.8.Rdata filter=lfs diff=lfs merge=lfs -text
+presentations/uiuc/data/fitted_models_trunc_full.Rdata filter=lfs diff=lfs merge=lfs -text
+presentations/uiuc/data/fitted_models_trunc_marginal_full.Rdata filter=lfs diff=lfs merge=lfs -text
+presentations/uiuc/data/params_theta.Rdata filter=lfs diff=lfs merge=lfs -text
+presentations/uiuc/data/results_grid.RData filter=lfs diff=lfs merge=lfs -text
+presentations/uiuc/data/sample_images.Rdata filter=lfs diff=lfs merge=lfs -text
+presentations/ufl/data/fitted_models_jing_5.8.Rdata filter=lfs diff=lfs merge=lfs -text
+presentations/ufl/data/fitted_models_trunc_full.Rdata filter=lfs diff=lfs merge=lfs -text
+presentations/ufl/data/fitted_models_trunc_marginal_full.Rdata filter=lfs diff=lfs merge=lfs -text
+presentations/ufl/data/params_theta.Rdata filter=lfs diff=lfs merge=lfs -text
+presentations/ufl/data/results_grid.RData filter=lfs diff=lfs merge=lfs -text
+presentations/ufl/data/sample_images.Rdata filter=lfs diff=lfs merge=lfs -text

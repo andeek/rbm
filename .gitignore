@@ -50,6 +50,8 @@ presentations/asu/slides_cache/
 presentations/uva/slides_cache/
 presentations/rice/slides_cache/
 presentations/samsi/slides_cache/
+presentations/ufl/slides_cache/
+presentations/uiuc/slides_cache/
 
 #presentation
 !presentations/jsm2016/*.pdf
@@ -70,6 +72,12 @@ presentations/samsi/slides_cache/
 !presentations/samsi/*.pdf
 !presentations/samsi/images
 !presentations/samsi/*.tex
+!presentations/ufl/*.pdf
+!presentationa/ufl/images
+!presentations/ufl/*.tex
+!presentations/uiuc/*.pdf
+!presentations/uiuc/images
+!presentations/uiuc/*.tex
 
 #big files
 code/degeneracy/apps/results_grid*
