@@ -52,6 +52,7 @@ presentations/rice/slides_cache/
 presentations/samsi/slides_cache/
 presentations/ufl/slides_cache/
 presentations/uiuc/slides_cache/
+presentations/msu/slides_cache/
 
 #presentation
 !presentations/jsm2016/*.pdf
@@ -78,6 +79,9 @@ presentations/uiuc/slides_cache/
 !presentations/uiuc/*.pdf
 !presentations/uiuc/images
 !presentations/uiuc/*.tex
+!presentations/msu/*.pdf
+!presentations/msu/images
+!presentations/msu/*.tex
 
 #big files
 code/degeneracy/apps/results_grid*
