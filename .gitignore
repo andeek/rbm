@@ -59,29 +59,22 @@ presentations/msu/slides_cache/
 !presentations/jsm2016/images/
 !presentations/jsm2016/*.tex
 !presentations/amherst/*.pdf
-!presentations/amherst/images/
 !presentations/amherst/*.tex
 !presentations/asu/*.pdf
-!presentations/asu/images
 !presentations/asu/*.tex
 !presentations/uva/*.pdf
-!presentations/uva/images
 !presentations/uva/*.tex
 !presentations/rice/*.pdf
-!presentations/rice/images
 !presentations/rice/*.tex
 !presentations/samsi/*.pdf
-!presentations/samsi/images
 !presentations/samsi/*.tex
 !presentations/ufl/*.pdf
-!presentationa/ufl/images
 !presentations/ufl/*.tex
 !presentations/uiuc/*.pdf
-!presentations/uiuc/images
 !presentations/uiuc/*.tex
 !presentations/msu/*.pdf
-!presentations/msu/images
 !presentations/msu/*.tex
+!presentations/resources/images/
 
 #big files
 code/degeneracy/apps/results_grid*

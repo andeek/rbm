@@ -16,11 +16,11 @@ date: |
 shortdate: "December 20, 2016"
 output: 
   beamer_presentation:
-    template: latex/beamer.tex
+    template: ../resources/latex/beamer.tex
     includes:
-      in_header: latex/front-matter.tex
+      in_header: ../resources/latex/front-matter.tex
 theme: CambridgeUS
-bibliography: latex/refs.bib
+bibliography: ../resources/latex/refs.bib
 fig_caption: true
 nocite: |
     @salakhutdinov2009deep, @kaiser2007statistical
@@ -37,7 +37,7 @@ library(tidyr)
 opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE)
 theme_set(theme_bw())
 
-source("helpers/functions.R")
+source("../resources/helpers/functions.R")
 ```
 
 
@@ -49,7 +49,7 @@ A restricted Boltzman machine (RBM) is an undirected probabilistic graphical mod
 3. conditional independence within a layer [@smolensky1986information]
 
 \begin{figure}
-\includegraphics[width=.6\linewidth]{images/rbm.png}
+\includegraphics[width=.6\linewidth]{../resources/images/rbm.png}
 \caption{Hidden nodes are indicated by white circles and the visible nodes are indicated by blue circles.}
 \end{figure}
 
@@ -58,7 +58,7 @@ A restricted Boltzman machine (RBM) is an undirected probabilistic graphical mod
 - Supervised learning, specifically image classification 
 
 \begin{figure}
-\includegraphics[width=\linewidth]{images/visibles_image.pdf}
+\includegraphics[width=\linewidth]{../resources/images/visibles_image.pdf}
 \caption{Image classification using a RBM: each image pixel comprises a node in the visible layer, $\mathcal{V}$ and the output of the RBM is used to create features passed to a supervised learning algorithm.}
 \end{figure}
 
@@ -89,7 +89,7 @@ A restricted Boltzman machine (RBM) is an undirected probabilistic graphical mod
 \hfill
 \begin{column}{.48\textwidth}
 \begin{figure}
-\includegraphics[width=\linewidth]{images/deep_rbm.png}
+\includegraphics[width=\linewidth]{../resources/images/deep_rbm.png}
 \caption{Three layer deep Boltzmann machine, with visible-to-hidden and hidden-to-hidden connections but no within-layer connections.}
 \end{figure}
 \end{column}
@@ -217,8 +217,8 @@ Characterized by marginal mean-structure (controlled by main effect parameters $
 # Data coding to mitigate degeneracy
 
 \begin{figure}
-\includegraphics[width=.55\linewidth]{images/toyhull_top.png}
-\includegraphics[width=.35\linewidth]{images/toyhull_top_2.png}
+\includegraphics[width=.55\linewidth]{../resources/images/toyhull_top.png}
+\includegraphics[width=.35\linewidth]{../resources/images/toyhull_top_2.png}
 \caption{The convex hull of the "statistic space" $\mathcal{T} = \{(v_1, h_1, v_1 h_1): v_1, h_1 \in \mathcal{C}\}$ in three dimensions for a toy RBM with one visible and one hidden node for $\mathcal{C} = \{0,1\}$ (left) and $\mathcal{C} = \{-1,1\}$ (right) data encoding.}
 \end{figure}
 
@@ -364,7 +364,7 @@ elpr <- function(theta, stats) {
 }
 
 #grid data
-load("data/results_grid.RData")
+load("../resources/data/results_grid.RData")
 
 #near-degeneracy
 plot_dat_grid <- res %>% plot_data(grid = TRUE)
@@ -549,8 +549,8 @@ Method & Hyperparameter & Value \\
 The BwTNLV (2) and the BwTNML method (3) are drawing from the same stationary posterior distribution for images. 
 
 ```{r models-load}
-load("data/sample_images.Rdata")
-load("data/params_theta.Rdata")
+load("../resources/data/sample_images.Rdata")
+load("../resources/data/params_theta.Rdata")
 
 params_good <- list(main_hidden = sample.params %>% ungroup() %>% filter(!near_hull) %>% select(starts_with("h"), -H) %>% data.matrix(),
                     main_visible = sample.params %>% ungroup() %>% filter(!near_hull) %>% select(starts_with("v"), -V) %>% data.matrix(),
@@ -561,17 +561,17 @@ H <- 4
 V <- 4
 
 #marginalized likelihood
-load("data/fitted_models_trunc_marginal_full.Rdata")
+load("../resources/data/fitted_models_trunc_marginal_full.Rdata")
 marginal_bad <- models_bad
 marginal_good <- models_good
 
 #load trick prior
-load("data/fitted_models_jing_5.8.Rdata")
+load("../resources/data/fitted_models_jing_5.8.Rdata")
 trick_bad <- models_bad
 trick_good <- models_good
 
 #truncated normal
-load("data/fitted_models_trunc_full.Rdata")
+load("../resources/data/fitted_models_trunc_full.Rdata")
 trunc_bad <- models_bad
 trunc_good <- models_good
 
