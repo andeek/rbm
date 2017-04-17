@@ -53,6 +53,7 @@ presentations/samsi/slides_cache/
 presentations/ufl/slides_cache/
 presentations/uiuc/slides_cache/
 presentations/msu/slides_cache/
+presentations/coms474/slides_cache/
 
 #presentation
 !presentations/jsm2016/*.pdf
@@ -74,6 +75,8 @@ presentations/msu/slides_cache/
 !presentations/uiuc/*.tex
 !presentations/msu/*.pdf
 !presentations/msu/*.tex
+!presentations/coms474/*.pdf
+!presentations/coms474/*.tex
 !presentations/resources/images/
 
 #big files
