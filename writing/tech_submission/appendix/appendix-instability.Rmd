@@ -1,0 +1,13 @@
+{\bf Proof of (\ref{eqn:lowerbnd}).} With algebra, we have
+
+\begin{align*}
+&\log\left[\frac{\max\limits_{(v_1, \dots, v_V) \in \{-1, 1\}^V}P_{\boldsymbol \theta_V}(v_1, \dots, v_V)}{\min\limits_{(v_1, \dots, v_V) \in \{-1, 1\}^V}P_{\boldsymbol \theta_V}(v_1, \dots, v_V)} \right] = \\
+& \qquad \log\left[\frac{\max\limits_{(v_1, \dots, v_V)}\sum\limits_{\boldsymbol h \in \{-1,1\}^H} \exp\left(\sum\limits_{i = 1}^V \theta_{v_i}v_i + \sum\limits_{j = 1}^H \theta_{h_j}h_j + \sum\limits_{i = 1}^V\sum\limits_{j = 1}^H \theta_{ij}v_i h_j\right)}
+{\min\limits_{(v_1, \dots, v_V)}\sum\limits_{\boldsymbol h \in \{-1,1\}^H} \exp\left(\sum\limits_{i = 1}^V \theta_{v_i}v_i + \sum\limits_{j = 1}^H \theta_{h_j}h_j + \sum\limits_{i = 1}^V\sum\limits_{j = 1}^H \theta_{ij}v_i h_j\right)}\right] \\
+& \qquad \ge \log\frac{\max\limits_{(v_1, \dots, v_V)}\max\limits_{\boldsymbol h \in \{-1,1\}^H}\exp\left(\sum\limits_{i = 1}^V \theta_{v_i}v_i + \sum\limits_{j = 1}^H \theta_{h_j}h_j + \sum\limits_{i = 1}^V\sum\limits_{j = 1}^H \theta_{ij}v_i h_j\right)}
+{\min\limits_{(v_1, \dots, v_V)}2^H\max\limits_{\boldsymbol h \in \{-1,1\}^H}\exp\left(\sum\limits_{i = 1}^V \theta_{v_i}v_i + \sum\limits_{j = 1}^H \theta_{h_j}h_j + \sum\limits_{i = 1}^V\sum\limits_{j = 1}^H \theta_{ij}v_i h_j\right)} \\
+& \qquad = \max\limits_{(v_1, \dots, v_V)}\max\limits_{\boldsymbol h \in \{-1,1\}^H}\left\{\sum\limits_{i = 1}^V \theta_{v_i}v_i + \sum\limits_{j = 1}^H \theta_{h_j}h_j + \sum\limits_{i = 1}^V\sum\limits_{j = 1}^H \theta_{ij}v_i h_j\right\} - \\
+& \qquad \qquad \min\limits_{(v_1, \dots, v_V)}\max\limits_{\boldsymbol h \in \{-1,1\}^H}\left\{\sum\limits_{i = 1}^V \theta_{v_i}v_i + \sum\limits_{j = 1}^H \theta_{h_j}h_j + \sum\limits_{i = 1}^V\sum\limits_{j = 1}^H \theta_{ij}v_i h_j\right\} -H\log2 \\
+& \qquad \equiv R(\boldsymbol \theta_V)
+\end{align*}
+using above the monotonicity of $\log(\cdot)$ and the positivity of $\exp(\cdot)$.
