@@ -7,7 +7,7 @@
                       
 
   \node[main node] (1) {$h_j$};
-  \node (11) [above of=1, yshift = -2.25cm] {$\theta_{h_j}$};
+  \node (11) [above of=1, yshift = -2cm] {$\theta_{h_j}$};
   \node[main node] (2) [right of=1, xshift = -1.5cm] {};
   \node[main node] (3) [right of=2, xshift = -1.5cm] {};
   \node[main node] (4) [right of=3, xshift = -1.5cm] {};
