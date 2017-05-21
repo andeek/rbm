@@ -140,20 +140,23 @@ $endif$
 
 % Tech stuff starts here
 \usepackage{psfrag,epsf}
-\pdfminorversion=4
 
 $for(header-includes)$
 $header-includes$
 $endfor$
-\bigskip
 
+
+%\pdfminorversion=4
+% NOTE: To produce blinded version, replace "0" with "1" below.
+\newcommand{\blind}{0}
 
 % DON'T change margins - should be 1 inch all around.
 \addtolength{\oddsidemargin}{-.5in}%
 \addtolength{\evensidemargin}{-.5in}%
 \addtolength{\textwidth}{1in}%
-\addtolength{\textheight}{1.3in}%
+\addtolength{\textheight}{-.3in}%
 \addtolength{\topmargin}{-.8in}%
+
 
 \begin{document}
 
@@ -196,7 +199,6 @@ $if(keywords)$
 \vfill
 $endif$
 
-\hfill {\tiny technometrics tex template (do not remove)}
 \newpage
 \spacingset{1.45} % DON'T change the spacing!
 
