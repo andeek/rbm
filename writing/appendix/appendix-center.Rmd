@@ -10,16 +10,16 @@ author:
   - name: Stephen Vardeman
     university: Iowa State University
     department: |
-      | Department of Statistics and Industrial Manufacturing 
-      | Systems Engineering Department
+      | Department of Statistics and Department of Industrial and
+      | Manufacturing Systems Engineering
 output: 
   pdf_document:
+    keep_tex: true
     fig_caption: yes
     includes:
       in_header: ../latex/header.tex
     number_sections: yes
-    template: ../latex/technometrics_article.tex
-fontsize: 12pt
+    template: ../latex/jasa_article.tex
 blind: false
 ---    
 

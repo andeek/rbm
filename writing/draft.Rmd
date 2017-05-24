@@ -19,8 +19,7 @@ output:
     includes:
       in_header: latex/header.tex
     number_sections: yes
-    template: latex/technometrics_article.tex
-fontsize: 12pt
+    template: latex/jasa_article.tex
 bibliography: references/refs.bib
 abstract: |
   A restricted Boltzmann machine (RBM) is an undirected graphical model constructed for discrete or continuous random variables, with two layers, one hidden and one visible, and no conditional dependency within a layer. In recent years, RBMs have risen to prominence due to their connection to deep learning. By treating a hidden layer of one RBM as the visible layer in a second RBM, a deep architecture can be created. RBMs are thought to thereby have the ability to encode very complex and rich structures in data, making them attractive for supervised learning. However, the generative behavior of RBMs is largely unexplored. In this paper, we discuss the relationship between RBM parameter specification in the binary case and the tendency to exhibit model properties such as degeneracy, instability and uninterpretability. We also describe the difficulties that arise in likelihood-based and Bayes fitting of such (highly flexible) models, especially as Gibbs sampling (quasi-Bayes) methods are often advocated for the RBM model structure.
@@ -34,6 +33,8 @@ library(ggplot2)
 library(dplyr)
 library(tidyr)
 
+set.seed(1022)
+
 opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE)
 theme_set(theme_bw(base_family="serif"))
 
@@ -42,15 +43,83 @@ source("helpers/functions.R")
 
 # Introduction
 
+```{r sample-models, fig.show='hide', fig.height=2}
+load("data/params_theta.Rdata")
+params_good <- list(main_hidden = sample.params %>% ungroup() %>% filter(!near_hull) %>% select(starts_with("h"), -H) %>% data.matrix(),
+                    main_visible = sample.params %>% ungroup() %>% filter(!near_hull) %>% select(starts_with("v"), -V) %>% data.matrix(),
+                    interaction = sample.params %>% ungroup() %>% filter(!near_hull) %>% select(starts_with("theta")) %>% data.matrix() %>% matrix(4))
+params_bad <- list(main_hidden = sample.params %>% ungroup() %>% filter(near_hull) %>% select(starts_with("h"), -H) %>% data.matrix(),
+                    main_visible = sample.params %>% ungroup() %>% filter(near_hull) %>% select(starts_with("v"), -V) %>% data.matrix(),
+                    interaction = sample.params %>% ungroup() %>% filter(near_hull) %>% select(starts_with("theta")) %>% data.matrix() %>% matrix(4))
+
+distn_good <- visible_distn(params_good)
+distn_bad <- visible_distn(params_bad)
+
+sample_good <- sample_n(distn_good, size = 10, replace = TRUE, weight = prob)
+sample_bad <- sample_n(distn_bad, size = 10, replace = TRUE, weight = prob)
+
+sample_good %>%
+  mutate(image = 1:n()) %>%
+  gather(pixel, value, -prob, -image_id, -image) %>%
+  mutate(value = factor(value)) %>%
+  mutate(x = ifelse(pixel %in% c("v1", "v3"), 1, 2),
+         y = ifelse(pixel %in% c("v1", "v2"), 1, 2)) %>%
+  ggplot() +
+  geom_tile(aes(x = x, y = y, fill = value)) +
+  facet_wrap(~image, nrow = 2) +
+  scale_fill_manual(values = c("white", "black")) +
+  theme(axis.line=element_blank(), axis.text.x=element_blank(),
+        axis.text.y=element_blank(), axis.ticks=element_blank(),
+        axis.title.x=element_blank(),
+        axis.title.y=element_blank(), legend.position="none",
+        panel.background=element_blank(), panel.grid.major=element_blank(),
+        panel.grid.minor=element_blank(), plot.background=element_blank(),
+        panel.border = element_rect(colour = "black", fill=NA, size=1),
+        strip.background = element_blank(),
+        strip.text.x = element_blank()) +
+  ggtitle("(b)")
+  
+
+sample_bad %>%
+  mutate(image = 1:n()) %>%
+  gather(pixel, value, -prob, -image_id, -image) %>%
+  mutate(value = factor(value)) %>%
+  mutate(x = ifelse(pixel %in% c("v1", "v3"), 1, 2),
+         y = ifelse(pixel %in% c("v1", "v2"), 1, 2)) %>%
+  ggplot() +
+  geom_tile(aes(x = x, y = y, fill = value)) +
+  facet_wrap(~image, nrow = 2) +
+  scale_fill_manual(values = c("white", "black")) +
+  theme(axis.line=element_blank(), axis.text.x=element_blank(),
+        axis.text.y=element_blank(), axis.ticks=element_blank(),
+        axis.title.x=element_blank(),
+        axis.title.y=element_blank(), legend.position="none",
+        panel.background=element_blank(), panel.grid.major=element_blank(),
+        panel.grid.minor=element_blank(), plot.background=element_blank(),
+        panel.border = element_rect(colour = "black", fill=NA, size=1),
+        strip.background = element_blank(),
+        strip.text.x = element_blank()) +
+  ggtitle("(a)")
+```
+
 The data mining and machine learning communities have recently shown great interest in deep learning, specifically in stacked restricted Boltzmann machines (RBMs) [see @salakhutdinov2009deep; @salakhutdinov2012efficient; @srivastava2013modeling; @le2008representational for examples]. A RBM is a probabilistic undirected graphical model (for discrete or continuous random variables) with two layers, one hidden and one visible, with no conditional dependency within a layer [@smolensky1986information]. These models have reportedly been used with success in classification of images [@larochelle2008classification; @srivastava2012multimodal]. However, the model properties are largely unexplored in the literature and the commonly cited fitting methodology remains heuristic-based and relies on rough approximation [@hinton2006fast]. In this paper, we provide steps toward a thorough understanding of the model class and its properties from the perspective of statistical model theory, and then explore the possibility of a rigorous fitting methodology. We find the RBM model class to be concerning in two fundamental ways. 
 
-First, the models are often unsatisfactory as conceptualizations of how data are generated. Recalling @fisher1922mathematical, the aim of a statistical model is to represent data in a compact way. Neyman and Box further state that a model should "provide an explanation of the mechanism underlying the observed phenomena" [@lehmann1990model; @box1967discrimination]. At issue, RBMs  often produce data lacking realistic variability and may thereby fail to provide a satisfactory conceptualization of a data generation process. For example, when generating data from a degenerate RBM, only a small number of output possibilities have probability greater than zero, and thus a sample of images will all be copies of the same one image (or small number of images). In addition to such degeneracy, we find that RBMs can easily exhibit types of instability. In practice, this may be seen when a single pixel change in an image results in a wildly different classification in an image classification problem. Such model properties have recently been documented in RBMs [@li2014biclustering], as well as other deep architectures [@szegedy2013intriguing; @nguyen2014deep]. We investigate the presence of these properties for the RBM class of models in Section \ref{explorations-of-model-properties-through-simulation} through simulations of small, manageable examples.
+First, the models are often unsatisfactory as conceptualizations of how data are generated. Recalling @fisher1922mathematical, the aim of a statistical model is to represent data in a compact way. Neyman and Box further state that a model should "provide an explanation of the mechanism underlying the observed phenomena" [@lehmann1990model; @box1967discrimination]. At issue, RBMs  often produce data lacking realistic variability and may thereby fail to provide a satisfactory conceptualization of a data generation process. For example, when generating data from a degenerate RBM, only a small number of output possibilities have probability greater than zero, and thus a sample of images will all be copies of the same one image (or small number of images). An example of ten 4-pixel images simulated from a degenerate model is compared to ten 4-pixel images simulated from a non-degenerate model in Figure \ref{fig:sample-models}. The degenerate model places almost all probability on one outcome, causing the image to be generated repeatedly, whereas the non-degenerate model shows more realistic variation.
+\begin{figure}
+\includegraphics{draft_files/figure-latex/sample-models-2.pdf} \\[.1in]
+\includegraphics{draft_files/figure-latex/sample-models-1.pdf}
+\caption{Ten 4-pixel images simulated from a degenerate model (a) compared to ten 4-pixel images simulated from a non-degenerate model (b). The degenerate model places almost all probability on one outcome, causing the image to be generated repeatedly, whereas the non-degenerate model shows more realistic variation.}
+\label{fig:sample-models}
+\end{figure}
+
+
+In addition to such degeneracy, we find that RBMs can easily exhibit types of instability. In practice, this may be seen when a single pixel change in an image results in a wildly different classification in an image classification problem. Such model properties have recently been documented in RBMs [@li2014biclustering], as well as other deep architectures [@szegedy2013intriguing; @nguyen2014deep]. We investigate the presence of these properties for the RBM class of models in Section \ref{explorations-of-model-properties-through-simulation} through simulations of small, manageable examples.
 
 In addition to model properties, we also explore the issues with fitting these models. The fitting can be problematic for two reasons, the first being computational and the second concerning flexibility. As the size of these models grows, both maximum likelihood and Bayesian methods of fitting quickly become intractable. The literature often suggests Markov chain Monte Carlo (MCMC) tools for approximate maximization of likelihoods to fit these models (e.g., Gibbs sampling to exploit conditional structure in hidden and visible variables), but little is said about achieving convergence [@hinton2010practical; @hinton2006fast]. Related to this, these MCMC algorithms require updating potentially many latent variables (hiddens) which can critically influence convergence in MCMC-based likelihood methods. 
 
 In Section \ref{bayesian-model-fitting}, we compare three Bayesian techniques involving MCMC approximations that are computationally more accessible than direct maximum likelihood, which also aim to avoid parts of a RBM parameter space that yield unattractive models. As might be expected, with greater computational complexity comes an increase in fitting accuracy, but at the cost of practical feasibility. While the computational concerns are inconvenient, the flexibility issues are more alarming.
 
-For a RBM model with enough hidden variables, it has been shown that any distribution for the visibles can be approximated arbitrarily well [@le2008representational; @montufar2011refinements; and @montufar2011expressive]. However, the empirical distribution of a training set of vectors of visibles is the best fitting model for observed cell data. As a consequence, we find that any fully principled fitting method based on the likelihood for a RBM with enough hidden variables will simply seek to reproduce the (discrete) empirical distribution of a training set. Thus, there can be no "smoothed distribution" achieved in fitting a RBM model of sufficient size with a rigorous likelihood-based method. We are therefore led to be skeptical that models that involve these structures (like a deep Boltzmann machine) can achieve useful prediction or inference in a principled way without intentionally limiting the flexibility of the fitted model. This concern with overfitting is addressed via specification of a Bayesian prior in Section \ref{bayesian-model-fitting}.
+For a RBM model with enough hidden variables, it has been shown that any distribution for the visibles can be approximated arbitrarily well [@le2008representational; @montufar2011refinements; and @montufar2011expressive]. However, the empirical distribution of a training set of vectors of visibles is the best fitting model for observed cell data. As a consequence, we find that any fully principled fitting method based on the likelihood for a RBM with enough hidden variables will seek to reproduce the (discrete) empirical distribution of a training set. Thus, there can be no "smoothed distribution" achieved in fitting a RBM model of sufficient size with a rigorous likelihood-based method. We are therefore led to be skeptical that models that involve these structures (like a deep Boltzmann machine) can achieve useful prediction or inference in a principled way without intentionally limiting the flexibility of the fitted model. This concern with overfitting is addressed via specification of a Bayesian prior in Section \ref{bayesian-model-fitting}.
 
 This paper is structured as follows. Section \ref{background} formally defines the RBM including the joint distribution of hidden and visible variables and explains the model's connection to deep learning. Additionally, measures of model impropriety and methods of quantifying/detecting it are defined. Section \ref{explorations-of-model-properties-through-simulation} details our explorations into the model behavior and propriety (or lack thereof) of the RBM class. We discuss three Bayesian fitting techniques intended to avoid model impropriety in Section \ref{model-fitting} and conclude with a discussion in Section \ref{discussion}. On-line supplementary materials provide proofs for results on RBM parameterizations and data codings described in Section \ref{data-encoding}.    
 
@@ -673,12 +742,6 @@ Here we consider what might be done in a principled manner to prevent both overf
 To avoid model impropriety for a fitted RBM, we want to avoid parts of the parameter space $\mathbb{R}^{\nv + \nh + \nv*\nh}$ that lead to near-degeneracy, instability, and uninterpretability. Motivated by the insights in Section \ref{exploring-manageable-examples}, one idea is to shrink $\boldsymbol \theta = (\boldsymbol \theta_{main}, \boldsymbol \theta_{interaction})$ toward $\boldsymbol 0$ by specifying priors that place low probability on large values of $||\boldsymbol \theta||$, specifically focusing on shrinking $\boldsymbol \theta_{interaction}$ more than $\boldsymbol \theta_{main}$. This is similar to an idea advocated by @hinton2010practical called *weight decay*, in which a penalty is added to the interaction terms in the model, $\boldsymbol \theta_{interaction}$, shrinking their magnitudes. 
 
 ```{r param-table}
-load("data/params_theta.Rdata")
-
-params_good <- list(main_hidden = sample.params %>% ungroup() %>% filter(!near_hull) %>% select(starts_with("h"), -H) %>% data.matrix(),
-                    main_visible = sample.params %>% ungroup() %>% filter(!near_hull) %>% select(starts_with("v"), -V) %>% data.matrix(),
-                    interaction = sample.params %>% ungroup() %>% filter(!near_hull) %>% select(starts_with("theta")) %>% data.matrix() %>% matrix(4))
-
 old_pen <- options()$scipen
 options("scipen" = 100)
 sample.params %>% 
@@ -943,7 +1006,7 @@ RBM models constitute an interesting class of undirected graphical models that a
 
 In this paper, we have presented three honest Bayes MCMC-based methods for fitting RBMs. Common practice is to use a kind of MCMC to overcome fitting complexities. However because of the size of the space to be filled with MCMC iterates, convergence and mixing of these methods will be slow. Marginalization over the latent variables in the model can improve mixing, but is numerically intractable due to the necessity of repeated calculation of the normalizing constant. Due to the extreme flexibility in this model class, rigorous likelihood-based fitting for a RBM will typically merely return the (discrete) empirical distribution for visibles, meaning any practitioner should be aware of this and employ some form of regularization or penalization in the model.
 
-Ultimately, it is not clear that RBM models are useful as generative models. Without the generative behavior of the RBM model, the ability to quantify uncertainty in the estimated model parameters becomes impossible and it is no longer useful as a predictive distribution. In the case of classification this may not be the ultimate goal, however when S-instability is present, small (imperceptable) differences in the data can lead to greatly different probabilities and thus greatly different classifications.  For these reasons, we are skeptical of the claims made about RBMs as generative tools.
+Ultimately, it is not clear that RBM models are useful as generative models. Without the generative behavior of the RBM model, the ability to quantify uncertainty in the estimated model parameters becomes impossible and it is no longer useful as a predictive distribution. In the case of classification this may not be the ultimate goal, however when S-instability is present, small (imperceptible) differences in the data can lead to greatly different probabilities and thus greatly different classifications.  For these reasons, we are skeptical of the claims made about RBMs as generative tools.
 
 #References
 
