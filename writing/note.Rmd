@@ -19,7 +19,7 @@ output:
     includes:
       in_header: latex/header.tex
     number_sections: yes
-    template: latex/technometrics_article.tex
+    template: latex/jasa_article.tex
 fontsize: 12pt
 bibliography: references/refs.bib
 abstract: |
