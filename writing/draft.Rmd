@@ -778,7 +778,7 @@ options("scipen" = old_pen)
 
 cbind(tbl[1:8,], tbl[9:16,], tbl[17:24,]) %>%
   xtable(label = "tab:theta", 
-         caption = "Parameters used to fit a test case with $V = H = 4$. This parameter vector was chosen as a sampled value of $\\boldsymbol \\theta$ that was not near the convex hull of the sufficient statistics for a grid point in Figure \\ref{fig:degen-plots} with $< 5$\\% near-degeneracy.", align = c("l", rep(c("r", "r"), times = 3))) %>%
+         caption = "Parameters used to fit a test case with $V = H = 4$. This parameter vector was chosen as a sampled value of $\\boldsymbol \\theta$ that was not near the convex hull of the sufficient statistics for a grid point in Figure \\ref{fig:degen_plots} with $< 5$\\% near-degeneracy.", align = c("l", rep(c("r", "r"), times = 3))) %>%
   print(sanitize.text.function=function(x){x}, include.rownames = FALSE, comment = FALSE)
 
 ```
