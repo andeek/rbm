@@ -1,0 +1,8 @@
+book_filename: note
+repo: https://github.com/andeek/rbm
+output_dir: docs
+rmd_files: [
+  "index.Rmd",
+  "chapters/instab.Rmd",
+  "appendices/appendix-note.Rmd",
+]

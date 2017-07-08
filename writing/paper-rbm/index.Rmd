@@ -1,0 +1,65 @@
+---
+title: "Properties and Bayes fitting of restricted Boltzmann machines"
+author: 
+  - name: Andee Kaplan
+    university: Iowa State University
+    department: Department of Statistics
+  - name: Daniel Nordman
+    university: Iowa State University
+    department: Department of Statistics
+  - name: Stephen Vardeman
+    university: Iowa State University
+    department: |
+      | Department of Statistics and Department of Industrial and
+      | Manufacturing Systems Engineering
+site: bookdown::bookdown_site
+output: 
+  bookdown::pdf_book:
+    includes:
+      in_header: ../resources/latex/header.tex
+    toc: no
+bibliography: [../resources/latex/refs_rbm.bib]
+github-repo: andeek/rbm
+abstract: |
+   A restricted Boltzmann machine (RBM) is an undirected graphical model constructed for discrete or continuous random variables, with two layers, one hidden and one visible, and no conditional dependency within a layer. In recent years, RBMs have risen to prominence due to their connection to deep learning. By treating a hidden layer of one RBM as the visible layer in a second RBM, a deep architecture can be created. RBMs are thought to thereby have the ability to encode very complex and rich structures in data, making them attractive for supervised learning. However, the generative behavior of RBMs is largely unexplored. In this paper, we discuss the relationship between RBM parameter specification in the binary case and model properties such as degeneracy, instability and uninterpretability. We also describe the difficulties that arise in likelihood-based and Bayes fitting of such (highly flexible) models, especially as Gibbs sampling (quasi-Bayes) methods are often advocated for the RBM model structure.
+keywords: Degeneracy, Instability, Classification, Deep Learning, Graphical Models
+blind: false
+---
+
+```{r setup, include=FALSE}
+# https://github.com/rstudio/bookdown/pull/374
+fix_envs <- function(x) {
+  beg_reg <- '^\\s*\\\\begin\\{.*\\}'
+  end_reg <- '^\\s*\\\\end\\{.*\\}'
+  i3 = if (length(i1 <- grep(beg_reg, x))) (i1 - 1)[grepl("^\\s*$", x[i1 - 1])]
+  i3 = c(i3, if (length(i2 <- grep(end_reg, x))) (i2 + 1)[grepl("^\\s*$", x[i2 + 1])])
+  if (length(i3)) x = x[-i3]
+  x
+}
+
+
+options(
+  dplyr.print_min = 6, dplyr.print_max = 6, width = 70,
+  digits = 3,
+  bookdown.post.latex = fix_envs
+)
+knitr::opts_chunk$set(
+  comment = "#>",
+  warning = FALSE,
+  message = FALSE,
+  cache = TRUE,
+  echo = FALSE
+)
+
+ggplot2::theme_set(ggplot2::theme_bw(base_family="serif"))
+
+library(knitr)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(scales)
+library(mvtnorm)
+library(rootSolve)
+library(agridat)
+library(xtable)
+```

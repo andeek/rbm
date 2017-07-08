@@ -83,5 +83,7 @@ presentations/coms474/slides_cache/
 code/degeneracy/apps/results_grid*
 
 #cache
-writing/draft_cache/*
-writing/tech_submission/draft_cache/*
+writing/paper-*/_bookdown_files
+writing/paper-*.Rproj
+writing/resources/data/*.Rdata
+writing/resources/data/*.RData
