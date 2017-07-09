@@ -198,21 +198,22 @@ Boltzmann machine) can achieve useful prediction or inference in a
 principled way without intentionally limiting the flexibility of the
 fitted model.
 
-The concepts of weight-decay (penalization) and sparsity
-(regularization) are suggested in the literature as practical remedies
-for both over-fitting and poor mixing in the Markov chain during fitting
-(Hinton \protect\hyperlink{ref-hinton2010practical}{2010}; Tieleman
+Notions of weight-decay (penalization) and sparsity (regularization)
+have been suggested in the RBM literature as practical remedies for both
+over-fitting and poor mixing in the Markov chain during fitting (Hinton
+\protect\hyperlink{ref-hinton2010practical}{2010}; Tieleman
 \protect\hyperlink{ref-tieleman2008training}{2008}; Cho, Ilin, and Raiko
 \protect\hyperlink{ref-cho2012tikhonov}{2012}). Both \(L_1\) and \(L_2\)
-type penalties are mentioned to achieve weight-decay however it is
-unclear the benefits of these particular forms in different situations.
-Additionally, it is not clear the degree to which regularization and
-penalization are used by practitioners because they are not (by default)
-a part of the accepted fitted methodology (Hinton
+type penalties are mentioned to achieve weight-decay, though the
+benefits of these particular forms are unknown in different situations.
+However, the degree to which regularization and penalization are used by
+practitioners is not clear because these concepts are not (by default) a
+part of the accepted fitted methodology (Hinton
 \protect\hyperlink{ref-hinton2002training}{2002}; Carreira-Perpinan and
 Hinton \protect\hyperlink{ref-carreira2005contrastive}{2005}). In this
 paper, we attempt to address the concerns with overfitting and poor
-mixing via specification of a Bayesian prior in Section
+mixing in an alternative, and perhaps more transparent manner, via
+specification of a Bayesian prior in Section
 \ref{bayesian-model-fitting}.
 
 This paper is structured as follows. Section \ref{background} formally
