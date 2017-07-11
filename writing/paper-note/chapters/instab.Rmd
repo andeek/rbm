@@ -33,7 +33,7 @@ where
 $$
 \psi(\boldsymbol \theta_N) = \log \sum_{\tilde{\boldsymbol x} \in \mathcal{X}^{N + N_H}} \exp\left[ \boldsymbol \alpha^T \boldsymbol h + \boldsymbol \beta^T \boldsymbol x + \boldsymbol h^T \Gamma \boldsymbol x\right], \qquad \boldsymbol \theta_N \in \Theta_N,
 $$ 
-is the normalizing function. Let $\boldsymbol \theta_N = (\boldsymbol \alpha, \boldsymbol \beta,\Gamma) \in \Theta_N \subset \mathbb{R}^{q(N)}$ with $q(N) = N + N_H + N*N_H$ denote the vector of parameters for the RBM. The probability mass function for the visible variables $X_1, \dots, X_N$ follows from marginalizing this joint specification:
+is the normalizing function. Let $\boldsymbol \theta_N = (\boldsymbol \alpha, \boldsymbol \beta,\Gamma) \in \Theta_N \subset \mathbb{R}^{q(N)}$ with $q(N) = N + N_H + N*N_H$ denote the vector of parameters for the RBM. The probability mass function for the visible variables $X_1, \dots, X_N$ follows from marginalizing the joint specification
 $$
 P_{\boldsymbol \theta_N} (\boldsymbol x) = \sum\limits_{\boldsymbol h \in \mathcal{X}^{N_H}} P_{\boldsymbol \theta_N} (\boldsymbol x, \boldsymbol h), \qquad \boldsymbol x \in \mathcal{X}^N.
 $$
@@ -57,7 +57,7 @@ The probability mass function for the visible random variables $X_1, \dots, X_N$
 $$
 P_{\boldsymbol \theta_N} (\boldsymbol x) = \sum\limits_{(\boldsymbol h^{(1)}, \dots, \boldsymbol h^{(M)}) \in \mathcal{X}^{N_{(H,1)} + \cdots + N_{(H,M)}}} P_{\boldsymbol \theta_N} (\tilde{\boldsymbol x}), \qquad \boldsymbol x \in \mathcal{X}^N
 $$
-Again like the RBM case, the DBM model specification examples a FSFS model.
+Again like the RBM case, the DBM model specification is an example of a FSFS model.
 
 **Deep belief network (DBN).** A DBN resembles a DBM in that there are multiple layers of latent random variables stacked in a deep architecture with no conditional dependence between layers. The difference between the DBM and DBN models is that all but the last stacked layer in a DBN are Bayesian networks [see @pearl985bayesian], rather than RBMs. Thus for visibles $X_1, \dots, X_N$ with support $\mathcal{X}^N$, a DBN is also a FSFS model if the number $q(N)$ of components in the parameter vector is dependent on the dimension of the visibles. Commonly, as in logistic belief nets [@neal1992connectionist], a "weight" parameter is placed on each interaction between visibles, $X_1, \dots, X_N$, and the first layer of latent variables, $H^{(1)}_1, \dots, H^{(1)}_{N_{(H,1)}}$, in the definition of a FSFS model.
 
@@ -68,7 +68,7 @@ To define or measure instability in FSFS models, it is useful to consider the be
 \frac{1}{N} \log \left[\frac{\max\limits_{(x_1, \dots, x_N) \in \mathcal{X}^N}P_{\boldsymbol \theta_N}(x_1, \dots, x_N)}{\min\limits_{(x_1, \dots, x_N) \in \mathcal{X}^N}P_{\boldsymbol \theta_N}(x_1, \dots, x_N)}\right] \equiv \frac{1}{N} \text{ELPR}_N(\boldsymbol \theta_N). (\#eq:elpr)
 \end{align}
 
-The main idea is that, in formulating FSFS models for potentially increasing numbers of variables (i.e., for $N \rightarrow \infty$), the ratio (\@ref(eq:elpr)) should remain bounded to better ensure model stability, requiring that the largest probability possible under $P_{\theta_N}$ maintain a fixed order of magnitude relative to the smallest probability allowed under the same model. Specifically, the log of the ratio should grow at mostly linearly with the sample size $N$. This leads to the following definition.
+The main idea is that, in formulating FSFS models for potentially increasing numbers of variables (i.e., for $N \rightarrow \infty$), the ratio (\@ref(eq:elpr)) should remain bounded to ensure model stability, requiring that the largest probability possible under $P_{\theta_N}$ maintain a fixed order of magnitude relative to the smallest probability allowed under the same model. Specifically, the log of the ratio should grow at mostly linearly with the sample size $N$. This leads to the following definition.
 ```{definition, name = "S-unstable FSFS", label="instabFSFS", echo=TRUE}
 Let $\boldsymbol \theta_N \in \mathbb{R}^{q(N)}$ be a sequence of FSFS model parameters where the size of the model $q(N)$ is a function of the number of random variables $N$. A FSFS model formulation is \emph{Schweinberger-unstable} or \emph{S-unstable} if, as the number of variables increase ($N \rightarrow \infty$), 
 \begin{align*}
@@ -79,7 +79,7 @@ In other words, a model is S-unstable if, given any $C > 0$, there exists an int
 
 This definition of S-unstable is a generalization or reinterpretation of "unstable" used in @schweinberger2011instability by allowing non-exponential family models (e.g. RBM and DBM models in Sections \@ref(restricted-boltzmann-machines)-\@ref(deep-learning)) and an increasing number of parameters. While this definition differs in form and scope from the original, it does match that in @schweinberger2011instability for the special case of exponential models (cf. Section \@ref(discrete-exponential-family-models)) considered there.
 
-S-unstable FSFS model sequences may be undesirable for several reasons. One is that small changes in data can lead to overly-sensitive changes in probability. Consider, for example, the quantity given by
+S-unstable FSFS model sequences may be undesirable for several reasons. One is that small changes in data can lead to very large changes in probability. Consider, for example, the quantity given by
 $$
 \Delta(\boldsymbol \theta_N) \equiv \max \left\{\log \frac{P_{\boldsymbol \theta_N}(\boldsymbol x)}{P_{\boldsymbol \theta_N}(\boldsymbol x^*)} : \boldsymbol x \text{ }\& \text{ } \boldsymbol x^* \in \mathcal{X}^N \text{ differ in exactly one component}\right\},
 $$
@@ -120,4 +120,4 @@ implying that the definition of an S-unstable FSFS model sequence is invariant t
 
 # Implications
 
-For a large class of models that covers a broad range of applications (including "deep learning"), we have developed a formal definition of instability in model probability structure and elucidated multiple consequences of instability. We have shown for FSFS models that instability manifests through small changes in data leading to potentially large changes in probability as well as the potential to place all probability on certain modal subsections of the sample space, which could be potentially small. The FSFS model class is quite broad and, particularly in developing FSFS models for large data sets, some caution should be used in parameter specification to control effects of model instability.  
+For a large class of models that covers a broad range of applications (including "deep learning"), we have developed a formal definition of instability in model probability structure and elucidated multiple consequences of instability. We have shown for FSFS models that instability manifests through small changes in data leading to potentially large changes in probability as well as the potential to place all probability on certain modal subsections of the sample space, which potentially could be small. The FSFS model class is quite broad and, particularly in developing FSFS models for large data sets, some caution should be used in parameter specification to control effects of model instability.  

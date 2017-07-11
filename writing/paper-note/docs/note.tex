@@ -226,7 +226,7 @@ P_{\boldsymbol \theta_N} (\tilde{\boldsymbol x}) = \exp\left[ \boldsymbol \alpha
 \(\boldsymbol \theta_N = (\boldsymbol \alpha, \boldsymbol \beta,\Gamma) \in \Theta_N \subset \mathbb{R}^{q(N)}\)
 with \(q(N) = N + N_H + N*N_H\) denote the vector of parameters for the
 RBM. The probability mass function for the visible variables
-\(X_1, \dots, X_N\) follows from marginalizing this joint specification:
+\(X_1, \dots, X_N\) follows from marginalizing the joint specification
 \[
 P_{\boldsymbol \theta_N} (\boldsymbol x) = \sum\limits_{\boldsymbol h \in \mathcal{X}^{N_H}} P_{\boldsymbol \theta_N} (\boldsymbol x, \boldsymbol h), \qquad \boldsymbol x \in \mathcal{X}^N.
 \] Note that the vector of model parameters \(\boldsymbol \theta_N\), of
@@ -282,8 +282,8 @@ denote the combined vector of parameters with total length
 The probability mass function for the visible random variables
 \(X_1, \dots, X_N\) follows from this joint specification as \[
 P_{\boldsymbol \theta_N} (\boldsymbol x) = \sum\limits_{(\boldsymbol h^{(1)}, \dots, \boldsymbol h^{(M)}) \in \mathcal{X}^{N_{(H,1)} + \cdots + N_{(H,M)}}} P_{\boldsymbol \theta_N} (\tilde{\boldsymbol x}), \qquad \boldsymbol x \in \mathcal{X}^N
-\] Again like the RBM case, the DBM model specification examples a FSFS
-model.
+\] Again like the RBM case, the DBM model specification is an example of
+a FSFS model.
 
 \textbf{Deep belief network (DBN).} A DBN resembles a DBM in that there
 are multiple layers of latent random variables stacked in a deep
@@ -312,7 +312,7 @@ ratio (ELPR)
 \end{align}
 The main idea is that, in formulating FSFS models for potentially
 increasing numbers of variables (i.e., for \(N \rightarrow \infty\)),
-the ratio (\eqref{eq:elpr}) should remain bounded to better ensure model
+the ratio (\eqref{eq:elpr}) should remain bounded to ensure model
 stability, requiring that the largest probability possible under
 \(P_{\theta_N}\) maintain a fixed order of magnitude relative to the
 smallest probability allowed under the same model. Specifically, the log
@@ -347,8 +347,8 @@ special case of exponential models (cf.~Section
 \ref{discrete-exponential-family-models}) considered there.
 
 S-unstable FSFS model sequences may be undesirable for several reasons.
-One is that small changes in data can lead to overly-sensitive changes
-in probability. Consider, for example, the quantity given by \[
+One is that small changes in data can lead to very large changes in
+probability. Consider, for example, the quantity given by \[
 \Delta(\boldsymbol \theta_N) \equiv \max \left\{\log \frac{P_{\boldsymbol \theta_N}(\boldsymbol x)}{P_{\boldsymbol \theta_N}(\boldsymbol x^*)} : \boldsymbol x \text{ }\& \text{ } \boldsymbol x^* \in \mathcal{X}^N \text{ differ in exactly one component}\right\},
 \] which represents the biggest log-probability ratio for a one
 component change in data outcomes at a FSFS parameter
@@ -439,7 +439,7 @@ consequences of instability. We have shown for FSFS models that
 instability manifests through small changes in data leading to
 potentially large changes in probability as well as the potential to
 place all probability on certain modal subsections of the sample space,
-which could be potentially small. The FSFS model class is quite broad
+which potentially could be small. The FSFS model class is quite broad
 and, particularly in developing FSFS models for large data sets, some
 caution should be used in parameter specification to control effects of
 model instability.
