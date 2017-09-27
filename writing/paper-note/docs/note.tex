@@ -312,12 +312,12 @@ ratio (ELPR)
 \end{align}
 The main idea is that, in formulating FSFS models for potentially
 increasing numbers of variables (i.e., for \(N \rightarrow \infty\)),
-the ratio (\eqref{eq:elpr}) should remain bounded to ensure model
-stability, requiring that the largest probability possible under
-\(P_{\theta_N}\) maintain a fixed order of magnitude relative to the
-smallest probability allowed under the same model. Specifically, the log
-of the ratio should grow at mostly linearly with the sample size \(N\).
-This leads to the following definition.
+the ratio \eqref{eq:elpr} should remain bounded to ensure model stability,
+requiring that the largest probability possible under \(P_{\theta_N}\)
+maintain a fixed order of magnitude relative to the smallest probability
+allowed under the same model. Specifically, the log of the ratio should
+grow at mostly linearly with the sample size \(N\). This leads to the
+following definition.
 \BeginKnitrBlock{definition}[S-unstable FSFS]
 \protect\hypertarget{def:instabFSFS}{}{\label{def:instabFSFS}
 \iffalse (S-unstable FSFS) \fi{} }Let
@@ -338,7 +338,7 @@ fails to be S-unstable.
 This definition of S-unstable is a generalization or reinterpretation of
 ``unstable'' used in Schweinberger
 (\protect\hyperlink{ref-schweinberger2011instability}{2011}) by allowing
-non-exponential family models (e.g.~RBM and DBM models in Sections
+non-exponential family models (e.g., RBM and DBM models in Sections
 \ref{restricted-boltzmann-machines}-\ref{deep-learning}) and an
 increasing number of parameters. While this definition differs in form
 and scope from the original, it does match that in Schweinberger
@@ -357,13 +357,13 @@ result.
 
 \BeginKnitrBlock{proposition}
 \protect\hypertarget{prp:instab-elpr}{}{\label{prp:instab-elpr}}Let
-\(\text{ELPR}(\boldsymbol \theta_N)\) be as in (\eqref{eq:elpr}) for an
+\(\text{ELPR}(\boldsymbol \theta_N)\) be as in \eqref{eq:elpr} for an
 integer \(N \ge 1\). For a given \(C>0\), if
 \[\frac{1}{N}\text{ELPR}_N(\boldsymbol \theta_N) > C,\] then
 \[\Delta_N(\boldsymbol \theta_N) > C.\]
 \EndKnitrBlock{proposition}
 
-Again, if the probability ratio (\eqref{eq:elpr}) is too large, then the
+Again, if the probability ratio \eqref{eq:elpr} is too large, then the
 FSFS model will exhibit large changes in probability for very small
 differences in the data configuration, which exemplifies the intuitive
 notation of instability.
@@ -372,12 +372,12 @@ Additionally, S-unstable FSFS model sequences are connected to
 degenerate models, where model \emph{degeneracy} typically entails
 placing all probability on a small portion of the sample space. For
 perspective, note that differing sizes of
-\(1/N\cdot\text{ELPR}(\boldsymbol \theta_N)\) in (\eqref{eq:elpr}) may
+\(1/N\cdot\text{ELPR}(\boldsymbol \theta_N)\) in \eqref{eq:elpr} may
 induce a spectrum of levels of ``stability'' and Proposition
 \ref{prp:instab-elpr} indicates increasing sensitivity of model
 probabilities (i.e., for one component changes in outcomes) as
-(\eqref{eq:elpr}) increases. Furthermore, as the instability measure
-(\eqref{eq:elpr}) grows, FSFS model sequences are guaranteed to slide into
+\eqref{eq:elpr} increases. Furthermore, as the instability measure
+\eqref{eq:elpr} grows, FSFS model sequences are guaranteed to slide into
 full degeneracy as Proposition \ref{prp:degenFSFS} shows. Define a
 \(\epsilon\)-modal set \[
 M_{\epsilon, \boldsymbol \theta_N} \equiv \left\{\boldsymbol x \in \mathcal{X}^N: \log P_{\boldsymbol \theta_N}(\boldsymbol x) > (1-\epsilon)\max\limits_{\boldsymbol x^* \in \mathcal{X}^N}P_{\boldsymbol \theta_N}(\boldsymbol x^*) + \epsilon\min\limits_{\boldsymbol x^* \in \mathcal{X}^N}P_{\boldsymbol \theta_N}(\boldsymbol x^*) \right\}
@@ -387,7 +387,7 @@ M_{\epsilon, \boldsymbol \theta_N} \equiv \left\{\boldsymbol x \in \mathcal{X}^N
 \protect\hypertarget{prp:degenFSFS}{}{\label{prp:degenFSFS}}For an unstable
 FSFS model in Definition \ref{def:instabFSFS}, and for any given
 \(0 < \epsilon < 1\), \[
-P_{\boldsymbol \theta_N}\left((x_1, \dots, x_N) \in M_{\epsilon, \boldsymbol \theta_N}\right) \rightarrow 1 \text{ as } N \rightarrow \infty.
+P_{\boldsymbol \theta_N}\left((X_1, \dots, X_N) \in M_{\epsilon, \boldsymbol \theta_N}\right) \rightarrow 1 \text{ as } N \rightarrow \infty.
 \]
 \EndKnitrBlock{proposition}
 
@@ -477,8 +477,8 @@ using \(k \le N\) and \(\Delta(\boldsymbol \theta_N) \le C\). If
 \(k = 0\), then \(\boldsymbol x_{max} = \boldsymbol x_{min}\) and the
 same bound above holds.\hfill \(\Box\)
 
-\textbf{Proof of Proposition \ref{prp:degenFSFS}.} where
-\(|\mathcal{X}|<\infty\) holds in the FSFS model. We may suppose
+\textbf{Proof of Proposition \ref{prp:degenFSFS}.} Where
+\(|\mathcal{X}|<\infty\) holds in the FSFS model, we may suppose
 \(|\mathcal{X}|>1\) (i.e., \(\mathcal{X}^N\) has more than one outcome)
 because otherwise the model is trivially degenerate for all
 \(N \geq 1\). Fix \(0 < \epsilon < 1\). Then,
@@ -503,8 +503,8 @@ follows that
 \frac{1}{N}\log\left[\frac{P_{\boldsymbol \theta_N}(M_{\epsilon, \boldsymbol \theta_N})}{1-P_{\boldsymbol \theta_N}(M_{\epsilon, \boldsymbol \theta_N})}\right] & \ge \frac{1}{N} \log\left[\frac{P_{\boldsymbol\theta_N}(\boldsymbol x_{max})}{(|\mathcal{X}|^N)[P_{\boldsymbol \theta_N}(\boldsymbol x_{max})]^{1-\epsilon}[P_{\boldsymbol \theta_N}(\boldsymbol x_{min})]^{\epsilon}}\right] \\
 &= \frac{\epsilon}{N} \log\left[\frac{P_{\boldsymbol \theta_N}(\boldsymbol x_{max})}{P_{\boldsymbol \theta_N}(\boldsymbol x_{min})}\right] - \log |\mathcal{X}| \rightarrow \infty
 \end{align*}
-as \(N \rightarrow \infty\) by the definition of an unstable FSFS model
-(cf.~Definition \ref{def:instabFSFS}). Consequently,
+as \(N \rightarrow \infty\) by the definition of an S-unstable FSFS
+model (cf.~Definition \ref{def:instabFSFS}). Consequently,
 \(P_{\boldsymbol \theta_N}(M_{\epsilon, \boldsymbol \theta_N}) \rightarrow 1\)
 as \(N \rightarrow \infty\) as claimed. \hfill \(\Box\)
 
