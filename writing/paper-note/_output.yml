@@ -1,5 +1,5 @@
 bookdown::pdf_book:
-  template: "../resources/latex/jasa_article.tex"
+  template: "../resources/latex/technometrics_article.tex"
   keep_tex: yes
   latex_engine: "xelatex"
   pandoc_args: [
