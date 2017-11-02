@@ -112,6 +112,12 @@ Taking $\boldsymbol h_1=\boldsymbol h_2$ and maximizing over both $\boldsymbol h
 \end{align*}
 \hfill $\Box$
 
+**Proof of Theorem \@ref(thm:something).**  Let $L_{\boldsymbol \theta_{N}}(\boldsymbol X) = \log[ P_{\boldsymbol \theta_{N}}(\boldsymbol X)/ \min_{\boldsymbol y \in \mathcal{X}^N} P_{\boldsymbol \theta_{N}}(\boldsymbol y) ]/\REP(\boldsymbol \theta_{N})$, where again $\boldsymbol X=(X_1, \dots, X_N)$ and $\REP(\boldsymbol \theta_{N})= \log[\max_{\boldsymbol y \in \mathcal{X}^N} P_{\boldsymbol \theta_{N}}(\boldsymbol y)/ \min_{\boldsymbol y \in \mathcal{X}^N} P_{\boldsymbol \theta_{N}}(\boldsymbol y) ]$. As $L_{\boldsymbol \theta_{N}}(\boldsymbol X)\in[0,1]$, convergence of $L_{\boldsymbol \theta_{N}}(\boldsymbol X)$ to 1 in probability under $P_{\boldsymbol \theta_{N}}$ is equivalent to convergence to $1$ in expectation under $P_{\boldsymbol \theta_{N}}$ (i.e., convergence in expectation implies probabilistic convergence by Markov's inequality while probabilistic convergence implies convergence in expectation by uniform integrability/boundedness).
+
+For $\epsilon \in(0,1)$, let $\mathcal{M}_{\epsilon, \boldsymbol \theta_N}$ denote a modal set as in \@ref(eq:mode).  By Theorem \@ref(thm:degenFOES), $P_{\boldsymbol \theta_N}\left( \boldsymbol X\in \mathcal{M}_{\epsilon, \boldsymbol \theta_N}\right) \rightarrow 1$ holds as $N \rightarrow \infty$ and, by definition of \@ref(eq:mode), $\boldsymbol X\in \mathcal{M}_{\epsilon, \boldsymbol \theta_N}$ follows if and only if
+$1-L_{\boldsymbol \theta_{N}}(\boldsymbol X)<\epsilon$. Hence, $L_{\boldsymbol \theta_{N}}(\boldsymbol X) \stackrel{p,\mathrm{E}}{\longrightarrow} 1$ holds under $\boldsymbol \theta_{N}$ in Theorem \@ref(thm:something). The convergence $L_{-\boldsymbol \theta_{N}}(\boldsymbol X) \stackrel{p,\mathrm{E}}{\longrightarrow} 1$  under $-\boldsymbol \theta_{N}$ likewise follows from Corollary \@ref(cor:sign). \hfill $\Box$
+
+
 \clearpage
 
 # References {-}

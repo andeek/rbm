@@ -49,7 +49,7 @@
 \hypersetup{breaklinks=true,
             bookmarks=true,
             pdfauthor={},
-            pdftitle={A Note on the Instability and Degeneracy of Deep Learning Models},
+            pdftitle={A note on the instability and degeneracy of deep learning models},
             colorlinks=true,
             citecolor=blue,
             urlcolor=blue,
@@ -121,9 +121,14 @@
 \def\spacingset#1{\renewcommand{\baselinestretch}%
 {#1}\small\normalsize} \spacingset{1}
 
-\title{\bf A Note on the Instability and Degeneracy of Deep Learning Models}
-\author{Andee Kaplan \\ Department of Statistics, Iowa State University \\  and \\ Daniel Nordman \\ Department of Statistics, Iowa State University \\  and \\ Stephen Vardeman \\ Department of Statistics and Department of Industrial and\\
-Manufacturing Systems Engineering, Iowa State University \\ }
+\bigskip
+\bigskip
+\bigskip
+%\begin{center}
+  %{\LARGE\bf Title}
+  \title{\bf A note on the instability and degeneracy of deep learning models}
+%\end{center}
+\medskip
 
 \maketitle
 \begin{abstract}
@@ -164,7 +169,7 @@ extreme sensitivity to small changes in data configuration. The concept
 of instability was introduced in the field of statistical physics (i.e.,
 point processes) by Ruelle
 (\protect\hyperlink{ref-ruelle1999statistical}{1999}) and then further
-extended by Schweinberger Schweinberger
+extended by Schweinberger
 (\protect\hyperlink{ref-schweinberger2011instability}{2011}) for a
 family of exponential models. At issue, models exhibiting instability
 are typically undesirable as these tend to provide poor representations
@@ -271,7 +276,7 @@ sufficient statistics, while \[
 The natural parameter function \(\eta (\boldsymbol \theta)\) has a
 linear form (i.e.,
 \(\eta (\boldsymbol \theta)= \bm{A} \boldsymbol \theta\) for a given
-\(L \times k\) matrix \(\bm{A}\)) in many common model formulaitons,
+\(L \times k\) matrix \(\bm{A}\)) in many common model formulations,
 though may also be nonlinear (e.g., curved exponential families). In the
 linear case, \(\eta (\boldsymbol \theta) = \boldsymbol \theta\) may be
 generally assumed in the exponential parameterization with a minor
@@ -360,13 +365,11 @@ and the number of sufficient statistics
 \(\boldsymbol g_{N}(\boldsymbol x)\) do not depend on \(N\).
 Consequently, \(\boldsymbol \theta_N\) lies in a parameter space of
 fixed Euclidean dimension \(k\). However, this aspect need not be true
-for other types of FOES models considered in Sections
-\ref{restricted-boltzmann-machines} - \ref{deep-learning}, where instead
-the numbers of parameters and sufficient statistics commonly increase
-with the sample size \(N\).
+for other types of FOES models considered in Sections \ref{rbm} -
+\ref{deep-learning}, where instead the numbers of parameters and
+sufficient statistics commonly increase with the sample size \(N\).
 
-\subsection{Restricted Boltzmann
-Machines}\label{restricted-boltzmann-machines}
+\subsection{Restricted Boltzmann Machines}\label{rbm}
 
 A restricted Boltzmann machine (RBM) is an undirected graphical model
 specified for discrete or continuous random variables, with binary
@@ -545,11 +548,11 @@ This definition of S-unstable is a generalization or reinterpretation of
 ``unstable'' used in Schweinberger
 (\protect\hyperlink{ref-schweinberger2011instability}{2011}) by allowing
 possibly non-exponential family models (e.g., RBM and DBM models in
-Sections \ref{restricted-boltzmann-machines}-\ref{deep-learning} as well
-as a potentially increasing number \(q(N)\) of parameters through the
-parameter sequence \(\boldsymbol \theta_N\in \mathbb{R}^{q(N)}\). While
-this definition differs in form and scope from the original, it does
-match that in Schweinberger
+Sections \ref{rbm}-\ref{deep-learning} as well as a potentially
+increasing number \(q(N)\) of parameters through the parameter sequence
+\(\boldsymbol \theta_N\in \mathbb{R}^{q(N)}\). While this definition
+differs in form and scope from the original, it does match that in
+Schweinberger
 (\protect\hyperlink{ref-schweinberger2011instability}{2011}) for the
 special case of exponential models (cf.~Section
 \ref{discrete-exponential-family-models} considered there. Section
@@ -560,8 +563,8 @@ next describe several potentially undesirable features associated with
 S-unstable FOES models.
 
 \BeginKnitrBlock{remark}
-\iffalse <span class="remark"><em>Remark. \fi{} In the definition
-\eqref{eq:Sun} of S-instability, we note that the numerical measure
+\iffalse{} {Remark. } \fi{}In the definition \eqref{eq:Sun} of
+S-instability, we note that the numerical measure
 \(\REP(\boldsymbol \theta_N)/N\) of model instability is invariant to
 \emph{independent replications} of data. That is, let \(M \geq 1\)
 denote a possible number of replications and consider data
@@ -718,23 +721,23 @@ a FOES model. For instance, this latter condition is fulfilled for all
 linear exponential families from Section
 \ref{discrete-exponential-family-models} (e.g.,
 \eqref{eq:mod1}-\eqref{eq:mod2}) as well as all network models from Sections
-\ref{restricted-boltzmann-machines}-\ref{deep-learning} (e.g.,
-\eqref{eq:RBM1}-\eqref{eq:RBM2}). When parameters can be tuned in sign with
-effects prescribed in the model condition PSR, unstable FOES models will
-exhibit further probability sensitivities, as outlined in the following
-extension of Theorem @ref(thm:degenFOES\}).
+\ref{rbm}-\ref{deep-learning} (e.g., \eqref{eq:RBM1}-\eqref{eq:RBM2}). When
+parameters can be tuned in sign with effects prescribed in the model
+condition PSR, unstable FOES models will exhibit further probability
+sensitivities, as outlined in the following extension of Theorem
+@ref(thm:degenFOES\}).
 
 \BeginKnitrBlock{corollary}
-\protect\hypertarget{cor:sign}{}{\label{cor:sign}}Let
+\protect\hypertarget{cor:sign}{}{\label{cor:sign} }Let
 \(P_{\boldsymbol \theta_N}\), with support \(\mathcal{X}^N\),
 \(N\geq 1\), be a sequence of FOES models satisfying model condition
 PSR. If the models \(P_{\boldsymbol \theta_N}\) are additionally
 S-unstable, then
 \begin{enumerate}[(i)]
 \item the models  $P_{-\boldsymbol \theta_N}$  defined by $-\boldsymbol \theta_N$  are also S-unstable;
-\item and for the complement $\mathcal{M}_{\epsilon, \boldsymbol \theta_N}^c \equiv \mathcal{X}^N \setminus \mathcal{M}_{\epsilon, \boldsymbol \theta_N}$ of any mode-set $\mathcal{M}_{\epsilon, \boldsymbol \theta_N}$ under $\boldsymbol \theta_N$ from (\ref{eq:mode}), with $0<\epsilon<1$, it holds under $- \boldsymbol \theta_N$ that
+\item and for the complement $\mathcal{M}_{\epsilon, \boldsymbol \theta_N}^c \equiv \mathcal{X}^N \setminus \mathcal{M}_{\epsilon, \boldsymbol \theta_N}$ of any mode-set $\mathcal{M}_{\epsilon, \boldsymbol \theta_N}$ under $\boldsymbol \theta_N$ from (\ref{eq:mode}), with $0<\epsilon<1$, it holds under $-\boldsymbol \theta_N$ that
     $$ 
-    P_{-\boldsymbol \theta_N}( \boldsymbol X_N \in \mathcal{M}_{\epsilon, \boldsymbol \theta_N}^c) \rightarrow 1\qquad \mbox{as $N\to \infty$},
+    P_{-\boldsymbol \theta_N}( \boldsymbol X_N \in \mathcal{M}_{\epsilon, \boldsymbol \theta_N}^c) \rightarrow 1\qquad \text{as } N\to \infty,
     $$
     while, by Theorem \ref{thm:degenFOES}, $P_{\boldsymbol \theta_N}( \boldsymbol X_N \in \mathcal{M}_{\epsilon, \boldsymbol \theta_N} ) \rightarrow 1$ holds for $\boldsymbol X_N = (X_1,\ldots,X_N)$ under $\boldsymbol \theta_N$.
 \end{enumerate}
@@ -774,22 +777,31 @@ maximization or MCMC-based Bayes posterior sampling, as further
 discussed in Section \ref{implications}.
 
 \BeginKnitrBlock{remark}
-\iffalse <span class="remark"><em>Remark. \fi{} Model condition PSR and
-Corollary \ref{cor:sign} can be extended to cases where parameter
-components
+\iffalse{} {Remark. } \fi{}Under the model condition PSR, Corollary
+\ref{cor:sign} can also be extended to cases where parameter components
 \(\boldsymbol \theta_N =(\boldsymbol \theta_{1,N}, \boldsymbol \theta_{N,2})\)
-are not all changed in sign (\(-\boldsymbol \theta_N\)) but, more
-generally, are instead altered to another parameter configuration
-\(\boldsymbol \theta_{N}^A = (\boldsymbol \theta_{N,1}^A, \boldsymbol \theta_{N,2}^A)\)
-involving a switch in sign only among some model parameters
-\(\boldsymbol \theta_{N,2}^A = -\boldsymbol \theta_{N,2}\) with
-remaining parameters \(\boldsymbol \theta_{1,N}^A\) being arbitrarily
-chosen. If a sign change occurs among parameters
-(\(\pm \boldsymbol \theta_{N,2}\)) which dominate the probability
-structure of the model, then an unstable model under
-\(\boldsymbol \theta_N\) will then imply that many more unstable models
-exist over a broad spectrum of possibilities for variations
-\(\boldsymbol \theta_{N}^A\) of \(\boldsymbol \theta_N\).
+(say) are not all changed in sign (e.g., \(-\boldsymbol \theta_N\)) but,
+more generally, are instead altered to another parameter configuration
+\(\boldsymbol \theta_{N}^A = ( \boldsymbol \theta_{1,N}^A, \boldsymbol \theta_{2,N}^A )\)
+involving a switch in sign only among some dominating model parameters
+\(\boldsymbol \theta_{N,2}^A=- \boldsymbol \theta_{N,2}\) with remaining
+parameters \(\boldsymbol \theta_{1,N}^A\) being arbitrarily chosen. If a
+change sign occurs among parameters (\(\pm \boldsymbol \theta_{N,2}\))
+which dominate the probability structure of the model, then the results
+of Corollary \ref{cor:sign} can still hold with
+\(\boldsymbol \theta_{N}^A\) replacing \(-\boldsymbol \theta_N\); as an
+example of one sufficient condition, if
+\(\lim_{N\to \infty} \max_{\boldsymbol x \in \mathcal{X}^N} |G_N(\boldsymbol x, -\boldsymbol \theta_{N}) - G_N(\boldsymbol x, \boldsymbol \theta_{N}^A)|=0\)
+holds in addition to Corollary\textasciitilde{}1 assumptions, where \[
+G_N(\boldsymbol x, \boldsymbol \theta) =   \frac{\log P_{\boldsymbol \theta}(\boldsymbol x) - \min_{\boldsymbol y \in\mathcal{X}^N}\log P_{\boldsymbol \theta}(\boldsymbol y) }{\max_{\boldsymbol y \in\mathcal{X}^N}\log P_{\boldsymbol \theta}(\boldsymbol y)  - \min_{\boldsymbol y \in\mathcal{X}^N}\log P_{\boldsymbol \theta}(\boldsymbol y) }, \quad \boldsymbol x \in\mathcal{X}^N,
+\] represents a standardized form of \(\boldsymbol \theta\)-model
+probabilities, then the results of Corollary \ref{cor:sign} apply to
+\(\boldsymbol \theta_{N}^A\) in addition to \(-\boldsymbol \theta_N\).
+As a consequence, an unstable model under \(\boldsymbol \theta_N\) can
+then imply that many more unstable models exist over a broader spectrum
+of possibilities for variations \(\boldsymbol \theta_{N}^A\) of
+\(\boldsymbol \theta_N\), which involves some amount of sign change
+among components of \(\boldsymbol \theta_N\).
 \EndKnitrBlock{remark}
 
 \section{Illustrations}\label{illustrations}
@@ -824,7 +836,7 @@ sample space, say
 probabilities here are completely insensitive to changes in data
 outcomes across the sample space, and the associated log-ratio of
 extreme probabilities \eqref{eq:elpr} is \[
-\frac{1}{N} \REP(\boldsymbol \theta_N)=0\quad \;(\mbox{uniform probability model}),
+\frac{1}{N} \REP(\boldsymbol \theta_N)=0\quad \;(\text{uniform probability model}),
 \] which is as small as possible. In fact, a LREP value of zero can only
 occur for a FOES model having uniform probabilities, and such
 equi-probability models are always S-stable.
@@ -841,7 +853,7 @@ For such models, upon scaling by sample size \(N\), the log-ratio of
 extreme probabilities in \eqref{eq:elpr} for assessing instability becomes
 \begin{equation}
 \label{eq:UL}
-\frac{1}{N}\REP(\boldsymbol \theta_N ) \equiv   |\boldsymbol \theta_N| \frac{(U_N-L_N)}{N} \;\quad \mbox{(one-parameter exponential model)},
+\frac{1}{N}\REP(\boldsymbol \theta_N ) \equiv   |\boldsymbol \theta_N| \frac{(U_N-L_N)}{N} \;\quad \text{(one-parameter exponential model)},
 \end{equation}
 where
 \(U_N \equiv \max_{\boldsymbol x\in\mathcal{X}^N}g_N(\boldsymbol x)\)
@@ -874,14 +886,14 @@ For illustration, consider the iid Bernoulli model \eqref{eq:mod1} for
 \(\boldsymbol \theta_N = \log[ P_{\boldsymbol \theta_N}(X_1=1)/ P_{\boldsymbol \theta_N}(X_1=0)]\in\mathbb{R}\).
 Remark 1 (Section \ref{criterion}) then gives the model instability
 measure \eqref{eq:Sun} directly as \[
-\frac{1}{N}\REP(\boldsymbol \theta_N ) = |\boldsymbol \theta_N|\quad\; \mbox{(iid Bernoulli model)},
+\frac{1}{N}\REP(\boldsymbol \theta_N ) = |\boldsymbol \theta_N|\quad\; \text{(iid Bernoulli model)},
 \] so that an unstable (or stable) model results for a divergent (or
 bounded) parameter sequence \(|\boldsymbol \theta_N|\). The above
 instability expression for the Bernoulli model follows as well from the
 \(N\)-scaled LREP value \eqref{eq:UL} for a one-parameter exponential
 distribution, using that the sufficient statistic involved
 \(g_N(\boldsymbol x)= \sum_{i=1}^N x_i\),
-\(\boldsymbol x =(x_1,\ldots,x_n)\in\{0,1\}^N\), has maximum and mimimum
+\(\boldsymbol x =(x_1,\ldots,x_n)\in\{0,1\}^N\), has maximum and minimum
 values \(U_N=N\) and \(L_N=0\). In this case, Schweinberger
 (\protect\hyperlink{ref-schweinberger2011instability}{2011}) has noted
 that the statistic is stable (i.e., bounded \((U_N-L_N)/N=1\)) and the
@@ -895,8 +907,8 @@ based purely on the number of \(g_{2,N}(\boldsymbol x)\) of 2-stars or
 solely the number \(g_{3,N}(\boldsymbol x)\) of triangles,
 \(\boldsymbol x\in\{0,1\}^N\), has an measure of instability from
 \eqref{eq:Sun} as \[
-\frac{1}{N}\REP(\boldsymbol \theta_N )  = \left\{ \begin{array}{lcl} |\boldsymbol \theta_N| (n-2) && \mbox{(2-star graph model)}\\
-|\boldsymbol \theta_N|(n-2)/3 &&\mbox{(triangle graph model)},\end{array}\right.
+\frac{1}{N}\REP(\boldsymbol \theta_N )  = \left\{ \begin{array}{lcl} |\boldsymbol \theta_N| (n-2) && \text{(2-star graph model)}\\
+|\boldsymbol \theta_N|(n-2)/3 &&\text{(triangle graph model)},\end{array}\right.
 \] by using the (one-parameter exponential) LREP formula \eqref{eq:UL}
 with statistic maximums \(U_N= N(n-2)\) for 2-stars or \(U_N= N(n-2)/3\)
 for triangles and with minimums \(L_N=0\) in both cases. Because the
@@ -982,7 +994,7 @@ The variables are iid under this model so that Remark 1 (Section
 extreme probabilities \eqref{eq:elpr} as
 \begin{align*}
   \frac{1}{N}\REP(\boldsymbol \theta_N) &= \frac{\max_{1 \leq i \leq k} P_{\boldsymbol \theta_N}(X_1=i)}{\min_{1 \leq i \leq k} P_{\boldsymbol \theta_N}(X_1=i)}\\
-  &= \max_{1 \leq i \leq k} \theta_{i,N} - \min_{1 \leq i \leq k} \theta_{i,N} \qquad \mbox{(iid multinomial model)}.
+  &= \max_{1 \leq i \leq k} \theta_{i,N} - \min_{1 \leq i \leq k} \theta_{i,N} \qquad \text{(iid multinomial model)}.
 \end{align*}
 Hence, a multinomial model sequence is unstable (or stable) depending on
 whether (or not) the maximal parameter difference
@@ -1054,9 +1066,8 @@ Dimension}\label{latent-variable-models-of-increasing-parameter-dimension}
 We next consider instability of discrete data models based on
 exponential formulations involving hidden, or latent, variables, such as
 those probabilistic graphical models described in Sections
-\ref{restricted-boltzmann-machines}-\ref{deep-learning}. We will focus
-on restricted Bolzmann machine (RBM) models (Section
-\ref{restricted-boltzmann-machines}, having one layer of latent
+\ref{rbm}-\ref{deep-learning}. We will focus on restricted Boltzmann
+machine (RBM) models (Section \ref{rbm}, having one layer of latent
 variables for simplicity, though the same instability concepts may be
 extended to other deep learning models (Section \ref{deep-learning}. For
 \(N\) visible variables
@@ -1100,7 +1111,7 @@ model for \(N\) visibles \(\boldsymbol X\) with no hidden variables
 for variables in \(\boldsymbol X\), which has \(q(N)=N\) parameters
 \(\boldsymbol \theta_N^{\mathcal{V}} = (\theta_{1,N}^{\mathcal{V}}, \ldots, \theta_{N,N}^{\mathcal{V}}) \in \mathbb{R}^{N}\),
 and the measure of model instability becomes \[
-\frac{1}{N}\REP(\boldsymbol \theta_N) = \frac{2}{N} \sum_{i=1}^N|\theta_{i,N}^{\mathcal{V}}| \quad \mbox{(RBM model, no hiddens)}.
+\frac{1}{N}\REP(\boldsymbol \theta_N) = \frac{2}{N} \sum_{i=1}^N|\theta_{i,N}^{\mathcal{V}}| \quad \text{(RBM model, no hiddens)}.
 \] Hence, this model sequence for \(\boldsymbol X\) will be S-unstable
 model if the aggregation of absolute parameters grows faster than the
 number \(N\) of parameters/visible variables. Consequently, even for a
@@ -1135,7 +1146,7 @@ denote the LREP value \eqref{eq:elpr} from the marginal distribution
 \begin{align*}
 \REP_{(\boldsymbol X, \boldsymbol H)}(\boldsymbol \theta_N) &=\log\left[  \frac{\max_{ (\boldsymbol x, \boldsymbol h) \in \{\pm 1\}^{N+N_{\mathcal{H}}}}
 \tilde{P}_{\boldsymbol \theta_N} (\boldsymbol x, \boldsymbol h)}{\min_{ (\boldsymbol x, \boldsymbol h) \in \{\pm 1\}^{N+N_{\mathcal{H}}}`}
-\tilde{P}_{\boldsymbol \theta_N} (\boldsymbol x, \boldsymbol h)} \right] \qquad \mbox{(joint RBM model)}    \\    
+\tilde{P}_{\boldsymbol \theta_N} (\boldsymbol x, \boldsymbol h)} \right] \qquad \text{(joint RBM model)}    \\    
 &= \left(\max_{ (\boldsymbol x, \boldsymbol h) \in \{\pm 1\}^{N+N_{\mathcal{H}}}} f_{\boldsymbol \theta_N} (\boldsymbol x, \boldsymbol h)-\min_{ (\boldsymbol x, \boldsymbol h) \in \{\pm 1\}^{N+N_{\mathcal{H}}}} f_{\boldsymbol \theta_N} (\boldsymbol x, \boldsymbol h)\right),
 \end{align*}
 written as a function
@@ -1307,9 +1318,11 @@ accumulated magnitude compares to the observation sample size \(N\).
 \section{Statistical Consequences of Instability}\label{implications}
 
 Due to their extreme sensitivity in probability structure, S-instability
-in FOES models often translates to numerical complications, and in fact
-obstructions, in both simulation and statistical inference based on
-likelihoods.
+in FOES models may often translate to numerical complications, and in
+fact obstructions, in both simulation and statistical inference based on
+likelihoods. We describe these aspects in Sections
+\ref{mcmc}-\ref{bayes} with regard to data simulation, maximum
+likelihood estimation and Bayes inference, respectively.
 
 \subsection{Implications for Simulation}\label{mcmc}
 
@@ -1319,9 +1332,9 @@ Suppose one aims to apply MCMC to simulate data
 \(\boldsymbol x \in\mathcal{X}^N\) whereby a chain is constructed with
 \(P_{\boldsymbol \theta_N}\) as the stationary distribution. For an
 unstable FOES model, one component changes in outcomes may produce
-radically different probabilities which then creates numerical barriers
-to MCMC. For example, consider implementation of a Gibbs sampler from
-the full conditional distributions
+radically different probabilities, which may then impose numerical
+barriers to MCMC. For example, consider implementation of a Gibbs
+sampler from the full conditional distributions
 \(P_{\boldsymbol \theta_N} (X_i = x| \boldsymbol x_{-i})\),
 \(x\in\mathcal{X}\), of each variable \(X_i\) based on values
 \(\boldsymbol x_{-i}\in \mathcal{X}^{N-1}\) for the remaining variables,
@@ -1330,112 +1343,185 @@ say \(\boldsymbol X_{-i}\), in \(\boldsymbol X\). If a single change in
 outcomes \(\boldsymbol x^{(1)}\) and \(\boldsymbol x^{(2)}\) for
 \(\boldsymbol X\) with vastly different probabilities under the joint
 distribution \(P_{\boldsymbol \theta_N}\), then the Gibbs sampler can
-have extreme log-ratios in its transition probabilities \[
-\left| \frac{P_{\boldsymbol \theta_N} (X_i =x_1 | \boldsymbol x^{(1)}_{-i})}{P_{\boldsymbol \theta_N} (X_i = x_2| \boldsymbol x^{(2)}_{-i}) } \right|=\left| \frac{P_{\boldsymbol \theta_N} ( \boldsymbol x^{(1)} )}{P_{\boldsymbol \theta_N} (  \boldsymbol x^{(2)} ) } \right|
-\] using that conditional probabilities are proportional to the joint
-probabilities and the fact that unstable models can have unbounded
-log-probability ratios in one-component changes (Theorem
-\ref{thm:instab-elpr}). This can hinder the ability of chain to
-effectively explore the sample space of the observations
-\(\boldsymbol X\), as the chain may then mix poorly by moving rapidly
-to, and slowly away from, sections of the sample space surface. This
-mixing problem is due to the unstable stationary distribution (unbounded
-ratios of probabilities under the joint model), rather than in the
-particulars of the MCMC algorithm, similar complications can also arise
-for Metropolis-Hastings algorithms for MCMC. Hence, while an unstable
-FOES model \(P_{\boldsymbol \theta_N}\) may be valid and technically
-open to simulation by MCMC, the aspect of instability can ruin numerical
-applications of MCMC.
+have extreme log-ratios in its transition probabilities, \[
+\log \left| \frac{P_{\boldsymbol \theta_N} (X_i =x_1 | \boldsymbol x^{(1)}_{-i})}{P_{\boldsymbol \theta_N} (X_i = x_2| \boldsymbol x^{(2)}_{-i}) } \right|=\log \left| \frac{P_{\boldsymbol \theta_N} ( \boldsymbol x^{(1)} )}{P_{\boldsymbol \theta_N} (  \boldsymbol x^{(2)} ) } \right|,
+\]\\
+as conditional probabilities are proportional to joint probabilities
+that, with unstable models, can have unbounded log-probability ratios in
+one-component changes (Theorem \ref{thm:instab-elpr}). This can hinder
+the ability of chain to effectively explore the sample space of the
+observations \(\boldsymbol X\), as the chain may mix poorly by moving
+rapidly to, and slowly away from, sections of the sample space. In this
+case, for example, the Markov chain may become entrapped within a mode
+of the probability function, with rare chance of escaping to adequately
+mimic the occupation frequencies in the overall sample space. If modes
+of the unstable model are not unique, then important outcomes may be
+missed without multiple chains or impractically enormous numbers of MCMC
+samples. This mixing problem is due to the unstable stationary
+distribution (unbounded ratios of probabilities under the joint model),
+rather than in any particulars of the MCMC algorithm, and similar
+complications can also arise for Metropolis-Hastings algorithms for
+MCMC. Hence, while an unstable FOES model \(P_{\boldsymbol \theta_N}\)
+may be valid and technically open to simulation by MCMC, the aspect of
+instability can render applications of MCMC as numerically infeasible
+for simulation purposes. This result is in line with conclusions of
+Handcock (\protect\hyperlink{ref-handcock2003assessing}{2003}) and
+Schweinberger
+(\protect\hyperlink{ref-schweinberger2011instability}{2011}) for other
+exponential models.
 
 \subsection{Implications for Maximum Likelihood
 Inference}\label{implications-for-maximum-likelihood-inference}
 
-The rugged or volatile probability structure in unstable models can also
-hamper efforts to maximize likelihood functions for statistical
-inference. Essentially, when a FOES model is unstable along a parameter
-sequence \(\boldsymbol \theta_N\), the same model can consequently
-unstable along parameters \(-\boldsymbol \theta_N\) opposite from the
-origin (model condition PSR and Corollary \ref{cor:sign}). This leads to
-potential hyper-sensitivity in the likelihood function, which can be
-pulled in extreme and opposite directions depending on how a parameter
-lies with respect to zero and translates into numerical complications in
-maximizing the objective function.
+Volatility in the probability structure of an unstable model can also
+hamper efforts to maximize likelihood functions in statistical
+inference. When a FOES model is unstable along a parameter sequence
+\(\boldsymbol \theta_N\), the same model can further be unstable along
+parameters \(-\boldsymbol \theta_N\) in an opposite direction from the
+origin (model condition PSR and Corollary \ref{cor:sign}). This can
+translate into potential sensitivity of the likelihood function around
+zero, and lead to numerical complications in maximizing the objective
+function. We next provide a discussion of this issue in a way that
+builds upon and extends related findings by @Schweinberger
+(\protect\hyperlink{ref-schweinberger2011instability}{2011}), who
+largely focused on the case of one-parameter exponential models.
 
-For a FOES model \(P_{\boldsymbol \theta_N}(\boldsymbol x)\),
-\(\boldsymbol x\in\mathcal{X}^N\), for \(N\) observations
-\(\boldsymbol X =(X_1,\ldots,X_N)\), define the likelihood function
-\(\mathcal{L}(\boldsymbol \theta_N | \boldsymbol x) \equiv N^{-1}\log P_{\boldsymbol \theta_N }(\boldsymbol x)\)
-at \(\boldsymbol \theta_N\) and the minimum probability ratio
-counterpart
-\(\mathcal{L}(\boldsymbol \theta_N | \boldsymbol x) - N^{-1} \log \min_{\boldsymbol \theta_N}= N^{-1}\log[P_{\boldsymbol \theta_N }(\boldsymbol x) /\min_{\boldsymbol \theta_N}]\)
-where
-\(\min_{\boldsymbol \theta_N} \equiv \min_{\boldsymbol y\in\mathcal{X}^N} P_{\boldsymbol \theta_N }(\boldsymbol y)\).
-Also define
-\(\max_{\boldsymbol \theta_N} \equiv \max_{\boldsymbol y\in\mathcal{X}^N} P_{\boldsymbol \theta_N }(\boldsymbol y)\).
+With many probability models, the modes and anti-modes in the
+probability structure under one parameter \(\boldsymbol \theta_N\) are
+reversed in role when the parameter sign changes
+\(-\boldsymbol \theta_N\). Because unstable models tend to degeneracy,
+the opposite signed parameters further push unstable models to assign
+nearly all probability to extremely opposite data configurations, given
+by modes/anti-modes. This is made concrete in Theorem
+\ref{thm:something}, relating the degeneracy from unstable models to the
+expected behavior of log-likelihood functions.
 
 \BeginKnitrBlock{theorem}
-\protect\hypertarget{thm:something}{}{\label{thm:something}}Let
+\protect\hypertarget{thm:something}{}{\label{thm:something} }Let
 \(P_{\boldsymbol \theta_N}\), \(N \geq 1\), denote an S-unstable FOES
-model sequence (i.e.,
-\(\lim_{N\to \infty}\REP(\boldsymbol \theta_N)/N=\infty\)) which
-additionally satisfies model condition PSR. Then,
-\begin{align*}
-\log\left[ \frac{P_{\boldsymbol \theta_N }(\boldsymbol x) }{\min_{\boldsymbol \theta_N}}\right] +  \log\left[ \frac{P_{-\boldsymbol \theta_N }(\boldsymbol x) }{\min_{-\boldsymbol \theta_N}}\right]  &=    \log\left[ \frac{\max_{\boldsymbol \theta_N}}{\min_{\boldsymbol \theta_N}}\right]  \equiv  \REP(\boldsymbol \theta_N)\\
-& = \log\left[ \frac{\max_{-\boldsymbol \theta_N} }{\min_{-\boldsymbol \theta_N}}\right] \equiv \REP(-\boldsymbol \theta_N)
-\end{align*}
-for any \(\boldsymbol x\in\mathcal{X}^N\) and, as \(N\to \infty\), the
-following convergence \[
-\frac{1}{\REP(\boldsymbol \theta_N)} \log\left[ \frac{P_{\boldsymbol \theta_N }(\boldsymbol X) }{\min_{\boldsymbol \theta_N}}\right]  \rightarrow 1 \qquad \frac{1}{\REP(-\boldsymbol \theta_N)}\log\left[ \frac{P_{-\boldsymbol \theta_N }(\boldsymbol X) }{\min_{-\boldsymbol \theta_N}}\right]  \rightarrow 0
-\] holds in probability \(P_{\boldsymbol \theta_N}\), as well as in
-expectation \(E_{\boldsymbol \theta_N}\), under
-\(\boldsymbol \theta_N\); the limits of convergence are reversed under
-\(-\boldsymbol \theta_N\), \[
-\frac{1}{\REP(\boldsymbol \theta_N)} \log\left[ \frac{P_{\boldsymbol \theta_N }(\boldsymbol x) }{\min_{\boldsymbol \theta_N}}\right]  \rightarrow 0 \qquad \frac{1}{\REP(-\boldsymbol \theta_N)}\log\left[ \frac{P_{-\boldsymbol \theta_N }(\boldsymbol x) }{\min_{-\boldsymbol \theta_N}}\right]  \rightarrow 1
+model sequence, which additionally satisfies model condition PSR. Let
+\(\boldsymbol{x}_{\max, \boldsymbol \theta_N},\boldsymbol{x}_{\min, \boldsymbol \theta_N}\in\mathcal{X}^N\)
+denote, respectively, a mode and anti-mode of the model
+\(P_{\boldsymbol \theta_N}(\boldsymbol x)\),
+\(\boldsymbol x\in\mathcal{X}^N\), for \(N\) observations
+\(\boldsymbol X = (X_1,\ldots,X_N)\), whereby
+\(P_{\boldsymbol \theta_N }(\boldsymbol{x}_{\max, \boldsymbol \theta_N}) = \max_{\boldsymbol y\in\mathcal{X}^N} P_{\boldsymbol \theta_N }(\boldsymbol y)\)
+and
+\(P_{\boldsymbol \theta_N }(\boldsymbol{x}_{\min, \boldsymbol \theta_N}) = \min_{\boldsymbol y\in\mathcal{X}^N} P_{\boldsymbol \theta_N }(\boldsymbol y)\).
+
+Then, letting \(\stackrel{p, \mathrm{E}}{\longrightarrow}\) denote
+convergence in probability and expectation, as \(N\to \infty\), \[
+\frac{1}{\REP(\boldsymbol \theta_N)} \log\left[ \frac{P_{\boldsymbol \theta_N }(\boldsymbol X) }{ \displaystyle{\min_{\boldsymbol y\in\mathcal{X}^N}} P_{\boldsymbol \theta_N }(\boldsymbol y)}\right] = \frac{ \log P_{\boldsymbol \theta_N } ( \boldsymbol X)  - \log P_{\boldsymbol \theta_N }(\boldsymbol{x}_{\min, \boldsymbol \theta_N}) }
+{ \log P_{\boldsymbol \theta_N } (\boldsymbol{x}_{\max, \boldsymbol \theta_N})  - \log P_{\boldsymbol \theta_N }(\boldsymbol{x}_{\min, \boldsymbol \theta_N}) }
+\stackrel{p, \mathrm{E}}{\longrightarrow}
+\; 1
+\] under \(\boldsymbol\theta_N\) while \[
+\frac{1}{\REP(-\boldsymbol \theta_N)} \log\left[ \frac{P_{-\boldsymbol \theta_N }(\boldsymbol X) }{  \displaystyle{\min_{\boldsymbol y\in\mathcal{X}^N}} P_{-\boldsymbol \theta_N }(\boldsymbol y)} \right]
+=    \frac{ \log P_{-\boldsymbol \theta_N } ( \boldsymbol X) - \log P_{ \boldsymbol \theta_N }(\boldsymbol{x}_{\max, \boldsymbol \theta_N})    }
+{ \log P_{-\boldsymbol \theta_N } (\boldsymbol{x}_{\min, \boldsymbol \theta_N})  - \log P_{-\boldsymbol \theta_N }(\boldsymbol{x}_{\max, \boldsymbol \theta_N}) }
+\stackrel{p,\mathrm{E}}{\longrightarrow}
+\; 1,
+\] under \(-\boldsymbol\theta_N\), where \[
+\REP( \boldsymbol \theta_N) \equiv \log \frac{P_{\boldsymbol \theta_N } (\boldsymbol{x}_{\max, \boldsymbol \theta_N})}{P_{\boldsymbol \theta_N }(\boldsymbol{x}_{\min, \boldsymbol \theta_N})} = \log  \frac{P_{-\boldsymbol \theta_N } (\boldsymbol{x}_{\min, \boldsymbol \theta_N}) }{ P_{-\boldsymbol \theta_N }(\boldsymbol{x}_{\max, \boldsymbol \theta_N})}=   \REP( -\boldsymbol \theta_N), \quad N \geq 1.
 \]
-\EndKnitrBlock{theorem} Schweinberger
+\EndKnitrBlock{theorem}
+
+Theorem \ref{thm:something} entails log-likelihood functions based on
+unstable models are both inversely related and degenerate at opposited
+signed parameters \(\boldsymbol \theta_N\) or \(-\boldsymbol \theta_N\),
+so that likelihoods are highest at different extremes in data
+configuration (e.g., \(\boldsymbol{x}_{\max, \boldsymbol \theta_N}\)
+under \(\boldsymbol \theta\)-probabilities or
+\(\boldsymbol{x}_{\min, \boldsymbol \theta_N}\) under
+\(-\boldsymbol \theta\)-probabilities). If the observed outcome
+\(\boldsymbol x\) for data \(\boldsymbol X\) is not a mode/anti-mode,
+then probabilities for the outcome may be small under both parameters
+\(\boldsymbol \theta_N\) and \(-\boldsymbol \theta_N\), in which case
+associated optimization steps may then shift around zero and struggle to
+converge. In many model formulations, the zero parameter
+\(\boldsymbol \theta_N=\boldsymbol 0\) is a ``safe'' position among
+parameters, representing a guaranteed stable model (having uniform
+probabilities among outcomes), which can also tether a broad parameter
+search attempted among unstable models. Handcock
+(\protect\hyperlink{ref-handcock2003assessing}{2003}) describes similar
+results for degenerate exponential models, and Theorem
+\ref{thm:something} also supports an important finding of Schweinberger
 (\protect\hyperlink{ref-schweinberger2011instability}{2011} Corollary 1)
-considered the one-parameter linear exponential case showing that, for
-positive \(\boldsymbol \theta_N>0\), \[
-\frac{1}{\REP(\boldsymbol \theta_N)} \log\left[ \frac{P_{\boldsymbol \theta_N }(\boldsymbol x) }{\min_{\boldsymbol \theta_N}}\right] = \frac{\boldsymbol g(\boldsymbol x) - L_N}{U_N-L_N} 
-\] holds and converges to \(1\) in expectation
-\(E_{\boldsymbol \theta_N}\), while \[   
-\frac{1}{\REP(-\boldsymbol \theta_N)} \log\left[ \frac{P_{-\boldsymbol \theta_N }(\boldsymbol x) }{\min_{-\boldsymbol \theta_N}}\right] = \frac{U_N -\boldsymbol g(\boldsymbol x)}{U_N-L_N} 
-\] holds converges to \(1\) in expectation
-\(E_{-\boldsymbol \theta_N}\). This result is a special case of Theorem
-\ref{thm:something} and the LREP expansion \eqref{eq:UL} for the one
-parameter exponential model case and is related to a result in Handcock
-(\protect\hyperlink{ref-handcock2003assessing}{2003}).
+for one-parameter linear exponential models \eqref{eq:expo}. In the latter
+case, the likelihood score function at \(\boldsymbol \theta_N\) is the
+expected value
+\(\mu(\boldsymbol \theta_N)\equiv \mathrm{E}_{\boldsymbol \theta_N} g(\boldsymbol X)\)
+of the sufficient statistic \(g(\cdot)\), and optimization involves
+solving \(\mu(\cdot)=g(\boldsymbol x)\) for an observed outcome
+\(\boldsymbol x\). For unstable models in this exponential class,
+Schweinberger
+(\protect\hyperlink{ref-schweinberger2011instability}{2011} Corollary 1)
+shows that \[
+\lim_{N\to \infty}\frac{\mu(\boldsymbol \theta_N) -L_n}{U_n-L_N}= \left\{ \begin{array}{lcl}
+1 && \text{for } \boldsymbol \theta_N>0,\\
+0 && \text{for } \boldsymbol \theta_N<0, \end{array}\right.
+\] where again \(U_N\) and \(L_N\) denote the maximum and minimum values
+of the statistic \(g(\boldsymbol x)\),
+\(\boldsymbol x\in\mathcal{X}^N\). As described by Schweinberger
+(\protect\hyperlink{ref-schweinberger2011instability}{2011}), the
+implication for maximum likelihood estimation is that, unless an
+observed outcome \(\boldsymbol x\) falls at an extreme \(U_N, L_N\)
+(i.e., modes/anti-modes), optimization steps in the parameter space can
+iterate in relatively small increments around zero and fail to converge.
+For unstable one-parameter exponential models, the maximum likelihood
+results of Schweinberger
+(\protect\hyperlink{ref-schweinberger2011instability}{2011}) turn out to
+be a special case of Theorem \ref{thm:something} and the LREP expansion
+\eqref{eq:UL} in this setting; namely, for an unstable model with
+\(\boldsymbol \theta_N>0\), \[
+\frac{1}{\REP(\boldsymbol \theta_N)} \log\left[ \frac{P_{\boldsymbol \theta_N }(\boldsymbol X) }{\displaystyle{\min_{\boldsymbol y\in\mathcal{X}^N}} P_{\boldsymbol \theta_N }(\boldsymbol y)}\right] = \frac{\boldsymbol g(\boldsymbol X) - L_N}{U_N-L_N}\;\;\stackrel{p, \mathrm{E}}{\longrightarrow}\;\; 1
+\] holds as \(N\to \infty\) by Theorem \ref{thm:something}, while under
+\(-\boldsymbol \theta_N<0\) \[
+\frac{1}{\REP(-\boldsymbol \theta_N)} \log\left[ \frac{P_{-\boldsymbol \theta_N }(\boldsymbol X) }{\displaystyle{\min_{\boldsymbol y\in\mathcal{X}^N}} P_{-\boldsymbol \theta_N }(\boldsymbol y)}\right] = \frac{U_N -\boldsymbol g(\boldsymbol X)}{U_N-L_N} = 1 - \frac{\boldsymbol g(\boldsymbol X) - L_N}{U_N-L_N} \;\;\stackrel{p, \mathrm{E}}{\longrightarrow}\;\; 1.
+\] Again, when all probability in unstable models may be pushed to
+opposite extremes in the sample space, due to a combination of
+degeneracy and parameter sign, numerical complications in likelihood
+maximization may occur.
 
-The idea, more generally, is that probability in an unstable model is
-pushed to opposite regions of the sample space due to degeneracy and
-opposite signed parameters. This can cause numerical complications in
-likelihood maximization. If an observed outcome
-\(\boldsymbol x \equiv \argmax \mathcal{L}(\boldsymbol \theta_N)\) which
-is also the outcome with minimal probability under
-\(P_{-\boldsymbol \theta_N}\), then the likelihood function will have a
-clear peak and maximization straightforward. However, when the observed
-outcome \(\boldsymbol x\) is at an extreme in the probability structures
-of \(P_{\boldsymbol \theta_N}, P_{-\boldsymbol \theta_N}\) (which are
-related) the likelihood function will be flat and optimization steps may
-shift around zero.
+\subsection{Implications for Bayes Inference}\label{bayes}
 
-\subsection{Implications for Bayes
-Inference}\label{implications-for-bayes-inference}
-
-Considering that changes in sign of parameters can cause all probability
-to be placed on disjoint sections of the sample space (Corollary
-\ref{cor:sign}), then this will create numerical difficulties in Bayes
-inference based on MCMC. Given observations
-\(\boldsymbol X = (X_1,\ldots,X_N)\), switching \(\boldsymbol theta_N\)
-from positive to negative or vice versa could dramatically change
-probabilities (model condition PSR and Corollary \ref{cor:sign}). This
-would translate to numerical challenges similar to those presented in
-Section \ref{mcmc}, i.e., inability of the chain to effectively explore
-the sample space because of unbounded ratios of probabilities. We can
-write the MH acceptance probability to indicate this, \[
-\alpha\left(\boldsymbol x^{(1)} \mid \boldsymbol x^{(2)}\right)= \min\left\{1, 
-\frac{q(\boldsymbol x^{(2)} \mid \boldsymbol x^{(1)})}{q(\boldsymbol x^{(1)} \mid \boldsymbol x^{(2)})}\frac{P_{\boldsymbol \theta_N} ( \boldsymbol x^{(1)} )}{P_{\boldsymbol \theta_N} (  \boldsymbol x^{(2)} ) } \right\}
-\] for some proposal distribution \(q(\cdot)\).
+The potential numerical difficulties with maximum likelihood with
+unstable models, as described in the previous section, can naturally
+carry over to Bayes inference. Considering that the degeneracy issues
+related to unstable models can cause likelihoods can be flat (e.g., near
+zero) for many parameters under a given data outcome and that sign
+changes in parameters can shift tremendous probability to extreme and
+opposite outcomes in the sample space (e.g., Corollary \ref{cor:sign},
+Theorem \ref{thm:something}), then numerical complications may arise
+with Bayes inference in sampling a posterior parameter space based on
+MCMC. The potential challenges in chain mixing are similar to those
+presented in Section \ref{mcmc}, though in chain movements through the
+parameter space as opposed to the sample space in data generation. That
+is, in the Bayes setting for sampling a posterior distribution for
+\(\boldsymbol \theta_N\), a chain may unstable to effectively explore
+the parameter space due partly to extreme and potentially unbounded
+probability ratios from parameter sign changes, which represents a
+parameter space analog to how one component changes in the sample space
+may impact data simulation with unstable models. For example, if
+\(\pi(\cdot)\) denotes a prior density for \(\boldsymbol \theta_N\) and
+\(q(\cdot | \cdot)\) denotes a proposal distribution for use in a
+Metropolis-Hastings (MH) sampler, then MH acceptance probability becomes
+\[
+\alpha\left(\boldsymbol \theta^{(1)} \mid \boldsymbol \theta^{(2)}\right)= \min\left\{1,
+\frac{q(\boldsymbol \theta_N^{(2)} \mid \boldsymbol \theta_N^{(1)})}{q(\boldsymbol \theta_N^{(1)} \mid \boldsymbol \theta_N^{(2)})}
+\frac{P_{\boldsymbol \theta_N^{(1)}} ( \boldsymbol x ) \pi(\boldsymbol \theta_N^{(1)}) }{P_{\boldsymbol \theta^{(2)}_N} (  \boldsymbol x) \pi(\boldsymbol \theta_N^{(2)}) } \right\},
+\] which indicates how parameter sensitivity in the likelihood
+\(P_{\boldsymbol \theta_N} ( \boldsymbol x)\) may complicate sampling of
+the posterior
+\(P_{\boldsymbol \theta_N} ( \boldsymbol x) \pi(\boldsymbol \theta_N)\)
+(i.e., moving from \(\boldsymbol \theta^{(1)}\) to
+\(\boldsymbol \theta^{(2)}\) in the parameter space). Furthermore, the
+potential for model instability and the size of the parameter space can
+also become greater with the introduction of latent variables to
+existing data variables, as involved in some model formulations
+described in Sections \ref{rbm}-\ref{deep-learning}. As latent variables
+are often sampled with parameters in a Bayes MCMC approach, this aspect
+may further compound numerical problems in chain mixing.
 
 \section{Concluding Remarks}\label{conclusions}
 
@@ -1446,11 +1532,16 @@ consequences of instability. We have shown for FOES models that
 instability manifests through small changes in data leading to
 potentially large changes in probability as well as the potential to
 place all probability on certain modal subsections of the sample space,
-which potentially could be small. The FOES model class is quite broad
-and, particularly in developing FOES models for large data sets, some
-caution should be used in parameter specification to control effects of
-model instability due to the consequences of instability in both
-simulation and likelihood inference.
+which potentially could be small. Such instability is often due to a
+complex interaction between the model statistics used (i.e., how
+numerous and large these may become) and the number and magnitudes of
+parameters in the model formulation. For many FOES models, the
+possibility exists, at least in principle, to constraint parameters in a
+way balances their potential contributions against those of model
+statistics in order to prevent probability instabilities. The FOES model
+class is quite broad and, in developing such models for large data sets,
+some caution should be used in parameter specification to control
+effects of model instability.
 
 \clearpage
 
@@ -1673,6 +1764,33 @@ gives
 & \geq \sum_{i=1}^{N }  \left| \theta_{i,N}^{\mathcal{V}} \right| \equiv |\boldsymbol \theta_{N}^{\mathcal{V}}|_1.
 \end{align*}
 \hfill \(\Box\)
+
+\textbf{Proof of Theorem \ref{thm:something}.} Let
+\(L_{\boldsymbol \theta_{N}}(\boldsymbol X) = \log[ P_{\boldsymbol \theta_{N}}(\boldsymbol X)/ \min_{\boldsymbol y \in \mathcal{X}^N} P_{\boldsymbol \theta_{N}}(\boldsymbol y) ]/\REP(\boldsymbol \theta_{N})\),
+where again \(\boldsymbol X=(X_1, \dots, X_N)\) and
+\(\REP(\boldsymbol \theta_{N})= \log[\max_{\boldsymbol y \in \mathcal{X}^N} P_{\boldsymbol \theta_{N}}(\boldsymbol y)/ \min_{\boldsymbol y \in \mathcal{X}^N} P_{\boldsymbol \theta_{N}}(\boldsymbol y) ]\).
+As \(L_{\boldsymbol \theta_{N}}(\boldsymbol X)\in[0,1]\), convergence of
+\(L_{\boldsymbol \theta_{N}}(\boldsymbol X)\) to 1 in probability under
+\(P_{\boldsymbol \theta_{N}}\) is equivalent to convergence to \(1\) in
+expectation under \(P_{\boldsymbol \theta_{N}}\) (i.e., convergence in
+expectation implies probabilistic convergence by Markov's inequality
+while probabilistic convergence implies convergence in expectation by
+uniform integrability/boundedness).
+
+For \(\epsilon \in(0,1)\), let
+\(\mathcal{M}_{\epsilon, \boldsymbol \theta_N}\) denote a modal set as
+in \eqref{eq:mode}. By Theorem \ref{thm:degenFOES},
+\(P_{\boldsymbol \theta_N}\left( \boldsymbol X\in \mathcal{M}_{\epsilon, \boldsymbol \theta_N}\right) \rightarrow 1\)
+holds as \(N \rightarrow \infty\) and, by definition of \eqref{eq:mode},
+\(\boldsymbol X\in \mathcal{M}_{\epsilon, \boldsymbol \theta_N}\)
+follows if and only if
+\(1-L_{\boldsymbol \theta_{N}}(\boldsymbol X)<\epsilon\). Hence,
+\(L_{\boldsymbol \theta_{N}}(\boldsymbol X) \stackrel{p,\mathrm{E}}{\longrightarrow} 1\)
+holds under \(\boldsymbol \theta_{N}\) in Theorem \ref{thm:something}.
+The convergence
+\(L_{-\boldsymbol \theta_{N}}(\boldsymbol X) \stackrel{p,\mathrm{E}}{\longrightarrow} 1\)
+under \(-\boldsymbol \theta_{N}\) likewise follows from Corollary
+\ref{cor:sign}. \hfill \(\Box\)
 
 \clearpage
 
