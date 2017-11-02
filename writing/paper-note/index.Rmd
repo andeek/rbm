@@ -1,5 +1,5 @@
 ---
-title: "A note on the instability and degeneracy of deep learning models"
+title: "A Note on the Instability and Degeneracy of Deep Learning Models"
 author: 
   - name: Andee Kaplan
     university: Iowa State University
