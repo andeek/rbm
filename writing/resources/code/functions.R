@@ -1,13 +1,13 @@
 ##function for creating all possible values of the t(x)
 stats <- function(H, V, type="negative") {
-  if(type == "binary") t <- data.frame(c(0,1))[,rep(1, H + V)]
-  else if(type == "negative") t <- data.frame(c(-1,1))[,rep(1, H + V)]
+  if(type == "binary") ti <- data.frame(c(0,1))[,rep(1, H + V)]
+  else if(type == "negative") ti <- data.frame(c(-1,1))[,rep(1, H + V)]
   else stop("Type must be 'binary', 'negative'")
   
-  names(t) <- c(paste0("v", 1:H), paste0("h", 1:V))  
+  names(ti) <- c(paste0("v", 1:V), paste0("h", 1:H))  
   
   #all possibilities of statistics in (H + V)-space
-  t.grid <- expand.grid(t)
+  t.grid <- expand.grid(ti)
   
   for(i in 1:V){
     for(j in (V+1):(H+V)){

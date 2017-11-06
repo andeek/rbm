@@ -178,7 +178,7 @@ P_{\boldsymbol \theta_N}(\boldsymbol x)  \cdot P_{-\boldsymbol \theta_N}(\boldsy
 $$
 where $\max_{\boldsymbol y \in \mathcal{X}^N}P_{ \boldsymbol \theta_N}(\boldsymbol y)$ and $\min_{\boldsymbol y \in \mathcal{X}^N}P_{-\boldsymbol \theta_N}(\boldsymbol y)$ denote the maximum and minimum probabilities under parameters $\boldsymbol \theta_N$ and $-\boldsymbol \theta_N$, respectively.
 
-The above model condition incorporates many standard parameterizations and follows, for instance, whenever $P_{\boldsymbol \theta_N}(\boldsymbol x)/P_{\boldsymbol \theta_N}(\boldsymbol y)  = [P_{-\boldsymbol \theta_N}(\boldsymbol x)/P_{-\boldsymbol \theta_N}(\boldsymbol y)]^{-1}$ holds for outcomes $\boldsymbol x, \boldsymbol y \in\mathcal{X}^N$ in a FOES model. For instance, this latter condition is fulfilled for all linear exponential families from Section \@ref(discrete-exponential-family-models) (e.g., \@ref(eq:mod1)-\@ref(eq:mod2)) as well as all network models from Sections \@ref(rbm)-\@ref(deep-learning) (e.g., \@ref(eq:RBM1)-\@ref(eq:RBM2)). When parameters can be tuned in sign with effects prescribed in the model condition PSR, unstable FOES models will exhibit further probability sensitivities, as outlined in the following extension of Theorem \@ref(thm:degenFOES}).
+The above model condition incorporates many standard parameterizations and follows, for instance, whenever $P_{\boldsymbol \theta_N}(\boldsymbol x)/P_{\boldsymbol \theta_N}(\boldsymbol y)  = [P_{-\boldsymbol \theta_N}(\boldsymbol x)/P_{-\boldsymbol \theta_N}(\boldsymbol y)]^{-1}$ holds for outcomes $\boldsymbol x, \boldsymbol y \in\mathcal{X}^N$ in a FOES model. For instance, this latter condition is fulfilled for all linear exponential families from Section \@ref(discrete-exponential-family-models) (e.g., \@ref(eq:mod1)-\@ref(eq:mod2)) as well as all network models from Sections \@ref(rbm)-\@ref(deep-learning) (e.g., \@ref(eq:RBM1)-\@ref(eq:RBM2)). When parameters can be tuned in sign with effects prescribed in the model condition PSR, unstable FOES models will exhibit further probability sensitivities, as outlined in the following extension of Theorem \@ref(thm:degenFOES).
 
 ```{corollary, label="sign", echo=TRUE}
 Let $P_{\boldsymbol \theta_N}$, with support $\mathcal{X}^N$, $N\geq 1$, be a sequence of FOES models satisfying model condition PSR. If the models $P_{\boldsymbol \theta_N}$  are additionally S-unstable, then
@@ -197,7 +197,7 @@ For unstable models, Corollary \@ref(cor:sign) shows that shifts in parameters a
  
 ```{remark, echo=TRUE}
 Under the model condition PSR, Corollary \ref{cor:sign} can also be extended to
-cases where parameter components $\boldsymbol \theta_N =(\boldsymbol \theta_{1,N}, \boldsymbol \theta_{N,2})$ (say) are not all changed in sign (e.g., $-\boldsymbol \theta_N$) but, more generally, are instead  altered to another parameter configuration $\boldsymbol \theta_{N}^A = ( \boldsymbol \theta_{1,N}^A, \boldsymbol \theta_{2,N}^A )$ involving a switch in sign only among some dominating model parameters $\boldsymbol \theta_{N,2}^A=- \boldsymbol \theta_{N,2}$ with remaining parameters $\boldsymbol \theta_{1,N}^A$ being arbitrarily chosen. If a change sign occurs among parameters ($\pm \boldsymbol \theta_{N,2}$) which dominate the probability structure of the model, then the results of Corollary  \ref{cor:sign} can still hold  with $\boldsymbol \theta_{N}^A$ replacing $-\boldsymbol \theta_N$; as an example of one sufficient condition, if $\lim_{N\to \infty} \max_{\boldsymbol x \in \mathcal{X}^N} |G_N(\boldsymbol x, -\boldsymbol \theta_{N}) - G_N(\boldsymbol x, \boldsymbol \theta_{N}^A)|=0$ holds in addition to Corollary~1 assumptions, where
+cases where parameter components $\boldsymbol \theta_N =(\boldsymbol \theta_{1,N}, \boldsymbol \theta_{N,2})$ (say) are not all changed in sign (e.g., $-\boldsymbol \theta_N$) but, more generally, are instead  altered to another parameter configuration $\boldsymbol \theta_{N}^A = ( \boldsymbol \theta_{1,N}^A, \boldsymbol \theta_{2,N}^A )$ involving a switch in sign only among some dominating model parameters $\boldsymbol \theta_{N,2}^A=- \boldsymbol \theta_{N,2}$ with remaining parameters $\boldsymbol \theta_{1,N}^A$ being arbitrarily chosen. If a change sign occurs among parameters ($\pm \boldsymbol \theta_{N,2}$) which dominate the probability structure of the model, then the results of Corollary  \ref{cor:sign} can still hold  with $\boldsymbol \theta_{N}^A$ replacing $-\boldsymbol \theta_N$; as an example of one sufficient condition, if $\lim_{N\to \infty} \max_{\boldsymbol x \in \mathcal{X}^N} |G_N(\boldsymbol x, -\boldsymbol \theta_{N}) - G_N(\boldsymbol x, \boldsymbol \theta_{N}^A)|=0$ holds in addition to Corollary \@ref(cor:sign) assumptions, where
 $$
 G_N(\boldsymbol x, \boldsymbol \theta) =   \frac{\log P_{\boldsymbol \theta}(\boldsymbol x) - \min_{\boldsymbol y \in\mathcal{X}^N}\log P_{\boldsymbol \theta}(\boldsymbol y) }{\max_{\boldsymbol y \in\mathcal{X}^N}\log P_{\boldsymbol \theta}(\boldsymbol y)  - \min_{\boldsymbol y \in\mathcal{X}^N}\log P_{\boldsymbol \theta}(\boldsymbol y) }, \quad \boldsymbol x \in\mathcal{X}^N,
 $$
@@ -281,7 +281,7 @@ To highlight the instability issues for the RBM model, consider a simple  model 
 $$
 \frac{1}{N}\REP(\boldsymbol \theta_N) = \frac{2}{N} \sum_{i=1}^N|\theta_{i,N}^{\mathcal{V}}| \quad \text{(RBM model, no hiddens)}.
 $$
-Hence, this model sequence for $\boldsymbol X$ will be  S-unstable model if the aggregation of absolute parameters grows faster than the number $N$ of parameters/visible variables.  Consequently, even for a simplest RBM model involving independence, preventing instability requires careful choice of parameters, particularly with regard to how a parameter configuration differs from zero. For more general RBM models, the number $N_{\mathcal{H}}$ of hidden variables $\boldsymbol H$ can also be chosen arbitrarily (i.e., as some function $N_{\mathcal{H}}\equiv N_{N,\mathcal{H}}$ of $N$), which can substantially inflate the number $q(N)$ of model parameters and further impact model instability through accumulated parameters. To better understand the effects of instability in the RBM structure,  Proposition \@ref(prp:prop2) next frames the general behavior of extreme probabilities in the joint RBM model \@ref(eq:RBM1) for  $(\boldsymbol X, \boldsymbol H)$  and the implied RBM data model \@ref(eq:RBM2) for  $\boldsymbol X$ alone. Specifically, critical measures of instability may be closely connected in both models through tight bounds on their respective LREP values \@ref(eq:elpr). As a result, Proposition \@ref(prp:prop2) shows how an unstable distribution for observations $\boldsymbol X$ may be traced to sources of instability in the original joint distribution for $(\boldsymbol X,\boldsymbol H)$. This also suggests a device for avoiding instability, as provided next.
+Hence, this model sequence for $\boldsymbol X$ will be  S-unstable model if the aggregation of absolute parameters grows faster than the number $N$ of parameters/visible variables. Consequently, even for a simplest RBM model involving independence, preventing instability requires careful choice of parameters, particularly with regard to how a parameter configuration differs from zero. For more general RBM models, the number $N_{\mathcal{H}}$ of hidden variables $\boldsymbol H$ can also be chosen arbitrarily (i.e., as some function $N_{\mathcal{H}}\equiv N_{N,\mathcal{H}}$ of $N$), which can substantially inflate the number $q(N)$ of model parameters and further impact model instability through accumulated parameters. To better understand the effects of instability in the RBM structure, Proposition \@ref(prp:prop2) next frames the general behavior of extreme probabilities in the joint RBM model \@ref(eq:RBM1) for  $(\boldsymbol X, \boldsymbol H)$  and the implied RBM data model \@ref(eq:RBM2) for  $\boldsymbol X$ alone. Specifically, critical measures of instability may be closely connected in both models through tight bounds on their respective LREP values \@ref(eq:elpr). As a result, Proposition \@ref(prp:prop2) shows how an unstable distribution for observations $\boldsymbol X$ may be traced to sources of instability in the original joint distribution for $(\boldsymbol X,\boldsymbol H)$. This also suggests a device for avoiding instability, as provided next.
 
 To state the result, let $\REP_{\boldsymbol X}(\boldsymbol \theta_N) \equiv \REP(\boldsymbol \theta_N)$ denote the LREP value \@ref(eq:elpr) from the marginal distribution $P_{\boldsymbol \theta_N}$ of visibles $\boldsymbol X$ in \@ref(eq:RBM2) and write the LREP for the joint distribution $\tilde{P}_{\boldsymbol \theta_N}$ of $(\boldsymbol X, \boldsymbol H)$ from \@ref(eq:RBM1) as
 \begin{align*}
@@ -307,7 +307,7 @@ Let $P_{\boldsymbol \theta_N}$ denote a RBM-based data model \@ref(eq:RBM2) for 
     $$
     \elt  \equiv   \max_{ \boldsymbol x} \max_{ \boldsymbol h  } f_{\boldsymbol \theta_N} (\boldsymbol x, \boldsymbol h)-\min_{ \boldsymbol x } \max_{ \boldsymbol h }f_{\boldsymbol \theta_N} (\boldsymbol x, \boldsymbol h)
     $$
-    based on $f_{\boldsymbol \theta_N}$ from \@ref(eq:f) with components $\boldsymbol x \in \{\pm 1\}^{N}, \boldsymbol h \in \{\pm 1\}^{N_{\mathcal{H}}}$.
+    based on $f_{\boldsymbol \theta_N}$ from (\ref{eq:f}) with components $\boldsymbol x \in \{\pm 1\}^{N}, \boldsymbol h \in \{\pm 1\}^{N_{\mathcal{H}}}$.
 \item The instability measure $\REP_{(\boldsymbol X, \boldsymbol H)}(\boldsymbol \theta_N)\equiv \left(\max_{ \boldsymbol x} \max_{ \boldsymbol h  } f_{\boldsymbol \theta_N} (\boldsymbol x, \boldsymbol h)-\min_{ \boldsymbol x } \min_{ \boldsymbol h }f_{\boldsymbol \theta_N} (\boldsymbol x, \boldsymbol h)\right)$ for the joint model $\tilde{P}_{\boldsymbol \theta_N}$ of $(\boldsymbol X, \boldsymbol H)$ satisfies
     \begin{align*}
     2\Gam +  2|\boldsymbol \theta_N^{\mathcal{H}} |_{1} \; \geq \; \REP_{(\boldsymbol X, \boldsymbol H)}(\boldsymbol \theta_N)    & \geq 
@@ -346,7 +346,128 @@ Let $P_{\boldsymbol \theta_N}$ denote a RBM-based data model \@ref(eq:RBM2) for 
 The condition $\sup_{N \geq 1} N_{\mathcal{H}}/N<\infty$ in Proposition \@ref(prp:prop2)(iii) is often mild in practice (i.e., the number $N_{\mathcal{H}}$ of hidden variables is typically not excessively larger than the number $N$ of visible observations). This allows instability results for both marginal and joint RBM models to be more readily stated together, as the numbers $N$ and $N+N_{\mathcal{H}}$ of variables in these models become asymptotically equivalent.
 ```
 
-In Proposition \@ref(prp:prop2)(iii), the relationships between RBM models with regard to instability, and the effects of different parameter types, follow from the bounds on model instability measures in Proposition \@ref(prp:prop2)(i)-(ii). Generally speaking, all instability in the marginal RBM model for the data $\boldsymbol X$ can be attributed to an excessively large model quantity $\elt$, which predominantly follows when main $\boldsymbol \theta_N^{\mathcal{V}}$ and interaction $\boldsymbol \theta_N^{\mathcal{VH}}$ parameters related to visible variables are too large in magnitude (e.g., upon accumulation in terms such as $|\boldsymbol \theta_N^{\mathcal{V}}|_1$, $\Gam$ or $\Gamc$). For example, for any bounded sequence $|\boldsymbol \theta_N^{\mathcal{H}}|/N$ of hidden parameters, if main visible parameters $\boldsymbol \theta_N^{\mathcal{V}}$ are too extreme ($|\boldsymbol \theta_N^{\mathcal{V}}|_1/N\to \infty$), this aspect  will guarantee instability in the visible model ($\elt/N\to \infty$). In fact, the instability measure $\elt \equiv \max_{ \boldsymbol x} \max_{ \boldsymbol h  } f_{\boldsymbol \theta_N} (\boldsymbol x, \boldsymbol h)-\min_{ \boldsymbol x } \max_{ \boldsymbol h }f_{\boldsymbol \theta_N} (\boldsymbol x, \boldsymbol h)$ for marginal/visible model represents a clearly smaller portion of the  instability measure $\REP_{(\boldsymbol X, \boldsymbol H)}(\boldsymbol \theta_N)\equiv \max_{ \boldsymbol x} \max_{ \boldsymbol h  } f_{\boldsymbol \theta_N} (\boldsymbol x, \boldsymbol h)-\min_{ \boldsymbol x } \min_{ \boldsymbol h } f_{\boldsymbol \theta_N} (\boldsymbol x, \boldsymbol h)$ in the joint RBM model, implying that an unstable marginal model (i.e., due to  $\boldsymbol \theta_N^{\mathcal{V}}$, $\boldsymbol \theta_N^{\mathcal{VH}}$) must always translate to an unstable joint model and that further potential causes of instability exist for the joint model, often due to the size $|\boldsymbol \theta_N^{\mathcal{H}}|_1$. For example, while the joint RBM model for $(\boldsymbol X,\boldsymbol H)$ must always be unstable due to a diverging combination of visible and/or interaction parameters ($|\boldsymbol \theta_N^{\mathcal{V}}|_1/N\to \infty$ or $\Gam/N\to \infty$) (Proposition \@ref(prp:prop2)(iii.2)), instability for the joint model can also result when the main hidden parameters $\boldsymbol \theta_N^{\mathcal{H}}$ become too large relative to sample size ($|\boldsymbol \theta_N^{\mathcal{H}}|_1/N\to \infty$ in Proposition \@ref(prp:prop2)(iii.5)). However, under Proposition \@ref(prp:prop2), the main hidden parameters $\boldsymbol \theta_N^{\mathcal{H}}$  do not necessarily entail a source of instability for the marginal visible model. To explain this distinction, consider a joint model where all parameters related to visibles are zero, $\boldsymbol \theta_N^{\mathcal{V}}= \boldsymbol \theta_N^{\mathcal{VH}}=\boldsymbol 0$, but the hidden-related parameters diverge in sum $|\boldsymbol \theta_N^{\mathcal{H}}|_1/N\to \infty$. Here, the explosive behavior among parameters $\boldsymbol \theta_N^{\mathcal{H}}$ induces instability in the joint model for $(\boldsymbol X, \boldsymbol H)$ but the marginal model for $\boldsymbol X$, however, has a perfectly stable (and in fact uniform) distribution in this case. When the hidden parameters are bounded relative to the sample size ($\sup_{N\geq 1} |\boldsymbol \theta_N^{\mathcal{H}}|_1/N<\infty$), then all instability in both the joint and marginal RBM models can be directly linked to excessively large visible $\boldsymbol \theta_N^{\mathcal{V}}$ and/or interaction parameters $\boldsymbol \theta_N^{\mathcal{VH}}$ so that features of stability/instability must be the same across both models (Proposition \@ref(prp:prop2)(iii.6)). Hence, to prevent instability in the joint model, the combined magnitudes of all parameters $\theta_N$ must be controlled (cf. Proposition \@ref(prp:prop2)(iii.7)), while a stable visible data model technically results in constraining only the sizes of visible-related parameters $\boldsymbol \theta_N^{\mathcal{V}}$, $\boldsymbol \theta_N^{\mathcal{VH}}$. Nevertheless, because the joint model is often employed in practice for purposes of simulation and simulation-based inference, it is still reasonable to consider parameter choices for ensuring a stable joint model (and, consequently, a stable visible model as well).
+In Proposition \@ref(prp:prop2)(iii), the relationships between RBM models with regard to instability, and the effects of different parameter types, follow from the bounds on model instability measures in Proposition \@ref(prp:prop2)(i)-(ii). Generally speaking, all instability in the marginal RBM model for the data $\boldsymbol X$ can be attributed to an excessively large model quantity $\elt$, which predominantly follows when main $\boldsymbol \theta_N^{\mathcal{V}}$ and interaction $\boldsymbol \theta_N^{\mathcal{VH}}$ parameters related to visible variables are too large in magnitude (e.g., upon accumulation in terms such as $|\boldsymbol \theta_N^{\mathcal{V}}|_1$, $\Gam$ or $\Gamc$). For example, for any bounded sequence $|\boldsymbol \theta_N^{\mathcal{H}}|/N$ of hidden parameters, if main visible parameters $\boldsymbol \theta_N^{\mathcal{V}}$ are too extreme ($|\boldsymbol \theta_N^{\mathcal{V}}|_1/N\to \infty$), this aspect  will guarantee instability in the visible model ($\elt/N\to \infty$). In fact, the instability measure $\elt \equiv \max_{ \boldsymbol x} \max_{ \boldsymbol h  } f_{\boldsymbol \theta_N} (\boldsymbol x, \boldsymbol h)-\min_{ \boldsymbol x } \max_{ \boldsymbol h }f_{\boldsymbol \theta_N} (\boldsymbol x, \boldsymbol h)$ for marginal/visible model represents a clearly smaller portion of the  instability measure $\REP_{(\boldsymbol X, \boldsymbol H)}(\boldsymbol \theta_N)\equiv \max_{ \boldsymbol x} \max_{ \boldsymbol h  } f_{\boldsymbol \theta_N} (\boldsymbol x, \boldsymbol h)-\min_{ \boldsymbol x } \min_{ \boldsymbol h } f_{\boldsymbol \theta_N} (\boldsymbol x, \boldsymbol h)$ in the joint RBM model, implying that an unstable marginal model (i.e., due to  $\boldsymbol \theta_N^{\mathcal{V}}$, $\boldsymbol \theta_N^{\mathcal{VH}}$) must always translate to an unstable joint model and that further potential causes of instability exist for the joint model, often due to the size $|\boldsymbol \theta_N^{\mathcal{H}}|_1$. For example, while the joint RBM model for $(\boldsymbol X,\boldsymbol H)$ must always be unstable due to a diverging combination of visible and/or interaction parameters ($|\boldsymbol \theta_N^{\mathcal{V}}|_1/N\to \infty$ or $\Gam/N\to \infty$) (Proposition \@ref(prp:prop2)(iii.2)), instability for the joint model can also result when the main hidden parameters $\boldsymbol \theta_N^{\mathcal{H}}$ become too large relative to sample size ($|\boldsymbol \theta_N^{\mathcal{H}}|_1/N\to \infty$ in Proposition \@ref(prp:prop2)(iii.5)). However, under Proposition \@ref(prp:prop2), the main hidden parameters $\boldsymbol \theta_N^{\mathcal{H}}$  do not necessarily entail a source of instability for the marginal visible model. To explain this distinction, consider a joint model where all parameters related to visibles are zero, $\boldsymbol \theta_N^{\mathcal{V}}= \boldsymbol \theta_N^{\mathcal{VH}}=\boldsymbol 0$, but the hidden-related parameters diverge in sum $|\boldsymbol \theta_N^{\mathcal{H}}|_1/N\to \infty$. Here, the explosive behavior among parameters $\boldsymbol \theta_N^{\mathcal{H}}$ induces instability in the joint model for $(\boldsymbol X, \boldsymbol H)$ but the marginal model for $\boldsymbol X$, however, has a perfectly stable (and in fact uniform) distribution in this case. When the hidden parameters are bounded relative to the sample size ($\sup_{N\geq 1} |\boldsymbol \theta_N^{\mathcal{H}}|_1/N<\infty$), then all instability in both the joint and marginal RBM models can be directly linked to excessively large visible $\boldsymbol \theta_N^{\mathcal{V}}$ and/or interaction parameters $\boldsymbol \theta_N^{\mathcal{VH}}$ so that features of stability/instability must be the same across both models (Proposition \@ref(prp:prop2)(iii.6)). Hence, to prevent instability in the joint model, the combined magnitudes of all parameters $\theta_N$ must be controlled (cf. Proposition \@ref(prp:prop2)(iii.7)), while a stable visible data model technically results in constraining only the sizes of visible-related parameters $\boldsymbol \theta_N^{\mathcal{V}}$, $\boldsymbol \theta_N^{\mathcal{VH}}$. Nevertheless, because the joint model is often employed in practice for purposes of simulation and simulation-based inference, it is still reasonable to consider parameter choices for ensuring a stable joint model (and, consequently, a stable visible model as well). Further evidence of this is seen in the following numerical example. \par
+
+```{r rbm-simul, echo=FALSE, warning=FALSE, message=FALSE, cache=TRUE, cache.lazy = FALSE}
+#libraries -----------------------
+source("../resources/code/functions.R")
+
+
+#functions ----------------------
+sample_sphere_unif <- function(space, rep, center, r) {
+  vec <- matrix(rnorm(space*rep), nrow = rep)
+  r*vec/t(matrix(rep(sqrt(rowSums(vec^2)), each = space), nrow = space))
+}
+
+#sample thetas --------------
+n <- 100
+V <- 9
+H <- 5
+
+expand.grid(H = H, V = V, r1 = seq(0.001, 3, length.out = 20), r2 = seq(0.001, 3, length.out = 20)) %>%
+  mutate(r1 = r1*(H + V), r2 = r2*(H*V)) %>%
+  mutate(N = H + V) %>%
+  group_by(H, V, r1, r2, N) %>%
+  do(samp = cbind(sample_sphere_unif(.$N, n, 0, .$r1), sample_sphere_unif(.$H*.$V, n, 0, .$r2))) -> grid_sample
+
+expand.grid(H = H, V = V, r1 = seq(0.001, 3, length.out = 20), r2 = seq(0.001, 3, length.out = 20)) %>%
+  mutate(r1 = r1*(H + V), r2 = r2*(H*V)) %>%
+  mutate(N = H + V) %>%
+  group_by(H, V, r1, r2, N) %>%
+  do(stat = stats(.$H, .$V, "negative")) -> grid_sample_stat
+
+grid_sample <- inner_join(grid_sample, grid_sample_stat)
+
+grid_sample %>%
+  group_by(H, V, N, r1, r2) %>%
+  do(g_theta = t(rbind(t(.$samp[[1]]), expected_value(theta = t(.$samp[[1]]), stats = data.matrix(.$stat[[1]]))))) -> grid
+
+res <- inner_join(grid, grid_sample)
+
+#reshape data functions ----------------
+elpr <- function(theta, stats) {
+  require(dplyr)
+  exp(tcrossprod(stats, theta)) %>% data.frame() %>%
+    cbind(stats) %>%
+    group_by_(.dots = colnames(stats)[grepl("v", colnames(stats)) & !grepl("theta", colnames(stats))]) %>%
+    summarise_each(funs(sum), contains("X")) %>%
+    ungroup() -> marginalized
+  
+  marginalized %>%
+    summarise_each(funs(max), contains("X")) %>%
+    select(contains("X")) %>%
+    data.matrix() -> max_marg
+  
+  marginalized %>%
+    summarise_each(funs(min), contains("X")) %>%
+    select(contains("X")) %>%
+    data.matrix() -> min_marg
+  
+  t(log(max_marg/min_marg))
+}
+
+#instability
+res %>%
+  group_by(H, V, N, r1, r2) %>%
+  do(data.frame(elpr = elpr(.$samp[[1]], .$stat[[1]]))) %>%
+  ungroup() %>%
+  group_by(H, V, N, r1, r2) %>% 
+  summarise(mean_elpr = mean(elpr)) %>%
+  mutate(scaled_mean_elpr = mean_elpr/V) %>%
+  ungroup() -> elpr_summary
+
+res %>%
+  group_by(H, V, N, r1, r2) %>%
+  do(data.frame(max_prob = apply(.$samp[[1]], 1, function(row) {
+    params <- list(main_visible = row[1:V] %>% data.matrix(),
+                   main_hidden = row[(V + 1):(V + H)] %>% data.matrix(),
+                   interaction = row[(V + H + 1):length(row)] %>% data.matrix() %>% matrix(H))
+    
+    distn <- visible_distn(params) %>% mutate(out_vals = pmap(lst_(paste0("v", 1:V)), c)) %>% select(-(starts_with("v")))
+    
+    compare <- expand.grid(out1 = distn$image_id, out2 = distn$image_id) %>%
+      left_join(distn, by = c("out1" = "image_id")) %>%
+      left_join(distn, by = c("out2" = "image_id")) %>%
+      mutate(test = map2_dbl(out_vals.x, out_vals.y, function(a, b) sum(a != b))) %>%
+      filter(test == 1) %>%
+      mutate(delta = log(prob.x/prob.y))
+    
+    max(compare$delta)
+    })
+    )) %>%
+  ungroup() %>%
+  group_by(H, V, N, r1, r2) %>% 
+  summarise(mean_max_prob = mean(max_prob)) %>%
+  ungroup() -> mean_max_prob_diff_summary
+```
+
+```{r rbm-plots, fig.show='hold', fig.cap="The sample mean value of $\\text{ELPR}(\\boldsymbol \\theta)/N_{\\mathcal{V}}$ (left) and $\\DN(\\boldsymbol \\theta)$ at each grid point for each combination of magnitude of $\\boldsymbol \\theta$. As the magnitude of $\\boldsymbol \\theta$ grows, so does the value of these metrics, indicating typical instability in the model.", fig.height=3.5, fig.align="ht!"}
+elpr_summary %>%
+  mutate(r1 = round(r1/(H + V), 8), r2 = round(r2/(H * V), 8)) %>% 
+  ggplot() +
+  geom_tile(aes(x = r1, y = r2, fill = scaled_mean_elpr)) +
+  geom_contour(aes(x = r1, y = r2, z = scaled_mean_elpr), colour = "black", bins = 8) +
+  geom_abline(aes(intercept = 0, slope = 1), alpha = .5, lty = 2) +
+  scale_fill_gradient(expression(paste("Mean ", frac(ELPR(theta), N[italic(V)]))), low = "yellow", high = "red") +
+  xlab(expression(paste(paste("||", theta[main], "||", "/(", N[italic(H)]," + ", N[italic(V)], ")")))) +
+  ylab(expression(paste(paste("||", theta[interaction], "||", "/(", N[italic(H)], "*", N[italic(V)], ")")))) +
+  theme(aspect.ratio = 1, legend.position = "bottom") 
+
+# fix labels
+mean_max_prob_diff_summary %>%
+  mutate(r1 = round(r1/(H + V), 8), r2 = round(r2/(H * V), 8)) %>% 
+  ggplot() +
+  geom_tile(aes(x = r1, y = r2, fill = mean_max_prob)) +
+  geom_contour(aes(x = r1, y = r2, z = mean_max_prob), colour = "black", bins = 8) +
+  geom_abline(aes(intercept = 0, slope = 1), alpha = .5, lty = 2) +
+  scale_fill_gradient(expression(paste("Mean ", Delta[N](theta))), low = "yellow", high = "red") +
+  xlab(expression(paste(paste("||", theta[main], "||", "/(", N[italic(H)]," + ", N[italic(V)], ")")))) +
+  ylab(expression(paste(paste("||", theta[interaction], "||", "/(", N[italic(H)], "*", N[italic(V)], ")")))) +
+  theme(aspect.ratio = 1, legend.position = "bottom") 
+```
+
+
+In our numerical experiment, we allow the two types of terms (main effects terms corresponding to visible and hidden parameters $\boldsymbol \theta_{main} = (\boldsymbol \theta_N^{\mathcal{V}}, \boldsymbol \theta_N^{\mathcal{H}})$ and interaction parameters $\boldsymbol \theta_N^{\mathcal{VH}}$) to have varying average magnitudes, $||\boldsymbol \theta_{main} || /(N_{\mathcal{H}}+N_{\mathcal{V}})$ and $||\boldsymbol \theta_{interaction} || /(N_{\mathcal{H}}*N_{\mathcal{V}})$ for a RBM with $N_\mathcal{V} = `r V`$ visibles and $N_\mathcal{H} = `r H`$ hiddens. These average magnitudes vary on a grid between `r min(elpr_summary$r1/(elpr_summary$H + elpr_summary$V))` and `r max(elpr_summary$r1/(elpr_summary$H + elpr_summary$V))` with `r length(unique(elpr_summary$r1/(elpr_summary$H + elpr_summary$V)))` breaks, yielding `r length(unique(elpr_summary$r1/(elpr_summary$H + elpr_summary$V)))^2` grid points. At each point in the grid, `r n` vectors ($\boldsymbol \theta_{main}$) are sampled uniformly on a sphere with radius corresponding to the first coordinate in the grid and `r n` vectors ($\boldsymbol \theta_{interaction}$) are sampled uniformly on a sphere with radius corresponding to the second coordinate in the grid via sums of squared and scaled iid Normal$(0, 1)$ variables. These vectors are then paired to create `r n` values of $\boldsymbol \theta_N$ with magnitudes at each point in the grid. The values $\REP(\boldsymbol \theta_N)/N_{\mathcal{V}}$ and $\DN(\boldsymbol \theta_N)$ are then calculated for each $\boldsymbol \theta_N$ and then summarized for each point in the grid using the sample mean. The results of this numerical study are shown in Figure \@ref(fig:rbm-plots). From these two plots, it is clear that for larger magnitudes of the parameter vectors, there is evidence of S-instability in that the log-ratio of extremal probabilities scaled by $N_{\mathcal{V}}$ and the the biggest log-probability ratio for a one component change in data outcomes are both increasing away from $\boldsymbol \theta_N = \boldsymbol 0$, further supporting \@ref(prp:prop2)(iii.2 and iii.5).
 
 In more complicated graphical models involving further or deeper hidden layers, the same issues and causes of instability similarly exist, but are compounded by a greater number of model parameters. S-unstable joint models will similarly follow if the combined sizes of all parameters are too great relative to the total number of variables, while instability in the data model for visible variables will depend only on the  main or interaction parameters directly related to visibles and how their accumulated magnitude compares to the observation sample size $N$.
 
@@ -368,7 +489,7 @@ as conditional probabilities are proportional to joint probabilities that, with 
 
 Volatility in the probability structure of an unstable model can also hamper efforts to maximize likelihood functions in statistical inference. When a FOES model is unstable along a parameter sequence \(\boldsymbol \theta_N\), the same model can further be unstable along parameters \(-\boldsymbol \theta_N\) in an opposite direction from the
 origin (model condition PSR and Corollary \@ref(cor:sign)). This can translate into
-potential sensitivity of the likelihood function around zero, and lead to numerical complications in maximizing the objective function. We next provide a discussion of this issue in a way that builds upon and extends related findings by @@schweinberger2011instability, who largely focused on the case of one-parameter exponential models.
+potential sensitivity of the likelihood function around zero, and lead to numerical complications in maximizing the objective function. We next provide a discussion of this issue in a way that builds upon and extends related findings by @schweinberger2011instability, who largely focused on the case of one-parameter exponential models.
 
 With many probability models, the modes and anti-modes in the probability structure under one parameter $\boldsymbol \theta_N$ are reversed in role when the parameter sign changes \(-\boldsymbol \theta_N\). Because unstable models tend to degeneracy, the opposite signed parameters further push unstable models to assign nearly all probability to extremely opposite data configurations, given by modes/anti-modes. This is made concrete in Theorem \@ref(thm:something), relating the degeneracy from unstable models to the expected behavior of log-likelihood functions.
 

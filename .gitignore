@@ -90,3 +90,4 @@ writing/resources/data/*.RData
 
 #responses
 writing/paper-note/letters/
+writing/paper-note/justincase.Rdata

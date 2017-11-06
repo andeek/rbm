@@ -134,21 +134,23 @@
 \begin{abstract}
 A probability model exhibits instability if small changes in a data
 outcome result in large, and often unanticipated, changes in
-probability. For correlated data structures found in several application
-areas, there is increasing interest in predicting/identifying such
-sensitivity in model probability structure. We consider the problem of
-quantifying instability for general probability models defined on
-sequences of observations, where each sequence of length \(N\) has a
-finite number of possible outcomes. A sequence of probability models
-results, indexed by \(N\), that accommodates data of expanding
-dimension. Model instability is formally shown to occur when a certain
-log-probability ratio under such models grows faster than \(N\). In this
-case, a one component change in the data sequence can shift probability
-by orders of magnitude. Also, as instability becomes more extreme, the
-resulting probability models are shown to tend to degeneracy, placing
-all their probability on potentially small portions of the sample space.
-These results on instability apply to large classes of models commonly
-used in random graphs, network analysis, and machine learning contexts.
+probability. This instability is a property of the probability model,
+rather than the fitted parameter vector. For correlated data structures
+found in several application areas, there is increasing interest in
+predicting/identifying such sensitivity in model probability structure.
+We consider the problem of quantifying instability for general
+probability models defined on sequences of observations, where each
+sequence of length \(N\) has a finite number of possible values. A
+sequence of probability models results, indexed by \(N\), that
+accommodates data of expanding dimension. Model instability is formally
+shown to occur when a certain log-probability ratio under such models
+grows faster than \(N\). In this case, a one component change in the
+data sequence can shift probability by orders of magnitude. Also, as
+instability becomes more extreme, the resulting probability models are
+shown to tend to degeneracy, placing all their probability on
+potentially small portions of the sample space. These results on
+instability apply to large classes of models commonly used in random
+graphs, network analysis, and machine learning contexts.
 \end{abstract}
 \noindent%
 {\it Keywords:}  Degeneracy, Instability, Classification, Deep Learning, Graphical Models
@@ -725,7 +727,7 @@ linear exponential families from Section
 parameters can be tuned in sign with effects prescribed in the model
 condition PSR, unstable FOES models will exhibit further probability
 sensitivities, as outlined in the following extension of Theorem
-@ref(thm:degenFOES\}).
+\ref{thm:degenFOES}.
 
 \BeginKnitrBlock{corollary}
 \protect\hypertarget{cor:sign}{}{\label{cor:sign} }Let
@@ -792,7 +794,7 @@ of Corollary \ref{cor:sign} can still hold with
 \(\boldsymbol \theta_{N}^A\) replacing \(-\boldsymbol \theta_N\); as an
 example of one sufficient condition, if
 \(\lim_{N\to \infty} \max_{\boldsymbol x \in \mathcal{X}^N} |G_N(\boldsymbol x, -\boldsymbol \theta_{N}) - G_N(\boldsymbol x, \boldsymbol \theta_{N}^A)|=0\)
-holds in addition to Corollary\textasciitilde{}1 assumptions, where \[
+holds in addition to Corollary \ref{cor:sign} assumptions, where \[
 G_N(\boldsymbol x, \boldsymbol \theta) =   \frac{\log P_{\boldsymbol \theta}(\boldsymbol x) - \min_{\boldsymbol y \in\mathcal{X}^N}\log P_{\boldsymbol \theta}(\boldsymbol y) }{\max_{\boldsymbol y \in\mathcal{X}^N}\log P_{\boldsymbol \theta}(\boldsymbol y)  - \min_{\boldsymbol y \in\mathcal{X}^N}\log P_{\boldsymbol \theta}(\boldsymbol y) }, \quad \boldsymbol x \in\mathcal{X}^N,
 \] represents a standardized form of \(\boldsymbol \theta\)-model
 probabilities, then the results of Corollary \ref{cor:sign} apply to
@@ -1175,7 +1177,7 @@ the following, let \(|\boldsymbol y|_1 = \sum_{i=1}^d |y_i|\) denote the
 L-1 norm of a generic vector \(\boldsymbol y =(y_1,\ldots,y_d)\),
 \(d \geq 1\). \BeginKnitrBlock{proposition}
 
-\protect\hypertarget{prp:prop2}{}{\label{prp:prop2}}Let
+\protect\hypertarget{prp:prop2}{}{\label{prp:prop2} }Let
 \(P_{\boldsymbol \theta_N}\) denote a RBM-based data model \eqref{eq:RBM2}
 for \(N\geq 1\) visible variables
 \(\boldsymbol X \equiv \boldsymbol X_N\) derived from
@@ -1194,7 +1196,7 @@ Then,
     $$
     \elt  \equiv   \max_{ \boldsymbol x} \max_{ \boldsymbol h  } f_{\boldsymbol \theta_N} (\boldsymbol x, \boldsymbol h)-\min_{ \boldsymbol x } \max_{ \boldsymbol h }f_{\boldsymbol \theta_N} (\boldsymbol x, \boldsymbol h)
     $$
-    based on $f_{\boldsymbol \theta_N}$ from \\eqref{eq:f} with components $\boldsymbol x \in \{\pm 1\}^{N}, \boldsymbol h \in \{\pm 1\}^{N_{\mathcal{H}}}$.
+    based on $f_{\boldsymbol \theta_N}$ from (\ref{eq:f}) with components $\boldsymbol x \in \{\pm 1\}^{N}, \boldsymbol h \in \{\pm 1\}^{N_{\mathcal{H}}}$.
 \item The instability measure $\REP_{(\boldsymbol X, \boldsymbol H)}(\boldsymbol \theta_N)\equiv \left(\max_{ \boldsymbol x} \max_{ \boldsymbol h  } f_{\boldsymbol \theta_N} (\boldsymbol x, \boldsymbol h)-\min_{ \boldsymbol x } \min_{ \boldsymbol h }f_{\boldsymbol \theta_N} (\boldsymbol x, \boldsymbol h)\right)$ for the joint model $\tilde{P}_{\boldsymbol \theta_N}$ of $(\boldsymbol X, \boldsymbol H)$ satisfies
     \begin{align*}
     2\Gam +  2|\boldsymbol \theta_N^{\mathcal{H}} |_{1} \; \geq \; \REP_{(\boldsymbol X, \boldsymbol H)}(\boldsymbol \theta_N)    & \geq 
@@ -1304,7 +1306,40 @@ visible-related parameters \(\boldsymbol \theta_N^{\mathcal{V}}\),
 model is often employed in practice for purposes of simulation and
 simulation-based inference, it is still reasonable to consider parameter
 choices for ensuring a stable joint model (and, consequently, a stable
-visible model as well).
+visible model as well). Further evidence of this is seen in the
+following numerical example. \par
+\begin{figure}
+\includegraphics{note_files/figure-latex/rbm-plots-1} \includegraphics{note_files/figure-latex/rbm-plots-2} \caption{The sample mean value of $\text{ELPR}(\boldsymbol \theta)/N_{\mathcal{V}}$ (left) and $\DN(\boldsymbol \theta)$ at each grid point for each combination of magnitude of $\boldsymbol \theta$. As the magnitude of $\boldsymbol \theta$ grows, so does the value of these metrics, indicating typical instability in the model.}\label{fig:rbm-plots}
+\end{figure}
+In our numerical experiment, we allow the two types of terms (main
+effects terms corresponding to visible and hidden parameters
+\(\boldsymbol \theta_{main} = (\boldsymbol \theta_N^{\mathcal{V}}, \boldsymbol \theta_N^{\mathcal{H}})\)
+and interaction parameters \(\boldsymbol \theta_N^{\mathcal{VH}}\)) to
+have varying average magnitudes,
+\(||\boldsymbol \theta_{main} || /(N_{\mathcal{H}}+N_{\mathcal{V}})\)
+and
+\(||\boldsymbol \theta_{interaction} || /(N_{\mathcal{H}}*N_{\mathcal{V}})\)
+for a RBM with \(N_\mathcal{V} = 9\) visibles and \(N_\mathcal{H} = 5\)
+hiddens. These average magnitudes vary on a grid between 0.001 and 3
+with 20 breaks, yielding 400 grid points. At each point in the grid, 100
+vectors (\(\boldsymbol \theta_{main}\)) are sampled uniformly on a
+sphere with radius corresponding to the first coordinate in the grid and
+100 vectors (\(\boldsymbol \theta_{interaction}\)) are sampled uniformly
+on a sphere with radius corresponding to the second coordinate in the
+grid via sums of squared and scaled iid Normal\((0, 1)\) variables.
+These vectors are then paired to create 100 values of
+\(\boldsymbol \theta_N\) with magnitudes at each point in the grid. The
+values \(\REP(\boldsymbol \theta_N)/N_{\mathcal{V}}\) and
+\(\DN(\boldsymbol \theta_N)\) are then calculated for each
+\(\boldsymbol \theta_N\) and then summarized for each point in the grid
+using the sample mean. The results of this numerical study are shown in
+Figure \ref{fig:rbm-plots}. From these two plots, it is clear that for
+larger magnitudes of the parameter vectors, there is evidence of
+S-instability in that the log-ratio of extremal probabilities scaled by
+\(N_{\mathcal{V}}\) and the the biggest log-probability ratio for a one
+component change in data outcomes are both increasing away from
+\(\boldsymbol \theta_N = \boldsymbol 0\), further supporting
+\ref{prp:prop2}(iii.2 and iii.5).
 
 In more complicated graphical models involving further or deeper hidden
 layers, the same issues and causes of instability similarly exist, but
@@ -1382,7 +1417,7 @@ origin (model condition PSR and Corollary \ref{cor:sign}). This can
 translate into potential sensitivity of the likelihood function around
 zero, and lead to numerical complications in maximizing the objective
 function. We next provide a discussion of this issue in a way that
-builds upon and extends related findings by @Schweinberger
+builds upon and extends related findings by Schweinberger
 (\protect\hyperlink{ref-schweinberger2011instability}{2011}), who
 largely focused on the case of one-parameter exponential models.
 
