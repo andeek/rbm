@@ -49,7 +49,7 @@
 \hypersetup{breaklinks=true,
             bookmarks=true,
             pdfauthor={},
-            pdftitle={A note on the instability and degeneracy of deep learning models},
+            pdftitle={On the instability and degeneracy of deep learning models},
             colorlinks=true,
             citecolor=blue,
             urlcolor=blue,
@@ -126,7 +126,7 @@
 \bigskip
 %\begin{center}
   %{\LARGE\bf Title}
-  \title{\bf A note on the instability and degeneracy of deep learning models}
+  \title{\bf On the instability and degeneracy of deep learning models}
 %\end{center}
 \medskip
 
@@ -176,8 +176,8 @@ extended by Schweinberger
 family of exponential models. At issue, models exhibiting instability
 are typically undesirable as these tend to provide poor representations
 of data or data-generation. As an example, such models can include
-near-degenerate distributions that assign all essential probability mass
-to only a subset of an overall sample space. The latter issue in
+near-degenerate distributions that assign essentially all probability
+mass to only a subset of an overall sample space. The latter issue in
 connection to degeneracy has been recognized as a concern in that
 dominant model outcomes may not resemble observed data (cf. Handcock
 \protect\hyperlink{ref-handcock2003assessing}{2003}). As a compounding
@@ -234,16 +234,16 @@ of Schweinberger
 special case. We prescribe a general and simple condition for
 identifying instability in a FOES model sequence, which quantifies
 whether certain maximal probabilities in a FOES model are too extreme
-relative to the sample size \(N\). When fulfilled, the probability
-structure of a FOES model is shown to exhibit extreme sensitivity, with
-probability assignments possessing extreme peaks and troughs across
-nearly identical outcomes. As the measure of model instability
-increases, probabilities from an unstable FOES model additionally
-increase in volatility and provably slide into degeneracy. Section
-\ref{implications} then emphasizes the implications of such model
-instability, showing that such impropriety can be expected to
+relative to the sample size \(N\). When these conditions are met, the
+probability structure of a FOES model is shown to exhibit extreme
+sensitivity, with probability assignments possessing extreme peaks and
+troughs across nearly identical outcomes. As the measure of model
+instability increases, probabilities from an unstable FOES model
+additionally increase in volatility and provably slide into degeneracy.
+Section \ref{implications} then emphasizes the implications of such
+model instability, showing that such impropriety can be expected to
 numerically hinder maximum likelihood estimation and MCMC-based
-simulations. As one potential remedy, suggestions are given or
+simulations. As one potential remedy, suggestions are given for
 constraining model parameterizations to avoid the most problematic
 regions of the parameter space. Proofs of the main results appear in
 Appendix \ref{appendix-instab}.
@@ -611,20 +611,20 @@ extremely sensitive probability structures. One aspect is that small
 changes in data configuration can lead to very large changes in
 probability. Consider, for example, the quantity given by \[
 \DN(\boldsymbol \theta_N) \equiv \max \left\{\log \frac{P_{\boldsymbol \theta_N}(\boldsymbol x)}{P_{\boldsymbol \theta_N}(\boldsymbol x^*)} : \boldsymbol x \text{ }\& \text{ } \boldsymbol x^* \in \mathcal{X}^N \text{ differ in exactly one component}\right\},
-\] which represents the biggest log-probability ratio for a one
-component change in data outcomes in a FOES model with parameter
+\] which represents the biggest log-probability ratio for a
+one-component change in data outcomes in a FOES model with parameter
 \(\boldsymbol \theta_N\). We then have the following result prescribing
 the behavior of \(\DN(\boldsymbol \theta_N)\) for S-unstable FOES
 models.
 
 \BeginKnitrBlock{theorem}
-\protect\hypertarget{thm:instab-elpr}{}{\label{thm:instab-elpr}}Let
+\protect\hypertarget{thm:instab-elpr}{}{\label{thm:instab-elpr} }Let
 \(P_{\boldsymbol \theta_N}\), with support \(\mathcal{X}^N\),
 \(N\geq 1\), be a sequence of FOES models.
 \begin{enumerate}[(i)]
-\item For any integer $N \geq 1$ and any given $C>0$, if $\REP(\boldsymbol \theta_N)/N > C$ in (\ref{eq:elpr}, then
+\item For any integer $N \geq 1$ and any given $C>0$, if $\REP(\boldsymbol \theta_N)/N > C$ in (\ref{eq:elpr}), then
     $$ \DN(\boldsymbol \theta_N) > C,$$
-    or probabilities from a one component change in some outcome have log-ratio exceeding $C$.
+    or probabilities from a one-component change in some outcome have log-ratio exceeding $C$.
 \item Suppose the FOES model sequence is S-unstable. Then, for all large $N$ and given any arbitrary $C>0$, there exist outcomes $\boldsymbol x,\boldsymbol x^*\in\mathcal{X}^N$, differing by one component, such that
     $$
     \frac{P_{\boldsymbol \theta_N}(\boldsymbol x)}{P_{\boldsymbol \theta_N}(\boldsymbol x^*)} > \exp[N C].
@@ -642,7 +642,7 @@ among some data configurations, a property that intuitively captures a
 notion of instability. Furthermore, and perhaps more seriously under
 Theorem \ref{thm:instab-elpr}(ii), S-unstable models can never have
 universally bounded changes in probability among single component
-variations in data configurations. While not all one component changes
+variations in data configurations. While not all one-component changes
 in data may produce massive changes in probability, unstable models must
 have some such data outcomes with this property. As a consequence,
 unstable probability structures may exhibit extreme sensitivity through
@@ -668,7 +668,7 @@ statement of such degeneracy due to S-instability. For a given
 \mathcal{M}_{\epsilon, \boldsymbol \theta_N} \equiv \left\{\boldsymbol x \in \mathcal{X}^N: \log P_{\boldsymbol \theta_N}(\boldsymbol x) > (1-\epsilon)\max\limits_{\boldsymbol y \in \mathcal{X}^N} \log  P_{\boldsymbol \theta_N}(\boldsymbol y) + \epsilon\min\limits_{\boldsymbol y \in \mathcal{X}^N} \log P_{\boldsymbol \theta_N}(\boldsymbol y) \right\}.
 \end{equation}
 \BeginKnitrBlock{theorem}
-\protect\hypertarget{thm:degenFOES}{}{\label{thm:degenFOES}}For any
+\protect\hypertarget{thm:degenFOES}{}{\label{thm:degenFOES} }For any
 arbitrarily small \(0 < \epsilon < 1\), an S-unstable FOES model
 sequence \(P_{\boldsymbol \theta_N}\), \(N \geq 1\), for
 \(\boldsymbol X_N=(X_1, \dots, X_N)\) satisfies \[
@@ -947,14 +947,14 @@ as the maximal and minimal values of the \(i\)th statistic,
 \(\boldsymbol X_N=(X_1,\ldots,X_N)\).
 
 \BeginKnitrBlock{proposition}
-\protect\hypertarget{prp:prop1}{}{\label{prp:prop1}}Let
+\protect\hypertarget{prp:prop1}{}{\label{prp:prop1} }Let
 \(P_{\boldsymbol \theta_N}\), \(N \geq 1\), denote linear exponential
 models (\ref{eq:expo}) with parameters
 \(\boldsymbol \theta_N = (\theta_{1,N},\ldots,\theta_{k,N})^\prime \in \mathbb{R}^k\)
 and statistics
 \(\boldsymbol g_N(\boldsymbol x) = (g_{1,N}(\boldsymbol x),\ldots, g_{k,N}(\boldsymbol x))^\prime \in \mathbb{R}^k\),
 for fixed \(k \geq 1\). Then, the models \(P_{\boldsymbol \theta_N}\)
-are \{\rm S-stable\} if
+are S-stable if
 \begin{equation}
 \label{eq:prop1}
 \sup_{N \geq 1}\frac{1}{N} \max_{1 \leq i \leq k }|\theta_{i,N}|(U_{i,N}-L_{i,N})<\infty
@@ -965,9 +965,9 @@ sequence of sample size \(N\).
 \EndKnitrBlock{proposition}
 
 \BeginKnitrBlock{remark}
-\iffalse <span class="remark"><em>Remark. \fi{} In the one-parameter
-exponential case \(k=1\), recall the exponential model is
-stable/unstable depending on whether
+\iffalse{} {Remark. } \fi{}In the one-parameter exponential case
+\(k=1\), recall the exponential model is stable/unstable depending on
+whether
 \(\REP(\boldsymbol \theta_N)/N = |\theta_{1,N}|(U_{1,N}-L_{1,N})/N \equiv |\boldsymbol \theta_{N}|(U_{N}-L_{N})/N\)
 in \eqref{eq:UL} is convergent/divergent. Hence, for \(k=1\), the
 condition \eqref{eq:prop1} of Proposition \ref{prp:prop1} captures the
@@ -1174,7 +1174,7 @@ refers to a respective divergence (i.e.,
 \(\lim_{N\to \infty} \REP(\boldsymbol \theta_N) /N=\infty\)) upon
 scaling by the corresponding number of variables in a distribution. In
 the following, let \(|\boldsymbol y|_1 = \sum_{i=1}^d |y_i|\) denote the
-L-1 norm of a generic vector \(\boldsymbol y =(y_1,\ldots,y_d)\),
+L1 norm of a generic vector \(\boldsymbol y =(y_1,\ldots,y_d)\),
 \(d \geq 1\). \BeginKnitrBlock{proposition}
 
 \protect\hypertarget{prp:prop2}{}{\label{prp:prop2} }Let
@@ -1232,7 +1232,7 @@ Then,
 \EndKnitrBlock{proposition}
 
 \BeginKnitrBlock{remark}
-\iffalse <span class="remark"><em>Remark. \fi{} The condition
+\iffalse{} {Remark. } \fi{}The condition
 \(\sup_{N \geq 1} N_{\mathcal{H}}/N<\infty\) in Proposition
 \ref{prp:prop2}(iii) is often mild in practice (i.e., the number
 \(N_{\mathcal{H}}\) of hidden variables is typically not excessively
@@ -1320,24 +1320,24 @@ have varying average magnitudes,
 and
 \(||\boldsymbol \theta_{interaction} || /(N_{\mathcal{H}}*N_{\mathcal{V}})\)
 for a RBM with \(N_\mathcal{V} = 9\) visibles and \(N_\mathcal{H} = 5\)
-hiddens. These average magnitudes vary on a grid between 0.001 and 3
-with 20 breaks, yielding 400 grid points. At each point in the grid, 100
-vectors (\(\boldsymbol \theta_{main}\)) are sampled uniformly on a
-sphere with radius corresponding to the first coordinate in the grid and
-100 vectors (\(\boldsymbol \theta_{interaction}\)) are sampled uniformly
-on a sphere with radius corresponding to the second coordinate in the
-grid via sums of squared and scaled iid Normal\((0, 1)\) variables.
-These vectors are then paired to create 100 values of
-\(\boldsymbol \theta_N\) with magnitudes at each point in the grid. The
-values \(\REP(\boldsymbol \theta_N)/N_{\mathcal{V}}\) and
-\(\DN(\boldsymbol \theta_N)\) are then calculated for each
+hiddens. These average magnitudes vary on a grid between \(0.001\) and
+\(3\) with \(20\) breaks, yielding \(400\) grid points. At each point in
+the grid, \(100\) vectors (\(\boldsymbol \theta_{main}\)) are sampled
+uniformly on a sphere with radius corresponding to the first coordinate
+in the grid and \(100\) vectors (\(\boldsymbol \theta_{interaction}\))
+are sampled uniformly on a sphere with radius corresponding to the
+second coordinate in the grid via sums of squared and scaled iid
+Normal\((0, 1)\) variables. These vectors are then paired to create
+\(100\) values of \(\boldsymbol \theta_N\) with magnitudes at each point
+in the grid. The values \(\REP(\boldsymbol \theta_N)/N_{\mathcal{V}}\)
+and \(\DN(\boldsymbol \theta_N)\) are then calculated for each
 \(\boldsymbol \theta_N\) and then summarized for each point in the grid
 using the sample mean. The results of this numerical study are shown in
 Figure \ref{fig:rbm-plots}. From these two plots, it is clear that for
 larger magnitudes of the parameter vectors, there is evidence of
 S-instability in that the log-ratio of extremal probabilities scaled by
-\(N_{\mathcal{V}}\) and the the biggest log-probability ratio for a one
-component change in data outcomes are both increasing away from
+\(N_{\mathcal{V}}\) and the the biggest log-probability ratio for a
+one-component change in data outcomes are both increasing away from
 \(\boldsymbol \theta_N = \boldsymbol 0\), further supporting
 \ref{prp:prop2}(iii.2 and iii.5).
 
@@ -1352,7 +1352,7 @@ accumulated magnitude compares to the observation sample size \(N\).
 
 \section{Statistical Consequences of Instability}\label{implications}
 
-Due to their extreme sensitivity in probability structure, S-instability
+Due to their induced sensitivity in probability structure, S-instability
 in FOES models may often translate to numerical complications, and in
 fact obstructions, in both simulation and statistical inference based on
 likelihoods. We describe these aspects in Sections
@@ -1366,7 +1366,7 @@ Suppose one aims to apply MCMC to simulate data
 \(P_{\boldsymbol \theta_N}(\boldsymbol x)\),
 \(\boldsymbol x \in\mathcal{X}^N\) whereby a chain is constructed with
 \(P_{\boldsymbol \theta_N}\) as the stationary distribution. For an
-unstable FOES model, one component changes in outcomes may produce
+unstable FOES model, one-component changes in outcomes may produce
 radically different probabilities, which may then impose numerical
 barriers to MCMC. For example, consider implementation of a Gibbs
 sampler from the full conditional distributions
@@ -1384,7 +1384,7 @@ have extreme log-ratios in its transition probabilities, \[
 as conditional probabilities are proportional to joint probabilities
 that, with unstable models, can have unbounded log-probability ratios in
 one-component changes (Theorem \ref{thm:instab-elpr}). This can hinder
-the ability of chain to effectively explore the sample space of the
+the ability of a chain to effectively explore the sample space of the
 observations \(\boldsymbol X\), as the chain may mix poorly by moving
 rapidly to, and slowly away from, sections of the sample space. In this
 case, for example, the Markov chain may become entrapped within a mode
@@ -1473,7 +1473,9 @@ under \(\boldsymbol \theta\)-probabilities or
 then probabilities for the outcome may be small under both parameters
 \(\boldsymbol \theta_N\) and \(-\boldsymbol \theta_N\), in which case
 associated optimization steps may then shift around zero and struggle to
-converge. In many model formulations, the zero parameter
+converge.
+
+In many model formulations, the zero parameter
 \(\boldsymbol \theta_N=\boldsymbol 0\) is a ``safe'' position among
 parameters, representing a guaranteed stable model (having uniform
 probabilities among outcomes), which can also tether a broad parameter
@@ -1536,7 +1538,7 @@ is, in the Bayes setting for sampling a posterior distribution for
 \(\boldsymbol \theta_N\), a chain may unstable to effectively explore
 the parameter space due partly to extreme and potentially unbounded
 probability ratios from parameter sign changes, which represents a
-parameter space analog to how one component changes in the sample space
+parameter space analog to how one-component changes in the sample space
 may impact data simulation with unstable models. For example, if
 \(\pi(\cdot)\) denotes a prior density for \(\boldsymbol \theta_N\) and
 \(q(\cdot | \cdot)\) denotes a proposal distribution for use in a
