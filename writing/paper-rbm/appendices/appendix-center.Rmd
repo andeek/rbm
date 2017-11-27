@@ -1,6 +1,11 @@
-\clearpage
-
-# (APPENDIX) Appendix {-}
+---
+title: Supplement to "Properties and Bayesian fitting of restricted Boltzmann machines"
+output: 
+  bookdown::pdf_book:
+    includes:
+      in_header: ../../resources/latex/header.tex
+    toc: no
+---
 
 # On the one-to-one correspondence between parameters and moments in the RBM distribution {#appendix-rbm}
 
@@ -166,5 +171,3 @@ Alternatively, if exactly one specified cell probability in (\@ref(eq:0)) is zer
 \lim_{m\to \infty}P(V_1=v_1,V_2=v_2| \theta_{v_1}, \theta_{v_2}, \theta_{h_1},\Delta_1,\Delta_2) = p_{(v_1,v_2)},\quad (v_1,v_2)\in\{(\pm 1,\pm 1)\}.
 \end{equation}  
 If exactly two specified probabilities in (\@ref(eq:0)) are zero, say  $p_{(1,1)}$ and $p_{(-1,1)}$ (without loss of generality), then a limit approximation as in (\@ref(eq:2)) follows by picking $\theta_{v_1}$ as above based on any choices of $(\theta_{h_1}, \Delta_1,\Delta_2)$ and choosing  a sequence of $\theta_{v_2}\equiv \theta_{v_2}^{(m)}$ values for which $\theta_{v_2}^{({m})} \rightarrow -\infty$.
-
-# References {-}
