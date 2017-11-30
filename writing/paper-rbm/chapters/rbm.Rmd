@@ -178,7 +178,7 @@ P_{\boldsymbol \theta_\nv}\left((v_1, \dots, v_\nv) \in M_{\epsilon, \boldsymbol
 $$
 ```
 
-In other words, S-unstable RBM model sequences are guaranteed to stack up all probability on a specific set of outcomes for visibles, which could potentially be arbitrarily narrow. Proofs of Propositions \@ref(prp:instab1) and \@ref(prp:degen) appear in @kaplan2016propriety. These findings also have counterparts in results in @schweinberger2011instability, but unlike results there, we do not limit consideration to exponential family forms with a fixed number of parameters.
+In other words, S-unstable RBM model sequences are guaranteed to stack up all probability on a specific set of outcomes for visibles, which could potentially be arbitrarily narrow. Proofs of Propositions \@ref(prp:instab1) and \@ref(prp:degen) follow from more general results in @kaplan2016propriety. These findings also have counterparts in results in @schweinberger2011instability, but unlike results there, we do not limit consideration to exponential family forms with a fixed number of parameters.
 
 ### Uninterpretability 
 
