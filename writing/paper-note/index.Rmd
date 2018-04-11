@@ -1,29 +1,29 @@
 ---
 title: "On the instability and degeneracy of deep learning models"
+shorttitle: "Instability of deep learning models"
+shortauthor: "Kaplan, Nordman, and Vardeman"
 author: 
   - name: Andee Kaplan
-    university: Duke University
-    department: Department of Statistical Science
+    corresponding: true
+    address: Department of Statistical Science, Duke University, P.O. Box 90251, Durham, NC 27708-0251, USA
+    email: andrea.kaplan@duke.edu
   - name: Daniel Nordman
-    university: Iowa State University
-    department: Department of Statistics
+    address: Department of Statistics, Iowa State University, 2438 Osborn Dr., Ames, IA 50011-1090, USA
+    email: dnordman@iastate.edu
   - name: Stephen Vardeman
-    university: Iowa State University
-    department: |
-      | Department of Statistics and Department of Industrial and
-      | Manufacturing Systems Engineering
+    address: Departments of Statistics and Industrial and Manufacturing Systems Engineering, Iowa State University, 2438 Osborn Dr., Ames, IA 50011-1090, USA
+    email: vardeman@iastate.edu
 site: bookdown::bookdown_site
 output: 
   bookdown::pdf_book:
     includes:
-      in_header: ../resources/latex/header.tex
+      in_header: ../resources/latex/header2.tex
     toc: no
-bibliography: [../resources/latex/refs_rbm.bib]
+bibliography: "../resources/latex/rbm.bib"
 github-repo: andeek/rbm
 abstract: |
   A probability model exhibits instability if small changes in a data outcome result in large, and often unanticipated, changes in probability. This instability is a property of the probability model, rather than the fitted parameter vector. For correlated data structures found in several application areas, there is increasing interest in predicting/identifying such sensitivity in model probability structure. We consider the problem of quantifying instability for general probability models defined on sequences of observations, where each sequence of length $N$ has a finite number of possible values. A sequence of probability models results, indexed by $N$, that accommodates data of expanding dimension. Model instability is formally shown to occur when a certain log-probability ratio under such models grows faster than $N$. In this case, a one component change in the data sequence can shift probability by orders of magnitude. Also, as instability becomes more extreme, the resulting probability models are shown to tend to degeneracy, placing all their probability on potentially small portions of the sample space. These results on instability apply to large classes of models commonly used in random graphs, network analysis, and machine learning contexts.
 keywords: Degeneracy, Instability, Classification, Deep Learning, Graphical Models
-blind: false
 ---
 
 ```{r setup, include=FALSE}

@@ -1,10 +1,11 @@
 bookdown::pdf_book:
-  template: "../resources/latex/technometrics_article.tex"
+  template: "../resources/latex/imaiai_article.tex"
   keep_tex: yes
   latex_engine: "xelatex"
   pandoc_args: [
     "--variable", "graphics=yes",
     "--variable", "tables=yes",
     "--variable", "colorlinks=yes",
-    "--metadata", "link-citations=true"
+    "--metadata", "link-citations=true",
+    "--natbib"
   ]
