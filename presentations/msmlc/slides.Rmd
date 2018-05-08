@@ -744,7 +744,9 @@ Skeptical that any model built using RBMs (i.e. deep Boltzmann machine) can achi
 
 1. Generalization of instability results for other network models [ongoing, see @kaplan2016note]
 \vfill
-2. Image classification
+2. Approximate Bayes methods for fitting more realistic sized data (Variational Bayes) with shrinkage priors
+\vfill
+3. Image classification
     - Ensemble methods (super learners) using AdaBoost [@freund1995desicion] 
     - Decision theoretic based approach to approximating the likelihood ratio test for classification
 \vfill
