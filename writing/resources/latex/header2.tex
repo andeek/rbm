@@ -1,0 +1,92 @@
+\usepackage{tikz, subfig, amsthm, multirow, float, enumerate}
+\usepackage{tikz-3dplot}
+\usetikzlibrary{arrows, shapes, positioning}
+\usepackage{bm}
+
+%%INCLUDED-AK
+%%DELETE HERE
+\usepackage{amsthm}
+\newtheoremstyle{theorem}{6pt}{6pt}{\rm}{}{\sffamily}{ }{ }{}
+\theoremstyle{theorem}
+\newtheorem{theorem}{\sc Theorem}[section]
+
+\newtheoremstyle{lemma}{6pt}{6pt}{\rm}{}{\sffamily}{ }{ }{}
+\theoremstyle{lemma}
+\newtheorem{lemma}{\sc Lemma}[section]
+
+\newtheorem{acknowledgement}[theorem]{Acknowledgement}
+\newtheorem{algorithm}[theorem]{Algorithm}
+\newtheorem{axiom}[theorem]{Axiom}
+\newtheorem{case}[theorem]{Case}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conclusion}[theorem]{Conclusion}
+\newtheorem{condition}[theorem]{Condition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{criterion}[theorem]{Criterion}
+
+\newtheoremstyle{example}{6pt}{6pt}{\rm}{}{\sffamily}{ }{ }{}
+\theoremstyle{example}
+\newtheorem{example}[theorem]{\sc Example}
+
+\newtheoremstyle{corollary}{6pt}{6pt}{\rm}{}{\sffamily}{ }{ }{}
+\theoremstyle{corollary}
+\newtheorem{corollary}{\sc Corollary}[section]
+
+\newtheoremstyle{definition}{6pt}{6pt}{\rm}{}{\sffamily}{ }{ }{}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{\sc Definition}
+
+\newtheorem{exercise}[theorem]{Exercise}
+
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{proposition}[theorem]{\sc Proposition}
+
+\newtheoremstyle{remark}{6pt}{6pt}{\rm}{}{\sffamily}{ }{ }{}
+\theoremstyle{remark}
+\newtheorem{remark}{\sc Remark}[section]
+\newtheorem{solution}[theorem]{Solution}
+\newtheorem{summary}[theorem]{Summary}
+
+\newtheoremstyle{approximation}{6pt}{6pt}{\rm}{}{\sffamily}{ }{ }{}
+\theoremstyle{approximation}
+\newtheorem{approximation}{\sc Approximation}
+
+\newtheoremstyle{scheme}{6pt}{6pt}{\rm}{}{\sffamily}{ }{ }{}
+\theoremstyle{scheme}
+\newtheorem{scheme}{\sc Scheme}
+
+% \newtheorem{proposition}{Proposition}
+% \newtheorem{lemma}{Lemma}
+% \newtheorem{corollary}{Corollary}
+
+% \theoremstyle{definition}
+% \newtheorem{definition}{Definition}
+% \newtheorem{assumption}{Assumption}
+% \newtheorem{remark}{Remark}
+%% STOP DELETING
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+\newcommand{\REP}{\mathrm{LREP}}
+\newcommand{\DN}{\Delta_N}
+
+\newcommand{\ma}{\mathrm{max}_{\boldsymbol \theta_N}}
+\newcommand{\mi}{\mathrm{min}_{\boldsymbol \theta_N}}
+
+
+\newcommand{\maa}{\mathrm{max}_{-\boldsymbol \theta_N}}
+\newcommand{\mii}{\mathrm{min}_{-\boldsymbol \theta_N}}
+
+
+\newcommand{\nv}{{n_{\scriptscriptstyle V}}}
+\newcommand{\nh}{{n_{\scriptscriptstyle H}}}
+\newcommand{\E}{E}
+
+\newcommand{\elt}{A_{N}(\boldsymbol \theta_N) }
+\newcommand{\Gam}{B_{N}(\boldsymbol \theta_N) }
+
+\newcommand{\Gamc}{C_{N}(\boldsymbol \theta_N) }
+\newcommand{\Gamt}{\Gamma_{N,2}(\boldsymbol \theta_N) }
+

@@ -1,0 +1,77 @@
+\documentclass[numbib]{imamat}
+
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{cite}
+\usepackage{hyperref}
+\usepackage{graphics}
+\usepackage{algorithmic}
+\usepackage{subfig}
+\usepackage{url}
+
+
+$for(header-includes)$
+$header-includes$
+$endfor$
+
+%imaiai starts here
+%hacks
+%https://tex.stackexchange.com/questions/371955/hyperref-error-argument-of-hysetreflink-has-an-extra/384969
+\AtBeginDocument{
+  \label{FirstPage2}
+  \def\fpage{\pageref{FirstPage2}}
+}
+
+\begin{document}
+
+$if(title)$
+\title{$title$}
+$endif$  
+$if(shorttitle)$
+\shorttitle{$shorttitle$}
+$endif$ 
+$if(shortauthor)$
+\shortauthorlist{$shortauthor$}
+$endif$ 
+
+$if(author)$
+\author{$for(author)$
+$if(author.corresponding)$
+{\sc $author.name$}\(^*\), \\[2pt] $author.address$ \\ \(^*\){\email{Corresponding author: $author.email$}}
+$else$
+\\[6pt] {\sc $author.name$} \\[2pt] $author.address$ \\ {$author.email$}  
+$endif$
+$endfor$}
+$endif$
+
+$if(title)$
+\maketitle
+$endif$
+
+
+
+$if(abstract)$
+\begin{abstract}
+{$abstract$}
+$if(keywords)$ 
+{$keywords$}
+$endif$
+\end{abstract}
+$endif$
+
+% end imaiai stuff
+
+$for(include-before)$
+$include-before$
+$endfor$
+
+$body$
+
+$for(include-after)$
+$include-after$
+$endfor$
+
+\bibliographystyle{imamat}
+\bibliography{$bibliography$}
+
+\end{document}
