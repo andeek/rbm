@@ -4,16 +4,16 @@ shorttitle: "Model matters with RBMs"
 author: Andee Kaplan
 shortname: Kaplan, et al.
 institute: |
-    | Iowa State University
-    | ajkaplan@iastate.edu
-shortinstitute: ajkaplan@iastate.edu
+    | Duke University
+    | andrea.kaplan@duke.edu
+shortinstitute: andrea.kaplan@duke.edu
 date: |
-  | May 9, 2017
+  | May 9, 2018
   |
   | Slides available at <http://bit.ly/kaplan-msmlc>
   | 
   | \footnotesize Joint work with D. Nordman and S. Vardeman
-shortdate: "May 9, 2017"
+shortdate: "May 9, 2018"
 output: 
   beamer_presentation:
     template: ../resources/latex/beamer.tex
@@ -147,12 +147,12 @@ Characterized by excessive sensitivity in the model, where small changes in the 
 \begin{definition}[S-unstable RBM]
 A RBM model formulation is \emph{S-unstable} if
 \begin{align*}
-\lim\limits_{\nv \rightarrow \infty} \frac{1}{\nv} \text{ELPR}(\boldsymbol \theta_{\nv}) = \infty.
+\lim\limits_{\nv \rightarrow \infty} \frac{1}{\nv} \text{LREP}(\boldsymbol \theta_{\nv}) = \infty.
 \end{align*}
 where 
 \begin{align}
 \label{eqn:elpr}
-\text{ELPR}(\boldsymbol \theta_{\nv}) = \log \left[\frac{\max\limits_{(v_1, \dots, v_{\nv}) \in \mathcal{C}^\nv}P_{\boldsymbol \theta_\nv}(v_1, \dots, v_\nv)}{\min\limits_{(v_1, \dots, v_\nv) \in \mathcal{C}^\nv}P_{\boldsymbol \theta_\nv}(v_1, \dots, v_\nv)}\right]
+\text{LREP}(\boldsymbol \theta_{\nv}) = \log \left[\frac{\max\limits_{(v_1, \dots, v_{\nv}) \in \mathcal{C}^\nv}P_{\boldsymbol \theta_\nv}(v_1, \dots, v_\nv)}{\min\limits_{(v_1, \dots, v_\nv) \in \mathcal{C}^\nv}P_{\boldsymbol \theta_\nv}(v_1, \dots, v_\nv)}\right]
 \end{align}
 \end{definition}
 
@@ -171,10 +171,10 @@ where $(v_1, \dots, v_\nv) \& (v_1^*, \dots, v_\nv^*) \in \mathcal{C}^\nv$ diffe
 
 \begin{result}
 \label{prop:instab}
-Let $c > 0$ and fix an integer $\nv \ge 1$. If $\frac{1}{\nv}\text{ELPR}(\boldsymbol \theta_\nv) > c$, then $\Delta(\boldsymbol \theta_\nv) > c$.
+Let $c > 0$ and fix an integer $\nv \ge 1$. If $\frac{1}{\nv}\text{LREP}(\boldsymbol \theta_\nv) > c$, then $\Delta(\boldsymbol \theta_\nv) > c$.
 \end{result}
 
-If the $\nv^{-1}ELPR(\boldsymbol\theta_{\nv})$ is too large, then a RBM model will exhibit large probability shifts for very small changes in the data configuration.
+If the $\nv^{-1}LREP(\boldsymbol\theta_{\nv})$ is too large, then a RBM model will exhibit large probability shifts for very small changes in the data configuration.
 
 # Tie to degeneracy
 
@@ -428,7 +428,7 @@ three_ways$Visibles <- factor(three_ways$Visibles, levels=rev(unique(three_ways$
     1. Split $\boldsymbol \theta$ into $\boldsymbol \theta_{interaction}$ and $\boldsymbol \theta_{main}$
     2. Allow the two types of terms to have varying average magnitudes, $||\boldsymbol \theta_{main} || /(\nh+\nv)$ and $||\boldsymbol \theta_{interaction} || /(\nh*\nv)$
     3. Average magnitudes vary on a grid between `r min(plot_dat_grid$r1/(plot_dat_grid$H + plot_dat_grid$V))` and `r max(plot_dat_grid$r1/(plot_dat_grid$H + plot_dat_grid$V))` with `r length(unique(plot_dat_grid$r1/(plot_dat_grid$H + plot_dat_grid$V)))` breaks, yielding `r length(unique(plot_dat_grid$r1/(plot_dat_grid$H + plot_dat_grid$V)))^2` grid points
-- Calculate metrics of model impropriety, $\boldsymbol \mu(\boldsymbol \theta)$, $\text{ELPR}(\boldsymbol \theta)/\nv$, and the coordinates of $\left|\text{E}\left[\boldsymbol X | \boldsymbol \theta\right] - \text{E}\left[\boldsymbol X | \boldsymbol \theta^* \right] \right|$. 
+- Calculate metrics of model impropriety, $\boldsymbol \mu(\boldsymbol \theta)$, $\text{LREP}(\boldsymbol \theta)/\nv$, and the coordinates of $\left|\text{E}\left[\boldsymbol X | \boldsymbol \theta\right] - \text{E}\left[\boldsymbol X | \boldsymbol \theta^* \right] \right|$. 
 - In the case of *near-degeneracy*, classify each model as near-degenerate or "viable" based on the distance of $\boldsymbol \mu(\boldsymbol \theta)$ from the boundary of the convex hull of $\mathcal{T}$
  
 # Simulation results
@@ -466,7 +466,7 @@ three_ways %>%
   geom_contour(aes(x = r1, y = r2, z = scaled_mean_elpr), colour = "black", bins = 8) +
   #geom_contour(aes(x = r1, y = r2, z = mean_max_q), colour = "black", breaks = .05, size = 1.5) +
   geom_abline(aes(intercept = 0, slope = 1), alpha = .5, lty = 2) +
-  scale_fill_gradient(expression(frac(bar(ELPR(theta)), n[v])), low = "yellow", high = "red") +
+  scale_fill_gradient(expression(frac(bar(LREP(theta)), n[v])), low = "yellow", high = "red") +
   facet_grid(Visibles~Hiddens, labeller = label_parsed) +
   xlab(expression(paste(paste("||", theta[main], "||", "/(", n[h]," + ", n[v], ")")))) +
   ylab(expression(paste(paste("||", theta[interaction], "||", "/(", n[h], "*", n[v], ")")))) +
@@ -474,7 +474,7 @@ three_ways %>%
 ```
 
 
-```{r, fig.show="hold", fig.width=3, out.width='.32\\linewidth', fig.cap="\\label{fig:degen_plots}The fraction of models that were near-degenerate (left), the sample mean value of $\\text{ELPR}(\\boldsymbol \\theta)/\\nv$ (middle), and the sample mean of the maximum component of the absolute difference between the model expectation vector, E$\\left[\\boldsymbol X | \\boldsymbol \\theta\\right]$, and the expectation vector given independence, E$\\left[\\boldsymbol X | \\boldsymbol \\theta^* \\right ]$ (right)."}
+```{r, fig.show="hold", fig.width=3, out.width='.32\\linewidth', fig.cap="\\label{fig:degen_plots}The fraction of models that were near-degenerate (left), the sample mean value of $\\text{LREP}(\\boldsymbol \\theta)/\\nv$ (middle), and the sample mean of the maximum component of the absolute difference between the model expectation vector, E$\\left[\\boldsymbol X | \\boldsymbol \\theta\\right]$, and the expectation vector given independence, E$\\left[\\boldsymbol X | \\boldsymbol \\theta^* \\right ]$ (right)."}
 p.degen
 p.elpr
 p.exp_diff
@@ -743,19 +743,19 @@ Skeptical that any model built using RBMs (i.e. deep Boltzmann machine) can achi
 # Future work
 
 1. Generalization of instability results for other network models [ongoing, see @kaplan2016note]
+\vfill
 2. Image classification
     - Ensemble methods (super learners) using AdaBoost [@freund1995desicion] 
     - Decision theoretic based approach to approximating the likelihood ratio test for classification
-3. Markov chain Monte Carlo methods for data with Markovian dependence
-    - Spatial data
-    - Network data
+\vfill
+
 
 # Thank you
 
 * Slides -- <http://bit.ly/kaplan-msmlc>
 
 * Contact
-    * Email -- <ajkaplan@iastate.edu>
+    * Email -- <andrea.kaplan@duke.edu>
     * Twitter -- <http://twitter.com/andeekaplan>
     * GitHub -- <http://github.com/andeek>
 
