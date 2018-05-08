@@ -105,6 +105,12 @@ We want to
 1. Provide steps toward understanding properties of the model class from the perspective of statistical theory
 2. Explore the possibility of a rigorous fitting methodology 
 
+#
+
+\begin{center}
+\Huge{Properties of RBM Model Class}
+\end{center}
+
 # Degeneracy, instability, and uninterpretability. Oh my!
 
 The highly flexible nature of a RBM ($\nh + \nv + \nh*\nv$ parameters) makes at least three kinds of potential model impropriety of concern 
@@ -206,6 +212,7 @@ Characterized by marginal mean-structure (controlled by main effect parameters $
 - Expectations given independence, E$\left[\boldsymbol X | \boldsymbol \theta^* \right]$, where $\boldsymbol \theta^*$ matches $\boldsymbol \theta$ for all main effects but otherwise has $\theta_{ij} = 0$ for $i = 1, \dots, \nv, j = 1, \dots, \nh$
 - If $|\text{E}\left[\boldsymbol X | \boldsymbol \theta\right] - \text{E}\left[\boldsymbol X | \boldsymbol \theta^*\right]|$ is large then the RBM with parameter vector $\boldsymbol \theta$ is *uninterpetable*
 
+<!--
 # RBM quantities to compare
 
 \begin{align*}
@@ -213,6 +220,7 @@ Characterized by marginal mean-structure (controlled by main effect parameters $
 ~\\
 \text{E}\left[\boldsymbol X | \boldsymbol \theta^*\right] &= \sum\limits_{\boldsymbol x \in \mathcal{C}^{\nh + \nv}} \boldsymbol x \frac{\exp\left(\sum\limits_{i = 1}^\nv \theta_{v_i} v_i + \sum\limits_{j = 1}^\nh\theta_{h_j} h_j\right)}{\sum\limits_{\boldsymbol x \in \mathcal{C}^{\nh + \nv}}\exp\left(\sum\limits_{i = 1}^\nv\theta_{v_i} v_i + \sum\limits_{j = 1}^\nh\theta_{h_j} h_j\right)} 
 \end{align*}
+-->
 
 # Data coding to mitigate degeneracy
 
@@ -479,6 +487,12 @@ p.degen
 p.elpr
 p.exp_diff
 ```
+
+#
+
+\begin{center}
+\Huge{Rigorous Fitting Methodology}
+\end{center}
 
 # Model fitting
 
