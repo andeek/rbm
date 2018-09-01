@@ -1,15 +1,70 @@
-\documentclass[12pt]{article}
-\usepackage{amsmath,amssymb}
-\usepackage{graphicx,psfrag,epsf}
-\usepackage{enumerate}
-\usepackage{natbib}
-\usepackage{url} % not crucial - just used below for the URL 
+\documentclass[]{article}
+%\usepackage{nips15submit_e,times}
+\usepackage{url}
 
-\usepackage{longtable,booktabs}
-\usepackage[unicode=true]{hyperref}
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
-  
+
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage{longtable,booktabs}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={},
+            pdftitle={Properties and Bayesian fitting of restricted Boltzmann machines},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{5}
+
+% Tech stuff starts here
+\usepackage{psfrag,epsf}
+%\pdfminorversion=4
+
 \usepackage{tikz, subfig, amsthm, multirow, float, enumerate}
 \usepackage{tikz-3dplot}
 \usetikzlibrary{arrows, shapes, positioning}
@@ -50,23 +105,18 @@
 
 \newcommand{\Gamc}{C_{N}(\boldsymbol \theta_N) }
 \newcommand{\Gamt}{\Gamma_{N,2}(\boldsymbol \theta_N) }
+\bigskip
 
-%\pdfminorversion=4
-% NOTE: To produce blinded version, replace "0" with "1" below.
-\newcommand{\blind}{0}
 
 % DON'T change margins - should be 1 inch all around.
 \addtolength{\oddsidemargin}{-.5in}%
 \addtolength{\evensidemargin}{-.5in}%
 \addtolength{\textwidth}{1in}%
-\addtolength{\textheight}{-.3in}%
+\addtolength{\textheight}{1.3in}%
 \addtolength{\topmargin}{-.8in}%
-
-
 
 \let\BeginKnitrBlock\begin \let\EndKnitrBlock\end
 \begin{document}
-
 
 \def\spacingset#1{\renewcommand{\baselinestretch}%
 {#1}\small\normalsize} \spacingset{1}
@@ -75,7 +125,6 @@
 \author{Andee Kaplan \\ Department of Statistical Science, Duke University \\  and \\ Daniel Nordman \\ Department of Statistics, Iowa State University \\  and \\ Stephen Vardeman \\ Department of Statistics and Department of Industrial and\\
 Manufacturing Systems Engineering, Iowa State University \\ }
 
-\date{}
 \maketitle
 \begin{abstract}
 A restricted Boltzmann machine (RBM) is an undirected graphical model
@@ -86,20 +135,23 @@ connection to deep learning. By treating a hidden layer of one RBM as
 the visible layer in a second RBM, a deep architecture can be created.
 RBMs are thought to thereby have the ability to encode very complex and
 rich structures in data, making them attractive for supervised learning.
-However, the generative behavior of RBMs is largely unexplored. In this
-paper, we discuss the relationship between RBM parameter specification
-in the binary case and model properties such as degeneracy, instability
-and uninterpretability. We also describe the difficulties that arise in
-likelihood-based and Bayes fitting of such (highly flexible) models,
-especially as Gibbs sampling (quasi-Bayes) methods are often advocated
-for the RBM model structure.
+However, the generative behavior of RBMs is largely unexplored and
+typical fitting methodology does not easily allow for uncertainty
+quantification in addition to point estimates. In this paper, we discuss
+the relationship between RBM parameter specification in the binary case
+and model properties such as degeneracy, instability and
+uninterpretability. We also describe the difficulties that arise in
+likelihood-based and discuss potential Bayes fitting of such (highly
+flexible) models, especially as Gibbs sampling (quasi-Bayes) methods are
+often advocated for the RBM model structure.
 \end{abstract}
 \noindent%
 {\it Keywords:}  Degeneracy, Instability, Classification, Deep Learning, Graphical Models
 \vfill
 
+\hfill {\tiny technometrics tex template (do not remove)}
 \newpage
-\spacingset{1.45}
+\spacingset{1.45} % DON'T change the spacing!
 
 
 \hypertarget{introduction}{%
@@ -107,7 +159,7 @@ for the RBM model structure.
 
 The data mining and machine learning communities have recently shown
 great interest in deep learning, specifically in stacked restricted
-Boltzmann machines (RBMs) (see R. Salakhutdinov and Hinton
+Boltzmann machines (RBMs) (see Salakhutdinov and Hinton
 \protect\hyperlink{ref-salakhutdinov2009deep}{2009},
 \protect\hyperlink{ref-salakhutdinov2012efficient}{2012}; Srivastava,
 Salakhutdinov, and Hinton
@@ -125,11 +177,14 @@ and Salakhutdinov
 model properties are largely unexplored in the literature and the
 commonly cited fitting methodology remains heuristic-based and relies on
 rough approximation (Hinton, Osindero, and Teh
-\protect\hyperlink{ref-hinton2006fast}{2006}). In this paper, we provide
-steps toward a fuller understanding of the model class and its
-properties from the perspective of statistical model theory, and we then
-explore the possibility of a rigorous fitting methodology. We find the
-RBM model class to be concerning in two fundamental ways.
+\protect\hyperlink{ref-hinton2006fast}{2006}). Additionally, the current
+fitting methodology does not easily allow for interval estimation of
+parameters in the model, and instead only provides for point estimation.
+In this paper, we provide steps toward a fuller understanding of the
+model class and its properties from the perspective of statistical model
+theory, and we then explore the possibility of a rigorous fitting
+methodology with natural uncertainty quantification. We find the RBM
+model class to be concerning in two fundamental ways.
 
 First, the models can be unsatisfactory as conceptualizations of how
 data are generated. That is, recalling Fisher
@@ -175,9 +230,11 @@ presence of these in Section
 \ref{explorations-of-model-properties-through-simulation} through
 simulations of small, manageable examples.
 
-In addition to model properties, we also explore the quality of
-estimation in fitting these models. The fitting can be problematic for
-two reasons, the first being computational and the second concerning
+Separate of the exploration of model properties, we also investigate the
+quality of estimation in fitting these models and propose an estimation
+procedure that will allow for uncertainty quantification rather than
+point estimates alone. The fitting of RBMs can be problematic for two
+reasons, the first being computational and the second concerning
 flexibility. As the size of these models grows, both maximum likelihood
 and Bayesian methods of fitting quickly become intractable. The
 literature often suggests Markov chain Monte Carlo (MCMC) tools for
@@ -185,8 +242,10 @@ approximate maximization of likelihoods to fit these models (e.g., Gibbs
 sampling to exploit conditional structure in hidden and visible
 variables), but little is said about the attributes of realized
 estimates (Hinton \protect\hyperlink{ref-hinton2010practical}{2010};
-Hinton, Osindero, and Teh \protect\hyperlink{ref-hinton2006fast}{2006}).
-Related to this, these MCMC algorithms require updating potentially many
+Hinton, Osindero, and Teh \protect\hyperlink{ref-hinton2006fast}{2006}),
+including the absence of interval estimates.
+
+Furthermore, these MCMC algorithms require updating potentially many
 latent variables (hiddens) which can critically influence convergence in
 MCMC-based likelihood methods. Applying basic statistical principles in
 fitting RBM models of tractable sizes, we compare three fully Bayesian
@@ -244,11 +303,15 @@ Additionally, measures of model impropriety and methods of
 quantifying/detecting it are defined. Section
 \ref{explorations-of-model-properties-through-simulation} details our
 explorations into the model behavior and potential propriety issues with
-the RBM class. We examine three Bayesian fitting techniques intended to
-avoid model impropriety issues raised in Section \ref{model-fitting} and
-conclude with a discussion in Section \ref{discussion}. Supplementary
-online material provides proofs for results on RBM parameterizations and
-data codings described in Section \ref{data-encoding}.
+the RBM class. This follows with the call to action in Sculley et al.
+(\protect\hyperlink{ref-sculley2018winner}{2018}) to employ small toy
+examples to advance empirical understanding of deep learning models and
+strive for a ``higher level of empirical rigor in the field.'' We
+examine three Bayesian fitting techniques intended to avoid model
+impropriety issues raised in Section \ref{model-fitting} and conclude
+with a discussion in Section \ref{discussion}. Supplementary online
+material provides proofs for results on RBM parameterizations and data
+codings described in Section \ref{data-encoding}.
 
 While applications of the RBM have been claimed to produce some
 successes in classification problems, it is unclear if the model class
@@ -310,21 +373,21 @@ f_{\boldsymbol \theta} (\boldsymbol x)\equiv P_{\boldsymbol \theta}(\boldsymbol 
 denotes the vector of model parameters and the denominator \[
 \gamma(\boldsymbol \theta) = \sum_{\boldsymbol x \in \mathcal{C}^{\nh+\nv}}\exp\left(\sum_{i = 1}^\nv \sum_{j=1}^\nh \theta_{ij} v_i h_j + \sum_{i = 1}^\nv\theta_{v_i} v_i + \sum_{j = 1}^\nh\theta_{h_j} h_j\right)
 \] is the normalizing function that ensures the probabilities
-(\eqref{eq:pmf}) sum to one. For
+\eqref{eq:pmf} sum to one. For
 \(\boldsymbol x = (h_1, \dots, h_\nh, v_1, \dots, v_\nh) \in \mathcal{C}^{\nv + \nh}\)
 and \begin{align}
 \boldsymbol t(\boldsymbol x) &= (h_1, \dots, h_\nh, v_1, \dots, v_\nv, v_1 h_1, \dots, v_\nv h_\nh) \in \mathcal{C}^{\nh + \nv + \nh*\nv}, \label{eq:t}
 \end{align} let
 \(\mathcal{T} = \{\boldsymbol t(\boldsymbol x): \boldsymbol x \in \mathcal{C}^{\nv + \nh}\} \subset \mathbb{R}^{\nv + \nh + \nv * \nh}\)
 be the set of possible values for the vector of variables needed to
-compute probabilities (\eqref{eq:pmf}) in the model, and write
+compute probabilities \eqref{eq:pmf} in the model, and write
 \(Q_{\boldsymbol \theta}(\boldsymbol x) = \sum\limits_{i = 1}^\nh\sum\limits_{j=1}^\nv \theta_{ij} h_i v_j + \sum\limits_{i = 1}^\nh\theta_{hi} h_i + \sum\limits_{j = 1}^\nv\theta_{vj} v_j\)
 for the ``neg-potential'' function. The RBM model is parameterized by
 \(\boldsymbol \theta\) containing two types of parameters, main effects
 and interaction effects. The main effects parameters
 (\(\{\theta_{v_i}, \theta_{h_j}\}_{\substack{i = 1, \dots, \nv,\\j = 1, \dots, \nh}}\))
 weight the values of the visible \(v_i\) and hidden \(h_j\) nodes in
-probabilities (\eqref{eq:pmf}) and the interaction effect parameters
+probabilities \eqref{eq:pmf} and the interaction effect parameters
 (\(\theta_{ij}\)) weight the values of the connections \(v_i h_j\), or
 dependencies, between hidden and visible layers.
 
@@ -346,15 +409,15 @@ Learning}\label{connection-to-deep-learning}}
 
 RBMs have risen to prominence in recent years due to their connection to
 deep learning (see Hinton, Osindero, and Teh
-\protect\hyperlink{ref-hinton2006fast}{2006}; R. Salakhutdinov and
-Hinton \protect\hyperlink{ref-salakhutdinov2012efficient}{2012};
-Srivastava, Salakhutdinov, and Hinton
+\protect\hyperlink{ref-hinton2006fast}{2006}; Salakhutdinov and Hinton
+\protect\hyperlink{ref-salakhutdinov2012efficient}{2012}; Srivastava,
+Salakhutdinov, and Hinton
 \protect\hyperlink{ref-srivastava2013modeling}{2013} for examples). By
 stacking multiple layers of RBMs in a deep architecture, proponents of
 the model are claimed to produce the ability to learn ``internal
 representations that become increasingly complex, which is considered to
 be a promising way of solving object and speech recognition problems''
-(R. Salakhutdinov and Hinton
+(Salakhutdinov and Hinton
 \protect\hyperlink{ref-salakhutdinov2009deep}{2009}, 450). The stacking
 is achieved by treating a hidden layer of one RBM as the visible layer
 in a second RBM, and so on, until the desired multi-layer architecture
@@ -394,7 +457,7 @@ potential outcomes of sufficient statistics,
 \(\{\boldsymbol t(\boldsymbol x): \boldsymbol x \in \mathcal{X}\}\),
 under the model above. Handcock
 (\protect\hyperlink{ref-handcock2003assessing}{2003}) classifies an
-exponentially parametrized random graph model at \(\boldsymbol \theta\)
+exponentially parameterized random graph model at \(\boldsymbol \theta\)
 as \emph{near-degenerate} if the mean value of the vector of sufficient
 statistics under \(\boldsymbol \theta\),
 \(\boldsymbol \mu(\boldsymbol \theta) = \text{E}_{\boldsymbol \theta}\boldsymbol t( \boldsymbol X)\),
@@ -413,7 +476,7 @@ visibles and hiddens, \(\mathcal{C}^{\nv + \nh}\). Using the idea of
 Handcock (\protect\hyperlink{ref-handcock2003assessing}{2003}), when the
 random vector
 \(\boldsymbol t(\boldsymbol x) = (v_1, \dots, v_\nv, h_1, \dots, h_\nh, v_1 h_1, \dots, v_V h_\nh ) \in \mathcal{T} \equiv \{\boldsymbol t(\boldsymbol x): \boldsymbol x \in \mathcal{C}^{\nh + \nv} \}\)
-from (\eqref{eq:t}), appearing in the neg-potential function
+from \eqref{eq:t}, appearing in the neg-potential function
 \(Q_{\boldsymbol \theta}(\cdot)\), has a mean vector
 \(\boldsymbol \mu(\boldsymbol \theta) \in \mathbb{R}^{\nv + \nh + \nv * \nh}\)
 close to the boundary of the convex hull of \(\mathcal{T}\), then the
@@ -457,7 +520,7 @@ the visible variables \((V_1, \dots, V_\nv)\) under parameter vector
 
 In formulating a RBM model for a potentially large number of visibles
 (i.e., as \(\nv \rightarrow \infty\)), we will say that the ratio
-(\eqref{eq:elpr}) needs to stay bounded for a sequence of RBM models to be
+\eqref{eq:elpr} needs to stay bounded for a sequence of RBM models to be
 stable. That is, we make the following convention.
 \BeginKnitrBlock{definition}[S-unstable RBM]
 \protect\hypertarget{def:unnamed-chunk-1}{}{\label{def:unnamed-chunk-1}
@@ -493,13 +556,13 @@ in data outcomes (visibles) at a RBM parameter
 
 \BeginKnitrBlock{proposition}
 \protect\hypertarget{prp:instab1}{}{\label{prp:instab1} }Let \(c > 0\) and
-let \(\text{LREP}(\boldsymbol \theta_\nv)\) be as in (\eqref{eq:elpr}) for
+let \(\text{LREP}(\boldsymbol \theta_\nv)\) be as in \eqref{eq:elpr} for
 an integer \(\nv \ge 1\). If
 \(\frac{1}{\nv}\text{LREP}(\boldsymbol \theta_\nv) > c\), then
 \(\Delta(\boldsymbol \theta_\nv) > c\).
 \EndKnitrBlock{proposition}
 
-In other words, if the probability ratio (\eqref{eq:elpr}) is too large,
+In other words, if the probability ratio \eqref{eq:elpr} is too large,
 then a RBM model sequence will exhibit large probability shifts for very
 small changes in data configurations (i.e., will exhibit instability).
 Such instability can be a concern in a model for reasons similar to
@@ -559,8 +622,8 @@ main effects of visible and hidden variables and can be interpreted as
 (logit functions of) means for variables
 \(V_1, \dots, V_\nv, H_1, \dots, H_\nh\) in a model with no interaction
 parameters, \(\theta_{ij} = 0, i = 1, \dots, \nv, j = 1, \dots, \nh\).
-That is, with no interaction parameters, we have from (\eqref{eq:pmf})
-that \[
+That is, with no interaction parameters, we have from \eqref{eq:pmf} that
+\[
 P_\theta(V_i=1) \propto e^{\theta_{v_i}} \quad \text{ and } \quad P_\theta(H_j=1) \propto e^{\theta_{h_j}}, \quad  i=1,\ldots,\nv,j=1,\ldots,\nh
 \] so that, for example, \(\text{logit}(P_\theta(V_i=1))=\theta_{v_i}\)
 (or \(2 \theta_{v_i}\)) under the coding \(\mathcal{C}=\{0,1\}\) (or
@@ -724,8 +787,8 @@ degeneracy.
 \caption{Contour plots for the three parametric mean functions of sufficient statistics for a RBM with one visible and one hidden node.}\label{fig:degen-toy}
 \end{figure}
 Secondly, we can look at \(\text{LREP}(\boldsymbol \theta)\) from
-(\eqref{eq:elpr}) for this tiny model in order to consider model
-instability as a function of RBM parameters. Recall that large values of
+\eqref{eq:elpr} for this tiny model in order to consider model instability
+as a function of RBM parameters. Recall that large values of
 \(\text{LREP}(\boldsymbol \theta)\) are associated with an extreme
 sensitivity of the model probabilities
 \(f_{\boldsymbol \theta}(\boldsymbol x)\) to small changes in
@@ -798,7 +861,7 @@ could allow hiddens \((H_1, \dots, H_\nh) \in \{0,1\}^\nh\) and visibles
 \((V_1, \dots, V_\nv) \in \{0,1\}^\nv\), as in the previous sections or
 we could instead encode the state of the variables as \(\{-1,1\}^\nh\)
 and \(\{-1,1\}^\nv\). This will result in variables
-\(\boldsymbol t(\boldsymbol X)\) from (\eqref{eq:t}) satisfying
+\(\boldsymbol t(\boldsymbol X)\) from \eqref{eq:t} satisfying
 \(\boldsymbol t(\boldsymbol x) \in \{0,1\}^{\nh + \nv + \nh*\nv}\) or
 \(\boldsymbol t(\boldsymbol x) \in \{-1,1\}^{\nh + \nv + \nh*\nv}\)
 depending on how we encode ``on'' and ``off'' states in the nodes.
@@ -922,11 +985,11 @@ additional matter of principled/rigorous fitting of RBM models.
 \section{Model Fitting}\label{model-fitting}}
 
 Typically, fitting a RBM via maximum likelihood (ML) methods will be
-infeasible due mainly to the intractability of the normalizing term
-\(\gamma(\boldsymbol \theta)\) in a model (\eqref{eq:pmf}) of any
-realistic size. Ad hoc methods are often recommended instead, which aim
-to avoid this problem by using stochastic ML approximations that employ
-a small number of MCMC draws (i.e., contrastive divergence, (Hinton
+unfeasible due mainly to the intractability of the normalizing term
+\(\gamma(\boldsymbol \theta)\) in a model \eqref{eq:pmf} of any realistic
+size. Ad hoc methods are often recommended instead, which aim to avoid
+this problem by using stochastic ML approximations that employ a small
+number of MCMC draws (i.e., contrastive divergence, (Hinton
 \protect\hyperlink{ref-hinton2002training}{2002})).
 
 However, computational concerns are not the only issues with fitting a
@@ -952,10 +1015,10 @@ Given some specified cell probabilities, say \begin{equation}
 provides technical details to show parameter values
 \((\theta_{v_1}, \theta_{v_2}, \theta_{h_1}, \theta_{11},\theta_{21})\)
 may be chosen to match any given cell probabilities with arbitrary
-closeness. In fact, when the cell probabilities (\eqref{eq:0}) are all
+closeness. In fact, when the cell probabilities \eqref{eq:0} are all
 strictly positive, parameters in the RBM model can be specified to
 reflect these probabilities exactly. And, when one or more of the cell
-probabilities (\eqref{eq:0}) are zero, the corresponding RBM probabilities
+probabilities \eqref{eq:0} are zero, the corresponding RBM probabilities
 \(P(V_1=v_1,V_2=_v2| \theta_{v_1}, \theta_{v_2}, \theta_{h_1}, \theta_{11},\theta_{21})\)
 may never be identically zero (due to exponential terms in the model)
 but parameters can be still selected to make the appropriate RBM cell
@@ -979,7 +1042,7 @@ arbitrarily well-approximated. For illustration, considering the simple
 example from above with \(n\) iid observations, each consisting of two
 realized visibles \((V_1,V_2)\) the empirical cell frequencies from the
 sample are the highest likelihood choices for the cell probabilities
-\(p_{(-1,-1)},p_{(1,-1)}, p_{(-1,1)},p_{(1,1)}\) in (\eqref{eq:0}) before
+\(p_{(-1,-1)},p_{(1,-1)}, p_{(-1,1)},p_{(1,1)}\) in \eqref{eq:0} before
 any parametric model is introduced for improved analysis, and the
 discussion above indicates that RBM model parameters can be chosen to
 re-create this empirical distribution to an arbitrarily close degree.
@@ -1000,7 +1063,9 @@ RBM.
 Here we consider what might be done in a principled manner to prevent
 both overfitting and model impropriety, testing on a \(\nv = \nh = 4\)
 case that already stretches the limits of what is computable - in
-particular we consider Bayes methods.
+particular we consider Bayes methods. We employ a Bayesian framework
+because of the ability to obtain uncertainty quantification with little
+to no extra effort via posterior credible intervals.
 
 \hypertarget{bayesian-model-fitting}{%
 \subsection{Bayesian model fitting}\label{bayesian-model-fitting}}
@@ -1020,7 +1085,7 @@ Hinton (\protect\hyperlink{ref-hinton2010practical}{2010}) called
 terms in the model, \(\boldsymbol \theta_{interaction}\), shrinking
 their magnitudes.
 
-\par 
+\par
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrrr}
@@ -1053,7 +1118,7 @@ distribution \(\pi(\boldsymbol \theta)\) for parameters
 \tightlist
 \item
   \emph{A ``trick'' prior.} Here we cancel out normalizing term in the
-  likelihood (from \(\gamma(\boldsymbol \theta)\) in (\eqref{eq:pmf})) so
+  likelihood (from \(\gamma(\boldsymbol \theta)\) in \eqref{eq:pmf}) so
   that resulting full conditionals of \(\boldsymbol \theta\) are
   multivariate Normal. Namely, this involves a prior of the form
   \begin{align*}
@@ -1077,7 +1142,7 @@ distribution \(\pi(\boldsymbol \theta)\) for parameters
   accomplished using a geometric adaptive Metropolis Hastings step (Zhou
   \protect\hyperlink{ref-zhou2014some}{2014}) and calculation of
   likelihood normalizing constant. (This computation is barely feasible
-  for a problem of this size and would be infeasible for larger
+  for a problem of this size and would be unfeasible for larger
   problems.) Here the hidden variables \(h_j\) are again carried along
   in the MCMC implementation as latent variables. We will refer to this
   method as Bayes with Truncated Normal prior and Latent Variables
@@ -1134,8 +1199,8 @@ selected by inspecting the trace plots, we assess the issue of mixing in
 two ways. First, the autocorrelation functions (ACF) from each posterior
 sample corresponding to a model probability for a visible vector outcome
 \(\mathbf{v}=(v_1,v_2,v_3,v_4)\in\{\pm 1\}^4\) (i.e., computed from
-\(\boldsymbol \theta\) under (\eqref{eq:pmf})) are determined and plotted
-in Figure \ref{fig:acf} with BwTNLV in black and BwTNML in red. As
+\(\boldsymbol \theta\) under \eqref{eq:pmf} are determined and plotted in
+Figure \ref{fig:acf} with BwTNLV in black and BwTNML in red. As
 expected, ACF corresponding to the method (BwTNML) that marginalizes out
 the hidden variables from the likelihood decreases to zero at a much
 faster rate, indicating better mixing for the chain.
@@ -1226,7 +1291,7 @@ the BwTNML method constrain the RBM model fit to avoid replication of
 the empirical distribution and better estimate the underlying true data
 generating probabilities. However, this method requires a
 marginalization step to obtain the probability function of visible
-observations alone, which is infeasible for a model with \(\nh\) of any
+observations alone, which is unfeasible for a model with \(\nh\) of any
 real size.
 
 \par
@@ -1242,6 +1307,19 @@ empirical distribution. BwTNML produces the best fit for the data,
 however is also the most computationally intensive and least feasible
 with a real dataset.}
 \end{figure}
+An alternative possibility to using MCMC to approximate the posterior
+for Bayesian inference in a RBM model is to use variational methods for
+approximation of the posterior (Salimans, Kingma, and Welling
+\protect\hyperlink{ref-salimans2015markov}{2015}). The advantage to
+using variational methods would be computational scalability, but the
+disadvantages are potentially numerous. Namely, the lack of theoretical
+guarantees of convergence to a global optimum (Blei, Kucukelbir, and
+McAuliffe \protect\hyperlink{ref-blei2017variational}{2017}) and the
+difficulty of assessing how closely approximated the posterior is (Yao
+et al. \protect\hyperlink{ref-pmlr-v80-yao18a}{2018}) are of concern.
+These two issues show potential difficulties in using variational Bayes
+methods for interval estimation at present.
+
 \hypertarget{discussion}{%
 \section{Discussion}\label{discussion}}
 
@@ -1282,6 +1360,11 @@ RBMs as data generative tools.
 \addcontentsline{toc}{section}{References}
 
 \hypertarget{refs}{}
+\leavevmode\hypertarget{ref-blei2017variational}{}%
+Blei, David M, Alp Kucukelbir, and Jon D McAuliffe. 2017. ``Variational
+Inference: A Review for Statisticians.'' \emph{Journal of the American
+Statistical Association} 112 (518). Taylor \& Francis: 859--77.
+
 \leavevmode\hypertarget{ref-carreira2005contrastive}{}%
 Carreira-Perpinan, Miguel A, and Geoffrey E Hinton. 2005. ``On
 Contrastive Divergence Learning.'' In \emph{Aistats}, 10:33--40.
@@ -1295,18 +1378,18 @@ Neural Networks and Machine Learning--ICANN 2012}. Springer, 81--88.
 Fisher, R. A. 1922. ``On the Mathematical Foundations of Theoretical
 Statistics.'' \emph{Philosophical Transactions of the Royal Society of
 London A: Mathematical, Physical and Engineering Sciences} 222
-(594-604). The Royal Society:309--68.
-
-\leavevmode\hypertarget{ref-box1967discrimination}{}%
-G. E. P. Box, W. J. Hill. 1967. ``Discrimination Among Mechanistic
-Models.'' \emph{Technometrics} 9 (1). {[}Taylor \& Francis, Ltd.,
-American Statistical Association, American Society for
-Quality{]}:57--71.
+(594-604). The Royal Society: 309--68.
 
 \leavevmode\hypertarget{ref-gelman2011inference}{}%
 Gelman, Andrew, Kenneth Shirley, and others. 2011. ``Inference from
 Simulations and Monitoring Convergence.'' \emph{Handbook of Markov Chain
 Monte Carlo}, 163--74.
+
+\leavevmode\hypertarget{ref-box1967discrimination}{}%
+G. E. P. Box, W. J. Hill. 1967. ``Discrimination Among Mechanistic
+Models.'' \emph{Technometrics} 9 (1). {[}Taylor \& Francis, Ltd.,
+American Statistical Association, American Society for Quality{]}:
+57--71.
 
 \leavevmode\hypertarget{ref-handcock2003assessing}{}%
 Handcock, Mark S. 2003. ``Assessing Degeneracy in Statistical Models of
@@ -1315,17 +1398,17 @@ University of Washington. \url{http://www.csss.washington.edu/}.
 
 \leavevmode\hypertarget{ref-hinton2010practical}{}%
 Hinton, Geoffrey. 2010. ``A Practical Guide to Training Restricted
-Boltzmann Machines.'' \emph{Momentum} 9 (1):926.
+Boltzmann Machines.'' \emph{Momentum} 9 (1): 926.
 
 \leavevmode\hypertarget{ref-hinton2002training}{}%
 Hinton, Geoffrey E. 2002. ``Training Products of Experts by Minimizing
-Contrastive Divergence.'' \emph{Neural Computation} 14 (8). MIT
-Press:1771--1800.
+Contrastive Divergence.'' \emph{Neural Computation} 14 (8). MIT Press:
+1771--1800.
 
 \leavevmode\hypertarget{ref-hinton2006fast}{}%
 Hinton, Geoffrey E, Simon Osindero, and Yee-Whye Teh. 2006. ``A Fast
 Learning Algorithm for Deep Belief Nets.'' \emph{Neural Computation} 18
-(7). MIT Press:1527--54.
+(7). MIT Press: 1527--54.
 
 \leavevmode\hypertarget{ref-kaiser2007statistical}{}%
 Kaiser, Mark S. 2007. ``Statistical Dependence in Markov Random Field
@@ -1342,15 +1425,15 @@ Larochelle, Hugo, and Yoshua Bengio. 2008. ``Classification Using
 Discriminative Restricted Boltzmann Machines.'' In \emph{Proceedings of
 the 25th International Conference on Machine Learning}, 536--43. ACM.
 
-\leavevmode\hypertarget{ref-le2008representational}{}%
-Le Roux, Nicolas, and Yoshua Bengio. 2008. ``Representational Power of
-Restricted Boltzmann Machines and Deep Belief Networks.'' \emph{Neural
-Computation} 20 (6). MIT Press:1631--49.
-
 \leavevmode\hypertarget{ref-lehmann1990model}{}%
 Lehmann, E. L. 1990. ``Model Specification: The Views of Fisher and
 Neyman, and Later Developments.'' \emph{Statistical Science} 5 (2).
-Institute of Mathematical Statistics:160--68.
+Institute of Mathematical Statistics: 160--68.
+
+\leavevmode\hypertarget{ref-le2008representational}{}%
+Le Roux, Nicolas, and Yoshua Bengio. 2008. ``Representational Power of
+Restricted Boltzmann Machines and Deep Belief Networks.'' \emph{Neural
+Computation} 20 (6). MIT Press: 1631--49.
 
 \leavevmode\hypertarget{ref-li2014biclustering}{}%
 Li, Jing. 2014. ``Biclustering Methods and a Bayesian Approach to
@@ -1361,7 +1444,7 @@ State University; Graduate Theses; Dissertations.
 \leavevmode\hypertarget{ref-montufar2011refinements}{}%
 Montufar, Guido, and Nihat Ay. 2011. ``Refinements of Universal
 Approximation Results for Deep Belief Networks and Restricted Boltzmann
-Machines.'' \emph{Neural Computation} 23 (5). MIT Press:1306--19.
+Machines.'' \emph{Neural Computation} 23 (5). MIT Press: 1306--19.
 
 \leavevmode\hypertarget{ref-montufar2011expressive}{}%
 Montúfar, Guido F, Johannes Rauh, and Nihat Ay. 2011. ``Expressive Power
@@ -1377,17 +1460,26 @@ Unrecognizable Images.'' \emph{arXiv Preprint arXiv:1412.1897}.
 \leavevmode\hypertarget{ref-salakhutdinov2012efficient}{}%
 Salakhutdinov, Ruslan, and Geoffrey Hinton. 2012. ``An Efficient
 Learning Procedure for Deep Boltzmann Machines.'' \emph{Neural
-Computation} 24 (8). MIT Press:1967--2006.
+Computation} 24 (8). MIT Press: 1967--2006.
 
 \leavevmode\hypertarget{ref-salakhutdinov2009deep}{}%
 Salakhutdinov, Ruslan, and Geoffrey E Hinton. 2009. ``Deep Boltzmann
 Machines.'' In \emph{International Conference on Artificial Intelligence
 and Statistics}, 448--55. AI \& Statistics.
 
+\leavevmode\hypertarget{ref-salimans2015markov}{}%
+Salimans, Tim, Diederik Kingma, and Max Welling. 2015. ``Markov Chain
+Monte Carlo and Variational Inference: Bridging the Gap.'' In
+\emph{International Conference on Machine Learning}, 1218--26.
+
 \leavevmode\hypertarget{ref-schweinberger2011instability}{}%
 Schweinberger, Michael. 2011. ``Instability, Sensitivity, and Degeneracy
 of Discrete Exponential Families.'' \emph{Journal of the American
-Statistical Association} 106 (496). Taylor \& Francis:1361--70.
+Statistical Association} 106 (496). Taylor \& Francis: 1361--70.
+
+\leavevmode\hypertarget{ref-sculley2018winner}{}%
+Sculley, D, Jasper Snoek, Alex Wiltschko, and Ali Rahimi. 2018.
+``Winner's Curse? On Pace, Progress, and Empirical Rigor.''
 
 \leavevmode\hypertarget{ref-smolensky1986information}{}%
 Smolensky, Paul. 1986. ``Information Processing in Dynamical Systems:
@@ -1413,6 +1505,14 @@ Properties of Neural Networks.'' \emph{arXiv Preprint arXiv:1312.6199}.
 Tieleman, Tijmen. 2008. ``Training Restricted Boltzmann Machines Using
 Approximations to the Likelihood Gradient.'' In \emph{Proceedings of the
 25th International Conference on Machine Learning}, 1064--71. ACM.
+
+\leavevmode\hypertarget{ref-pmlr-v80-yao18a}{}%
+Yao, Yuling, Aki Vehtari, Daniel Simpson, and Andrew Gelman. 2018.
+``Yes, but Did It Work?: Evaluating Variational Inference.'' In
+\emph{Proceedings of the 35th International Conference on Machine
+Learning}, edited by Jennifer Dy and Andreas Krause, 80:5581--90.
+Proceedings of Machine Learning Research. Stockholmsmässan, Stockholm
+Sweden: PMLR. \url{http://proceedings.mlr.press/v80/yao18a.html}.
 
 \leavevmode\hypertarget{ref-zhou2014some}{}%
 Zhou, Wen. 2014. ``Some Bayesian and Multivariate Analysis Methods in
