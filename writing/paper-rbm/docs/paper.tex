@@ -140,10 +140,11 @@ typical fitting methodology does not easily allow for uncertainty
 quantification in addition to point estimates. In this paper, we discuss
 the relationship between RBM parameter specification in the binary case
 and model properties such as degeneracy, instability and
-uninterpretability. We also describe the difficulties that arise in
-likelihood-based and discuss potential Bayes fitting of such (highly
-flexible) models, especially as Gibbs sampling (quasi-Bayes) methods are
-often advocated for the RBM model structure.
+uninterpretability. We also describe the associated difficulties that
+can arise with likelihood-based inference and further discuss the
+potential Bayes fitting of such (highly flexible) models, especially as
+Gibbs sampling (quasi-Bayes) methods are often advocated for the RBM
+model structure.
 \end{abstract}
 \noindent%
 {\it Keywords:}  Degeneracy, Instability, Classification, Deep Learning, Graphical Models
@@ -201,7 +202,7 @@ degeneracy (or near degeneracy), which is a statistical concern in that
 most data processes being modeled are realistically not degenerate in
 their spectrum of potential outcomes. For example, when sampling data
 from a nearly degenerate RBM, only a small number of output
-possibilities have probability greater than zero, and thus a sample of
+possibilities receives nearly all probability, and thus a sample of
 images will all be copies of the same one image (or small number of
 images). An example of ten 4-pixel images simulated from a nearly
 degenerate RBM model is compared to ten 4-pixel images simulated from a
@@ -231,19 +232,19 @@ presence of these in Section
 simulations of small, manageable examples.
 
 Separate of the exploration of model properties, we also investigate the
-quality of estimation in fitting these models and propose an estimation
-procedure that will allow for uncertainty quantification rather than
-point estimates alone. The fitting of RBMs can be problematic for two
-reasons, the first being computational and the second concerning
-flexibility. As the size of these models grows, both maximum likelihood
-and Bayesian methods of fitting quickly become intractable. The
-literature often suggests Markov chain Monte Carlo (MCMC) tools for
-approximate maximization of likelihoods to fit these models (e.g., Gibbs
-sampling to exploit conditional structure in hidden and visible
-variables), but little is said about the attributes of realized
-estimates (Hinton \protect\hyperlink{ref-hinton2010practical}{2010};
-Hinton, Osindero, and Teh \protect\hyperlink{ref-hinton2006fast}{2006}),
-including the absence of interval estimates.
+quality of estimation in fitting these models and examine an estimation
+procedure that allows for uncertainty quantification rather than point
+estimates alone. The fitting of RBMs can be problematic for two reasons,
+the first being computational and the second concerning flexibility. As
+the size of these models grows, both maximum likelihood and Bayesian
+methods of fitting quickly become intractable. The literature often
+suggests Markov chain Monte Carlo (MCMC) tools for approximate
+maximization of likelihoods to fit these models (e.g., Gibbs sampling to
+exploit conditional structure in hidden and visible variables), but
+little is said about the attributes of realized estimates (Hinton
+\protect\hyperlink{ref-hinton2010practical}{2010}; Hinton, Osindero, and
+Teh \protect\hyperlink{ref-hinton2006fast}{2006}), including the absence
+of interval estimates.
 
 Furthermore, these MCMC algorithms require updating potentially many
 latent variables (hiddens) which can critically influence convergence in
@@ -255,13 +256,13 @@ parameter space that yield unattractive models. As might be expected,
 with greater computational complexity comes an increase in fitting
 accuracy, but at the cost of practical feasibility.
 
-While the computational concerns are inconvenient in fitting, issues due
-to model flexibility are potentially more concerning. For a RBM model
-with enough hidden variables, it has been shown that any distribution
-for the visibles can be approximated arbitrarily well (Le Roux and
-Bengio \protect\hyperlink{ref-le2008representational}{2008}; Montufar
-and Ay \protect\hyperlink{ref-montufar2011refinements}{2011}; and
-Montúfar, Rauh, and Ay
+As a compounding factor to the computational challenges, issues in model
+fitting due to model flexibility are potentially more concerning. For a
+RBM model with enough hidden variables, it has been shown that any
+distribution for the visibles can be approximated arbitrarily well (Le
+Roux and Bengio \protect\hyperlink{ref-le2008representational}{2008};
+Montufar and Ay \protect\hyperlink{ref-montufar2011refinements}{2011};
+and Montúfar, Rauh, and Ay
 \protect\hyperlink{ref-montufar2011expressive}{2011}). However, for
 binary data, the empirical distribution of an observed training set of
 visible variables provides a highest likelihood benchmark, before any
@@ -288,7 +289,7 @@ type penalties are mentioned to achieve weight-decay, though the
 benefits of these particular forms are unknown in different situations.
 However, the degree to which regularization and penalization are used by
 practitioners is not clear because these concepts are not (by default) a
-part of the accepted fitting methodology (Hinton
+part of the overall model-specification-and-fitting methodology (Hinton
 \protect\hyperlink{ref-hinton2002training}{2002}; Carreira-Perpinan and
 Hinton \protect\hyperlink{ref-carreira2005contrastive}{2005}). In this
 paper, we attempt to address the concerns with overfitting and poor
@@ -303,7 +304,7 @@ Additionally, measures of model impropriety and methods of
 quantifying/detecting it are defined. Section
 \ref{explorations-of-model-properties-through-simulation} details our
 explorations into the model behavior and potential propriety issues with
-the RBM class. This follows with the call to action in Sculley et al.
+the RBM class. This aligns with the call to action in Sculley et al.
 (\protect\hyperlink{ref-sculley2018winner}{2018}) to employ small toy
 examples to advance empirical understanding of deep learning models and
 strive for a ``higher level of empirical rigor in the field.'' We
