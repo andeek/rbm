@@ -218,10 +218,10 @@ realistic variation.
 \end{figure}
 In addition to such degeneracy, we find that RBMs can easily exhibit
 types of instability, related to how sensitive the model probabilities
-can be to small changes in data outcomes. In practice, this may be seen
-when a single pixel change in an image results in a wildly different
-classification in an image classification problem. Occurrences of such
-behavior have recently been documented in RBMs (Li
+can be to small difference in data outcomes. In practice, this may be
+seen when a single pixel change in an image results in a wildly
+different classification in an image classification problem. Occurrences
+of such behavior have recently been documented in RBMs (Li
 \protect\hyperlink{ref-li2014biclustering}{2014}), as well as other deep
 architectures (Szegedy et al.
 \protect\hyperlink{ref-szegedy2013intriguing}{2013}; Nguyen, Yosinski,
@@ -1306,26 +1306,34 @@ methods for interval estimation at present.
 
 RBM models constitute an interesting class of undirected graphical
 models that are thought to be useful for supervised learning tasks.
-However, when viewed as generative statistical models, RBMs cn be
+However, when viewed as generative statistical models, RBMs can be
 susceptible to forms of model impropriety such as near-degeneracy,
-S-instability, and uninterpretability. Additionally, these models are
-difficult to fit using a rigorous methodology tht cn incorporate
-estimtion uncertainty, due to the dimension of the parameter space
-coupled with the size of the latent variable space.
+S-instability, and uninterpretability. These model instability problems
+relate to how useful the model may be for representing realistic data
+generation mechanisms. In this paper, we have provided a theoretical
+framework for discussing the model properties of RBMs, as well as
+provided empirical evidence that these model problems can arise away
+from the origin of the parameter space.
 
-In this paper, we have presented three fully Bayes-principled MCMC-based
-methods for fitting RBMs, which provide posterior distributions for
-quantifying uncertainty in estimating model parameters and probabilities
-(e.g., Figure \ref{fig:fitting-plot}). Common practice is to use a kind
-of MCMC to overcome fitting complexities. However because of the size of
-the space to be filled with MCMC iterates, convergence and mixing of
-these methods will be slow. Marginalization over the latent variables in
-the model is shown to improve mixing, but is numerically intractable due
-to the necessity of repeated calculation of the normalizing constant.
-Due to the extreme flexibility in this model class, rigorous
-likelihood-based fitting for a RBM can typically seek to merely merely
-return the (discrete) empirical distribution for visibles, and
-practitioners should be aware of this and employ some form of
+Additionally, these models are difficult to fit using a rigorous
+methodology that can incorporate estimation uncertainty, due to the
+dimension of the parameter space coupled with the size of the latent
+variable space. We have presented three fully Bayes-principled
+MCMC-based methods for fitting RBMs, which provide posterior
+distributions for quantifying uncertainty in estimating model parameters
+and probabilities (e.g., Figure \ref{fig:fitting-plot}) while aiming to
+avoid areas of the parameter space that will potentially lead to model
+impropriety. We have shown small examples where this fitting methodology
+does work, but becomes quickly intractable in large data cases.
+
+The current common practice is to use a kind of MCMC to overcome fitting
+complexities, and due to the extreme flexibility in this model class,
+rigorous likelihood-based fitting for a RBM can typically seek to merely
+merely return the (discrete) empirical distribution for visibles.
+Current fitting methodology for RBMs does not provide uncertainty
+quantification for the fitted parameters, and it is unclear that they
+seeks to address the issues in model impropriety detailed in this paper.
+Practitioners should be aware of this and employ some form of
 regularization or penalization in the fitting.
 
 Ultimately, it is not unquestionably clear that RBM models are useful as
