@@ -167,7 +167,7 @@ realistic variation.
 \par
 
 \begin{figure}
-\includegraphics[width=1\linewidth]{paper_files/figure-latex/sample-models-1} \includegraphics[width=1\linewidth]{paper_files/figure-latex/sample-models-2} \caption{\label{fig:sample-models}Ten 4-pixel images simulated from a degenerate model (a) compared to ten 4-pixel images simulated from a non-degenerate model (b). The degenerate model places almost all probability on one outcome, causing the image to be generated repeatedly, whereas the non-degenerate model shows more realistic variation.}\label{fig:sample-models}
+\includegraphics[width=1\linewidth]{sample-models-1} \includegraphics[width=1\linewidth]{sample-models-2} \caption{\label{fig:sample-models}Ten 4-pixel images simulated from a degenerate model (a) compared to ten 4-pixel images simulated from a non-degenerate model (b). The degenerate model places almost all probability on one outcome, causing the image to be generated repeatedly, whereas the non-degenerate model shows more realistic variation.}\label{fig:sample-models}
 \end{figure}
 
 In addition to such degeneracy, we find that RBMs can easily exhibit
@@ -285,7 +285,7 @@ visible nodes indicated by white circles.
 
 \begin{figure}
   \centering
-  \resizebox{\linewidth}{!}{\input{../resources/images/tikz/rbm.tikz}}
+  \resizebox{\linewidth}{!}{\input{rbm.tikz}}
   \caption{An example restricted Boltzmann machine (RBM), consisting of two layers, one hidden ($\mathcal{H}$) and one visible ($\mathcal{V}$), with no connections within a layer. Hidden nodes are indicated by gray filled circles and the visible nodes indicated by unfilled circles.}
   \label{fig:rbm}
 \end{figure}
@@ -624,7 +624,7 @@ coding has advantages.)
 
 \begin{figure}[ht]
   \centering
-  \resizebox{1cm}{!}{\input{../resources/images/tikz/toymodel.tikz}}
+  \resizebox{1cm}{!}{\input{toymodel.tikz}}
   \caption{A small example restricted Boltzmann machine (RBM), with two nodes, one hidden and one visible.}
   \label{fig:toymodel}
 \end{figure}
@@ -659,7 +659,7 @@ because of the relationship between the elements of
   \begin{minipage}{0.45\textwidth}
   \resizebox{\linewidth}{!}{
     \tdplotsetmaincoords{60}{-60}
-    \input{../resources/images/tikz/toyhull_top.tikz}
+    \input{toyhull_top.tikz}
     
     \draw(0,1,0) -- (1,0,0) -- (0,0,0) -- (0,1,0); 
      \draw(1,1,1) -- (1,0,0) -- (0,0,0) -- (1,1,1); 
@@ -671,7 +671,7 @@ because of the relationship between the elements of
   \begin{minipage}{0.45\textwidth}
   \resizebox{\linewidth}{!}{
     \tdplotsetmaincoords{60}{120}
-    \input{../resources/images/tikz/toyhull_top.tikz}
+    \input{toyhull_top.tikz}
     
     \draw(0,1,0) -- (1,0,0) -- (0,0,0) -- (0,1,0); 
      \draw(1,1,1) -- (1,0,0) -- (0,0,0) -- (1,1,1); 
@@ -713,7 +713,7 @@ the relationship between values of \(\boldsymbol \theta\) moving
 
 \begin{figure}
 
-{\centering \includegraphics{paper_files/figure-latex/degen-toy-1} 
+{\centering \includegraphics{degen-toy-1} 
 
 }
 
@@ -744,7 +744,7 @@ produced by consideration of \(\boldsymbol \mu(\boldsymbol \theta)\).
 
 \begin{figure}
 
-{\centering \includegraphics{paper_files/figure-latex/instab-1} 
+{\centering \includegraphics{instab-1} 
 
 }
 
@@ -776,7 +776,7 @@ as a signal of uninterpretability for the toy RBM.
 
 \begin{figure}
 
-{\centering \includegraphics{paper_files/figure-latex/uninterp-1} 
+{\centering \includegraphics{uninterp-1} 
 
 }
 
@@ -896,7 +896,7 @@ prevent model impropriety.
 
 \begin{figure}
 \centering
-\includegraphics{paper_files/figure-latex/degen-plots-1.pdf}
+\includegraphics{degen-plots-1.eps}
 \caption{\label{fig:degen-plots}Results from the numerical experiment,
 here looking at the fraction of models that were near-degenerate for
 each combination of magnitudes of the points \(\boldsymbol \theta\) and
@@ -910,7 +910,7 @@ line shows the level where the fraction of near-degenerate models is
 
 \begin{figure}
 \centering
-\includegraphics{paper_files/figure-latex/instab-plots-1.pdf}
+\includegraphics{instab-plots-1.eps}
 \caption{\label{fig:instab-plots}The sample mean value of
 \(\text{LREP}(\boldsymbol \theta)/\nv\) at each grid point for each
 combination of magnitudes of the points of \(\boldsymbol \theta\) and
@@ -920,7 +920,7 @@ the value of this metric, indicating typical instability in the model.}
 
 \begin{figure}
 \centering
-\includegraphics{paper_files/figure-latex/uninterp-plots-1.pdf}
+\includegraphics{uninterp-plots-1.eps}
 \caption{\label{fig:uninterp-plots}The sample mean of the maximum
 component of the absolute difference between the model expectation
 vector, E\(\left[\boldsymbol X | \boldsymbol \theta\right]\), and the
@@ -943,7 +943,7 @@ parameters, but very quickly increases until reaching close to 1.
 
 \begin{figure}
 \centering
-\includegraphics{paper_files/figure-latex/split-plots-dist-1.pdf}
+\includegraphics{split-plots-dist-1.eps}
 \caption{\label{fig:split-plots-dist}The fraction of near-degenerate
 models for each magnitude of \(\boldsymbol \theta\). For each number
 \(\nv\) of visibles in the model, the fraction near-degenerate moves
@@ -1162,7 +1162,7 @@ faster rate, indicating better mixing for the chain.
 
 \begin{figure}
 \centering
-\includegraphics{paper_files/figure-latex/acf-1.pdf}
+\includegraphics{acf-1.eps}
 \caption{\label{fig:acf}The autocorrelation functions (ACF) for the
 posterior probabilityies of all \(2^4 = 16\) possible outcomes for the
 vector of four visibles assessed at multiple lags for each method with
@@ -1254,7 +1254,7 @@ real size.
 
 \begin{figure}
 \centering
-\includegraphics{paper_files/figure-latex/fitting-plot-1.pdf}
+\includegraphics{fitting-plot-1.eps}
 \caption{\label{fig:fitting-plot}Posterior probabilities of \(16 = 2^4\)
 possible realizations of \(4\) visibles using two of the three Bayesian
 fitting techniques, BwTPLV and BwTNML. The black vertical lines show the
