@@ -1,0 +1,36 @@
+---
+author: 
+ - Andee Kaplan
+ - Postdoctoral Associate
+ - Department of Statistical Sciences 
+ - Duke University
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+opening: Dear Dr. Clarke,
+closing: Best regards,
+address: 
+ - Dr. Bertrand Clarke
+ - Editor
+ - "Statistical Analysis and Data Mining"
+return-address:
+ - Andee Kaplan
+ - Department of Statistical Sciences
+ - Duke University
+ - P.O. Box 90251
+ - Durham, NC 27708-0251
+output:
+  pdf_document:
+    template: template-letter.tex
+geometry: margin=1in
+---
+
+My name is Andee Kaplan, and I am a postdoctoral fellow at Duke University in the Department of Statistical Science. I am writing on behalf of my co-authors, Dr. Daniel Nordman and Dr. Stephen Vardeman, to submit our article entitled "Properties and Bayesian fitting of restricted Boltzmann machines" for consideration for publication in Statistical Analysis and Data Mining: the ASA Data Mining Journal. 
+
+In this submission, we discuss the relationship between parameter specification and unattractive model properties---degeneracy, instability and uninterpretability---in restricted Boltzmann machines and describe related difficulties that can arise in likelihood-based and Bayes fitting of such models.  Our findings are that these models can experience certain types of model instability problems over the parameter space, which relates to how useful the model may be for representing realistic data-generation. In addition to the concepts and theories of instability, we also present empirical evidence that if parameter values stray too far from the origin of the parameter space, then these model problems can arise. We also investigate a principled Bayes fitting method with the aim to a) potentially quantify the uncertainty in estimation and b) potentially avoid problem areas of the parameter space by constraining parameters appropriately. Our methods show promise, but are numerically intractable in large data cases. In our estimation, it is unclear that current practice with these models is addressing our presented concerns.
+
+In light of this, we do not expect this message to be well-received by proponents of the current methodology, and respectfully request that the review of the paper be carried out with this in mind and involve reviewers that have no personal stake in the existing practice.
+ 
+This paper references results from another manuscript, a paper which is presently under review by Information and Inference: A Journal of the IMA. We have provided a copy of this second manuscript as a supplement for referees.
+ 
+Thank you for your time and consideration, and do not hesitate to contact me if you have any questions regarding our paper.
+
+
