@@ -1,0 +1,86 @@
+\documentclass[AMS,STIX1COL]{WileyNJD-v2}
+
+
+\articletype{Research Article}
+
+\received{17 September 2018}
+
+\raggedbottom
+
+\usepackage{amsmath}
+% \usepackage{amsthm}
+% \usepackage{cite}
+\usepackage{hyperref}
+\usepackage{graphics}
+\usepackage{subfig}
+\usepackage{url}
+
+$for(header-includes)$
+$header-includes$
+$endfor$
+
+%hacks
+%https://tex.stackexchange.com/questions/371955/hyperref-error-argument-of-hysetreflink-has-an-extra/384969
+\AtBeginDocument{
+  \label{FirstPage2}
+  \def\fpage{\pageref{FirstPage2}}
+}
+
+\begin{document}
+
+$if(title)$
+\title{$title$}
+$endif$  
+$if(shortauthor)$
+\authormark{$shortauthor$}
+$endif$ 
+
+$if(author)$
+$for(author)$
+\author[$author.numaddress$]{$if(author.corresponding)$$author.name$*$else$$author.name$$endif$}
+$endfor$
+$endif$
+
+$if(address)$
+$for(address)$
+\address[$address.numaddress$]{
+\orgdiv{$address.orgdiv$}, \orgname{$address.orgname$}, \orgaddress{\state{$address.orgstate$}, \country{$address.orgcountry$}}}
+$endfor$
+$endif$
+
+$if(corresponding)$
+\corres{*$corresponding_name$, $corresponding_address$. \email{$corresponding_email$}}
+$endif$
+
+$if(abstract)$
+\abstract[Summary]{
+$abstract$
+}
+$if(keywords)$ 
+\keywords{$keywords$}
+$endif$
+$endif$
+
+\jnlcitation{\cname{
+$for(author)$
+\author{$author.shortname$} 
+$endfor$ (\cyear{2018+}), 
+\ctitle{$title$}, \cjournal{Stat Anal DataMin: The ASA Data Sci Journal}, \cvol{2018+;00:00-00}.}}
+
+$if(title)$
+\maketitle
+$endif$
+
+$for(include-before)$
+$include-before$
+$endfor$
+
+$body$
+
+$for(include-after)$
+$include-after$
+$endfor$
+
+%\bibliography{$bibliography$}
+
+\end{document}
