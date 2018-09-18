@@ -1,7 +1,0 @@
-book_filename: paper
-repo: https://github.com/andeek/rbm
-output_dir: docs
-rmd_files: [
-  "index.Rmd",
-  "chapters/rbm.Rmd"
-]

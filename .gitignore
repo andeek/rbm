@@ -90,6 +90,7 @@ writing/paper-*/_bookdown_files
 writing/paper-*.Rproj
 writing/resources/data/*.Rdata
 writing/resources/data/*.RData
+writing/paper-rbm/paper_cache/
 
 #responses
 writing/paper-note/letters/
