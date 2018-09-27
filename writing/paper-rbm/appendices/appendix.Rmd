@@ -171,19 +171,3 @@ Alternatively, if exactly one specified cell probability in (\@ref(eq:0)) is zer
 \lim_{m\to \infty}P(V_1=v_1,V_2=v_2| \theta_{v_1}, \theta_{v_2}, \theta_{h_1},\Delta_1,\Delta_2) = p_{(v_1,v_2)},\quad (v_1,v_2)\in\{(\pm 1,\pm 1)\}.
 \end{equation}  
 If exactly two specified probabilities in (\@ref(eq:0)) are zero, say  $p_{(1,1)}$ and $p_{(-1,1)}$ (without loss of generality), then a limit approximation as in (\@ref(eq:2)) follows by picking $\theta_{v_1}$ as above based on any choices of $(\theta_{h_1}, \Delta_1,\Delta_2)$ and choosing  a sequence of $\theta_{v_2}\equiv \theta_{v_2}^{(m)}$ values for which $\theta_{v_2}^{({m})} \rightarrow -\infty$.
-
-# Small example illustrating approximation of an arbitrary binary distribution
-
-For simplicity, consider a model with two visible variables $(V_1,V_2)$ and one hidden $H_1$ so that there are four possible data realizations for $(V_1,V_2)$  given by $(\pm 1, \pm 1)$ and we may express the model probabilities
-as
-$$
-P(V_1=v_1,V_2=v_2| \theta_{v_1}, \theta_{v_2}, \theta_{h_1}, \theta_{11},\theta_{21}) \propto  \exp\left( v_1  \theta_{v_1} + v_2 \theta_{v_2}\right) \sum_{h \in \{\pm 1\}}\exp\left( h[ \theta_{h_1}  + \theta_{11} v_1 + \theta_{21} v_2] \right),
-$$
-for $(v_1,v_2)\in \{-1, 1\}^2$, in terms of real-valued parameters $\theta_{v_1}, \theta_{v_2}, \theta_{h_1}, \theta_{11},\theta_{21}$. Given some specified cell probabilities, say
-\begin{equation}
-(\#eq:0)
-0\leq p_{(-1,-1)},\;p_{(1,-1)}, \;p_{(-1,1)},\;p_{(1,1)},
-\end{equation} 
-for the outcomes $(\pm 1, \pm 1)$, the online appendix provides technical details to show parameter values $(\theta_{v_1}, \theta_{v_2}, \theta_{h_1}, \theta_{11},\theta_{21})$ may be chosen to match any given cell probabilities with arbitrary closeness.  In fact, when the cell probabilities \@ref(eq:0) are all strictly positive, parameters in the RBM model can be specified to reflect these probabilities exactly. And, when one or more of the cell probabilities \@ref(eq:0) are zero, the corresponding RBM probabilities $P(V_1=v_1,V_2=_v2| \theta_{v_1}, \theta_{v_2}, \theta_{h_1}, \theta_{11},\theta_{21})$ may never be identically zero (due to exponential terms in the model) but parameters can be still selected to make the appropriate RBM cell probabilities arbitrarily small.
-
-For illustration, considering the simple example from above with $n$ iid observations, each consisting of two realized visibles $(V_1,V_2)$ the empirical cell frequencies from the sample are the highest likelihood choices for the cell probabilities $p_{(-1,-1)},p_{(1,-1)}, p_{(-1,1)},p_{(1,1)}$ in \@ref(eq:0) before any parametric model is introduced for improved analysis, and the discussion above indicates that RBM model parameters can be chosen to re-create this empirical distribution to an arbitrarily close degree.
