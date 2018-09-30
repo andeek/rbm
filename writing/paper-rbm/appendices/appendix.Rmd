@@ -7,7 +7,7 @@ output:
     toc: no
 ---
 
-# On the one-to-one correspondence between parameters and moments in the RBM distribution {#appendix-rbm}
+# Some characterizations of RBM distributions on all nodes through parameter and moment conditions {#appendix-rbm}
 
 For integers $m,n \geq 1$, consider random vectors $\bm{V}_m \equiv(V_1,\ldots,V_m)$ and $\bm{H}_n\equiv (H_1,\ldots,H_n)$, where the random variables $V_i$ and $H_j$ assume values in $\{1,-1\}$, $i=1,\ldots,m$, $j=1,\ldots,n$. We suppose the vector $(\bm{V}_m,\bm{H}_n)$ follows a restricted Boltzmann machine (RBM) distribution, i.e. has probability mass function
 \begin{align*}
@@ -17,6 +17,25 @@ For integers $m,n \geq 1$, consider random vectors $\bm{V}_m \equiv(V_1,\ldots,V
 with $m+n+mn$ real parameters $\theta_{v_1},\ldots,\theta_{v_m},\theta_{h_1},\ldots,\theta_{h_m}$ and
 $\theta_{ij}$, $i=1,\ldots,m$, $j=1,\ldots,n$ collected in a parameter vector denoted as $\bm{\theta}\in \mathbb{R}^{m+n+mn}$.
 Denote the distribution of $(\bm{V}_m,\bm{H}_n)$ as RBM$(m,n,\bm{\theta})$. In the following, for convenience, we say a symmetric random variable $X$ has a Bernoulli$(1/2)$ distribution if $P(X = 1) = 1/2 = P(X = -1)$.
+
+
+```{proposition, label="propone", echo=TRUE}
+Let $\nv, \nh \geq 1$ and suppose the random vector $X =(V_1,...,V_{m},H_1,...,H_{n})$ assumes values in $\{-1,1\}^{m+n}$ and follows the RBM$(m, n, \boldsymbol \theta)$ distribution with parameter $\boldsymbol \theta\in \mathbb{R}^{m+n+m*n}$.
+
+Let $\bm{\theta}_1,\bm{\theta}_2 \in \mathbb{R}^{m+n+m*n}$ and
+let $P_i$ and $\E_i$ denote probability and expectation under $\bm{\theta}_i$, $i=1,2$. Then, the following are equivalent
+
+1. $\E_1 V_i=\E_2 V_i$, $\E_1 H_j=\E_2 H_j$ and $\E_1 V_i H_j =\E_2 V_i H_j$ for any $i=1,\ldots,m$, $j=1,\ldots,n$.
+2. $\bm{\theta}_1 =\bm{\theta}_2$.
+3. $P_1$ and  $P_2$ are the same distribution for $\boldsymbol X$.
+
+Additionally, the following three statements are equivalent
+
+1. $\E V_i=0$, $\E H_j=0$ and $\E V_i H_j =0$ for any $i=1,\ldots,m$, $j=1,\ldots,n$.
+2. $\bm{\theta} = \bm{0}\in \mathbb{R}^{m+n+m*n}$.
+3. $V_1,\ldots,V_m, H_1,\ldots,H_n$ are independent random variables assuming $-1/1$ with equal probability $1/2$.
+
+```
 
 Use the notation $\bm{V}_m*\bm{H}_n = (V_1 H_1,\ldots,V_1 H_n, V_2 H_1,\ldots,V_2 H_n,\ldots, V_m H_1,\ldots,V_m H_n)$.
 For the RBM$(m,n,\bm{\theta})$ model, consider in the function $\bm{g}: \mathbb{R}^{m+n+mn} \rightarrow   \mathcal{I} \subset \mathbb{R}^{m+n+mn}$ given by
@@ -34,11 +53,11 @@ We have the following properties:
 
 ```{theorem, label="one", echo=TRUE}
 Let $m,n\geq 1$ and suppose the random vector $(\bm{V}_m,\bm{H}_n) = (V_1,\ldots,V_m, H_1,\ldots,H_n)$ follows a RBM$(m,n,\bm{\theta})$ distribution. Let $\bm{\theta}_1,\bm{\theta}_2 \in \mathbb{R}^{m+n+mn}$ and
-let $P_i$ and $\E$ denote probability and expectation under $\bm{\theta}_i$, $i=1,2$. Then, the following are equivalent
+let $P_i$ and $\E_i$ denote probability and expectation under $\bm{\theta}_i$, $i=1,2$. Then, the following are equivalent
 
-1. $\E_1 V_i=\E_2 V_i$, $\E_1 H_j=\E_2 H_j$ and $\E_1 V_i H_j =\E_2 V_i H_j$ for any $i=1,\ldots,m$, $j=1,\ldots,n$.
+1. $\E_1 V_i=\E_2 V_i$, $\E_1 H_j=\E_2 H_j$ and $\E_1 V_i H_j =\E_2 V_i H_j$ for all $i=1,\ldots,m$, $j=1,\ldots,n$.
 2. $\bm{\theta}_1 =\bm{\theta}_2$.
-3. $P_1$ and  $P_2$ are the same distribution for  $(\bm{V}_m,\bm{H}_n)$.\\
+3. $P_1$ and  $P_2$ are the same distribution for  $(\bm{V}_m,\bm{H}_n)$.
 
 ```
 

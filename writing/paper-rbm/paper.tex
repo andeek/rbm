@@ -595,7 +595,7 @@ model versus those that guarantee interpretable models. If
 is large, then the RBM model with parameter vector
 \(\boldsymbol \theta\) is said to be uninterpetable. The quantities to
 compare in the RBM case are \[
-\text{E}\left[\boldsymbol X | \boldsymbol \theta\right] = \sum\limits_{\boldsymbol x \in \mathcal{C}^{\nv + \nh}} \boldsymbol x f_{\boldsymbol \theta}(\boldsymbol x) = \sum\limits_{\boldsymbol x \in \mathcal{C}^{\nv + \nh}} \boldsymbol x \frac{\exp\left(\sum\limits_{i = 1}^\nv \sum\limits_{j=1}^\nh \theta_{ij} v_i h_j + \sum\limits_{i = 1}^\nv\theta_{v_i} v_i + \sum\limits_{j = 1}^\nh\theta_{h_j} h_j\right)}{\sum\limits_{\boldsymbol x \in \mathcal{C}^{\nv + \nh}}\exp\left(\sum\limits_{i = 1}^\nv \sum\limits_{j=1}^\nh \theta_{ij} v_i h_j + \sum\limits_{i = 1}^\nv\theta_{v_i} v_i + \sum\limits_{j = 1}^\nh\theta_{h_j} h_j\right)}
+\text{E}\left[\boldsymbol X | \boldsymbol \theta\right] = \sum\limits_{\boldsymbol x \in \mathcal{C}^{\nv + \nh}} \boldsymbol x \frac{\exp\left(\sum\limits_{i = 1}^\nv \sum\limits_{j=1}^\nh \theta_{ij} v_i h_j + \sum\limits_{i = 1}^\nv\theta_{v_i} v_i + \sum\limits_{j = 1}^\nh\theta_{h_j} h_j\right)}{\sum\limits_{\boldsymbol x \in \mathcal{C}^{\nv + \nh}}\exp\left(\sum\limits_{i = 1}^\nv \sum\limits_{j=1}^\nh \theta_{ij} v_i h_j + \sum\limits_{i = 1}^\nv\theta_{v_i} v_i + \sum\limits_{j = 1}^\nh\theta_{h_j} h_j\right)}
 \] and \begin{align*}
 \text{E}\left[\boldsymbol X | \boldsymbol 
 \theta^*\right] &= \sum\limits_{\boldsymbol x \in \mathcal{C}^{\nv + \nh}} \boldsymbol x \frac{\exp\left(\sum\limits_{i = 1}^\nv \theta_{v_i} v_i + \sum\limits_{j = 1}^\nh\theta_{h_j} h_j\right)}{\sum\limits_{\boldsymbol x \in \mathcal{C}^{\nv + \nh}}\exp\left(\sum\limits_{i = 1}^\nv\theta_{v_i} v_i + \sum\limits_{j = 1}^\nh\theta_{h_j} h_j\right)} \\
@@ -781,7 +781,7 @@ as a signal of uninterpretability for the toy RBM.
 
 }
 
-\caption{\label{fig:uninterp}The absolute difference between coordinates of E$\left[\boldsymbol X | \boldsymbol \theta\right]$ model expectations and E$\left[\boldsymbol X | \boldsymbol \theta^* \right ]$ expectations given independence for an RBM with one visible and one hidden node. As an indicator of uninterpretability, note that differences in expectations increase as$\theta_{11}$, the dependence parameter, deviates from zero.}\label{fig:uninterp}
+\caption{\label{fig:uninterp}The absolute difference between coordinates of E$\left[\boldsymbol X | \boldsymbol \theta\right]$ model expectations and E$\left[\boldsymbol X | \boldsymbol \theta^* \right ]$ expectations given independence for an RBM with one visible and one hidden node. As an indicator of uninterpretability, note that differences in expectations increase as $\theta_{11}$, the dependence parameter, deviates from zero.}\label{fig:uninterp}
 \end{figure}
 
 Figure \ref{fig:uninterp} shows that the absolute difference between
@@ -814,20 +814,46 @@ where the zero vector then serves as the natural center of the parameter
 space and induces the simplest possible model properties for the RBM
 (i.e., at \(\boldsymbol \theta = \boldsymbol 0\), all variables are
 independent uniformly distributed on \(\{-1,1\}^\nv\)). The proof of
-this and further exploration of the equivalence of the
-\(\boldsymbol \theta\) parameterization of the RBM model class and
-parameterization by \(\boldsymbol \mu(\boldsymbol \theta)\) is in the
-on-line supplementary materials. Hence, while from some computing
-perspectives \(0/1\) coding might seem most natural, the \(-1/1\) coding
-is far more convenient and interpretable from the point of view of
-statistical modeling, where it makes parameters simply interpreted in
-terms of symmetrically defined main effects and interactions. Under the
-data encoding \(-1/1\), the parameter space centered at 0 is also
-helpful for framing parameter configurations that are undesirably large
-(i.e., these are naturally parameters that have moved too far away from
-\(\bm{0}\) where the RBM model is anchored to be trivially describable
-and completely problem-free). In light of all of these matters we will
-henceforth employ the \(-1/1\) coding.
+this and further relations between the \(-1/1\) data encoding and the
+\(\boldsymbol \theta\) parameterization of the RBM model class are given
+in the on-line supplementary materials. Based on this material,
+Proposition \ref{prp:three} also briefly summarizes how the \(-1/1\)
+data encoding induces some attractive theoretical properties in
+characterizing RBM models.
+
+\begin{proposition}
+\label{prp:three}
+Let $\nv, \nh \geq 1$ and suppose the random vector $X =(V_1,...,V_{\nv},H_1,...,H_{\nh})$ assumes values in $\{-1,1\}^{\nv+\nh}$ and follows the RBM$(\nv, \nh, \boldsymbol \theta)$ distribution \eqref{eq:pmf} with parameter $\boldsymbol \theta\in \mathbb{R}^{\nv+\nh+\nv*\nh}$. Let $\bm{\theta}_1,\bm{\theta}_2 \in \mathbb{R}^{\nv+\nh+\nv*\nh}$ and let $P_i$ and $\E_i$ denote the full joint probability and expectation under $\bm{\theta}_i$, $i=1,2$. Then, the following are equivalent
+\begin{enumerate}
+\setlength{\itemsep}{0pt}
+\setlength{\parskip}{0pt}
+\setlength{\parsep}{0pt}
+\item $\E_1 V_i=\E_2 V_i$, $\E_1 H_j=\E_2 H_j$ and $\E_1 V_i H_j =\E_2 V_i H_j$ for all $i=1,\ldots, \nv$, $j=1,\ldots,\nh$.
+\item $\bm{\theta}_1 =\bm{\theta}_2$.
+\item $P_1$ and  $P_2$ are the same distribution for $\boldsymbol X$.
+\end{enumerate}
+Additionally, the following three statements are equivalent
+\begin{enumerate}
+\setlength{\itemsep}{0pt}
+\setlength{\parskip}{0pt}
+\setlength{\parsep}{0pt}
+\item $\E V_i=0$, $\E H_j=0$ and $\E V_i H_j =0$ for all $i=1,\ldots,\nv$, $j=1,\ldots,\nh$.
+\item $\bm{\theta} = \bm{0}\in \mathbb{R}^{\nv+\nh+\nv*\nh}$.
+\item $V_1,\ldots,V_\nv, H_1,\ldots,H_\nh$ are independent random variables assuming $-1/1$ with equal probability $1/2$.
+\end{enumerate}
+\end{proposition}
+
+Hence, while from some computing perspectives \(0/1\) coding might seem
+most natural, the \(-1/1\) coding is far more convenient and
+interpretable from the point of view of statistical modeling, where it
+makes parameters simply interpreted in terms of symmetrically defined
+main effects and interactions. Under the data encoding \(-1/1\), the
+parameter space centered at 0 is also helpful for framing parameter
+configurations that are undesirably large (i.e., these are naturally
+parameters that have moved too far away from \(\bm{0}\) where the RBM
+model is anchored to be trivially describable and completely
+problem-free). In light of all of these matters we will henceforth
+employ the \(-1/1\) coding.
 
 \hypertarget{exploring-manageable-examples}{%
 \subsection{Exploring manageable
@@ -982,7 +1008,7 @@ units. We provide a small example that illustrates such approximations.
 For simplicity, consider a model with two visible variables
 \((V_1,V_2)\) and one hidden \(H_1\) so that there are four possible
 data realizations for \((V_1,V_2)\) given by \((\pm 1, \pm 1)\), and we
-may express the model probabilities as \[
+may express the marginalized model probabilities as \[
 P(V_1=v_1,V_2=v_2| \theta_{v_1}, \theta_{v_2}, \theta_{h_1}, \theta_{11},\theta_{21}) \propto  \exp\left( v_1  \theta_{v_1} + v_2 \theta_{v_2}\right) \sum_{h \in \{\pm 1\}}\exp\left( h[ \theta_{h_1}  + \theta_{11} v_1 + \theta_{21} v_2] \right),
 \] for \((v_1,v_2)\in \{-1, 1\}^2\), in terms of real-valued parameters
 \(\theta_{v_1}, \theta_{v_2}, \theta_{h_1}, \theta_{11},\theta_{21}\).
@@ -991,12 +1017,13 @@ Given some specified cell probabilities, say \begin{equation}
 0\leq p_{(-1,-1)},\;p_{(1,-1)}, \;p_{(-1,1)},\;p_{(1,1)},
 \end{equation} for the outcomes \((\pm 1, \pm 1)\), the online appendix
 provides technical details to show parameter values
-\((\theta_{v_1}, \theta_{v_2}, \theta_{h_1}, \theta_{11},\theta_{21})\)
+\((\theta_{v_1}, \theta_{v_2}, \theta_{h_1}, \theta_{11}, \theta_{21})\)
 may be chosen to match any given cell probabilities with arbitrary
 closeness. In fact, when the cell probabilities \eqref{eq:0} are all
 strictly positive, parameters in the RBM model can be specified to
 reflect these probabilities exactly. And, when one or more of the cell
-probabilities \eqref{eq:0} are zero, the corresponding RBM probabilities
+probabilities \eqref{eq:0} are zero, the corresponding marginalized RBM
+probabilities
 \(P(V_1=v_1,V_2=_v2| \theta_{v_1}, \theta_{v_2}, \theta_{h_1}, \theta_{11},\theta_{21})\)
 may never be identically zero (due to exponential terms in the model)
 but parameters still can be selected to make the appropriate RBM cell
@@ -1029,12 +1056,12 @@ Not only does RBM model fitting based on ML seek to reproduce the
 empirical distribution, whenever this empirical distribution contains
 empty cells, fitting steps for the RBM model further will aim to choose
 parameters that necessarily diverge to infinity in magnitude in order to
-zero-out the corresponding RBM cell probabilities. In data applications
-with a large sample space, it is unlikely that the training set will
-include at least one of each possible vector outcome (unlike this small
-example). This implies that some RBM model parameters must diverge to
-\(+\infty\) to mimic the empirical distribution with empty cells and, as
-we have already discussed in Section
+zero-out the corresponding marginalized RBM cell probabilities. In data
+applications with a large sample space, it is unlikely that the training
+set will include at least one of each possible vector outcome (unlike
+this small example). This implies that some RBM model parameters must
+diverge to \(+\infty\) to mimic the empirical distribution with empty
+cells and, as we have already discussed in Section
 \ref{explorations-of-model-properties-through-simulation}, large
 magnitudes of \(\boldsymbol \theta\) lead to model impropriety in the
 RBM.
@@ -1342,17 +1369,21 @@ the issues in model impropriety detailed in this paper. Practitioners
 should be aware of this extreme flexibility and employ some form of
 regularization or penalization in the fitting.
 
-Ultimately, it is not unquestionably clear that RBM models are useful as
-generative models. As a concern, without appropriate generative behavior
-in an RBM model, the uncertainty in estimated model parameters becomes
-impossible to assess realistically and further, the model can lose
-useful application to prediction problems (e.g., realistic predictive
-distributions). In the case of classification, predictive distributions
-may not be the ultimate goal, but when S-instability is present, small
-(imperceptible) differences in the data may lead to greatly different
-probabilities and thus greatly different classifications. For these
-reasons, we are skeptical about RBMs as probabilistic conceptualizations
-for data generation.
+While interpretability of parameters may not always be of primary
+importance in application of an RBM model (e.g.~in some applications to
+prediction/classification), we find that the issues of stability and
+degeneracy go hand in hand with those of interpretability, and the
+former should not be ignored. When S-instability is present, small
+(imperceptible) differences in training data and corresponding fitted
+models may lead to greatly different probabilities (and thus
+substantially different classifications). Ultimately, it is not clear
+that RBM models are typically useful as generative models for
+observables. Without appropriate generative behavior in an RBM model,
+uncertainty in estimated model parameters becomes impossible to
+realistically assess. Further, the model cannot support other inferences
+important in many prediction problems (e.g., realistic predictive
+distributions). For these reasons, we are skeptical about RBMs as widely
+useful probabilistic constructs, at least in their present incarnation.
 
 \hypertarget{references}{%
 \section*{References}\label{references}}
@@ -1417,7 +1448,8 @@ Iowa State University.
 
 \leavevmode\hypertarget{ref-kaplan2016propriety}{}%
 Kaplan, Andee, Daniel Nordman, and Stephen Vardeman. 2017. ``On the
-Propriety of Restricted Boltzmann Machines.'' \emph{Unpublished}.
+Instability and Degeneracy of Deep Learning Models.'' \emph{arXiv
+Preprint arXiv:1612.01159}.
 
 \leavevmode\hypertarget{ref-larochelle2008classification}{}%
 Larochelle, Hugo, and Yoshua Bengio. 2008. ``Classification Using
