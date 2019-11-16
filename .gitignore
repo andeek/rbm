@@ -55,6 +55,7 @@ presentations/uiuc/slides_cache/
 presentations/msu/slides_cache/
 presentations/coms474/slides_cache/
 presentations/msmlc/slides_cache/
+presentations/silo_wisc/slides_cache/
 
 #presentation
 !presentations/jsm2016/*.pdf
@@ -81,6 +82,8 @@ presentations/msmlc/slides_cache/
 !presentations/resources/images/
 !presentations/msmlc/*.pdf
 !presentations/msmlc/*.tex
+!presentations/silo_wisc/*.tex
+!presentations/silo_wisc/*.pdf
 
 #big files
 code/degeneracy/apps/results_grid*
