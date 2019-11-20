@@ -319,7 +319,7 @@ Based on the definition of S-instability, we can show how an S-unstable distribu
 - Further potential causes of S-instability exist for the joint model, often due to the size of $|\boldsymbol \theta_{v}|_1$
 
 #### Key Finding
-To prevent instability in the joint model of an RBM (and all models that embloy RBMs, e.g. a DBM), the combined magnitudes of all parameters $\boldsymbol \theta$ must be controlled.
+To prevent instability in the joint model of an RBM (and all models that employ RBMs, e.g. a DBM), the combined magnitudes of all parameters $\boldsymbol \theta$ must be controlled.
 
 
 # Visualizing properties in manageable (a.k.a. small) RBMs
