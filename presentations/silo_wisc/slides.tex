@@ -486,6 +486,36 @@ given sample size \(N \geq 1\).
 
 \end{frame}
 
+\begin{frame}{Avoiding S-instability for the RBM}
+\protect\hypertarget{avoiding-s-instability-for-the-rbm}{}
+
+Based on the definition of S-instability, we can show how an S-unstable
+distribution can arise (and potentially how to avoid this).
+
+\begin{itemize}
+\tightlist
+\item
+  All instability in the marginal RBM model for the data
+  \(\boldsymbol X\) can be attributed to large magnitudes (or many
+  terms) of \(\boldsymbol \theta_{v}\) and/or
+  \(\boldsymbol \theta_{interaction}\)
+\item
+  An S-unstable marginal model implies an S-unstable joint model
+\item
+  Further potential causes of S-instability exist for the joint model,
+  often due to the size of \(|\boldsymbol \theta_{v}|_1\)
+\end{itemize}
+
+\begin{block}{Key Finding}
+
+To prevent instability in the joint model of an RBM (and all models that
+embloy RBMs, e.g.~a DBM), the combined magnitudes of all parameters
+\(\boldsymbol \theta\) must be controlled.
+
+\end{block}
+
+\end{frame}
+
 \begin{frame}{Visualizing properties in manageable (a.k.a. small) RBMs}
 \protect\hypertarget{visualizing-properties-in-manageable-a.k.a.-small-rbms}{}
 
